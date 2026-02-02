@@ -4,24 +4,55 @@ import { DashboardView } from '@/components/DashboardView';
 import { SourceLibraryView } from '@/components/SourceLibraryView';
 import { AddClipsView } from '@/components/AddClipsView';
 import { TopicView } from '@/components/TopicView';
+import { PlaylistBrowserView } from '@/components/PlaylistBrowserView';
+import { VideoPlayerView } from '@/components/VideoPlayerView';
+import { useStudyStore } from '@/stores/studyStore';
 
-type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic';
+type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
+  const { selectedVideoForPlayer, setSelectedVideoForPlayer, setSelectedSource } = useStudyStore();
+
+  const handleSelectVideo = (video: { videoId: string; title: string }) => {
+    setSelectedVideoForPlayer(video);
+    setActiveView('video-player');
+  };
+
+  const handleBrowsePlaylist = (sourceId: string) => {
+    setSelectedSource(sourceId);
+    setActiveView('playlist-browser');
+  };
 
   const renderView = () => {
     switch (activeView) {
       case 'dashboard':
-        return <DashboardView onViewChange={setActiveView} />;
+        return <DashboardView onViewChange={setActiveView as (view: string) => void} />;
       case 'sources':
-        return <SourceLibraryView />;
+        return <SourceLibraryView onBrowsePlaylist={handleBrowsePlaylist} />;
       case 'clips':
         return <AddClipsView />;
       case 'topic':
         return <TopicView onBack={() => setActiveView('dashboard')} />;
+      case 'playlist-browser':
+        return (
+          <PlaylistBrowserView 
+            onBack={() => setActiveView('sources')} 
+            onSelectVideo={handleSelectVideo}
+          />
+        );
+      case 'video-player':
+        return selectedVideoForPlayer ? (
+          <VideoPlayerView 
+            videoId={selectedVideoForPlayer.videoId}
+            videoTitle={selectedVideoForPlayer.title}
+            onBack={() => setActiveView('playlist-browser')}
+          />
+        ) : (
+          <DashboardView onViewChange={setActiveView as (view: string) => void} />
+        );
       default:
-        return <DashboardView onViewChange={setActiveView} />;
+        return <DashboardView onViewChange={setActiveView as (view: string) => void} />;
     }
   };
 

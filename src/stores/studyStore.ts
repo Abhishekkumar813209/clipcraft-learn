@@ -13,6 +13,8 @@ interface StudyState {
   selectedExamId: string | null;
   selectedSubjectId: string | null;
   selectedTopicId: string | null;
+  selectedSourceId: string | null;
+  selectedVideoForPlayer: { videoId: string; title: string } | null;
   selectedSubTopicId: string | null;
   
   // Actions - Exams
@@ -56,6 +58,8 @@ interface StudyState {
   setSelectedSubject: (id: string | null) => void;
   setSelectedTopic: (id: string | null) => void;
   setSelectedSubTopic: (id: string | null) => void;
+  setSelectedSource: (id: string | null) => void;
+  setSelectedVideoForPlayer: (video: { videoId: string; title: string } | null) => void;
   
   // Getters
   getSubjectsByExam: (examId: string) => Subject[];
@@ -76,6 +80,8 @@ export const useStudyStore = create<StudyState>()(
       selectedSubjectId: null,
       selectedTopicId: null,
       selectedSubTopicId: null,
+      selectedSourceId: null,
+      selectedVideoForPlayer: null,
       
       // Exams
       addExam: (exam) => {
@@ -335,6 +341,8 @@ export const useStudyStore = create<StudyState>()(
       setSelectedSubject: (id) => set({ selectedSubjectId: id, selectedTopicId: null, selectedSubTopicId: null }),
       setSelectedTopic: (id) => set({ selectedTopicId: id, selectedSubTopicId: null }),
       setSelectedSubTopic: (id) => set({ selectedSubTopicId: id }),
+      setSelectedSource: (id) => set({ selectedSourceId: id }),
+      setSelectedVideoForPlayer: (video) => set({ selectedVideoForPlayer: video }),
       
       // Getters
       getSubjectsByExam: (examId) => {

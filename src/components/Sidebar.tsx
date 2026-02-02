@@ -7,8 +7,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateExamDialog } from './CreateExamDialog';
 
 interface SidebarProps {
-  activeView: 'dashboard' | 'sources' | 'clips' | 'topic';
-  onViewChange: (view: 'dashboard' | 'sources' | 'clips' | 'topic') => void;
+  activeView: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player';
+  onViewChange: (view: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player') => void;
 }
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
