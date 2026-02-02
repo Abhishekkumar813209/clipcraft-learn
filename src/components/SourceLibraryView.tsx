@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Link, Youtube, Trash2, ExternalLink, FolderOpen } from 'lucide-react';
+import { Plus, Link, Youtube, Trash2, ExternalLink, FolderOpen, List } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { extractYouTubeId } from '@/types';
 
-export function SourceLibraryView() {
+interface SourceLibraryViewProps {
+  onBrowsePlaylist: (sourceId: string) => void;
+}
+
+export function SourceLibraryView({ onBrowsePlaylist }: SourceLibraryViewProps) {
   const [showAddSource, setShowAddSource] = useState(false);
   const { sources, deleteSource } = useStudyStore();
 
@@ -70,10 +74,21 @@ export function SourceLibraryView() {
                 </div>
               </div>
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
+                {source.type === 'playlist' && (
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => onBrowsePlaylist(source.id)}
+                  >
+                    <List className="w-4 h-4 mr-2" />
+                    Browse Videos
+                  </Button>
+                )}
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="flex-1"
+                  className={source.type !== 'playlist' ? 'flex-1' : ''}
                   onClick={() => {
                     const url = source.type === 'playlist'
                       ? `https://youtube.com/playlist?list=${source.youtubeId}`
