@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, Library, Video, Plus, Settings, ChevronRight, GraduationCap } from 'lucide-react';
+import { BookOpen, Library, Video, Plus, Settings, ChevronRight, GraduationCap, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateExamDialog } from './CreateExamDialog';
 
 interface SidebarProps {
-  activeView: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player';
-  onViewChange: (view: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player') => void;
+  activeView: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader';
+  onViewChange: (view: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader') => void;
 }
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
@@ -50,6 +50,12 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
             label="Add Clips" 
             active={activeView === 'clips'}
             onClick={() => onViewChange('clips')}
+          />
+          <NavItem 
+            icon={FileText} 
+            label="PDF Reader" 
+            active={activeView === 'pdf-reader'}
+            onClick={() => onViewChange('pdf-reader')}
           />
         </nav>
 

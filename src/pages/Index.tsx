@@ -6,9 +6,10 @@ import { AddClipsView } from '@/components/AddClipsView';
 import { TopicView } from '@/components/TopicView';
 import { PlaylistBrowserView } from '@/components/PlaylistBrowserView';
 import { VideoPlayerView } from '@/components/VideoPlayerView';
+import { PdfReaderView } from '@/components/PdfReaderView';
 import { useStudyStore } from '@/stores/studyStore';
 
-type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player';
+type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
@@ -51,6 +52,8 @@ const Index = () => {
         ) : (
           <DashboardView onViewChange={setActiveView as (view: string) => void} />
         );
+      case 'pdf-reader':
+        return <PdfReaderView onBack={() => setActiveView('dashboard')} />;
       default:
         return <DashboardView onViewChange={setActiveView as (view: string) => void} />;
     }
