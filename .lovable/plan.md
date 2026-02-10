@@ -1,207 +1,151 @@
 
 
-# In-App Playlist Browser & Video Player
+# PDF Reader with AI Chat & Auto-Play Mode
 
-## Problem
+## What You're Getting
 
-Abhi current workflow mein:
-1. Source Library mein playlist save hoti hai
-2. "Open" button YouTube ko naye tab mein kholta hai
-3. User ko manually video URL copy karke Add Clips section mein paste karna padta hai
-4. Start/end time bhi manually type karna padta hai
-
-Tumhe chahiye:
-1. **Playlist ke andar videos dekho** - apni app mein
-2. **Embedded player** - video dekho without leaving the app
-3. **Click-to-set timestamps** - current time pe click karke start/end set karo
-4. **Quick clip creation** - while watching, directly clip banao
+1. **PDF Viewer** - Upload and read any PDF (even 1000+ pages) right inside your app
+2. **Page Thumbnails** - Left sidebar showing all page previews (like the SmallPDF screenshot you shared)
+3. **AI Chat Sidebar** - Chat with AI about the PDF content (summarize, ask questions, explain)
+4. **Auto-Play Mode** - Pages auto-advance like a slideshow, with YOUR manual control over the timing (e.g., every 10 seconds, 30 seconds, etc.)
+5. **Smart Storage** - PDFs are NOT stored on cloud permanently. They stay in your browser only (no cloud storage cost!)
 
 ---
 
-## Solution Overview
+## Storage Solution (No Extra Cost!)
+
+Since you're worried about storage costs, here's the approach:
+
+- PDFs will be loaded **client-side only** using the browser's memory
+- The PDF file stays in your browser session - it is NOT uploaded to any server
+- For AI chat, only the **text of the current page (or selected pages)** is sent to AI - not the whole PDF
+- When you close/refresh the browser, the PDF is gone (you just re-open it next time)
+- This means **zero cloud storage cost**
+
+---
+
+## How It Will Look
 
 ```text
-+------------------+     +-------------------+     +------------------+
-|  Source Library  | --> |  Playlist Browser | --> |  Video Player    |
-|  (existing)      |     |  (new)            |     |  with Clip Tool  |
-+------------------+     +-------------------+     +------------------+
-       |                         |                         |
-  Save playlists           See all videos           Watch & create
-  & channels               in playlist              clips instantly
++------------------------------------------------------------------+
+|  [Back]  Polity Analysis By Clear Vision       [Auto-Play: OFF]  |
++------------------------------------------------------------------+
+|  Page      |                                    |  AI Chat        |
+|  Thumbnails|     PDF Page Content               |                 |
+|            |     (rendered at full size)         |  [Summarize]    |
+|  [1] thumb |                                    |  [Explain]      |
+|  [2] thumb |                                    |                 |
+|  [3] thumb |     Current page displayed          |  User: What is  |
+|  [4] thumb |     here with zoom controls         |  this about?    |
+|  ...       |                                    |                 |
+|            |                                    |  AI: This page  |
+|            |                                    |  covers...      |
+|            |                                    |                 |
++------------------------------------------------------------------+
+|  Page 3 / 14    [<] [>]   Auto-play: [5s v] [Start] [Stop]      |
++------------------------------------------------------------------+
 ```
 
 ---
 
 ## Implementation Plan
 
-### 1. YouTube Data Integration (Edge Function)
+### 1. PDF Rendering (Client-Side, No Upload)
 
-Ek backend function jo YouTube Data API v3 se playlist videos fetch kare:
+Use **pdf.js** (Mozilla's open-source PDF renderer) via the `pdfjs-dist` npm package.
 
-**File:** `supabase/functions/youtube-playlist/index.ts`
+- User selects a PDF file from their computer
+- PDF is read entirely in the browser (FileReader API)
+- Each page is rendered as a canvas image
+- Supports PDFs of any size (1000+ pages) - pages render on-demand
 
-```text
-Input: playlistId
-Output: {
-  videos: [
-    { videoId, title, thumbnail, duration, position }
-  ]
-}
-```
+### 2. New Component: PdfReaderView
 
-- Uses YouTube Data API (requires API key - will be stored as secret)
-- Fetches all videos from a playlist with pagination
-- Returns video metadata for in-app display
+**File:** `src/components/PdfReaderView.tsx`
 
-### 2. New Component: PlaylistBrowserView
+Three-panel layout:
+- **Left panel**: Scrollable page thumbnails (small previews of each page)
+- **Center panel**: Current page rendered at full size with zoom
+- **Right panel**: AI chat sidebar (collapsible)
 
-**File:** `src/components/PlaylistBrowserView.tsx`
+Controls:
+- Page navigation (prev/next, jump to page)
+- Zoom in/out
+- Auto-play toggle with configurable interval
 
-Features:
-- Grid/list of videos from selected playlist
-- Thumbnail, title, duration, position shown
-- Click on video → opens Video Player View
-- Search/filter videos within playlist
+### 3. Auto-Play (Slideshow Mode)
 
-```text
-+------------------------------------------------+
-|  PW History Marathon                    [Back] |
-|  24 videos                                     |
-+------------------------------------------------+
-|  +-------+  Lecture 1: Ancient India    45:30  |
-|  | thumb |  Position: 1                        |
-|  +-------+                              [Play] |
-|------------------------------------------------|
-|  +-------+  Lecture 2: Medieval         52:10  |
-|  | thumb |  Position: 2                        |
-|  +-------+                              [Play] |
-+------------------------------------------------+
-```
+**File:** `src/components/PdfAutoPlay.tsx`
 
-### 3. New Component: VideoPlayerView
+- Timer-based page advancement
+- User sets interval: 5s, 10s, 15s, 30s, 60s (or custom)
+- Play/Pause/Stop controls
+- Progress bar showing time until next page
+- Keyboard shortcuts: Space to pause/resume, arrow keys to skip
 
-**File:** `src/components/VideoPlayerView.tsx`
+### 4. AI Chat Sidebar
 
-Features:
-- Embedded YouTube iframe player (using YouTube IFrame API)
-- Player controls exposed to React
-- Current time display (live)
-- Buttons:
-  - **"Set Start"** → captures current time as start
-  - **"Set End"** → captures current time as end
-- Quick assignment dropdowns (Exam → Subject → Topic → Sub-Topic)
-- Create clip button
+**File:** `src/components/PdfChatSidebar.tsx`
 
-```text
-+--------------------------------------------------+
-|  [Back]  Lecture 5: French Revolution            |
-+--------------------------------------------------+
-|                                                  |
-|           +------------------------+             |
-|           |                        |             |
-|           |   YouTube Player       |             |
-|           |   (embedded iframe)    |             |
-|           |                        |             |
-|           +------------------------+             |
-|                                                  |
-|   Current: 15:42                                 |
-|   [Set Start: --:--]    [Set End: --:--]         |
-|                                                  |
-|   Timeline: 12:30 ------[====]------ 18:45       |
-|                                                  |
-+--------------------------------------------------+
-|   Assign to:                                     |
-|   Exam: [UPSC v]  Subject: [History v]           |
-|   Topic: [Modern v]  Sub-Topic: [French Rev v]   |
-|                                                  |
-|   Label: [Best explanation of causes______]      |
-|   Type: [Primary] [Supplementary]                |
-|                                                  |
-|   [Add Clip to Sub-Topic]                        |
-+--------------------------------------------------+
-```
+Uses Lovable AI (already configured, no extra API key needed):
+- Extracts text from current page using pdf.js
+- Sends page text to AI for summarization/Q&A
+- Quick action buttons: "Summarize this page", "Explain in simple terms", "Key points"
+- Full chat history within the session
 
-### 4. YouTube IFrame API Integration
+**Backend:** `supabase/functions/pdf-chat/index.ts`
+- Edge function that calls Lovable AI gateway
+- Streaming responses for real-time feel
+- System prompt optimized for educational content analysis
 
-**File:** `src/hooks/useYouTubePlayer.ts`
+### 5. Navigation Updates
 
-Custom hook for YouTube player control:
-- Load YouTube IFrame API dynamically
-- Get current time, duration, play/pause state
-- Seek to specific time
-- Event callbacks (onReady, onStateChange)
-
-### 5. Update Navigation & Routing
-
-**File:** `src/pages/Index.tsx`
-
-Add new views:
-```typescript
-type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic' 
-              | 'playlist-browser' | 'video-player';
-```
-
-**File:** `src/stores/studyStore.ts`
-
-Add state for:
-- `selectedSourceId` - which playlist is being browsed
-- `selectedVideoForPlayer` - which video is in the player
-
-### 6. Update Source Library
-
-**File:** `src/components/SourceLibraryView.tsx`
-
-Change "Open" button:
-- Old: `window.open(youtubeUrl)` → Opens YouTube
-- New: Navigate to Playlist Browser View within app
-
-Add "Browse Videos" button that opens in-app playlist browser.
+- Add "PDF Reader" to sidebar navigation
+- New view type: `pdf-reader`
+- PDF upload entry point from sidebar or a dedicated section
 
 ---
 
 ## Technical Details
 
-### YouTube Data API Setup
+### PDF.js Setup
 
-1. Need YouTube Data API v3 key
-2. Store as secret: `YOUTUBE_API_KEY`
-3. Edge function calls: `GET https://www.googleapis.com/youtube/v3/playlistItems`
-
-### Video Player Component
-
-Using YouTube IFrame Player API:
-```typescript
-// Load API
-const tag = document.createElement('script');
-tag.src = 'https://www.youtube.com/iframe_api';
-
-// Create player
-new YT.Player('player', {
-  videoId: 'VIDEO_ID',
-  events: {
-    onReady: onPlayerReady,
-    onStateChange: onPlayerStateChange
-  }
-});
-
-// Get current time
-player.getCurrentTime(); // returns seconds
-```
-
-### Workflow Summary
+New dependency: `pdfjs-dist` (Mozilla's PDF rendering library)
 
 ```text
-1. User opens Source Library
-2. Clicks "Browse" on a saved playlist
-3. PlaylistBrowserView shows all videos (fetched via edge function)
-4. User clicks a video
-5. VideoPlayerView opens with embedded player
-6. User watches, clicks "Set Start" at 12:30
-7. User continues, clicks "Set End" at 18:45
-8. User selects Exam/Subject/Topic/Sub-Topic from dropdowns
-9. Clicks "Add Clip"
-10. Clip saved, user can continue adding more or go back
+- Load PDF from File input (no server upload)
+- getPage(pageNumber) -> render to canvas
+- getTextContent() -> extract text for AI chat
+- Thumbnails: render each page at small scale
 ```
+
+### Auto-Play Logic
+
+```text
+1. User sets interval (e.g., 10 seconds)
+2. Timer starts counting down
+3. When timer hits 0 -> advance to next page, reset timer
+4. User can pause/resume/stop anytime
+5. Stops automatically on last page
+```
+
+### AI Chat Flow
+
+```text
+1. User clicks "Summarize" or types question
+2. Current page text extracted via pdf.js getTextContent()
+3. Text + user question sent to edge function
+4. Edge function calls Lovable AI gateway (streaming)
+5. Response streamed back to chat UI
+```
+
+### Storage Strategy
+
+- PDF file: **Browser memory only** (no cloud upload)
+- Chat history: **Session only** (lost on refresh)
+- No database tables needed
+- No storage buckets needed
+- **Cost: Zero**
 
 ---
 
@@ -209,33 +153,25 @@ player.getCurrentTime(); // returns seconds
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `supabase/functions/youtube-playlist/index.ts` | Create | Fetch playlist videos from YouTube API |
-| `src/components/PlaylistBrowserView.tsx` | Create | Display videos from a playlist |
-| `src/components/VideoPlayerView.tsx` | Create | Embedded player with clip creation |
-| `src/hooks/useYouTubePlayer.ts` | Create | YouTube IFrame API integration |
-| `src/stores/studyStore.ts` | Modify | Add selectedSourceId, selectedVideoForPlayer |
-| `src/pages/Index.tsx` | Modify | Add new view types |
-| `src/components/SourceLibraryView.tsx` | Modify | Add "Browse" button |
-| `src/components/Sidebar.tsx` | Modify | Navigation updates |
+| `src/components/PdfReaderView.tsx` | Create | Main PDF viewer with 3-panel layout |
+| `src/components/PdfAutoPlay.tsx` | Create | Auto-play controls and timer |
+| `src/components/PdfChatSidebar.tsx` | Create | AI chat panel for PDF Q&A |
+| `supabase/functions/pdf-chat/index.ts` | Create | Edge function for AI chat |
+| `src/pages/Index.tsx` | Modify | Add pdf-reader view |
+| `src/components/Sidebar.tsx` | Modify | Add PDF Reader nav item |
+| `src/stores/studyStore.ts` | Modify | Add minimal PDF state |
 
----
-
-## Prerequisites
-
-Before implementation, I'll need to:
-1. Ask you to provide a YouTube Data API key (free from Google Cloud Console)
-2. Store it as a secret in the project
+### Dependencies to Add
+- `pdfjs-dist` - Mozilla's PDF rendering engine
 
 ---
 
 ## Summary
 
-Ye solution tumhe allow karega:
-- Playlist ke videos **apni app mein** dekhna
-- Video **embedded player** mein play karna
-- **Click-to-set** timestamps (start/end)
-- **Instantly assign** to Exam/Subject/Topic/Sub-Topic
-- Fast daily workflow without leaving the app
-
-Approve karo toh main implementation shuru karta hoon!
+- PDF opens **locally in browser** (no cloud storage, no cost)
+- Page thumbnails on left, full page in center, AI chat on right
+- Auto-play mode with **your control** over timing
+- AI can summarize, explain, answer questions about any page
+- Works with PDFs of any size (1000+ pages)
+- All free - uses Lovable AI which is already configured
 
