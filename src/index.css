@@ -74,12 +74,12 @@
 
     /* Sidebar */
     --sidebar-background: 240 10% 5%;
-    --sidebar-foreground: 0 0% 9%;
+    --sidebar-foreground: 0 0% 90%;
     --sidebar-primary: 161 93% 30%;
     --sidebar-primary-foreground: 151 80% 95%;
-    --sidebar-accent: 0 0% 32%;
+    --sidebar-accent: 240 8% 16%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 83%;
+    --sidebar-border: 240 8% 18%;
     --sidebar-ring: 161 93% 30%;
 
     /* Gradients */
