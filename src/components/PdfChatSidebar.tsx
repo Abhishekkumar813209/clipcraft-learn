@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, FileText, Lightbulb, X, MessageSquare } from 'lucide-react';
+import { Send, Sparkles, FileText, Lightbulb, X, MessageSquare, Languages, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ReactMarkdown from 'react-markdown';
@@ -14,11 +14,13 @@ interface PdfChatSidebarProps {
   pageText: string;
   currentPage: number;
   onClose: () => void;
+  onTranslate?: () => void;
+  onQuiz?: () => void;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
-export function PdfChatSidebar({ pageText, currentPage, onClose }: PdfChatSidebarProps) {
+export function PdfChatSidebar({ pageText, currentPage, onClose, onTranslate, onQuiz }: PdfChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -134,6 +136,16 @@ export function PdfChatSidebar({ pageText, currentPage, onClose }: PdfChatSideba
         <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => quickAction('List the key points from this page')}>
           <FileText className="h-3 w-3 mr-1" /> Key Points
         </Button>
+        {onTranslate && (
+          <Button size="sm" variant="outline" className="text-xs h-7" onClick={onTranslate}>
+            <Languages className="h-3 w-3 mr-1" /> हिंदी में समझाओ
+          </Button>
+        )}
+        {onQuiz && (
+          <Button size="sm" variant="outline" className="text-xs h-7" onClick={onQuiz}>
+            <Brain className="h-3 w-3 mr-1" /> Quiz Me
+          </Button>
+        )}
       </div>
 
       {/* Messages */}

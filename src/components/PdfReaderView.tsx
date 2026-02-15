@@ -1,13 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
+import { PdfQuizPanel } from './PdfQuizPanel';
+import ReactMarkdown from 'react-markdown';
+import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
 interface PdfReaderViewProps {
   onBack: () => void;
@@ -26,7 +30,17 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isRendering, setIsRendering] = useState(false);
 
-  // Render a page to canvas
+  // Translation state
+  const [translatedText, setTranslatedText] = useState<Map<number, string>>(new Map());
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [activeLanguage, setActiveLanguage] = useState<'english' | 'hindi'>('english');
+
+  // Quiz state
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
+  const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
+
   const renderPage = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, pageNum: number, scale: number) => {
     if (!mainCanvasRef.current || isRendering) return;
     setIsRendering(true);
@@ -38,8 +52,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
       canvas.width = viewport.width;
       canvas.height = viewport.height;
       await page.render({ canvasContext: ctx, viewport }).promise;
-
-      // Extract text
       const textContent = await page.getTextContent();
       const text = textContent.items.map((item: any) => item.str).join(' ');
       setPageText(text);
@@ -49,7 +61,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     setIsRendering(false);
   }, [isRendering]);
 
-  // Render thumbnail
   const renderThumbnail = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, pageNum: number) => {
     try {
       const page = await doc.getPage(pageNum);
@@ -65,7 +76,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     }
   }, []);
 
-  // Load PDF file
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -76,11 +86,12 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     setTotalPages(doc.numPages);
     setCurrentPage(1);
     setThumbnails(new Map());
+    setTranslatedText(new Map());
+    setShowTranslation(false);
+    setActiveLanguage('english');
 
-    // Render first page
     await renderPage(doc, 1, zoom);
 
-    // Generate thumbnails lazily (first 50, then rest)
     const thumbMap = new Map<number, string>();
     const batch = Math.min(doc.numPages, 20);
     for (let i = 1; i <= batch; i++) {
@@ -90,7 +101,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     }
     setThumbnails(new Map(thumbMap));
 
-    // Remaining thumbnails in background
     if (doc.numPages > batch) {
       (async () => {
         for (let i = batch + 1; i <= doc.numPages; i++) {
@@ -103,13 +113,96 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     }
   };
 
-  // Re-render on page/zoom change
   useEffect(() => {
     if (pdfDoc) renderPage(pdfDoc, currentPage, zoom);
   }, [currentPage, zoom, pdfDoc]);
 
+  // When page changes, switch back to English if no cached translation
+  useEffect(() => {
+    if (showTranslation && !translatedText.has(currentPage)) {
+      setShowTranslation(false);
+      setActiveLanguage('english');
+    }
+  }, [currentPage]);
+
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
+  // Translation handler
+  const handleTranslateToggle = async () => {
+    if (showTranslation) {
+      setShowTranslation(false);
+      setActiveLanguage('english');
+      return;
+    }
+
+    // Check cache
+    if (translatedText.has(currentPage)) {
+      setShowTranslation(true);
+      setActiveLanguage('hindi');
+      return;
+    }
+
+    setIsTranslating(true);
+    try {
+      const resp = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ action: 'translate', pageText }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: 'Translation failed' }));
+        toast.error(err.error || 'Translation failed');
+        setIsTranslating(false);
+        return;
+      }
+
+      const data = await resp.json();
+      setTranslatedText(prev => new Map(prev).set(currentPage, data.translation));
+      setShowTranslation(true);
+      setActiveLanguage('hindi');
+    } catch {
+      toast.error('Translation failed');
+    }
+    setIsTranslating(false);
+  };
+
+  // Quiz handler
+  const handleQuiz = async () => {
+    setIsLoadingQuiz(true);
+    try {
+      const resp = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ action: 'quiz', pageText, language: activeLanguage }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: 'Quiz generation failed' }));
+        toast.error(err.error || 'Quiz generation failed');
+        setIsLoadingQuiz(false);
+        return;
+      }
+
+      const data = await resp.json();
+      if (data.questions?.length) {
+        setQuizQuestions(data.questions);
+        setShowQuiz(true);
+      } else {
+        toast.error('No questions generated');
+      }
+    } catch {
+      toast.error('Quiz generation failed');
+    }
+    setIsLoadingQuiz(false);
   };
 
   if (!pdfDoc) {
@@ -121,7 +214,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </div>
           <h2 className="text-2xl font-display font-bold">PDF Reader</h2>
           <p className="text-muted-foreground max-w-md">
-            Upload any PDF to read it with AI-powered summaries, auto-play mode, and page thumbnails. 
+            Upload any PDF to read it with AI-powered summaries, auto-play mode, and page thumbnails.
             Your PDF stays in your browser — zero cloud storage cost.
           </p>
         </div>
@@ -156,6 +249,31 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             <RotateCcw className="h-4 w-4" />
           </Button>
         </div>
+
+        {/* Hindi toggle */}
+        <Button
+          variant={showTranslation ? 'default' : 'outline'}
+          size="sm"
+          onClick={handleTranslateToggle}
+          disabled={isTranslating}
+          className="min-w-[80px]"
+        >
+          {isTranslating ? (
+            <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
+          ) : (
+            <><Languages className="h-4 w-4 mr-1" /> {showTranslation ? 'English' : 'हिंदी'}</>
+          )}
+        </Button>
+
+        {/* Quiz Me */}
+        <Button variant="outline" size="sm" onClick={handleQuiz} disabled={isLoadingQuiz}>
+          {isLoadingQuiz ? (
+            <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
+          ) : (
+            <><Brain className="h-4 w-4 mr-1" /> Quiz Me</>
+          )}
+        </Button>
+
         <Button variant={showChat ? 'secondary' : 'outline'} size="sm" onClick={() => setShowChat(!showChat)}>
           <MessageSquare className="h-4 w-4 mr-1" /> AI Chat
         </Button>
@@ -193,18 +311,47 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         {/* Main page view */}
         <ScrollArea className="flex-1">
           <div className="flex items-start justify-center p-4 min-h-full">
-            <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+            {showTranslation && translatedText.has(currentPage) ? (
+              <div className="max-w-2xl w-full bg-card border border-border rounded-lg shadow-lg p-6">
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
+                  <Languages className="h-5 w-5 text-primary" />
+                  <span className="font-semibold text-sm">हिंदी अनुवाद — पृष्ठ {currentPage}</span>
+                </div>
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <ReactMarkdown>{translatedText.get(currentPage)!}</ReactMarkdown>
+                </div>
+              </div>
+            ) : (
+              <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+            )}
           </div>
         </ScrollArea>
 
         {/* AI Chat sidebar */}
         {showChat && (
-          <PdfChatSidebar pageText={pageText} currentPage={currentPage} onClose={() => setShowChat(false)} />
+          <PdfChatSidebar
+            pageText={pageText}
+            currentPage={currentPage}
+            onClose={() => setShowChat(false)}
+            onTranslate={handleTranslateToggle}
+            onQuiz={handleQuiz}
+          />
         )}
       </div>
 
       {/* Bottom auto-play controls */}
       <PdfAutoPlay currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+
+      {/* Quiz modal */}
+      {showQuiz && quizQuestions.length > 0 && (
+        <PdfQuizPanel
+          questions={quizQuestions}
+          currentPage={currentPage}
+          language={activeLanguage}
+          pageText={pageText}
+          onClose={() => setShowQuiz(false)}
+        />
+      )}
     </div>
   );
 }
