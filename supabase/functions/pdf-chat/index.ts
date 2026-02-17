@@ -20,15 +20,9 @@ serve(async (req) => {
 
     // --- TRANSLATE action (non-streaming) ---
     if (action === "translate") {
-      const systemPrompt = `You are an expert Hindi translator and educator. Translate the following English text into Hindi. After translating, also provide a simplified explanation in Hindi so a student can understand easily.
+      const systemPrompt = `Translate the following text into simple, easy-to-understand Hindi. Stay strictly within the content of the text — do not add extra information, headings, or elaborate breakdowns. If a sentence is complex, rephrase it simply in Hindi. Just give the translated text with brief one-line clarification only where absolutely needed.
 
-Format your response in Markdown:
-1. First the Hindi translation under a "## अनुवाद" heading
-2. Then a simplified explanation under a "## सरल व्याख्या" heading
-
-Keep the explanation student-friendly, use simple Hindi words, and break down complex concepts.
-
-Text to translate:
+Text:
 ${pageText || "No text available."}`;
 
       const response = await fetch(AI_URL, {
