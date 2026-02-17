@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
+import * as pdfjsLib from 'pdfjs-dist';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -13,6 +14,8 @@ interface Message {
 interface PdfChatSidebarProps {
   pageText: string;
   currentPage: number;
+  totalPages: number;
+  pdfDoc: pdfjsLib.PDFDocumentProxy | null;
   onClose: () => void;
   onTranslate?: () => void;
   onQuiz?: () => void;
@@ -20,17 +23,31 @@ interface PdfChatSidebarProps {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
-export function PdfChatSidebar({ pageText, currentPage, onClose, onTranslate, onQuiz }: PdfChatSidebarProps) {
+async function extractTextFromPages(doc: pdfjsLib.PDFDocumentProxy, from: number, to: number): Promise<string> {
+  const texts: string[] = [];
+  for (let i = from; i <= to; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    const t = content.items.map((item: any) => item.str).join(' ');
+    texts.push(`--- Page ${i} ---\n${t}`);
+  }
+  return texts.join('\n\n');
+}
+
+export function PdfChatSidebar({ pageText, currentPage, totalPages, pdfDoc, onClose, onTranslate, onQuiz }: PdfChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showRangeSelector, setShowRangeSelector] = useState(false);
+  const [rangeFrom, setRangeFrom] = useState(1);
+  const [rangeTo, setRangeTo] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const streamChat = async (allMessages: Message[]) => {
+  const streamChat = async (allMessages: Message[], overridePageText?: string) => {
     setIsLoading(true);
     let assistantSoFar = '';
 
@@ -52,7 +69,7 @@ export function PdfChatSidebar({ pageText, currentPage, onClose, onTranslate, on
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: allMessages, pageText }),
+        body: JSON.stringify({ messages: allMessages, pageText: overridePageText || pageText }),
       });
 
       if (!resp.ok) {
@@ -109,6 +126,36 @@ export function PdfChatSidebar({ pageText, currentPage, onClose, onTranslate, on
     await streamChat(newMessages);
   };
 
+  const handleSummarizeClick = () => {
+    setShowRangeSelector(true);
+    setRangeFrom(currentPage);
+    setRangeTo(Math.min(currentPage + 4, totalPages));
+  };
+
+  const handleRangeSummarize = async () => {
+    if (!pdfDoc) return;
+    const from = Math.max(1, Math.min(rangeFrom, totalPages));
+    const to = Math.max(from, Math.min(rangeTo, totalPages));
+
+    if (to - from > 30) {
+      toast.error('Max 30 pages at once');
+      return;
+    }
+
+    setShowRangeSelector(false);
+    const prompt = from === to
+      ? `Summarize page ${from} in bullet points`
+      : `Summarize pages ${from}-${to} in bullet points`;
+
+    const userMsg: Message = { role: 'user', content: prompt };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
+
+    toast.info(`Extracting text from ${to - from + 1} page(s)...`);
+    const combinedText = await extractTextFromPages(pdfDoc, from, to);
+    await streamChat(newMessages, combinedText);
+  };
+
   const quickAction = (prompt: string) => sendMessage(prompt);
 
   return (
@@ -126,25 +173,57 @@ export function PdfChatSidebar({ pageText, currentPage, onClose, onTranslate, on
       </div>
 
       {/* Quick Actions */}
-      <div className="p-2 border-b border-border flex flex-wrap gap-1.5">
-        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => quickAction('Summarize this page in bullet points')}>
-          <Sparkles className="h-3 w-3 mr-1" /> Summarize
-        </Button>
-        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => quickAction('Explain this page in simple terms')}>
-          <Lightbulb className="h-3 w-3 mr-1" /> Explain
-        </Button>
-        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => quickAction('List the key points from this page')}>
-          <FileText className="h-3 w-3 mr-1" /> Key Points
-        </Button>
-        {onTranslate && (
-          <Button size="sm" variant="outline" className="text-xs h-7" onClick={onTranslate}>
-            <Languages className="h-3 w-3 mr-1" /> हिंदी में समझाओ
+      <div className="p-2 border-b border-border space-y-2">
+        <div className="flex flex-wrap gap-1.5">
+          <Button size="sm" variant="outline" className="text-xs h-7" onClick={handleSummarizeClick}>
+            <Sparkles className="h-3 w-3 mr-1" /> Summarize
           </Button>
-        )}
-        {onQuiz && (
-          <Button size="sm" variant="outline" className="text-xs h-7" onClick={onQuiz}>
-            <Brain className="h-3 w-3 mr-1" /> Quiz Me
+          <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => quickAction('Explain this page in simple terms')}>
+            <Lightbulb className="h-3 w-3 mr-1" /> Explain
           </Button>
+          <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => quickAction('List the key points from this page')}>
+            <FileText className="h-3 w-3 mr-1" /> Key Points
+          </Button>
+          {onTranslate && (
+            <Button size="sm" variant="outline" className="text-xs h-7" onClick={onTranslate}>
+              <Languages className="h-3 w-3 mr-1" /> हिंदी में समझाओ
+            </Button>
+          )}
+          {onQuiz && (
+            <Button size="sm" variant="outline" className="text-xs h-7" onClick={onQuiz}>
+              <Brain className="h-3 w-3 mr-1" /> Quiz Me
+            </Button>
+          )}
+        </div>
+
+        {/* Page range selector */}
+        {showRangeSelector && (
+          <div className="flex items-center gap-1.5 bg-muted rounded-md p-2">
+            <span className="text-xs text-muted-foreground whitespace-nowrap">Pages</span>
+            <input
+              type="number"
+              min={1}
+              max={totalPages}
+              value={rangeFrom}
+              onChange={(e) => setRangeFrom(Number(e.target.value))}
+              className="w-12 bg-background border border-border rounded px-1.5 py-0.5 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+            />
+            <span className="text-xs text-muted-foreground">to</span>
+            <input
+              type="number"
+              min={1}
+              max={totalPages}
+              value={rangeTo}
+              onChange={(e) => setRangeTo(Number(e.target.value))}
+              className="w-12 bg-background border border-border rounded px-1.5 py-0.5 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+            />
+            <Button size="sm" className="text-xs h-6 px-2" onClick={handleRangeSummarize} disabled={isLoading}>
+              Go
+            </Button>
+            <Button size="sm" variant="ghost" className="text-xs h-6 px-1" onClick={() => setShowRangeSelector(false)}>
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
         )}
       </div>
 

@@ -25,8 +25,8 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
               <GraduationCap className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-display font-bold text-lg text-foreground">StudyBrain</h1>
-              <p className="text-xs text-muted-foreground">Clip-first revision</p>
+            <h1 className="font-display font-bold text-lg text-sidebar-foreground">StudyBrain</h1>
+              <p className="text-xs text-sidebar-foreground/60">Clip-first revision</p>
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
         {/* Exams List */}
         <div className="flex-1 flex flex-col min-h-0">
           <div className="px-4 py-3 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
               Your Exams
             </span>
             <Button 
@@ -78,7 +78,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
           <ScrollArea className="flex-1 px-2">
             <div className="space-y-1 pb-4">
               {exams.length === 0 ? (
-                <p className="text-sm text-muted-foreground px-2 py-4">
+                <p className="text-sm text-sidebar-foreground/60 px-2 py-4">
                   No exams yet. Create one to get started!
                 </p>
               ) : (
@@ -108,7 +108,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-sidebar-border">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-sidebar-foreground">
             <Settings className="h-4 w-4" />
             Settings
           </Button>

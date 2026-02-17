@@ -332,6 +332,8 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           <PdfChatSidebar
             pageText={pageText}
             currentPage={currentPage}
+            totalPages={totalPages}
+            pdfDoc={pdfDoc}
             onClose={() => setShowChat(false)}
             onTranslate={handleTranslateToggle}
             onQuiz={handleQuiz}
