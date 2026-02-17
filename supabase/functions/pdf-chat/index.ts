@@ -20,10 +20,24 @@ serve(async (req) => {
 
     // --- TRANSLATE action (non-streaming) ---
     if (action === "translate") {
-      const systemPrompt = `Translate the following text into simple, easy-to-understand Hindi. Stay strictly within the content of the text — do not add extra information, headings, or elaborate breakdowns. If a sentence is complex, rephrase it simply in Hindi. Just give the translated text with brief one-line clarification only where absolutely needed.
+      let systemPrompt = '';
+      const targetLang = language || 'hindi';
+      
+      if (targetLang === 'hinglish') {
+        systemPrompt = `Convert the following text into Hinglish (Hindi written in Roman/English script mixed with English words as naturally spoken). Stay strictly within the content of the text — do not add extra information or headings. Keep it casual and easy to read, like how students actually talk. Just give the converted text.
 
 Text:
 ${pageText || "No text available."}`;
+      } else {
+        systemPrompt = `Translate the following text into simple, easy-to-understand Hindi. Stay strictly within the content of the text — do not add extra information, headings, or elaborate breakdowns. If a sentence is complex, rephrase it simply in Hindi. Just give the translated text with brief one-line clarification only where absolutely needed.
+
+Text:
+${pageText || "No text available."}`;
+      }
+
+      const userPrompt = targetLang === 'hinglish' 
+        ? "Convert this page into Hinglish." 
+        : "Translate this page into Hindi.";
 
       const response = await fetch(AI_URL, {
         method: "POST",
@@ -35,7 +49,7 @@ ${pageText || "No text available."}`;
           model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: "Please translate and explain this page in Hindi." },
+            { role: "user", content: userPrompt },
           ],
           stream: false,
         }),
@@ -57,7 +71,7 @@ ${pageText || "No text available."}`;
 
     // --- QUIZ action (non-streaming, tool calling for structured output) ---
     if (action === "quiz") {
-      const lang = language === "hindi" ? "Hindi" : "English";
+      const lang = language === "hindi" ? "Hindi" : language === "hinglish" ? "Hinglish (Hindi in Roman script mixed with English)" : "English";
       const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly 4 questions to test the student's understanding. Mix question types: some MCQ (with 4 options) and some short-answer.
 
 Generate questions in ${lang}.

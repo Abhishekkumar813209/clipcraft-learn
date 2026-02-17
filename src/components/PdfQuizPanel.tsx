@@ -16,7 +16,7 @@ interface QuizQuestion {
 interface PdfQuizPanelProps {
   questions: QuizQuestion[];
   currentPage: number;
-  language: 'hindi' | 'english';
+  language: 'hindi' | 'english' | 'hinglish';
   pageText: string;
   onClose: () => void;
 }
