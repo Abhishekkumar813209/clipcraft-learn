@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2 } from 'lucide-react';
+import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
 import { PdfQuizPanel } from './PdfQuizPanel';
@@ -12,6 +13,14 @@ import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
+
+type LangOption = 'english' | 'hindi' | 'hinglish';
+
+const LANG_LABELS: Record<LangOption, string> = {
+  english: 'English',
+  hindi: 'हिंदी',
+  hinglish: 'Hinglish',
+};
 
 interface PdfReaderViewProps {
   onBack: () => void;
@@ -30,11 +39,11 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isRendering, setIsRendering] = useState(false);
 
-  // Translation state
-  const [translatedText, setTranslatedText] = useState<Map<number, string>>(new Map());
+  // Translation state — cache keyed by "page-lang"
+  const [translatedText, setTranslatedText] = useState<Map<string, string>>(new Map());
   const [showTranslation, setShowTranslation] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
-  const [activeLanguage, setActiveLanguage] = useState<'english' | 'hindi'>('english');
+  const [activeLanguage, setActiveLanguage] = useState<LangOption>('english');
 
   // Quiz state
   const [showQuiz, setShowQuiz] = useState(false);
@@ -117,9 +126,10 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     if (pdfDoc) renderPage(pdfDoc, currentPage, zoom);
   }, [currentPage, zoom, pdfDoc]);
 
-  // When page changes, switch back to English if no cached translation
+  // When page changes, switch back to English if no cached translation for current lang
   useEffect(() => {
-    if (showTranslation && !translatedText.has(currentPage)) {
+    const cacheKey = `${currentPage}-${activeLanguage}`;
+    if (showTranslation && !translatedText.has(cacheKey)) {
       setShowTranslation(false);
       setActiveLanguage('english');
     }
@@ -130,21 +140,24 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   };
 
   // Translation handler
-  const handleTranslateToggle = async () => {
-    if (showTranslation) {
+  const handleLanguageSelect = async (lang: LangOption) => {
+    if (lang === 'english') {
       setShowTranslation(false);
       setActiveLanguage('english');
       return;
     }
 
+    const cacheKey = `${currentPage}-${lang}`;
+
     // Check cache
-    if (translatedText.has(currentPage)) {
+    if (translatedText.has(cacheKey)) {
+      setActiveLanguage(lang);
       setShowTranslation(true);
-      setActiveLanguage('hindi');
       return;
     }
 
     setIsTranslating(true);
+    setActiveLanguage(lang);
     try {
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
@@ -152,22 +165,23 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ action: 'translate', pageText }),
+        body: JSON.stringify({ action: 'translate', pageText, language: lang }),
       });
 
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({ error: 'Translation failed' }));
         toast.error(err.error || 'Translation failed');
         setIsTranslating(false);
+        setActiveLanguage('english');
         return;
       }
 
       const data = await resp.json();
-      setTranslatedText(prev => new Map(prev).set(currentPage, data.translation));
+      setTranslatedText(prev => new Map(prev).set(cacheKey, data.translation));
       setShowTranslation(true);
-      setActiveLanguage('hindi');
     } catch {
       toast.error('Translation failed');
+      setActiveLanguage('english');
     }
     setIsTranslating(false);
   };
@@ -204,6 +218,8 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     }
     setIsLoadingQuiz(false);
   };
+
+  const translationCacheKey = `${currentPage}-${activeLanguage}`;
 
   if (!pdfDoc) {
     return (
@@ -250,20 +266,34 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </Button>
         </div>
 
-        {/* Hindi toggle */}
-        <Button
-          variant={showTranslation ? 'default' : 'outline'}
-          size="sm"
-          onClick={handleTranslateToggle}
-          disabled={isTranslating}
-          className="min-w-[80px]"
-        >
-          {isTranslating ? (
-            <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
-          ) : (
-            <><Languages className="h-4 w-4 mr-1" /> {showTranslation ? 'English' : 'हिंदी'}</>
-          )}
-        </Button>
+        {/* Language dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant={activeLanguage !== 'english' ? 'default' : 'outline'}
+              size="sm"
+              disabled={isTranslating}
+              className="min-w-[100px]"
+            >
+              {isTranslating ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
+              ) : (
+                <><Languages className="h-4 w-4 mr-1" /> {LANG_LABELS[activeLanguage]} <ChevronDown className="h-3 w-3 ml-1" /></>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleLanguageSelect('english')}>
+              English
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLanguageSelect('hindi')}>
+              हिंदी (Hindi)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLanguageSelect('hinglish')}>
+              Hinglish
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Quiz Me */}
         <Button variant="outline" size="sm" onClick={handleQuiz} disabled={isLoadingQuiz}>
@@ -311,14 +341,16 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         {/* Main page view */}
         <ScrollArea className="flex-1">
           <div className="flex items-start justify-center p-4 min-h-full">
-            {showTranslation && translatedText.has(currentPage) ? (
+            {showTranslation && translatedText.has(translationCacheKey) ? (
               <div className="max-w-2xl w-full bg-card border border-border rounded-lg shadow-lg p-6">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
                   <Languages className="h-5 w-5 text-primary" />
-                  <span className="font-semibold text-sm">हिंदी अनुवाद — पृष्ठ {currentPage}</span>
+                  <span className="font-semibold text-sm">
+                    {activeLanguage === 'hindi' ? 'हिंदी अनुवाद' : 'Hinglish'} — {activeLanguage === 'hindi' ? 'पृष्ठ' : 'Page'} {currentPage}
+                  </span>
                 </div>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <ReactMarkdown>{translatedText.get(currentPage)!}</ReactMarkdown>
+                  <ReactMarkdown>{translatedText.get(translationCacheKey)!}</ReactMarkdown>
                 </div>
               </div>
             ) : (
@@ -335,7 +367,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             totalPages={totalPages}
             pdfDoc={pdfDoc}
             onClose={() => setShowChat(false)}
-            onTranslate={handleTranslateToggle}
+            onTranslate={() => handleLanguageSelect(activeLanguage === 'english' ? 'hindi' : 'english')}
             onQuiz={handleQuiz}
           />
         )}
