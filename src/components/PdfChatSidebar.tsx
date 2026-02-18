@@ -19,6 +19,8 @@ interface PdfChatSidebarProps {
   onClose: () => void;
   onTranslate?: () => void;
   onQuiz?: () => void;
+  /** Called once on mount so the parent can trigger a summarize from outside */
+  onRegisterTrigger?: (fn: (combinedText: string, prompt: string) => void) => void;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
@@ -34,7 +36,7 @@ async function extractTextFromPages(doc: pdfjsLib.PDFDocumentProxy, from: number
   return texts.join('\n\n');
 }
 
-export function PdfChatSidebar({ pageText, currentPage, totalPages, pdfDoc, onClose, onTranslate, onQuiz }: PdfChatSidebarProps) {
+export function PdfChatSidebar({ pageText, currentPage, totalPages, pdfDoc, onClose, onTranslate, onQuiz, onRegisterTrigger }: PdfChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +48,18 @@ export function PdfChatSidebar({ pageText, currentPage, totalPages, pdfDoc, onCl
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Expose an external trigger so the top-bar Summarize button can inject a prompt
+  useEffect(() => {
+    if (!onRegisterTrigger) return;
+    onRegisterTrigger(async (combinedText: string, prompt: string) => {
+      const userMsg: Message = { role: 'user', content: prompt };
+      const newMessages = [...messages, userMsg];
+      setMessages(newMessages);
+      await streamChat(newMessages, combinedText);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRegisterTrigger, messages]);
 
   const streamChat = async (allMessages: Message[], overridePageText?: string) => {
     setIsLoading(true);
