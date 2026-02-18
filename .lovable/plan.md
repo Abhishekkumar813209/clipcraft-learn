@@ -1,54 +1,89 @@
 
+# Two New Features: Side-by-Side Bilingual View + Summary in Top Bar
 
-# Three Fixes: Simpler Hindi, Summary Page Range, Sidebar Visibility
+## What You're Getting
 
-## 1. Simpler Hindi Translation
+### 1. Side-by-Side Bilingual Reading Mode
+When you pick Hindi or Hinglish from the language dropdown, instead of replacing the PDF canvas, the page splits into two columns:
+- **Left:** Original PDF canvas (English)
+- **Right:** Hindi / Hinglish translation
 
-**Problem:** The current translation prompt asks for detailed explanations, headings, and breakdowns -- way more than what's on the page. 
+This lets you read both simultaneously to improve vocabulary and comprehension. All combinations are supported — you see the original PDF alongside whatever language you choose.
 
-**Fix:** Rewrite the system prompt in `supabase/functions/pdf-chat/index.ts` to:
-- Only translate the page content into simple Hindi
-- Add a one-line contextual explanation if needed
-- No extra headings, no elaborate breakdowns
-- Strictly stick to what's on the page
-
-**File:** `supabase/functions/pdf-chat/index.ts` (lines 22-32)
-
-New prompt will be something like:
-> "Translate the following text into simple, easy-to-understand Hindi. Stay strictly within the content of the text -- do not add extra information. If a sentence is complex, rephrase it simply. No headings, just the translated text with brief clarification where needed."
+### 2. Summary Button in Top Bar
+A "Summarize" button directly in the PDF top bar (next to Quiz Me and AI Chat), so you don't need to open the AI Chat sidebar just to summarize. Clicking it opens a compact page-range popover inline — pick From/To pages and hit Go.
 
 ---
 
-## 2. Summary with Page Range Selection
+## How It Will Look
 
-**Problem:** The "Summarize" quick action in the chat sidebar only summarizes the current page. User wants to select a page range (e.g., pages 5-12) and get a combined summary.
+```text
+Top bar:
+[ Back ] [ filename ] [ zoom - 120% + ↺ ] [ 🌐 English ▾ ] [ ✨ Summarize ] [ 🧠 Quiz Me ] [ 💬 AI Chat ] [ New PDF ]
 
-**Fix:** Add page range inputs to `PdfChatSidebar.tsx`:
-- Two small number inputs (From page / To page) that appear when clicking "Summarize"
-- When submitted, extract text from all pages in the range, combine it, and send to AI for summary
-- Need to pass `pdfDoc` reference to PdfChatSidebar so it can extract text from multiple pages
+When Hindi/Hinglish selected → top bar shows bilingual toggle:
+[ 📖 Side-by-Side ] (active) or [ 🌐 Overlay ] (single column)
 
-**Files:** 
-- `src/components/PdfChatSidebar.tsx` - Add page range UI and multi-page text extraction
-- `src/components/PdfReaderView.tsx` - Pass `pdfDoc` and `totalPages` props to PdfChatSidebar
+Main view (side-by-side mode):
++-------------------------+-------------------------+
+|  Original PDF (English) |  हिंदी / Hinglish       |
+|  [canvas renders here]  |  [translated text here] |
++-------------------------+-------------------------+
+
+Main view (overlay/single mode - existing behavior):
++-----------------------------------------------+
+|  Translated text fills the full width         |
++-----------------------------------------------+
+```
 
 ---
 
-## 3. Sidebar Button Visibility Fix
+## Implementation Details
 
-**Problem:** Some sidebar elements use `text-foreground` and `text-muted-foreground` which resolve to dark colors in light mode, but the sidebar background is always dark (`240 10% 5%`). So text becomes invisible.
+### Files to Modify
 
-Specific issues in `Sidebar.tsx`:
-- Line 28: `text-foreground` on "StudyBrain" title -- dark text on dark bg
-- Line 29: `text-muted-foreground` on subtitle -- dark text on dark bg  
-- Line 65: `text-muted-foreground` on "Your Exams" label
-- Line 111: `text-muted-foreground` on Settings button
+#### `src/components/PdfReaderView.tsx`
 
-**Fix:** Replace these with sidebar-specific color classes:
-- `text-foreground` becomes `text-sidebar-foreground` 
-- `text-muted-foreground` becomes `text-sidebar-foreground/60` (60% opacity for muted effect)
+**New state:**
+- `viewMode: 'overlay' | 'split'` — default `'split'` when a language is selected (English stays as canvas-only)
 
-**File:** `src/components/Sidebar.tsx`
+**Language dropdown change:**
+- When user picks Hindi/Hinglish → auto-switch to `split` view mode
+- Add a small secondary toggle (two icon buttons: "Split" / "Full") that appears only when a non-English language is active
+
+**Summary button in top bar:**
+- Add a `Summarize` button between zoom controls and language dropdown
+- Clicking opens an inline popover (using Radix Popover) with:
+  - "From page" number input (default: current page)
+  - "To page" number input (default: current page + 4, capped at totalPages)
+  - "Go" button that extracts text from the range and streams a summary into a result panel (either opens AI Chat sidebar automatically, or shows a mini result modal)
+- Uses the existing `extractTextFromPages` logic (same as chat sidebar) — move the function to a shared utility or duplicate it here
+
+**Split view layout:**
+- Replace the single `<ScrollArea className="flex-1">` with a flex row of two panels when `viewMode === 'split'` and a non-English language is active:
+  - Left: scrollable canvas panel (50% width)
+  - Right: scrollable markdown panel (50% width) with translated text
+- When language = English OR viewMode = 'overlay': show existing single-panel behavior
+
+#### `src/components/PdfChatSidebar.tsx`
+- No structural changes needed — Summarize is being moved to top bar
+- Keep the existing Summarize button in the sidebar too (users can still use it from there)
+- The `onTranslate` quick action button label can be updated to reflect current language state
+
+---
+
+## Summary Flow in Top Bar
+
+```text
+User clicks "Summarize"
+  → Popover opens with page range inputs
+  → User sets range (e.g. 5 to 12) and clicks Go
+  → AI Chat sidebar auto-opens (if not already open)
+  → Summary streamed into chat as an assistant message
+  → Popover closes
+```
+
+This reuses the exact same streaming chat infrastructure already in `PdfChatSidebar`. The summary result goes into the chat history naturally.
 
 ---
 
@@ -56,9 +91,7 @@ Specific issues in `Sidebar.tsx`:
 
 | File | Change |
 |------|--------|
-| `supabase/functions/pdf-chat/index.ts` | Simplify Hindi translation prompt |
-| `src/components/PdfChatSidebar.tsx` | Add page range selector for summary, accept pdfDoc prop |
-| `src/components/PdfReaderView.tsx` | Pass pdfDoc and totalPages to chat sidebar |
-| `src/components/Sidebar.tsx` | Fix text color classes to use sidebar-specific tokens |
+| `src/components/PdfReaderView.tsx` | Add `viewMode` state, split-view layout, Summary button with popover in top bar |
+| `src/components/PdfChatSidebar.tsx` | Expose a method / accept a prop to trigger a summary from outside (for the top bar summary button) |
 
-No new files. No database changes. Edge function redeploy needed for the translation prompt change.
+No edge function changes. No new components needed. No database changes.
