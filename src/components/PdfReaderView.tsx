@@ -148,6 +148,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     if (pdfDoc) renderPage(pdfDoc, currentPage, zoom);
   }, [currentPage, zoom, pdfDoc]);
 
+
   // When page changes, switch back to English if no cached translation for current lang
   useEffect(() => {
     const cacheKey = `${currentPage}-${activeLanguage}`;
@@ -475,23 +476,44 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </div>
         </ScrollArea>
 
-        {/* Main page view — split or single */}
-        {showSplitView ? (
-          // Side-by-side bilingual view
-          <div className="flex-1 flex overflow-hidden">
-            {/* Left: Original PDF canvas */}
-            <ScrollArea className="flex-1 border-r border-border">
-              <div className="flex flex-col items-center p-4 min-h-full">
+        {/* Main page view — always keep canvas in DOM to avoid re-mount loss */}
+        <div className="flex-1 flex overflow-hidden">
+
+          {/* Canvas panel — always mounted; width shrinks in split mode */}
+          <ScrollArea className={`border-r border-border transition-all ${showSplitView ? 'flex-1' : 'flex-1'} ${showOverlayTranslation ? 'hidden' : ''}`}>
+            <div className="flex flex-col items-center p-4 min-h-full">
+              {showSplitView && (
                 <div className="mb-2 flex items-center gap-1.5 self-start ml-2">
                   <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
                     🇬🇧 Original
                   </span>
                 </div>
-                <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+              )}
+              <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+            </div>
+          </ScrollArea>
+
+          {/* Overlay translation (single-column, no canvas) */}
+          {showOverlayTranslation && (
+            <ScrollArea className="flex-1">
+              <div className="flex items-start justify-center p-4 min-h-full">
+                <div className="max-w-2xl w-full bg-card border border-border rounded-lg shadow-lg p-6">
+                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
+                    <Languages className="h-5 w-5 text-primary" />
+                    <span className="font-semibold text-sm">
+                      {activeLanguage === 'hindi' ? '🇮🇳 हिंदी अनुवाद' : '🔀 Hinglish'} — Page {currentPage}
+                    </span>
+                  </div>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown>{translatedText.get(translationCacheKey)!}</ReactMarkdown>
+                  </div>
+                </div>
               </div>
             </ScrollArea>
+          )}
 
-            {/* Right: Translation */}
+          {/* Split translation panel (right side) */}
+          {showSplitView && (
             <ScrollArea className="flex-1">
               <div className="flex flex-col p-4 min-h-full">
                 <div className="mb-3 flex items-center gap-1.5">
@@ -506,29 +528,8 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
                 </div>
               </div>
             </ScrollArea>
-          </div>
-        ) : (
-          // Single column view (overlay / English)
-          <ScrollArea className="flex-1">
-            <div className="flex items-start justify-center p-4 min-h-full">
-              {showOverlayTranslation ? (
-                <div className="max-w-2xl w-full bg-card border border-border rounded-lg shadow-lg p-6">
-                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
-                    <Languages className="h-5 w-5 text-primary" />
-                    <span className="font-semibold text-sm">
-                      {activeLanguage === 'hindi' ? '🇮🇳 हिंदी अनुवाद' : '🔀 Hinglish'} — Page {currentPage}
-                    </span>
-                  </div>
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown>{translatedText.get(translationCacheKey)!}</ReactMarkdown>
-                  </div>
-                </div>
-              ) : (
-                <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
-              )}
-            </div>
-          </ScrollArea>
-        )}
+          )}
+        </div>
 
         {/* AI Chat sidebar */}
         {showChat && (
