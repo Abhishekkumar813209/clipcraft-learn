@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
 import { PdfQuizPanel } from './PdfQuizPanel';
@@ -15,12 +16,24 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
 type LangOption = 'english' | 'hindi' | 'hinglish';
+type ViewMode = 'split' | 'overlay';
 
 const LANG_LABELS: Record<LangOption, string> = {
   english: 'English',
   hindi: 'हिंदी',
   hinglish: 'Hinglish',
 };
+
+async function extractTextFromPages(doc: pdfjsLib.PDFDocumentProxy, from: number, to: number): Promise<string> {
+  const texts: string[] = [];
+  for (let i = from; i <= to; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    const t = content.items.map((item: any) => item.str).join(' ');
+    texts.push(`--- Page ${i} ---\n${t}`);
+  }
+  return texts.join('\n\n');
+}
 
 interface PdfReaderViewProps {
   onBack: () => void;
@@ -44,11 +57,20 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const [showTranslation, setShowTranslation] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
   const [activeLanguage, setActiveLanguage] = useState<LangOption>('english');
+  const [viewMode, setViewMode] = useState<ViewMode>('split');
 
   // Quiz state
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
+
+  // Summarize popover state
+  const [summarizeOpen, setSummarizeOpen] = useState(false);
+  const [sumFrom, setSumFrom] = useState(1);
+  const [sumTo, setSumTo] = useState(1);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  // ref to trigger summarize from the chat sidebar
+  const triggerSummarizeRef = useRef<((text: string, prompt: string) => void) | null>(null);
 
   const renderPage = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, pageNum: number, scale: number) => {
     if (!mainCanvasRef.current || isRendering) return;
@@ -153,6 +175,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     if (translatedText.has(cacheKey)) {
       setActiveLanguage(lang);
       setShowTranslation(true);
+      setViewMode('split');
       return;
     }
 
@@ -179,6 +202,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
       const data = await resp.json();
       setTranslatedText(prev => new Map(prev).set(cacheKey, data.translation));
       setShowTranslation(true);
+      setViewMode('split');
     } catch {
       toast.error('Translation failed');
       setActiveLanguage('english');
@@ -219,7 +243,43 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     setIsLoadingQuiz(false);
   };
 
+  // Top-bar summarize handler
+  const handleTopBarSummarize = async () => {
+    if (!pdfDoc) return;
+    const from = Math.max(1, Math.min(sumFrom, totalPages));
+    const to = Math.max(from, Math.min(sumTo, totalPages));
+
+    if (to - from > 30) {
+      toast.error('Max 30 pages at once');
+      return;
+    }
+
+    setSummarizeOpen(false);
+    setIsSummarizing(true);
+
+    // Auto-open chat sidebar
+    setShowChat(true);
+
+    try {
+      toast.info(`Extracting text from ${to - from + 1} page(s)...`);
+      const combinedText = await extractTextFromPages(pdfDoc, from, to);
+      const prompt = from === to
+        ? `Summarize page ${from} in bullet points`
+        : `Summarize pages ${from}-${to} in bullet points`;
+
+      // Use the ref callback exposed by PdfChatSidebar
+      if (triggerSummarizeRef.current) {
+        triggerSummarizeRef.current(combinedText, prompt);
+      }
+    } catch {
+      toast.error('Failed to extract text');
+    }
+    setIsSummarizing(false);
+  };
+
   const translationCacheKey = `${currentPage}-${activeLanguage}`;
+  const showSplitView = showTranslation && activeLanguage !== 'english' && viewMode === 'split' && translatedText.has(translationCacheKey);
+  const showOverlayTranslation = showTranslation && activeLanguage !== 'english' && viewMode === 'overlay' && translatedText.has(translationCacheKey);
 
   if (!pdfDoc) {
     return (
@@ -248,11 +308,13 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
       {/* Top bar */}
-      <div className="border-b border-border bg-card px-4 py-2 flex items-center gap-3">
+      <div className="border-b border-border bg-card px-4 py-2 flex items-center gap-2 flex-wrap">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
         </Button>
-        <span className="font-medium text-sm truncate flex-1">{fileName}</span>
+        <span className="font-medium text-sm truncate flex-1 min-w-0">{fileName}</span>
+
+        {/* Zoom controls */}
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom((z) => Math.max(0.5, z - 0.2))}>
             <ZoomOut className="h-4 w-4" />
@@ -273,7 +335,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
               variant={activeLanguage !== 'english' ? 'default' : 'outline'}
               size="sm"
               disabled={isTranslating}
-              className="min-w-[100px]"
+              className="min-w-[110px]"
             >
               {isTranslating ? (
                 <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
@@ -282,18 +344,92 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="bg-popover">
             <DropdownMenuItem onClick={() => handleLanguageSelect('english')}>
-              English
+              🇬🇧 English
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleLanguageSelect('hindi')}>
-              हिंदी (Hindi)
+              🇮🇳 हिंदी (Hindi)
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleLanguageSelect('hinglish')}>
-              Hinglish
+              🔀 Hinglish
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Split / Overlay toggle — only visible when a translation is active */}
+        {showTranslation && activeLanguage !== 'english' && (
+          <div className="flex items-center gap-0.5 bg-muted rounded-md p-0.5">
+            <Button
+              variant={viewMode === 'split' ? 'default' : 'ghost'}
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => setViewMode('split')}
+              title="Side-by-side view"
+            >
+              <Columns2 className="h-3.5 w-3.5 mr-1" />
+              <span className="text-xs">Split</span>
+            </Button>
+            <Button
+              variant={viewMode === 'overlay' ? 'default' : 'ghost'}
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => setViewMode('overlay')}
+              title="Single column view"
+            >
+              <AlignJustify className="h-3.5 w-3.5 mr-1" />
+              <span className="text-xs">Full</span>
+            </Button>
+          </div>
+        )}
+
+        {/* Summarize button with popover */}
+        <Popover open={summarizeOpen} onOpenChange={(open) => {
+          setSummarizeOpen(open);
+          if (open) {
+            setSumFrom(currentPage);
+            setSumTo(Math.min(currentPage + 4, totalPages));
+          }
+        }}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" disabled={isSummarizing}>
+              {isSummarizing ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
+              ) : (
+                <><Sparkles className="h-4 w-4 mr-1" /> Summarize</>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-64 p-3">
+            <p className="text-sm font-semibold mb-3">Summarize page range</p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs text-muted-foreground whitespace-nowrap">From</span>
+              <input
+                type="number"
+                min={1}
+                max={totalPages}
+                value={sumFrom}
+                onChange={(e) => setSumFrom(Number(e.target.value))}
+                className="w-16 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+              />
+              <span className="text-xs text-muted-foreground">to</span>
+              <input
+                type="number"
+                min={1}
+                max={totalPages}
+                value={sumTo}
+                onChange={(e) => setSumTo(Number(e.target.value))}
+                className="w-16 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Max 30 pages. Opens AI Chat with the summary.
+            </p>
+            <Button className="w-full" size="sm" onClick={handleTopBarSummarize} disabled={isSummarizing}>
+              <Sparkles className="h-3.5 w-3.5 mr-1" /> Go
+            </Button>
+          </PopoverContent>
+        </Popover>
 
         {/* Quiz Me */}
         <Button variant="outline" size="sm" onClick={handleQuiz} disabled={isLoadingQuiz}>
@@ -307,6 +443,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         <Button variant={showChat ? 'secondary' : 'outline'} size="sm" onClick={() => setShowChat(!showChat)}>
           <MessageSquare className="h-4 w-4 mr-1" /> AI Chat
         </Button>
+
         <Button variant="outline" size="sm" onClick={() => { setPdfDoc(null); setFileName(''); }}>
           New PDF
         </Button>
@@ -338,26 +475,60 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </div>
         </ScrollArea>
 
-        {/* Main page view */}
-        <ScrollArea className="flex-1">
-          <div className="flex items-start justify-center p-4 min-h-full">
-            {showTranslation && translatedText.has(translationCacheKey) ? (
-              <div className="max-w-2xl w-full bg-card border border-border rounded-lg shadow-lg p-6">
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
-                  <Languages className="h-5 w-5 text-primary" />
-                  <span className="font-semibold text-sm">
-                    {activeLanguage === 'hindi' ? 'हिंदी अनुवाद' : 'Hinglish'} — {activeLanguage === 'hindi' ? 'पृष्ठ' : 'Page'} {currentPage}
+        {/* Main page view — split or single */}
+        {showSplitView ? (
+          // Side-by-side bilingual view
+          <div className="flex-1 flex overflow-hidden">
+            {/* Left: Original PDF canvas */}
+            <ScrollArea className="flex-1 border-r border-border">
+              <div className="flex flex-col items-center p-4 min-h-full">
+                <div className="mb-2 flex items-center gap-1.5 self-start ml-2">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                    🇬🇧 Original
                   </span>
                 </div>
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <ReactMarkdown>{translatedText.get(translationCacheKey)!}</ReactMarkdown>
+                <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+              </div>
+            </ScrollArea>
+
+            {/* Right: Translation */}
+            <ScrollArea className="flex-1">
+              <div className="flex flex-col p-4 min-h-full">
+                <div className="mb-3 flex items-center gap-1.5">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                    {activeLanguage === 'hindi' ? '🇮🇳 हिंदी' : '🔀 Hinglish'} — Page {currentPage}
+                  </span>
+                </div>
+                <div className="bg-card border border-border rounded-lg shadow p-5">
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown>{translatedText.get(translationCacheKey)!}</ReactMarkdown>
+                  </div>
                 </div>
               </div>
-            ) : (
-              <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
-            )}
+            </ScrollArea>
           </div>
-        </ScrollArea>
+        ) : (
+          // Single column view (overlay / English)
+          <ScrollArea className="flex-1">
+            <div className="flex items-start justify-center p-4 min-h-full">
+              {showOverlayTranslation ? (
+                <div className="max-w-2xl w-full bg-card border border-border rounded-lg shadow-lg p-6">
+                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
+                    <Languages className="h-5 w-5 text-primary" />
+                    <span className="font-semibold text-sm">
+                      {activeLanguage === 'hindi' ? '🇮🇳 हिंदी अनुवाद' : '🔀 Hinglish'} — Page {currentPage}
+                    </span>
+                  </div>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown>{translatedText.get(translationCacheKey)!}</ReactMarkdown>
+                  </div>
+                </div>
+              ) : (
+                <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+              )}
+            </div>
+          </ScrollArea>
+        )}
 
         {/* AI Chat sidebar */}
         {showChat && (
@@ -369,6 +540,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             onClose={() => setShowChat(false)}
             onTranslate={() => handleLanguageSelect(activeLanguage === 'english' ? 'hindi' : 'english')}
             onQuiz={handleQuiz}
+            onRegisterTrigger={(fn) => { triggerSummarizeRef.current = fn; }}
           />
         )}
       </div>
