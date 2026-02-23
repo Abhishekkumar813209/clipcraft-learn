@@ -8,11 +8,14 @@ import { PlaylistBrowserView } from '@/components/PlaylistBrowserView';
 import { VideoPlayerView } from '@/components/VideoPlayerView';
 import { PdfReaderView } from '@/components/PdfReaderView';
 import { useStudyStore } from '@/stores/studyStore';
+import { Button } from '@/components/ui/button';
+import { PanelLeftClose, PanelLeft } from 'lucide-react';
 
 type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { selectedVideoForPlayer, setSelectedVideoForPlayer, setSelectedSource } = useStudyStore();
 
   const handleSelectVideo = (video: { videoId: string; title: string }) => {
@@ -61,8 +64,20 @@ const Index = () => {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <Sidebar activeView={activeView} onViewChange={setActiveView} />
-      <main className="flex-1 flex flex-col overflow-hidden">
+      {!sidebarCollapsed && (
+        <Sidebar activeView={activeView} onViewChange={setActiveView} />
+      )}
+      <main className="flex-1 flex flex-col overflow-hidden relative">
+        {/* Sidebar toggle button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 left-2 z-10 h-8 w-8"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+        >
+          {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+        </Button>
         {renderView()}
       </main>
     </div>
