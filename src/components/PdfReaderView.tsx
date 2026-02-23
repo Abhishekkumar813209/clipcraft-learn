@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Progress } from '@/components/ui/progress';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PdfAutoPlay } from './PdfAutoPlay';
@@ -56,8 +57,10 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const [translatedText, setTranslatedText] = useState<Map<string, string>>(new Map());
   const [showTranslation, setShowTranslation] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [translationProgress, setTranslationProgress] = useState(0);
   const [activeLanguage, setActiveLanguage] = useState<LangOption>('english');
   const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Quiz state
   const [showQuiz, setShowQuiz] = useState(false);
@@ -186,7 +189,22 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     }
 
     setIsTranslating(true);
+    setTranslationProgress(0);
     setActiveLanguage(lang);
+    setShowTranslation(true);
+    setViewMode('split');
+
+    // Simulate progress: ramp up to ~90% over ~8 seconds
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    progressIntervalRef.current = setInterval(() => {
+      setTranslationProgress(prev => {
+        if (prev >= 90) { clearInterval(progressIntervalRef.current!); return 90; }
+        // Fast at start, slows down
+        const increment = prev < 30 ? 5 : prev < 60 ? 3 : 1;
+        return Math.min(prev + increment, 90);
+      });
+    }, 300);
+
     try {
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
@@ -201,17 +219,27 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         const err = await resp.json().catch(() => ({ error: 'Translation failed' }));
         toast.error(err.error || 'Translation failed');
         setIsTranslating(false);
+        setTranslationProgress(0);
         setActiveLanguage('english');
+        setShowTranslation(false);
+        if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
         return;
       }
 
       const data = await resp.json();
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      setTranslationProgress(100);
       setTranslatedText(prev => new Map(prev).set(cacheKey, data.translation));
-      setShowTranslation(true);
-      setViewMode('split');
+      // Small delay to show 100%
+      setTimeout(() => {
+        setIsTranslating(false);
+        setTranslationProgress(0);
+      }, 400);
     } catch {
       toast.error('Translation failed');
       setActiveLanguage('english');
+      setShowTranslation(false);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     }
     setIsTranslating(false);
   };
@@ -602,6 +630,27 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
                 </div>
               </div>
             </ScrollArea>
+          )}
+
+          {/* Translation loading panel */}
+          {isTranslating && activeLanguage !== 'english' && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center space-y-4 max-w-xs w-full px-6">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+                  <Languages className="h-7 w-7 text-primary animate-pulse" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm mb-1">
+                    {activeLanguage === 'hindi' ? 'हिंदी में बदल रहे हैं...' : 'Converting to Hinglish...'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Page {currentPage}</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Progress value={translationProgress} className="h-2.5" />
+                  <p className="text-xs font-medium text-primary">{translationProgress}%</p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
