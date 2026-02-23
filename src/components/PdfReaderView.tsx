@@ -63,6 +63,10 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [quizFrom, setQuizFrom] = useState(1);
+  const [quizTo, setQuizTo] = useState(1);
+  const [quizCount, setQuizCount] = useState(5);
 
   // Summarize popover state
   const [summarizeOpen, setSummarizeOpen] = useState(false);
@@ -212,17 +216,30 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     setIsTranslating(false);
   };
 
-  // Quiz handler
+  // Quiz handler with page range and question count
   const handleQuiz = async () => {
+    if (!pdfDoc) return;
+    const from = Math.max(1, Math.min(quizFrom, totalPages));
+    const to = Math.max(from, Math.min(quizTo, totalPages));
+
+    if (to - from > 30) {
+      toast.error('Max 30 pages at once');
+      return;
+    }
+
+    setQuizOpen(false);
     setIsLoadingQuiz(true);
     try {
+      toast.info(`Extracting text from ${to - from + 1} page(s) for quiz...`);
+      const combinedText = await extractTextFromPages(pdfDoc, from, to);
+
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ action: 'quiz', pageText, language: activeLanguage }),
+        body: JSON.stringify({ action: 'quiz', pageText: combinedText, language: activeLanguage, numQuestions: quizCount }),
       });
 
       if (!resp.ok) {
@@ -433,14 +450,70 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </PopoverContent>
         </Popover>
 
-        {/* Quiz Me */}
-        <Button variant="outline" size="sm" onClick={handleQuiz} disabled={isLoadingQuiz}>
-          {isLoadingQuiz ? (
-            <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
-          ) : (
-            <><Brain className="h-4 w-4 mr-1" /> Quiz Me</>
-          )}
-        </Button>
+        {/* Quiz Me with popover config */}
+        <Popover open={quizOpen} onOpenChange={(open) => {
+          setQuizOpen(open);
+          if (open) {
+            setQuizFrom(currentPage);
+            setQuizTo(Math.min(currentPage + 4, totalPages));
+            setQuizCount(5);
+          }
+        }}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" disabled={isLoadingQuiz}>
+              {isLoadingQuiz ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-1" /> ...</>
+              ) : (
+                <><Brain className="h-4 w-4 mr-1" /> Quiz Me</>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-72 p-3">
+            <p className="text-sm font-semibold mb-3">Quiz Settings</p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground whitespace-nowrap">Pages</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={quizFrom}
+                  onChange={(e) => setQuizFrom(Number(e.target.value))}
+                  className="w-14 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+                />
+                <span className="text-xs text-muted-foreground">to</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={quizTo}
+                  onChange={(e) => setQuizTo(Number(e.target.value))}
+                  className="w-14 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground whitespace-nowrap">Questions</span>
+                <div className="flex items-center gap-1">
+                  {[3, 5, 8, 10].map((n) => (
+                    <Button
+                      key={n}
+                      size="sm"
+                      variant={quizCount === n ? 'default' : 'outline'}
+                      className="h-7 px-2.5 text-xs"
+                      onClick={() => setQuizCount(n)}
+                    >
+                      {n}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">Max 30 pages. MCQ + short answer mix.</p>
+              <Button className="w-full" size="sm" onClick={handleQuiz} disabled={isLoadingQuiz}>
+                <Brain className="h-3.5 w-3.5 mr-1" /> Generate Quiz
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <Button variant={showChat ? 'secondary' : 'outline'} size="sm" onClick={() => setShowChat(!showChat)}>
           <MessageSquare className="h-4 w-4 mr-1" /> AI Chat
@@ -560,6 +633,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         <PdfQuizPanel
           questions={quizQuestions}
           currentPage={currentPage}
+          pageRange={{ from: quizFrom, to: quizTo }}
           language={activeLanguage}
           pageText={pageText}
           onClose={() => setShowQuiz(false)}

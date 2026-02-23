@@ -16,6 +16,7 @@ interface QuizQuestion {
 interface PdfQuizPanelProps {
   questions: QuizQuestion[];
   currentPage: number;
+  pageRange?: { from: number; to: number };
   language: 'hindi' | 'english' | 'hinglish';
   pageText: string;
   onClose: () => void;
@@ -23,7 +24,7 @@ interface PdfQuizPanelProps {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
-export function PdfQuizPanel({ questions, currentPage, language, pageText, onClose }: PdfQuizPanelProps) {
+export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, onClose }: PdfQuizPanelProps) {
   const [answers, setAnswers] = useState<Map<number, string>>(new Map());
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(false);
@@ -71,14 +72,14 @@ export function PdfQuizPanel({ questions, currentPage, language, pageText, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
             <h2 className="font-semibold">
-              {language === 'hindi' ? `प्रश्नोत्तरी: पृष्ठ ${currentPage}` : `Quiz: Page ${currentPage}`}
+              {language === 'hindi' ? 'प्रश्नोत्तरी' : 'Quiz'}: {pageRange && pageRange.from !== pageRange.to ? `Pages ${pageRange.from}-${pageRange.to}` : `Page ${currentPage}`}
             </h2>
           </div>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
@@ -86,7 +87,7 @@ export function PdfQuizPanel({ questions, currentPage, language, pageText, onClo
           </Button>
         </div>
 
-        <ScrollArea className="flex-1 p-4">
+        <ScrollArea className="flex-1 overflow-y-auto p-4">
           {!feedback ? (
             <div className="space-y-5">
               {questions.map((q) => (
