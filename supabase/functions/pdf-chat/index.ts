@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, pageText, action, language, answers } = await req.json();
+    const { messages, pageText, action, language, answers, numQuestions } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -72,7 +72,8 @@ ${pageText || "No text available."}`;
     // --- QUIZ action (non-streaming, tool calling for structured output) ---
     if (action === "quiz") {
       const lang = language === "hindi" ? "Hindi" : language === "hinglish" ? "Hinglish (Hindi in Roman script mixed with English)" : "English";
-      const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly 4 questions to test the student's understanding. Mix question types: some MCQ (with 4 options) and some short-answer.
+      const numQ = Math.min(Math.max(numQuestions || 4, 1), 15);
+      const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly ${numQ} questions to test the student's understanding. Mix question types: some MCQ (with 4 options) and some short-answer.
 
 Generate questions in ${lang}.
 
@@ -89,7 +90,7 @@ ${pageText || "No text available."}`;
           model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: `Generate 4 quiz questions in ${lang} based on this page.` },
+            { role: "user", content: `Generate ${numQ} quiz questions in ${lang} based on this page.` },
           ],
           tools: [{
             type: "function",
