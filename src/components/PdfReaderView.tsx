@@ -149,12 +149,13 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   }, [currentPage, zoom, pdfDoc]);
 
 
-  // When page changes, switch back to English if no cached translation for current lang
+  // When page changes, auto-translate if a non-English language is active
   useEffect(() => {
+    if (activeLanguage === 'english' || !showTranslation || !pdfDoc) return;
     const cacheKey = `${currentPage}-${activeLanguage}`;
-    if (showTranslation && !translatedText.has(cacheKey)) {
-      setShowTranslation(false);
-      setActiveLanguage('english');
+    if (!translatedText.has(cacheKey)) {
+      // Auto-translate the new page in the active language
+      handleLanguageSelect(activeLanguage);
     }
   }, [currentPage]);
 
@@ -479,9 +480,9 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         {/* Main page view — always keep canvas in DOM to avoid re-mount loss */}
         <div className="flex-1 flex overflow-hidden">
 
-          {/* Canvas panel — always mounted; width shrinks in split mode */}
-          <ScrollArea className={`border-r border-border transition-all ${showSplitView ? 'flex-1' : 'flex-1'} ${showOverlayTranslation ? 'hidden' : ''}`}>
-            <div className="flex flex-col items-center p-4 min-h-full">
+          {/* Canvas panel — always mounted */}
+          <ScrollArea className={`border-r border-border transition-all flex-1 ${showOverlayTranslation ? 'hidden' : ''}`}>
+            <div className="flex flex-col items-center p-4 min-h-full overflow-auto">
               {showSplitView && (
                 <div className="mb-2 flex items-center gap-1.5 self-start ml-2">
                   <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground bg-muted px-2 py-0.5 rounded">
@@ -489,7 +490,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
                   </span>
                 </div>
               )}
-              <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm" />
+              <canvas ref={mainCanvasRef} className="shadow-lg rounded-sm max-w-full h-auto" />
             </div>
           </ScrollArea>
 
@@ -539,7 +540,12 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             totalPages={totalPages}
             pdfDoc={pdfDoc}
             onClose={() => setShowChat(false)}
-            onTranslate={() => handleLanguageSelect(activeLanguage === 'english' ? 'hindi' : 'english')}
+            onTranslate={() => {
+              // "हिंदी में समझाओ" should summarize in Hindi via chat, not translate the page
+              if (triggerSummarizeRef.current) {
+                triggerSummarizeRef.current(pageText, 'इस पेज को हिंदी में समझाओ (Explain this page in Hindi in detail)');
+              }
+            }}
             onQuiz={handleQuiz}
             onRegisterTrigger={(fn) => { triggerSummarizeRef.current = fn; }}
           />
