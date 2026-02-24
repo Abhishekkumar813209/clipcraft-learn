@@ -14,11 +14,11 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, pageText, action, language, answers, numQuestions } = await req.json();
+    const { messages, pageText, action, language, answers, numQuestions, questionTypes } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // --- TRANSLATE action (non-streaming) ---
+    // --- TRANSLATE action ---
     if (action === "translate") {
       let systemPrompt = '';
       const targetLang = language || 'hindi';
@@ -69,16 +69,43 @@ ${pageText || "No text available."}`;
       });
     }
 
-    // --- QUIZ action (non-streaming, tool calling for structured output) ---
+    // --- QUIZ action ---
     if (action === "quiz") {
       const lang = language === "hindi" ? "Hindi" : language === "hinglish" ? "Hinglish (Hindi in Roman script mixed with English)" : "English";
-      const numQ = Math.min(Math.max(numQuestions || 4, 1), 15);
-      const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly ${numQ} questions to test the student's understanding. Mix question types: some MCQ (with 4 options) and some short-answer.
+      const numQ = Math.min(Math.max(numQuestions || 4, 1), 20);
+      
+      // Build question type instructions
+      const types: string[] = questionTypes && questionTypes.length > 0 ? questionTypes : ['mcq', 'short'];
+      const typeDescriptions: Record<string, string> = {
+        mcq: 'MCQ (multiple choice with 4 options, one correct)',
+        true_false: 'True/False (statement that is either true or false)',
+        fill_blank: 'Fill in the Blank (sentence with a blank ___ to fill)',
+        multiple_correct: 'Multiple Correct (MCQ with 4 options where 2+ can be correct, separate correct answers with commas)',
+        short: 'Short Answer (requires a brief text answer)',
+      };
+      const typeList = types.map((t: string) => typeDescriptions[t] || t).join(', ');
+      
+      const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly ${numQ} questions to test the student's understanding.
+
+Question types to use (distribute evenly among these): ${typeList}
+
+IMPORTANT type field values:
+- "mcq" for multiple choice (single correct)
+- "true_false" for true/false
+- "fill_blank" for fill in the blank  
+- "multiple_correct" for multiple correct answers
+- "short" for short answer
+
+For true_false: the correctAnswer should be "True" or "False".
+For fill_blank: write the question with ___ where the blank is, correctAnswer is the word(s) that fill the blank.
+For multiple_correct: provide 4 options, correctAnswer should list all correct options separated by commas.
 
 Generate questions in ${lang}.
 
 Page text:
 ${pageText || "No text available."}`;
+
+      const validTypes = ["mcq", "short", "true_false", "fill_blank", "multiple_correct"];
 
       const response = await fetch(AI_URL, {
         method: "POST",
@@ -90,7 +117,7 @@ ${pageText || "No text available."}`;
           model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: `Generate ${numQ} quiz questions in ${lang} based on this page.` },
+            { role: "user", content: `Generate ${numQ} quiz questions in ${lang} based on this page. Use these question types: ${types.join(', ')}.` },
           ],
           tools: [{
             type: "function",
@@ -107,8 +134,8 @@ ${pageText || "No text available."}`;
                       properties: {
                         id: { type: "number" },
                         question: { type: "string" },
-                        type: { type: "string", enum: ["mcq", "short"] },
-                        options: { type: "array", items: { type: "string" }, description: "Only for MCQ, 4 options" },
+                        type: { type: "string", enum: validTypes },
+                        options: { type: "array", items: { type: "string" }, description: "For MCQ/multiple_correct: 4 options. For true_false/fill_blank/short: omit or empty." },
                         correctAnswer: { type: "string" },
                       },
                       required: ["id", "question", "type", "correctAnswer"],
@@ -146,7 +173,7 @@ ${pageText || "No text available."}`;
       });
     }
 
-    // --- CHECK-ANSWERS action (non-streaming) ---
+    // --- CHECK-ANSWERS action ---
     if (action === "check-answers") {
       const lang = language === "hindi" ? "Hindi" : "English";
       const systemPrompt = `You are an expert educator. The student answered quiz questions based on a page. Evaluate each answer, give a score out of the total, and provide brief explanations for wrong answers. Respond in ${lang}.

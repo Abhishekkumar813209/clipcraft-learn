@@ -16,12 +16,17 @@ const INTERVALS = [
   { label: '15s', value: 15 },
   { label: '30s', value: 30 },
   { label: '60s', value: 60 },
+  { label: 'Custom', value: -1 },
 ];
 
 export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPlayProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [interval, setIntervalSec] = useState(10);
+  const [intervalSec, setIntervalSec] = useState(10);
   const [elapsed, setElapsed] = useState(0);
+  const [isCustom, setIsCustom] = useState(false);
+  const [customValue, setCustomValue] = useState('');
+
+  const activeInterval = isCustom ? (Number(customValue) || 10) : intervalSec;
 
   const goNext = useCallback(() => {
     if (currentPage < totalPages) {
@@ -43,7 +48,7 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
     if (!isPlaying) return;
     const tick = globalThis.setInterval(() => {
       setElapsed((prev) => {
-        if (prev + 0.1 >= interval) {
+        if (prev + 0.1 >= activeInterval) {
           goNext();
           return 0;
         }
@@ -51,7 +56,7 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
       });
     }, 100);
     return () => globalThis.clearInterval(tick);
-  }, [isPlaying, interval, goNext]);
+  }, [isPlaying, activeInterval, goNext]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -65,7 +70,18 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
   }, [goNext, goPrev]);
 
   const stop = () => { setIsPlaying(false); setElapsed(0); };
-  const progress = (elapsed / interval) * 100;
+  const progress = (elapsed / activeInterval) * 100;
+
+  const handleSelectChange = (v: string) => {
+    const num = Number(v);
+    if (num === -1) {
+      setIsCustom(true);
+      setCustomValue('');
+    } else {
+      setIsCustom(false);
+      setIntervalSec(num);
+    }
+  };
 
   return (
     <div className="border-t border-border bg-card px-4 py-2.5 flex items-center gap-3">
@@ -82,8 +98,8 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
 
       <div className="w-px h-5 bg-border" />
 
-      <Select value={String(interval)} onValueChange={(v) => setIntervalSec(Number(v))}>
-        <SelectTrigger className="w-20 h-8 text-xs">
+      <Select value={isCustom ? '-1' : String(intervalSec)} onValueChange={handleSelectChange}>
+        <SelectTrigger className="w-24 h-8 text-xs">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -92,6 +108,21 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
           ))}
         </SelectContent>
       </Select>
+
+      {isCustom && (
+        <div className="flex items-center gap-1">
+          <input
+            type="number"
+            min={1}
+            max={300}
+            placeholder="sec"
+            value={customValue}
+            onChange={(e) => setCustomValue(e.target.value)}
+            className="w-16 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary h-8"
+          />
+          <span className="text-xs text-muted-foreground">s</span>
+        </div>
+      )}
 
       <Button variant={isPlaying ? 'secondary' : 'default'} size="sm" className="h-8" onClick={() => setIsPlaying((p) => !p)}>
         {isPlaying ? <Pause className="h-3.5 w-3.5 mr-1" /> : <Play className="h-3.5 w-3.5 mr-1" />}

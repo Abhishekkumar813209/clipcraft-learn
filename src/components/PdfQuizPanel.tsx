@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 interface QuizQuestion {
   id: number;
   question: string;
-  type: 'mcq' | 'short';
+  type: 'mcq' | 'short' | 'true_false' | 'fill_blank' | 'multiple_correct';
   options?: string[];
   correctAnswer: string;
 }
@@ -26,6 +26,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
 export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, onClose }: PdfQuizPanelProps) {
   const [answers, setAnswers] = useState<Map<number, string>>(new Map());
+  const [multiAnswers, setMultiAnswers] = useState<Map<number, Set<string>>>(new Map());
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(false);
 
@@ -33,8 +34,31 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     setAnswers(prev => new Map(prev).set(qId, value));
   };
 
+  const toggleMultiAnswer = (qId: number, value: string) => {
+    setMultiAnswers(prev => {
+      const next = new Map(prev);
+      const current = new Set(next.get(qId) || []);
+      if (current.has(value)) current.delete(value);
+      else current.add(value);
+      next.set(qId, current);
+      return next;
+    });
+  };
+
+  const getAnswerForQuestion = (q: QuizQuestion): string => {
+    if (q.type === 'multiple_correct') {
+      return Array.from(multiAnswers.get(q.id) || []).join(', ');
+    }
+    return answers.get(q.id) || '';
+  };
+
+  const isAllAnswered = questions.every(q => {
+    if (q.type === 'multiple_correct') return (multiAnswers.get(q.id)?.size || 0) > 0;
+    return !!answers.get(q.id);
+  });
+
   const submitAnswers = async () => {
-    if (answers.size < questions.length) {
+    if (!isAllAnswered) {
       toast.error(language === 'hindi' ? 'सभी सवालों के जवाब दें' : 'Please answer all questions');
       return;
     }
@@ -44,7 +68,7 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
         questionId: q.id,
         question: q.question,
         correctAnswer: q.correctAnswer,
-        userAnswer: answers.get(q.id) || '',
+        userAnswer: getAnswerForQuestion(q),
       }));
 
       const resp = await fetch(CHAT_URL, {
@@ -71,10 +95,98 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     setIsChecking(false);
   };
 
+  const renderQuestion = (q: QuizQuestion) => {
+    switch (q.type) {
+      case 'true_false':
+        return (
+          <div className="space-y-1.5 pl-4">
+            {['True', 'False'].map((opt) => (
+              <label key={opt} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+                <input
+                  type="radio"
+                  name={`q-${q.id}`}
+                  value={opt}
+                  checked={answers.get(q.id) === opt}
+                  onChange={() => setAnswer(q.id, opt)}
+                  className="accent-primary"
+                />
+                {opt}
+              </label>
+            ))}
+          </div>
+        );
+
+      case 'fill_blank':
+        return (
+          <div className="pl-4 space-y-1.5">
+            <p className="text-xs text-muted-foreground italic">Fill in the blank(s)</p>
+            <input
+              type="text"
+              placeholder={language === 'hindi' ? 'रिक्त स्थान भरें...' : 'Fill in the blank...'}
+              value={answers.get(q.id) || ''}
+              onChange={(e) => setAnswer(q.id, e.target.value)}
+              className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+        );
+
+      case 'multiple_correct':
+        return (
+          <div className="space-y-1.5 pl-4">
+            <p className="text-xs text-muted-foreground italic">Select all that apply</p>
+            {q.options?.map((opt, idx) => {
+              const selected = multiAnswers.get(q.id)?.has(opt) || false;
+              return (
+                <label key={idx} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={selected}
+                    onChange={() => toggleMultiAnswer(q.id, opt)}
+                    className="accent-primary"
+                  />
+                  {opt}
+                </label>
+              );
+            })}
+          </div>
+        );
+
+      case 'mcq':
+        return (
+          <div className="space-y-1.5 pl-4">
+            {q.options?.map((opt, idx) => (
+              <label key={idx} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+                <input
+                  type="radio"
+                  name={`q-${q.id}`}
+                  value={opt}
+                  checked={answers.get(q.id) === opt}
+                  onChange={() => setAnswer(q.id, opt)}
+                  className="accent-primary"
+                />
+                {opt}
+              </label>
+            ))}
+          </div>
+        );
+
+      case 'short':
+      default:
+        return (
+          <input
+            type="text"
+            placeholder={language === 'hindi' ? 'अपना उत्तर लिखें...' : 'Type your answer...'}
+            value={answers.get(q.id) || ''}
+            onChange={(e) => setAnswer(q.id, e.target.value)}
+            className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
+          />
+        );
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
-        {/* Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
@@ -94,32 +206,13 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
                 <div key={q.id} className="space-y-2">
                   <p className="font-medium text-sm">
                     {q.id}. {q.question}
+                    {q.type !== 'mcq' && q.type !== 'short' && (
+                      <span className="ml-2 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                        {q.type === 'true_false' ? 'T/F' : q.type === 'fill_blank' ? 'Fill' : 'Multi'}
+                      </span>
+                    )}
                   </p>
-                  {q.type === 'mcq' && q.options ? (
-                    <div className="space-y-1.5 pl-4">
-                      {q.options.map((opt, idx) => (
-                        <label key={idx} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
-                          <input
-                            type="radio"
-                            name={`q-${q.id}`}
-                            value={opt}
-                            checked={answers.get(q.id) === opt}
-                            onChange={() => setAnswer(q.id, opt)}
-                            className="accent-primary"
-                          />
-                          {opt}
-                        </label>
-                      ))}
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      placeholder={language === 'hindi' ? 'अपना उत्तर लिखें...' : 'Type your answer...'}
-                      value={answers.get(q.id) || ''}
-                      onChange={(e) => setAnswer(q.id, e.target.value)}
-                      className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
-                    />
-                  )}
+                  {renderQuestion(q)}
                 </div>
               ))}
             </div>
@@ -134,7 +227,6 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
           )}
         </ScrollArea>
 
-        {/* Footer */}
         <div className="p-4 border-t border-border">
           {!feedback ? (
             <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
