@@ -1,97 +1,94 @@
 
-# Two New Features: Side-by-Side Bilingual View + Summary in Top Bar
+# Fixes and Enhancements for PDF Reader
 
-## What You're Getting
+## Issues to Fix
 
-### 1. Side-by-Side Bilingual Reading Mode
-When you pick Hindi or Hinglish from the language dropdown, instead of replacing the PDF canvas, the page splits into two columns:
-- **Left:** Original PDF canvas (English)
-- **Right:** Hindi / Hinglish translation
+### 1. Translation Showing Previous Page's Content (Bug Fix)
+The root cause: when you change pages, the `useEffect` at line 160 fires `handleLanguageSelect(activeLanguage)` immediately, but `pageText` (used in the API call at line 215) still holds the **old page's text** because `renderPage` is async and hasn't updated `pageText` yet. So the translation request sends the previous page's text.
 
-This lets you read both simultaneously to improve vocabulary and comprehension. All combinations are supported — you see the original PDF alongside whatever language you choose.
+**Fix:** Instead of relying on `pageText` state, extract text directly from `pdfDoc` inside `handleLanguageSelect` for the current page. This guarantees fresh text.
 
-### 2. Summary Button in Top Bar
-A "Summarize" button directly in the PDF top bar (next to Quiz Me and AI Chat), so you don't need to open the AI Chat sidebar just to summarize. Clicking it opens a compact page-range popover inline — pick From/To pages and hit Go.
+### 2. Rate Limiting on Fast Page Changes
+When you flip pages quickly, each page triggers a translation API call, overwhelming the backend. 
 
----
+**Fix:** Add a debounce (e.g., 800ms) to the auto-translate `useEffect` so it waits for you to settle on a page before firing the translation request. Also cancel any in-flight fetch when a new page is selected.
 
-## How It Will Look
+### 3. Custom Timings for Auto-Play
+Currently only preset values (5s, 10s, 15s, 30s, 60s). 
 
-```text
-Top bar:
-[ Back ] [ filename ] [ zoom - 120% + ↺ ] [ 🌐 English ▾ ] [ ✨ Summarize ] [ 🧠 Quiz Me ] [ 💬 AI Chat ] [ New PDF ]
+**Fix:** Add a "Custom" option that shows a small number input where you can type any value in seconds.
 
-When Hindi/Hinglish selected → top bar shows bilingual toggle:
-[ 📖 Side-by-Side ] (active) or [ 🌐 Overlay ] (single column)
+### 4. Quiz Question Types and Custom Count
+Currently only MCQ and short answer with preset counts (3, 5, 8, 10).
 
-Main view (side-by-side mode):
-+-------------------------+-------------------------+
-|  Original PDF (English) |  हिंदी / Hinglish       |
-|  [canvas renders here]  |  [translated text here] |
-+-------------------------+-------------------------+
+**Fix:** 
+- Add checkboxes for question types: MCQ, True/False, Fill in the Blanks, Multiple Correct, Short Answer
+- Add a custom number input alongside the preset buttons so you can type any number (1-20)
+- Update the edge function prompt to generate the selected question types
+- Update `PdfQuizPanel` to render True/False as radio buttons, Fill in the Blanks as text inputs with blanks, and Multiple Correct as checkboxes
 
-Main view (overlay/single mode - existing behavior):
-+-----------------------------------------------+
-|  Translated text fills the full width         |
-+-----------------------------------------------+
-```
+### 5. Parallel/Prefetch Translation
+When you select Hindi/Hinglish, automatically start translating the next 2-3 pages in the background so they're cached and ready when you navigate.
+
+**Fix:** After a successful translation, queue background fetches for pages `currentPage+1`, `currentPage+2`, etc. (skipping already cached ones). Use a simple sequential queue with a small delay between requests to avoid rate limits.
 
 ---
 
-## Implementation Details
+## Technical Details
 
-### Files to Modify
+### File: `src/components/PdfReaderView.tsx`
 
-#### `src/components/PdfReaderView.tsx`
+**Translation bug fix:**
+- Modify `handleLanguageSelect` to accept an optional `pageNum` parameter (defaults to `currentPage`)
+- Extract text directly: `const page = await pdfDoc.getPage(pageNum); const content = await page.getTextContent(); const text = content.items.map(i => i.str).join(' ');`
+- Use this fresh text in the API call instead of `pageText` state
+- In the auto-translate `useEffect`, wrap with a debounce timer (800ms) and pass `currentPage` explicitly
 
-**New state:**
-- `viewMode: 'overlay' | 'split'` — default `'split'` when a language is selected (English stays as canvas-only)
+**Rate limiting fix:**
+- Add a `translateTimeoutRef` to debounce the auto-translate effect
+- Add an `AbortController` ref to cancel in-flight translation requests when page changes
 
-**Language dropdown change:**
-- When user picks Hindi/Hinglish → auto-switch to `split` view mode
-- Add a small secondary toggle (two icon buttons: "Split" / "Full") that appears only when a non-English language is active
+**Prefetch translation:**
+- After a successful translation, call a `prefetchTranslations` function that sequentially translates pages `currentPage+1` to `currentPage+3` (if not cached), with 500ms gaps between requests
+- Use a ref to track if prefetch is active and cancel it on page change
 
-**Summary button in top bar:**
-- Add a `Summarize` button between zoom controls and language dropdown
-- Clicking opens an inline popover (using Radix Popover) with:
-  - "From page" number input (default: current page)
-  - "To page" number input (default: current page + 4, capped at totalPages)
-  - "Go" button that extracts text from the range and streams a summary into a result panel (either opens AI Chat sidebar automatically, or shows a mini result modal)
-- Uses the existing `extractTextFromPages` logic (same as chat sidebar) — move the function to a shared utility or duplicate it here
+### File: `src/components/PdfAutoPlay.tsx`
 
-**Split view layout:**
-- Replace the single `<ScrollArea className="flex-1">` with a flex row of two panels when `viewMode === 'split'` and a non-English language is active:
-  - Left: scrollable canvas panel (50% width)
-  - Right: scrollable markdown panel (50% width) with translated text
-- When language = English OR viewMode = 'overlay': show existing single-panel behavior
+**Custom timing:**
+- Add a "Custom" entry to the intervals list
+- When selected, show a small number input (min 1, max 300)
+- Store custom value in state, use it as the interval
 
-#### `src/components/PdfChatSidebar.tsx`
-- No structural changes needed — Summarize is being moved to top bar
-- Keep the existing Summarize button in the sidebar too (users can still use it from there)
-- The `onTranslate` quick action button label can be updated to reflect current language state
+### File: `src/components/PdfReaderView.tsx` (Quiz section)
 
----
+**Quiz types and custom count:**
+- Add state: `quizTypes` as a Set of selected types (default: all selected)
+- Add checkboxes in the quiz popover for: MCQ, True/False, Fill in the Blanks, Multiple Correct, Short Answer
+- Add a custom number input next to the preset buttons
+- Pass `quizTypes` array to the edge function
 
-## Summary Flow in Top Bar
+### File: `supabase/functions/pdf-chat/index.ts`
 
-```text
-User clicks "Summarize"
-  → Popover opens with page range inputs
-  → User sets range (e.g. 5 to 12) and clicks Go
-  → AI Chat sidebar auto-opens (if not already open)
-  → Summary streamed into chat as an assistant message
-  → Popover closes
-```
+**Quiz types in prompt:**
+- Accept `questionTypes` array parameter
+- Update the system prompt to instruct the AI to generate the specified mix of question types
+- Add new type enums: `mcq`, `true_false`, `fill_blank`, `multiple_correct`, `short`
 
-This reuses the exact same streaming chat infrastructure already in `PdfChatSidebar`. The summary result goes into the chat history naturally.
+### File: `src/components/PdfQuizPanel.tsx`
+
+**Render new question types:**
+- `true_false`: Two radio buttons (True / False)
+- `fill_blank`: Text shown with `___` blanks, input field below
+- `multiple_correct`: Checkboxes instead of radio buttons (multiple selections allowed)
+- Existing `mcq` and `short` stay as-is
 
 ---
 
 ## Files to Modify
 
-| File | Change |
-|------|--------|
-| `src/components/PdfReaderView.tsx` | Add `viewMode` state, split-view layout, Summary button with popover in top bar |
-| `src/components/PdfChatSidebar.tsx` | Expose a method / accept a prop to trigger a summary from outside (for the top bar summary button) |
-
-No edge function changes. No new components needed. No database changes.
+| File | Changes |
+|------|---------|
+| `src/components/PdfReaderView.tsx` | Fix translation bug (extract text directly), debounce auto-translate, prefetch next pages, quiz type checkboxes + custom count |
+| `src/components/PdfAutoPlay.tsx` | Add custom timing input option |
+| `src/components/PdfQuizPanel.tsx` | Render true/false, fill-in-blank, multiple-correct question types |
+| `supabase/functions/pdf-chat/index.ts` | Accept `questionTypes` param, update quiz prompt for new types |
