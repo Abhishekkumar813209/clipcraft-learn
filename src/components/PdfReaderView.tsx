@@ -3,6 +3,8 @@ import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PdfAutoPlay } from './PdfAutoPlay';
@@ -18,11 +20,20 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
 
 type LangOption = 'english' | 'hindi' | 'hinglish';
 type ViewMode = 'split' | 'overlay';
+type QuizType = 'mcq' | 'true_false' | 'fill_blank' | 'multiple_correct' | 'short';
 
 const LANG_LABELS: Record<LangOption, string> = {
   english: 'English',
   hindi: 'हिंदी',
   hinglish: 'Hinglish',
+};
+
+const QUIZ_TYPE_LABELS: Record<QuizType, string> = {
+  mcq: 'MCQ',
+  true_false: 'True / False',
+  fill_blank: 'Fill in the Blanks',
+  multiple_correct: 'Multiple Correct',
+  short: 'Short Answer',
 };
 
 async function extractTextFromPages(doc: pdfjsLib.PDFDocumentProxy, from: number, to: number): Promise<string> {
@@ -34,6 +45,13 @@ async function extractTextFromPages(doc: pdfjsLib.PDFDocumentProxy, from: number
     texts.push(`--- Page ${i} ---\n${t}`);
   }
   return texts.join('\n\n');
+}
+
+/** Extract text from a single page directly from the doc (avoids stale state) */
+async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: number): Promise<string> {
+  const page = await doc.getPage(pageNum);
+  const content = await page.getTextContent();
+  return content.items.map((item: any) => item.str).join(' ');
 }
 
 interface PdfReaderViewProps {
@@ -61,6 +79,9 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const [activeLanguage, setActiveLanguage] = useState<LangOption>('english');
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const translateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const prefetchAbortRef = useRef<AbortController | null>(null);
 
   // Quiz state
   const [showQuiz, setShowQuiz] = useState(false);
@@ -70,14 +91,27 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
   const [quizFrom, setQuizFrom] = useState(1);
   const [quizTo, setQuizTo] = useState(1);
   const [quizCount, setQuizCount] = useState(5);
+  const [customQuizCount, setCustomQuizCount] = useState('');
+  const [quizTypes, setQuizTypes] = useState<Set<QuizType>>(new Set(['mcq', 'true_false', 'fill_blank', 'multiple_correct', 'short']));
 
   // Summarize popover state
   const [summarizeOpen, setSummarizeOpen] = useState(false);
   const [sumFrom, setSumFrom] = useState(1);
   const [sumTo, setSumTo] = useState(1);
   const [isSummarizing, setIsSummarizing] = useState(false);
-  // ref to trigger summarize from the chat sidebar
   const triggerSummarizeRef = useRef<((text: string, prompt: string) => void) | null>(null);
+
+  const toggleQuizType = (type: QuizType) => {
+    setQuizTypes(prev => {
+      const next = new Set(prev);
+      if (next.has(type)) {
+        if (next.size > 1) next.delete(type); // keep at least one
+      } else {
+        next.add(type);
+      }
+      return next;
+    });
+  };
 
   const renderPage = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, pageNum: number, scale: number) => {
     if (!mainCanvasRef.current || isRendering) return;
@@ -155,32 +189,78 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     if (pdfDoc) renderPage(pdfDoc, currentPage, zoom);
   }, [currentPage, zoom, pdfDoc]);
 
-
-  // When page changes, auto-translate if a non-English language is active
+  // Debounced auto-translate when page changes with non-English language active
   useEffect(() => {
     if (activeLanguage === 'english' || !showTranslation || !pdfDoc) return;
     const cacheKey = `${currentPage}-${activeLanguage}`;
-    if (!translatedText.has(cacheKey)) {
-      // Auto-translate the new page in the active language
-      handleLanguageSelect(activeLanguage);
-    }
-  }, [currentPage]);
+    if (translatedText.has(cacheKey)) return;
+
+    // Cancel any in-flight request
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+    // Cancel any pending debounce
+    if (translateTimeoutRef.current) clearTimeout(translateTimeoutRef.current);
+
+    // Debounce 800ms
+    translateTimeoutRef.current = setTimeout(() => {
+      handleLanguageSelect(activeLanguage, currentPage);
+    }, 800);
+
+    return () => {
+      if (translateTimeoutRef.current) clearTimeout(translateTimeoutRef.current);
+    };
+  }, [currentPage, activeLanguage, showTranslation, pdfDoc]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  // Translation handler
-  const handleLanguageSelect = async (lang: LangOption) => {
+  // Prefetch next pages translation in background
+  const prefetchTranslations = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, fromPage: number, lang: LangOption) => {
+    if (prefetchAbortRef.current) prefetchAbortRef.current.abort();
+    const controller = new AbortController();
+    prefetchAbortRef.current = controller;
+
+    for (let p = fromPage + 1; p <= Math.min(fromPage + 3, totalPages); p++) {
+      if (controller.signal.aborted) return;
+      const key = `${p}-${lang}`;
+      if (translatedText.has(key)) continue;
+
+      try {
+        await new Promise(r => setTimeout(r, 500));
+        if (controller.signal.aborted) return;
+
+        const text = await extractSinglePageText(doc, p);
+        const resp = await fetch(CHAT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ action: 'translate', pageText: text, language: lang }),
+          signal: controller.signal,
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          setTranslatedText(prev => new Map(prev).set(key, data.translation));
+        }
+      } catch {
+        // silently fail prefetch
+      }
+    }
+  }, [totalPages, translatedText]);
+
+  // Translation handler — extracts text directly from pdfDoc to avoid stale state
+  const handleLanguageSelect = async (lang: LangOption, pageNum?: number) => {
+    const targetPage = pageNum ?? currentPage;
+
     if (lang === 'english') {
       setShowTranslation(false);
       setActiveLanguage('english');
       return;
     }
 
-    const cacheKey = `${currentPage}-${lang}`;
+    const cacheKey = `${targetPage}-${lang}`;
 
-    // Check cache
     if (translatedText.has(cacheKey)) {
       setActiveLanguage(lang);
       setShowTranslation(true);
@@ -188,31 +268,40 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
       return;
     }
 
+    if (!pdfDoc) return;
+
+    // Cancel previous in-flight
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsTranslating(true);
     setTranslationProgress(0);
     setActiveLanguage(lang);
     setShowTranslation(true);
     setViewMode('split');
 
-    // Simulate progress: ramp up to ~90% over ~8 seconds
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     progressIntervalRef.current = setInterval(() => {
       setTranslationProgress(prev => {
         if (prev >= 90) { clearInterval(progressIntervalRef.current!); return 90; }
-        // Fast at start, slows down
         const increment = prev < 30 ? 5 : prev < 60 ? 3 : 1;
         return Math.min(prev + increment, 90);
       });
     }, 300);
 
     try {
+      // Extract text directly from the doc for the target page
+      const freshText = await extractSinglePageText(pdfDoc, targetPage);
+
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ action: 'translate', pageText, language: lang }),
+        body: JSON.stringify({ action: 'translate', pageText: freshText, language: lang }),
+        signal: controller.signal,
       });
 
       if (!resp.ok) {
@@ -220,8 +309,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         toast.error(err.error || 'Translation failed');
         setIsTranslating(false);
         setTranslationProgress(0);
-        setActiveLanguage('english');
-        setShowTranslation(false);
         if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
         return;
       }
@@ -230,21 +317,23 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       setTranslationProgress(100);
       setTranslatedText(prev => new Map(prev).set(cacheKey, data.translation));
-      // Small delay to show 100%
       setTimeout(() => {
         setIsTranslating(false);
         setTranslationProgress(0);
       }, 400);
-    } catch {
+
+      // Prefetch next pages in background
+      prefetchTranslations(pdfDoc, targetPage, lang);
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return; // cancelled, ignore
       toast.error('Translation failed');
-      setActiveLanguage('english');
-      setShowTranslation(false);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      setIsTranslating(false);
+      setTranslationProgress(0);
     }
-    setIsTranslating(false);
   };
 
-  // Quiz handler with page range and question count
+  // Quiz handler with page range, question count, and question types
   const handleQuiz = async () => {
     if (!pdfDoc) return;
     const from = Math.max(1, Math.min(quizFrom, totalPages));
@@ -254,6 +343,8 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
       toast.error('Max 30 pages at once');
       return;
     }
+
+    const finalCount = customQuizCount ? Math.min(Math.max(Number(customQuizCount), 1), 20) : quizCount;
 
     setQuizOpen(false);
     setIsLoadingQuiz(true);
@@ -267,7 +358,13 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ action: 'quiz', pageText: combinedText, language: activeLanguage, numQuestions: quizCount }),
+        body: JSON.stringify({
+          action: 'quiz',
+          pageText: combinedText,
+          language: activeLanguage,
+          numQuestions: finalCount,
+          questionTypes: Array.from(quizTypes),
+        }),
       });
 
       if (!resp.ok) {
@@ -303,8 +400,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
 
     setSummarizeOpen(false);
     setIsSummarizing(true);
-
-    // Auto-open chat sidebar
     setShowChat(true);
 
     try {
@@ -314,7 +409,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         ? `Summarize page ${from} in bullet points`
         : `Summarize pages ${from}-${to} in bullet points`;
 
-      // Use the ref callback exposed by PdfChatSidebar
       if (triggerSummarizeRef.current) {
         triggerSummarizeRef.current(combinedText, prompt);
       }
@@ -323,6 +417,16 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
     }
     setIsSummarizing(false);
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (translateTimeoutRef.current) clearTimeout(translateTimeoutRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+      if (prefetchAbortRef.current) prefetchAbortRef.current.abort();
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+  }, []);
 
   const translationCacheKey = `${currentPage}-${activeLanguage}`;
   const showSplitView = showTranslation && activeLanguage !== 'english' && viewMode === 'split' && translatedText.has(translationCacheKey);
@@ -404,7 +508,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Split / Overlay toggle — only visible when a translation is active */}
+        {/* Split / Overlay toggle */}
         {showTranslation && activeLanguage !== 'english' && (
           <div className="flex items-center gap-0.5 bg-muted rounded-md p-0.5">
             <Button
@@ -485,6 +589,7 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             setQuizFrom(currentPage);
             setQuizTo(Math.min(currentPage + 4, totalPages));
             setQuizCount(5);
+            setCustomQuizCount('');
           }
         }}>
           <PopoverTrigger asChild>
@@ -496,9 +601,10 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="end" className="w-72 p-3">
+          <PopoverContent align="end" className="w-80 p-3">
             <p className="text-sm font-semibold mb-3">Quiz Settings</p>
             <div className="space-y-3">
+              {/* Page range */}
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground whitespace-nowrap">Pages</span>
                 <input
@@ -519,23 +625,51 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
                   className="w-14 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground whitespace-nowrap">Questions</span>
-                <div className="flex items-center gap-1">
+
+              {/* Question count */}
+              <div>
+                <span className="text-xs text-muted-foreground mb-1.5 block">Questions</span>
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {[3, 5, 8, 10].map((n) => (
                     <Button
                       key={n}
                       size="sm"
-                      variant={quizCount === n ? 'default' : 'outline'}
+                      variant={!customQuizCount && quizCount === n ? 'default' : 'outline'}
                       className="h-7 px-2.5 text-xs"
-                      onClick={() => setQuizCount(n)}
+                      onClick={() => { setQuizCount(n); setCustomQuizCount(''); }}
                     >
                       {n}
                     </Button>
                   ))}
+                  <input
+                    type="number"
+                    min={1}
+                    max={20}
+                    placeholder="Custom"
+                    value={customQuizCount}
+                    onChange={(e) => setCustomQuizCount(e.target.value)}
+                    className="w-16 bg-background border border-border rounded px-2 py-1 text-xs text-center outline-none focus:ring-1 focus:ring-primary"
+                  />
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">Max 30 pages. MCQ + short answer mix.</p>
+
+              {/* Question types */}
+              <div>
+                <span className="text-xs text-muted-foreground mb-1.5 block">Question Types</span>
+                <div className="space-y-1.5">
+                  {(Object.keys(QUIZ_TYPE_LABELS) as QuizType[]).map((type) => (
+                    <label key={type} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={quizTypes.has(type)}
+                        onCheckedChange={() => toggleQuizType(type)}
+                      />
+                      <Label className="text-xs cursor-pointer font-normal">{QUIZ_TYPE_LABELS[type]}</Label>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground">Max 30 pages, 1-20 questions.</p>
               <Button className="w-full" size="sm" onClick={handleQuiz} disabled={isLoadingQuiz}>
                 <Brain className="h-3.5 w-3.5 mr-1" /> Generate Quiz
               </Button>
@@ -578,10 +712,8 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           </div>
         </ScrollArea>
 
-        {/* Main page view — always keep canvas in DOM to avoid re-mount loss */}
+        {/* Main page view */}
         <div className="flex-1 flex overflow-hidden">
-
-          {/* Canvas panel — always mounted */}
           <ScrollArea className={`border-r border-border transition-all flex-1 ${showOverlayTranslation ? 'hidden' : ''}`}>
             <div className="flex flex-col items-center p-4 min-h-full overflow-auto">
               {showSplitView && (
@@ -595,7 +727,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             </div>
           </ScrollArea>
 
-          {/* Overlay translation (single-column, no canvas) */}
           {showOverlayTranslation && (
             <ScrollArea className="flex-1">
               <div className="flex items-start justify-center p-4 min-h-full">
@@ -614,7 +745,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             </ScrollArea>
           )}
 
-          {/* Split translation panel (right side) */}
           {showSplitView && (
             <ScrollArea className="flex-1">
               <div className="flex flex-col p-4 min-h-full">
@@ -632,7 +762,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             </ScrollArea>
           )}
 
-          {/* Translation loading panel */}
           {isTranslating && activeLanguage !== 'english' && (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center space-y-4 max-w-xs w-full px-6">
@@ -654,7 +783,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
           )}
         </div>
 
-        {/* AI Chat sidebar */}
         {showChat && (
           <PdfChatSidebar
             pageText={pageText}
@@ -663,7 +791,6 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
             pdfDoc={pdfDoc}
             onClose={() => setShowChat(false)}
             onTranslate={() => {
-              // "हिंदी में समझाओ" should summarize in Hindi via chat, not translate the page
               if (triggerSummarizeRef.current) {
                 triggerSummarizeRef.current(pageText, 'इस पेज को हिंदी में समझाओ (Explain this page in Hindi in detail)');
               }
@@ -674,10 +801,8 @@ export function PdfReaderView({ onBack }: PdfReaderViewProps) {
         )}
       </div>
 
-      {/* Bottom auto-play controls */}
       <PdfAutoPlay currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
 
-      {/* Quiz modal */}
       {showQuiz && quizQuestions.length > 0 && (
         <PdfQuizPanel
           questions={quizQuestions}
