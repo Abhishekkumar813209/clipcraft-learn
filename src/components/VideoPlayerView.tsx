@@ -82,7 +82,7 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
     toast.success(`End time set: ${formatDuration(Math.floor(time))}`);
   };
 
-  const handleAddClip = () => {
+  const handleAddClip = async () => {
     if (startTime === null || endTime === null) {
       toast.error('Please set both start and end times');
       return;
@@ -99,14 +99,14 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
     }
 
     // Add video to store if not exists
-    const storedVideoId = addVideo({
+    const storedVideoId = await addVideo({
       youtubeId: videoId,
       title: videoTitle,
       duration,
     });
 
     // Add clip
-    addClip({
+    await addClip({
       videoId: storedVideoId,
       startTime,
       endTime,

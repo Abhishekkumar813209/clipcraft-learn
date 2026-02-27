@@ -14,7 +14,291 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clips: {
+        Row: {
+          created_at: string | null
+          end_time: number
+          id: string
+          is_primary: boolean | null
+          label: string | null
+          notes: string | null
+          order: number | null
+          start_time: number
+          sub_topic_id: string
+          updated_at: string | null
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_time: number
+          id?: string
+          is_primary?: boolean | null
+          label?: string | null
+          notes?: string | null
+          order?: number | null
+          start_time: number
+          sub_topic_id: string
+          updated_at?: string | null
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_time?: number
+          id?: string
+          is_primary?: boolean | null
+          label?: string | null
+          notes?: string | null
+          order?: number | null
+          start_time?: number
+          sub_topic_id?: string
+          updated_at?: string | null
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clips_sub_topic_id_fkey"
+            columns: ["sub_topic_id"]
+            isOneToOne: false
+            referencedRelation: "sub_topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clips_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exams: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      sub_topics: {
+        Row: {
+          description: string | null
+          id: string
+          name: string
+          order: number | null
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          name: string
+          order?: number | null
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          name?: string
+          order?: number | null
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_topics_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subjects: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          exam_id: string
+          id: string
+          name: string
+          order: number | null
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          exam_id: string
+          id?: string
+          name: string
+          order?: number | null
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          exam_id?: string
+          id?: string
+          name?: string
+          order?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics: {
+        Row: {
+          description: string | null
+          id: string
+          name: string
+          order: number | null
+          subject_id: string
+          user_id: string
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          name: string
+          order?: number | null
+          subject_id: string
+          user_id: string
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          name?: string
+          order?: number | null
+          subject_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      videos: {
+        Row: {
+          channel_name: string | null
+          duration: number | null
+          id: string
+          playlist_position: number | null
+          source_id: string | null
+          thumbnail_url: string | null
+          title: string
+          user_id: string
+          youtube_id: string
+        }
+        Insert: {
+          channel_name?: string | null
+          duration?: number | null
+          id?: string
+          playlist_position?: number | null
+          source_id?: string | null
+          thumbnail_url?: string | null
+          title: string
+          user_id: string
+          youtube_id: string
+        }
+        Update: {
+          channel_name?: string | null
+          duration?: number | null
+          id?: string
+          playlist_position?: number | null
+          source_id?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          user_id?: string
+          youtube_id?: string
+        }
+        Relationships: []
+      }
+      youtube_sources: {
+        Row: {
+          created_at: string | null
+          id: string
+          thumbnail_url: string | null
+          title: string
+          type: string
+          user_id: string
+          video_count: number | null
+          youtube_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title: string
+          type: string
+          user_id: string
+          video_count?: number | null
+          youtube_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+          video_count?: number | null
+          youtube_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

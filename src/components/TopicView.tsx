@@ -300,11 +300,11 @@ function AddSubTopicDialog({ open, onOpenChange, topicId }: AddSubTopicDialogPro
   const [name, setName] = useState('');
   const { addSubTopic } = useStudyStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    addSubTopic({ name: name.trim(), topicId });
+    await addSubTopic({ name: name.trim(), topicId });
     setName('');
     onOpenChange(false);
   };

@@ -17,11 +17,11 @@ export function CreateSubjectDialog({ open, onOpenChange, examId }: CreateSubjec
   const [description, setDescription] = useState('');
   const { addSubject } = useStudyStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    addSubject({ name: name.trim(), description: description.trim(), examId });
+    await addSubject({ name: name.trim(), description: description.trim(), examId });
     
     setName('');
     setDescription('');

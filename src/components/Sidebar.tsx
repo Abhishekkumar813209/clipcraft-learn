@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { BookOpen, Library, Video, Plus, Settings, ChevronRight, GraduationCap, FileText } from 'lucide-react';
+import { BookOpen, Library, Video, Plus, LogOut, ChevronRight, GraduationCap, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStudyStore } from '@/stores/studyStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateExamDialog } from './CreateExamDialog';
@@ -14,6 +15,7 @@ interface SidebarProps {
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
   const [showCreateExam, setShowCreateExam] = useState(false);
   const { exams, selectedExamId, setSelectedExam } = useStudyStore();
+  const { signOut } = useAuth();
 
   return (
     <>
@@ -108,9 +110,9 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-sidebar-border">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-sidebar-foreground">
-            <Settings className="h-4 w-4" />
-            Settings
+          <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-sidebar-foreground" onClick={signOut}>
+            <LogOut className="h-4 w-4" />
+            Sign Out
           </Button>
         </div>
       </aside>
