@@ -1,47 +1,17 @@
 
 
-# Exam CRUD UI + Password Reset Flow + Fix Profile Trigger
+# Make Exam Add Button Visible + Improve Exam Section UX
 
-## Issues Found
+## Problem
+The "+" button next to "Your Exams" is a 24x24 ghost button that blends into the sidebar background. Users can't find it.
 
-1. **Database trigger missing**: The `handle_new_user` trigger doesn't exist in the database despite the function being there. This means profile rows aren't created on signup, which could cause auth issues.
-2. **No edit/delete UI for exams**: The store has `updateExam` and `deleteExam` but the sidebar only shows exam names with no way to edit or delete them.
-3. **No password reset flow**: No forgot password link on the auth page, no `/reset-password` route.
+## Changes
 
-## Plan
+### `src/components/Sidebar.tsx`
+1. Replace the tiny ghost "+" icon with a visible, styled "Create Exam" button when no exams exist — full-width with border, icon, and label
+2. When exams exist, keep the "+" but make it larger, with a visible border/background so it's actually noticeable
+3. Add a subtle tooltip on the "+" button saying "Add new exam"
+4. Make the "No exams yet" empty state include a prominent call-to-action button instead of just plain text
 
-### 1. Fix profile trigger (Database migration)
-```sql
-CREATE OR REPLACE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-```
-
-### 2. Add exam context menu in Sidebar
-- Add a right-click context menu (or three-dot `MoreHorizontal` icon) on each exam item in the sidebar
-- Options: **Edit** (opens edit dialog), **Delete** (confirmation alert dialog)
-- Edit dialog: reuse similar UI to `CreateExamDialog` but pre-filled with current values, calls `updateExam`
-- Delete: alert dialog with confirmation, calls `deleteExam`
-
-### 3. Add password reset flow to Auth page
-- Add "Forgot password?" link below the password field on login mode
-- Clicking it shows email input + "Send Reset Link" button
-- Calls `supabase.auth.resetPasswordForEmail(email, { redirectTo: origin + '/reset-password' })`
-
-### 4. Create `/reset-password` page
-- New file: `src/pages/ResetPassword.tsx`
-- Checks for `type=recovery` in URL hash
-- Shows new password form
-- Calls `supabase.auth.updateUser({ password })`
-- Add route in `App.tsx`: `<Route path="/reset-password" element={<ResetPassword />} />`
-
-## Files to Modify/Create
-
-| File | Changes |
-|------|---------|
-| Database migration | Recreate the `on_auth_user_created` trigger |
-| `src/components/Sidebar.tsx` | Add edit/delete context menu for exams |
-| `src/pages/Auth.tsx` | Add "Forgot password?" link and reset email flow |
-| `src/pages/ResetPassword.tsx` | New — password reset form |
-| `src/App.tsx` | Add `/reset-password` route |
+The result: users will see a clear, obvious button to create exams — not a nearly invisible 24px icon.
 
