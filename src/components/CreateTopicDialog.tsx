@@ -42,7 +42,7 @@ export function CreateTopicDialog({ open, onOpenChange, subjectId }: CreateTopic
               placeholder="e.g., Modern History, Thermodynamics"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 
@@ -53,7 +53,7 @@ export function CreateTopicDialog({ open, onOpenChange, subjectId }: CreateTopic
               placeholder="Add notes about this topic..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-secondary border-border resize-none"
+              className="bg-background border-input resize-none"
               rows={3}
             />
           </div>

@@ -236,7 +236,7 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
             <div className="space-y-2">
               <Label>Exam</Label>
               <Select value={selectedExamId} onValueChange={setSelectedExamId}>
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select exam" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
@@ -257,7 +257,7 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
                 onValueChange={setSelectedSubjectId}
                 disabled={!selectedExamId}
               >
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select subject" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
@@ -278,7 +278,7 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
                 onValueChange={setSelectedTopicId}
                 disabled={!selectedSubjectId}
               >
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select topic" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
@@ -299,7 +299,7 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
                 onValueChange={setSelectedSubTopicId}
                 disabled={!selectedTopicId}
               >
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select sub-topic" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
@@ -320,7 +320,7 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
               placeholder="e.g., Best explanation of causes"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 

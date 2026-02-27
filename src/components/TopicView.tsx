@@ -323,7 +323,7 @@ function AddSubTopicDialog({ open, onOpenChange, topicId }: AddSubTopicDialogPro
               placeholder="e.g., Causes of French Revolution"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
             <p className="text-xs text-muted-foreground">
               Sub-topics represent specific concepts. Clips will be organized under these.
