@@ -52,7 +52,7 @@ export function EditExamDialog({ open, onOpenChange, exam }: EditExamDialogProps
                   className={`w-10 h-10 rounded-lg text-xl flex items-center justify-center transition-all ${
                     icon === emoji
                       ? 'bg-primary/20 ring-2 ring-primary'
-                      : 'bg-secondary hover:bg-secondary/80'
+                      : 'bg-muted/20 hover:bg-muted/30'
                   }`}
                 >
                   {emoji}
@@ -68,7 +68,7 @@ export function EditExamDialog({ open, onOpenChange, exam }: EditExamDialogProps
               placeholder="e.g., UPSC Civil Services"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 
@@ -79,7 +79,7 @@ export function EditExamDialog({ open, onOpenChange, exam }: EditExamDialogProps
               placeholder="Add notes about this exam..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-secondary border-border resize-none"
+              className="bg-background border-input resize-none"
               rows={3}
             />
           </div>

@@ -88,7 +88,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full border-dashed border-primary/40 bg-primary/10 gap-2 text-primary hover:bg-primary/20"
+                    className="w-full border-none bg-orange-500 gap-2 text-white hover:bg-orange-600"
                     onClick={() => setShowCreateExam(true)}
                   >
                     <Plus className="h-4 w-4" />

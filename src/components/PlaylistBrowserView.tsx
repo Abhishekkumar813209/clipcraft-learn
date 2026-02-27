@@ -115,7 +115,7 @@ export function PlaylistBrowserView({ onBack, onSelectVideo }: PlaylistBrowserVi
           placeholder="Search videos..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 bg-secondary border-border"
+          className="pl-10 bg-background border-input"
         />
       </div>
 

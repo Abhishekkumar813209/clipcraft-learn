@@ -240,7 +240,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
               placeholder="https://youtube.com/watch?v=..."
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 
@@ -252,7 +252,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
               placeholder="e.g., Modern History Lecture 5 - PW"
               value={videoTitle}
               onChange={(e) => setVideoTitle(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 
@@ -265,7 +265,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
                 placeholder="0:00 or 1:30:00"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="bg-secondary border-border"
+                className="bg-background border-input"
               />
             </div>
             <div className="space-y-2">
@@ -275,7 +275,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
                 placeholder="5:00 or 1:45:30"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="bg-secondary border-border"
+                className="bg-background border-input"
               />
             </div>
           </div>
@@ -290,7 +290,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
               setSelectedTopicId('');
               setSelectedSubTopicId('');
             }}>
-              <SelectTrigger className="bg-secondary border-border">
+              <SelectTrigger className="bg-background border-input">
                 <SelectValue placeholder="Select Exam" />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
@@ -308,7 +308,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
                 setSelectedTopicId('');
                 setSelectedSubTopicId('');
               }}>
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select Subject" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
@@ -326,7 +326,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
                 setSelectedTopicId(v);
                 setSelectedSubTopicId('');
               }}>
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select Topic" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">
@@ -341,7 +341,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
 
             {selectedTopicId && (
               <Select value={selectedSubTopicId} onValueChange={setSelectedSubTopicId}>
-                <SelectTrigger className="bg-secondary border-border">
+                <SelectTrigger className="bg-background border-input">
                   <SelectValue placeholder="Select Sub-Topic" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border">

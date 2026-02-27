@@ -157,7 +157,7 @@ function AddSourceDialog({ open, onOpenChange }: AddSourceDialogProps) {
           <div className="space-y-2">
             <Label>Source Type</Label>
             <Select value={type} onValueChange={(v) => setType(v as 'playlist' | 'channel')}>
-              <SelectTrigger className="bg-secondary border-border">
+              <SelectTrigger className="bg-background border-input">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
@@ -179,7 +179,7 @@ function AddSourceDialog({ open, onOpenChange }: AddSourceDialogProps) {
                 }
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="pl-10 bg-secondary border-border"
+                className="pl-10 bg-background border-input"
               />
             </div>
           </div>
@@ -191,7 +191,7 @@ function AddSourceDialog({ open, onOpenChange }: AddSourceDialogProps) {
               placeholder="e.g., PW History Marathon, Unacademy Physics"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 

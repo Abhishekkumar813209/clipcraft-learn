@@ -42,7 +42,7 @@ export function CreateSubjectDialog({ open, onOpenChange, examId }: CreateSubjec
               placeholder="e.g., History, Physics, Political Science"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 
@@ -53,7 +53,7 @@ export function CreateSubjectDialog({ open, onOpenChange, examId }: CreateSubjec
               placeholder="Add notes about this subject..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-secondary border-border resize-none"
+              className="bg-background border-input resize-none"
               rows={3}
             />
           </div>
