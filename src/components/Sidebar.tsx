@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, Library, Video, Plus, LogOut, ChevronRight, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useStudyStore } from '@/stores/studyStore';
 import { useAuth } from '@/contexts/AuthContext';
@@ -59,17 +60,41 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
             <span className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
               Your Exams
             </span>
-            <Button variant="ghost" size="icon" className="h-6 w-6 hover:bg-sidebar-accent" onClick={() => setShowCreateExam(true)}>
-              <Plus className="h-4 w-4" />
-            </Button>
+            {exams.length > 0 && (
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7 border-sidebar-border bg-sidebar-accent/50 hover:bg-sidebar-accent"
+                      onClick={() => setShowCreateExam(true)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Add new exam</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </div>
           
           <ScrollArea className="flex-1 px-2">
             <div className="space-y-1 pb-4">
               {exams.length === 0 ? (
-                <p className="text-sm text-sidebar-foreground/60 px-2 py-4">
-                  No exams yet. Create one to get started!
-                </p>
+                <div className="px-2 py-4 space-y-3">
+                  <p className="text-sm text-sidebar-foreground/60">
+                    No exams yet. Create one to get started!
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full border-dashed border-sidebar-border gap-2 text-sidebar-foreground hover:bg-sidebar-accent"
+                    onClick={() => setShowCreateExam(true)}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create Your First Exam
+                  </Button>
+                </div>
               ) : (
                 exams.map((exam) => (
                   <div
