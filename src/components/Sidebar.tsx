@@ -88,7 +88,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full border-dashed border-sidebar-border gap-2 text-sidebar-foreground hover:bg-sidebar-accent"
+                    className="w-full border-dashed border-primary/40 bg-primary/10 gap-2 text-primary hover:bg-primary/20"
                     onClick={() => setShowCreateExam(true)}
                   >
                     <Plus className="h-4 w-4" />
@@ -139,7 +139,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-sidebar-border">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-sidebar-foreground" onClick={signOut}>
+          <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground" onClick={signOut}>
             <LogOut className="h-4 w-4" />
             Sign Out
           </Button>
