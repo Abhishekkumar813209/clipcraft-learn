@@ -1,17 +1,14 @@
 
 
-# Make Exam Add Button Visible + Improve Exam Section UX
+# Fix Button Colors in Sidebar
 
 ## Problem
-The "+" button next to "Your Exams" is a 24x24 ghost button that blends into the sidebar background. Users can't find it.
+From the screenshots:
+1. "Create Your First Exam" button: dashed border is barely visible, text is too faint against the dark sidebar
+2. "Sign Out" hover: light background makes dark text invisible
 
-## Changes
+## Changes in `src/components/Sidebar.tsx`
 
-### `src/components/Sidebar.tsx`
-1. Replace the tiny ghost "+" icon with a visible, styled "Create Exam" button when no exams exist — full-width with border, icon, and label
-2. When exams exist, keep the "+" but make it larger, with a visible border/background so it's actually noticeable
-3. Add a subtle tooltip on the "+" button saying "Add new exam"
-4. Make the "No exams yet" empty state include a prominent call-to-action button instead of just plain text
-
-The result: users will see a clear, obvious button to create exams — not a nearly invisible 24px icon.
+1. **"Create Your First Exam" button**: Change to use a visible primary/accent color with proper contrast — use `bg-primary/20 border-primary/40 text-primary hover:bg-primary/30` instead of the current outline with sidebar-border colors
+2. **"Sign Out" button hover**: Fix hover to use `hover:bg-sidebar-accent hover:text-sidebar-foreground` so text stays visible on hover
 
