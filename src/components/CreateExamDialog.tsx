@@ -19,11 +19,11 @@ export function CreateExamDialog({ open, onOpenChange }: CreateExamDialogProps) 
   const [icon, setIcon] = useState('📚');
   const { addExam, setSelectedExam } = useStudyStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    const id = addExam({ name: name.trim(), description: description.trim(), icon });
+    const id = await addExam({ name: name.trim(), description: description.trim(), icon });
     setSelectedExam(id);
     
     setName('');

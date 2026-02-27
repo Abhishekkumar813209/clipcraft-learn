@@ -183,7 +183,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
   const topics = selectedSubjectId ? getTopicsBySubject(selectedSubjectId) : [];
   const subTopics = selectedTopicId ? getSubTopicsByTopic(selectedTopicId) : [];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const youtubeId = extractYouTubeId(videoUrl);
@@ -196,7 +196,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
     if (video) {
       videoId = video.id;
     } else {
-      videoId = addVideo({
+      videoId = await addVideo({
         youtubeId,
         title: videoTitle || 'Untitled Video',
         duration: 0,
@@ -204,7 +204,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
     }
 
     // Add clip
-    addClip({
+    await addClip({
       videoId,
       startTime: parseTimeToSeconds(startTime),
       endTime: parseTimeToSeconds(endTime),

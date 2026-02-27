@@ -129,13 +129,13 @@ function AddSourceDialog({ open, onOpenChange }: AddSourceDialogProps) {
   const [type, setType] = useState<'playlist' | 'channel'>('playlist');
   const { addSource } = useStudyStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const youtubeId = extractYouTubeId(url);
     if (!youtubeId || !title.trim()) return;
 
-    addSource({
+    await addSource({
       type,
       youtubeId,
       title: title.trim(),

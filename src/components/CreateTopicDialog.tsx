@@ -17,11 +17,11 @@ export function CreateTopicDialog({ open, onOpenChange, subjectId }: CreateTopic
   const [description, setDescription] = useState('');
   const { addTopic } = useStudyStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    addTopic({ name: name.trim(), description: description.trim(), subjectId });
+    await addTopic({ name: name.trim(), description: description.trim(), subjectId });
     
     setName('');
     setDescription('');

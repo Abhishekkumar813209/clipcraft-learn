@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { DashboardView } from '@/components/DashboardView';
 import { SourceLibraryView } from '@/components/SourceLibraryView';
@@ -8,15 +9,42 @@ import { PlaylistBrowserView } from '@/components/PlaylistBrowserView';
 import { VideoPlayerView } from '@/components/VideoPlayerView';
 import { PdfReaderView } from '@/components/PdfReaderView';
 import { useStudyStore } from '@/stores/studyStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { PanelLeftClose, PanelLeft } from 'lucide-react';
+import { PanelLeftClose, PanelLeft, Loader2 } from 'lucide-react';
 
 type ViewType = 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { selectedVideoForPlayer, setSelectedVideoForPlayer, setSelectedSource } = useStudyStore();
+  const { selectedVideoForPlayer, setSelectedVideoForPlayer, setSelectedSource, fetchAllData, loading } = useStudyStore();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  // Fetch data when user is authenticated
+  useEffect(() => {
+    if (user) {
+      fetchAllData();
+    }
+  }, [user, fetchAllData]);
+
+  if (authLoading || loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   const handleSelectVideo = (video: { videoId: string; title: string }) => {
     setSelectedVideoForPlayer(video);
@@ -68,7 +96,6 @@ const Index = () => {
         <Sidebar activeView={activeView} onViewChange={setActiveView} />
       )}
       <main className="flex-1 flex flex-col overflow-hidden relative">
-        {/* Sidebar toggle button */}
         <Button
           variant="ghost"
           size="icon"
