@@ -1,1 +1,10 @@
 project_id = "agtibwrtzxiwtozikoij"
+
+[functions.pdf-chat]
+verify_jwt = false
+
+[functions.youtube-playlist]
+verify_jwt = false
+
+[functions.video-chat]
+verify_jwt = false
