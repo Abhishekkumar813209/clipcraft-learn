@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { useStudyStore } from '@/stores/studyStore';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
 import { formatDuration } from '@/types';
@@ -20,6 +21,8 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
     exams, 
     addVideo, 
     addClip, 
+    addTopic,
+    addSubTopic,
     getSubjectsByExam, 
     getTopicsBySubject, 
     getSubTopicsByTopic 
@@ -273,43 +276,29 @@ export function VideoPlayerView({ videoId, videoTitle, onBack }: VideoPlayerView
             {/* Topic */}
             <div className="space-y-2">
               <Label>Topic</Label>
-              <Select 
-                value={selectedTopicId} 
+              <QuickCreateSelect
+                value={selectedTopicId}
                 onValueChange={setSelectedTopicId}
+                placeholder="Select topic"
                 disabled={!selectedSubjectId}
-              >
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue placeholder="Select topic" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
-                  {topics.map(topic => (
-                    <SelectItem key={topic.id} value={topic.id}>
-                      {topic.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                items={topics.map(t => ({ id: t.id, name: t.name }))}
+                createLabel="Topic"
+                onCreate={(name) => addTopic({ name, subjectId: selectedSubjectId })}
+              />
             </div>
 
             {/* Sub-Topic */}
             <div className="space-y-2">
               <Label>Sub-Topic</Label>
-              <Select 
-                value={selectedSubTopicId} 
+              <QuickCreateSelect
+                value={selectedSubTopicId}
                 onValueChange={setSelectedSubTopicId}
+                placeholder="Select sub-topic"
                 disabled={!selectedTopicId}
-              >
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue placeholder="Select sub-topic" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
-                  {subTopics.map(subTopic => (
-                    <SelectItem key={subTopic.id} value={subTopic.id}>
-                      {subTopic.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                items={subTopics.map(st => ({ id: st.id, name: st.name }))}
+                createLabel="Sub-Topic"
+                onCreate={(name) => addSubTopic({ name, topicId: selectedTopicId })}
+              />
             </div>
           </div>
 
