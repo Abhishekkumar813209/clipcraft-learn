@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { extractYouTubeId, formatDuration, parseTimeToSeconds } from '@/types';
 import { cn } from '@/lib/utils';
@@ -176,6 +177,8 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
     getSubTopicsByTopic,
     addVideo,
     addClip,
+    addTopic,
+    addSubTopic,
     getVideoByYouTubeId,
   } = useStudyStore();
 
@@ -322,36 +325,28 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
             )}
 
             {selectedSubjectId && (
-              <Select value={selectedTopicId} onValueChange={(v) => {
-                setSelectedTopicId(v);
-                setSelectedSubTopicId('');
-              }}>
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue placeholder="Select Topic" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
-                  {topics.map((topic) => (
-                    <SelectItem key={topic.id} value={topic.id}>
-                      {topic.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <QuickCreateSelect
+                value={selectedTopicId}
+                onValueChange={(v) => {
+                  setSelectedTopicId(v);
+                  setSelectedSubTopicId('');
+                }}
+                placeholder="Select Topic"
+                items={topics.map(t => ({ id: t.id, name: t.name }))}
+                createLabel="Topic"
+                onCreate={(name) => addTopic({ name, subjectId: selectedSubjectId })}
+              />
             )}
 
             {selectedTopicId && (
-              <Select value={selectedSubTopicId} onValueChange={setSelectedSubTopicId}>
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue placeholder="Select Sub-Topic" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
-                  {subTopics.map((subTopic) => (
-                    <SelectItem key={subTopic.id} value={subTopic.id}>
-                      {subTopic.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <QuickCreateSelect
+                value={selectedSubTopicId}
+                onValueChange={setSelectedSubTopicId}
+                placeholder="Select Sub-Topic"
+                items={subTopics.map(st => ({ id: st.id, name: st.name }))}
+                createLabel="Sub-Topic"
+                onCreate={(name) => addSubTopic({ name, topicId: selectedTopicId })}
+              />
             )}
           </div>
 
@@ -390,7 +385,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
               placeholder="e.g., Best explanation of French Revolution causes"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              className="bg-secondary border-border"
+              className="bg-background border-input"
             />
           </div>
 
@@ -401,7 +396,7 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
               placeholder="Add any additional notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="bg-secondary border-border resize-none"
+              className="bg-background border-input resize-none"
               rows={2}
             />
           </div>
