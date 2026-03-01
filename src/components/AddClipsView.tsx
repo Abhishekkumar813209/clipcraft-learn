@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Video, Clock, Star, Sparkles, Trash2, GripVertical, Play } from 'lucide-react';
+import { Plus, Video, Clock, Star, Sparkles, Trash2, Play, ChevronRight, FolderOpen, FileText } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,17 +8,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { extractYouTubeId, formatDuration, parseTimeToSeconds } from '@/types';
 import { cn } from '@/lib/utils';
 
 export function AddClipsView() {
   const [showAddClip, setShowAddClip] = useState(false);
-  const { exams, clips, videos, getVideoByYouTubeId } = useStudyStore();
+  const { exams, clips, videos, deleteClip } = useStudyStore();
 
-  // Get recent clips
-  const recentClips = [...clips]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 10);
+  // Build tree: Exam → Subject → Topic → SubTopic → Clips
+  const hasClips = clips.length > 0;
 
   return (
     <div className="flex-1 overflow-auto p-8">
@@ -63,28 +62,16 @@ export function AddClipsView() {
             </Button>
           </div>
 
-          {/* Recent Clips */}
+          {/* Clips Tree */}
           <div>
-            <h2 className="font-display text-lg font-semibold mb-4">Recently Added Clips</h2>
-            {recentClips.length === 0 ? (
+            <h2 className="font-display text-lg font-semibold mb-4">All Clips</h2>
+            {!hasClips ? (
               <div className="clip-card text-center py-8">
                 <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-muted-foreground text-sm">No clips added yet</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {recentClips.map((clip, index) => {
-                  const video = videos.find(v => v.id === clip.videoId);
-                  return (
-                    <ClipPreviewCard 
-                      key={clip.id} 
-                      clip={clip} 
-                      video={video}
-                      index={index}
-                    />
-                  );
-                })}
-              </div>
+              <ClipsTree exams={exams} clips={clips} videos={videos} deleteClip={deleteClip} />
             )}
           </div>
         </>
@@ -95,59 +82,147 @@ export function AddClipsView() {
   );
 }
 
-function ClipPreviewCard({ clip, video, index }: { clip: any; video: any; index: number }) {
-  const { deleteClip } = useStudyStore();
-  
+function ClipsTree({ exams, clips, videos, deleteClip }: {
+  exams: any[];
+  clips: any[];
+  videos: any[];
+  deleteClip: (id: string) => void;
+}) {
+  // Build lookup: subTopicId → clips
+  const clipsBySubTopic: Record<string, any[]> = {};
+  for (const clip of clips) {
+    if (!clipsBySubTopic[clip.subTopicId]) clipsBySubTopic[clip.subTopicId] = [];
+    clipsBySubTopic[clip.subTopicId].push(clip);
+  }
+
+  // Filter to only exams/subjects/topics/subtopics that have clips
+  const filteredExams = exams
+    .map(exam => {
+      const subjects = (exam.subjects || [])
+        .map((subject: any) => {
+          const topics = (subject.topics || [])
+            .map((topic: any) => {
+              const subTopics = (topic.subTopics || [])
+                .filter((st: any) => clipsBySubTopic[st.id]?.length > 0)
+                .map((st: any) => ({
+                  ...st,
+                  clips: (clipsBySubTopic[st.id] || []).sort((a: any, b: any) => a.startTime - b.startTime),
+                }));
+              return subTopics.length > 0 ? { ...topic, subTopics } : null;
+            })
+            .filter(Boolean);
+          return topics.length > 0 ? { ...subject, topics } : null;
+        })
+        .filter(Boolean);
+      return subjects.length > 0 ? { ...exam, subjects } : null;
+    })
+    .filter(Boolean);
+
+  if (filteredExams.length === 0) {
+    return (
+      <div className="clip-card text-center py-8">
+        <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+        <p className="text-muted-foreground text-sm">No clips added yet</p>
+      </div>
+    );
+  }
+
   return (
-    <div 
-      className="clip-card flex items-center gap-4 animate-fade-in"
-      style={{ animationDelay: `${index * 30}ms` }}
-    >
-      <div className="w-24 h-14 rounded-md bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden">
-        {video?.youtubeId ? (
-          <img 
-            src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
-            alt={video?.title || 'Video thumbnail'}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <Video className="w-6 h-6 text-muted-foreground" />
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          {clip.isPrimary ? (
-            <Star className="w-4 h-4 text-clip-primary fill-clip-primary" />
-          ) : (
-            <Sparkles className="w-4 h-4 text-clip-supplementary" />
-          )}
-          <span className="text-sm font-medium truncate">
-            {clip.label || video?.title || 'Untitled clip'}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          {formatDuration(clip.startTime)} → {formatDuration(clip.endTime)}
-        </p>
-      </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => {
-          const url = `https://youtube.com/watch?v=${video?.youtubeId}&t=${clip.startTime}`;
-          window.open(url, '_blank');
-        }}
-      >
-        <Play className="w-4 h-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-destructive hover:text-destructive"
-        onClick={() => deleteClip(clip.id)}
-      >
-        <Trash2 className="w-4 h-4" />
-      </Button>
-    </div>
+    <Accordion type="multiple" className="space-y-2">
+      {filteredExams.map((exam: any) => (
+        <AccordionItem key={exam.id} value={exam.id} className="clip-card border-none">
+          <AccordionTrigger className="py-3 hover:no-underline">
+            <span className="flex items-center gap-2 text-base font-semibold">
+              <span>{exam.icon || '📁'}</span>
+              {exam.name}
+            </span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <Accordion type="multiple" className="pl-4 space-y-1">
+              {exam.subjects.map((subject: any) => (
+                <AccordionItem key={subject.id} value={subject.id} className="border-none">
+                  <AccordionTrigger className="py-2 hover:no-underline text-sm">
+                    <span className="flex items-center gap-2">
+                      <FolderOpen className="w-4 h-4 text-muted-foreground" />
+                      {subject.name}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <Accordion type="multiple" className="pl-4 space-y-1">
+                      {subject.topics.map((topic: any) => (
+                        <AccordionItem key={topic.id} value={topic.id} className="border-none">
+                          <AccordionTrigger className="py-2 hover:no-underline text-sm">
+                            <span className="flex items-center gap-2">
+                              <FolderOpen className="w-3.5 h-3.5 text-muted-foreground" />
+                              {topic.name}
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="pl-4 space-y-2">
+                              {topic.subTopics.map((st: any) => (
+                                <div key={st.id}>
+                                  <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1.5 py-1">
+                                    <FileText className="w-3.5 h-3.5" />
+                                    {st.name}
+                                    <span className="text-xs bg-secondary px-1.5 py-0.5 rounded-full">
+                                      {st.clips.length}
+                                    </span>
+                                  </div>
+                                  <div className="space-y-1 pl-5">
+                                    {st.clips.map((clip: any) => {
+                                      const video = videos.find((v: any) => v.id === clip.videoId);
+                                      return (
+                                        <div key={clip.id} className="flex items-center gap-2 p-1.5 rounded bg-secondary/50 text-xs group">
+                                          {clip.isPrimary ? (
+                                            <Star className="w-3 h-3 text-clip-primary fill-clip-primary flex-shrink-0" />
+                                          ) : (
+                                            <Sparkles className="w-3 h-3 text-clip-supplementary flex-shrink-0" />
+                                          )}
+                                          <span className="font-mono text-primary">
+                                            {formatDuration(clip.startTime)} → {formatDuration(clip.endTime)}
+                                          </span>
+                                          <span className="text-muted-foreground truncate flex-1">
+                                            {clip.label || video?.title || 'Clip'}
+                                          </span>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6 opacity-0 group-hover:opacity-100"
+                                            onClick={() => {
+                                              if (video?.youtubeId) {
+                                                window.open(`https://youtube.com/watch?v=${video.youtubeId}&t=${clip.startTime}`, '_blank');
+                                              }
+                                            }}
+                                          >
+                                            <Play className="w-3 h-3" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                                            onClick={() => deleteClip(clip.id)}
+                                          >
+                                            <Trash2 className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 }
 
@@ -192,7 +267,6 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
     const youtubeId = extractYouTubeId(videoUrl);
     if (!youtubeId || !selectedSubTopicId || !startTime || !endTime) return;
 
-    // Add or get video
     let video = getVideoByYouTubeId(youtubeId);
     let videoId: string;
     
@@ -206,7 +280,6 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
       });
     }
 
-    // Add clip
     await addClip({
       videoId,
       startTime: parseTimeToSeconds(startTime),
@@ -217,7 +290,6 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
       subTopicId: selectedSubTopicId,
     });
 
-    // Reset form
     setVideoUrl('');
     setVideoTitle('');
     setStartTime('');
@@ -235,182 +307,69 @@ function AddClipDialog({ open, onOpenChange }: AddClipDialogProps) {
           <DialogTitle className="font-display text-xl">Add New Clip</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Video URL */}
           <div className="space-y-2">
             <Label htmlFor="videoUrl">YouTube Video URL</Label>
-            <Input
-              id="videoUrl"
-              placeholder="https://youtube.com/watch?v=..."
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              className="bg-background border-input"
-            />
+            <Input id="videoUrl" placeholder="https://youtube.com/watch?v=..." value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="bg-background border-input" />
           </div>
-
-          {/* Video Title */}
           <div className="space-y-2">
             <Label htmlFor="videoTitle">Video Title (for display)</Label>
-            <Input
-              id="videoTitle"
-              placeholder="e.g., Modern History Lecture 5 - PW"
-              value={videoTitle}
-              onChange={(e) => setVideoTitle(e.target.value)}
-              className="bg-background border-input"
-            />
+            <Input id="videoTitle" placeholder="e.g., Modern History Lecture 5 - PW" value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} className="bg-background border-input" />
           </div>
-
-          {/* Time Range */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="startTime">Start Time</Label>
-              <Input
-                id="startTime"
-                placeholder="0:00 or 1:30:00"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="bg-background border-input"
-              />
+              <Input id="startTime" placeholder="0:00 or 1:30:00" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="bg-background border-input" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="endTime">End Time</Label>
-              <Input
-                id="endTime"
-                placeholder="5:00 or 1:45:30"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="bg-background border-input"
-              />
+              <Input id="endTime" placeholder="5:00 or 1:45:30" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="bg-background border-input" />
             </div>
           </div>
-
-          {/* Assignment Dropdowns */}
           <div className="space-y-4 p-4 bg-secondary/50 rounded-lg">
             <Label className="text-sm font-semibold">Assign to Concept</Label>
-            
-            <Select value={selectedExamId} onValueChange={(v) => {
-              setSelectedExamId(v);
-              setSelectedSubjectId('');
-              setSelectedTopicId('');
-              setSelectedSubTopicId('');
-            }}>
-              <SelectTrigger className="bg-background border-input">
-                <SelectValue placeholder="Select Exam" />
-              </SelectTrigger>
+            <Select value={selectedExamId} onValueChange={(v) => { setSelectedExamId(v); setSelectedSubjectId(''); setSelectedTopicId(''); setSelectedSubTopicId(''); }}>
+              <SelectTrigger className="bg-background border-input"><SelectValue placeholder="Select Exam" /></SelectTrigger>
               <SelectContent className="bg-popover border-border">
-                {exams.map((exam) => (
-                  <SelectItem key={exam.id} value={exam.id}>
-                    {exam.icon} {exam.name}
-                  </SelectItem>
-                ))}
+                {exams.map((exam) => (<SelectItem key={exam.id} value={exam.id}>{exam.icon} {exam.name}</SelectItem>))}
               </SelectContent>
             </Select>
-
             {selectedExamId && (
-              <Select value={selectedSubjectId} onValueChange={(v) => {
-                setSelectedSubjectId(v);
-                setSelectedTopicId('');
-                setSelectedSubTopicId('');
-              }}>
-                <SelectTrigger className="bg-background border-input">
-                  <SelectValue placeholder="Select Subject" />
-                </SelectTrigger>
+              <Select value={selectedSubjectId} onValueChange={(v) => { setSelectedSubjectId(v); setSelectedTopicId(''); setSelectedSubTopicId(''); }}>
+                <SelectTrigger className="bg-background border-input"><SelectValue placeholder="Select Subject" /></SelectTrigger>
                 <SelectContent className="bg-popover border-border">
-                  {subjects.map((subject) => (
-                    <SelectItem key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </SelectItem>
-                  ))}
+                  {subjects.map((subject) => (<SelectItem key={subject.id} value={subject.id}>{subject.name}</SelectItem>))}
                 </SelectContent>
               </Select>
             )}
-
             {selectedSubjectId && (
-              <QuickCreateSelect
-                value={selectedTopicId}
-                onValueChange={(v) => {
-                  setSelectedTopicId(v);
-                  setSelectedSubTopicId('');
-                }}
-                placeholder="Select Topic"
-                items={topics.map(t => ({ id: t.id, name: t.name }))}
-                createLabel="Topic"
-                onCreate={(name) => addTopic({ name, subjectId: selectedSubjectId })}
-              />
+              <QuickCreateSelect value={selectedTopicId} onValueChange={(v) => { setSelectedTopicId(v); setSelectedSubTopicId(''); }} placeholder="Select Topic" items={topics.map(t => ({ id: t.id, name: t.name }))} createLabel="Topic" onCreate={(name) => addTopic({ name, subjectId: selectedSubjectId })} />
             )}
-
             {selectedTopicId && (
-              <QuickCreateSelect
-                value={selectedSubTopicId}
-                onValueChange={setSelectedSubTopicId}
-                placeholder="Select Sub-Topic"
-                items={subTopics.map(st => ({ id: st.id, name: st.name }))}
-                createLabel="Sub-Topic"
-                onCreate={(name) => addSubTopic({ name, topicId: selectedTopicId })}
-              />
+              <QuickCreateSelect value={selectedSubTopicId} onValueChange={setSelectedSubTopicId} placeholder="Select Sub-Topic" items={subTopics.map(st => ({ id: st.id, name: st.name }))} createLabel="Sub-Topic" onCreate={(name) => addSubTopic({ name, topicId: selectedTopicId })} />
             )}
           </div>
-
-          {/* Clip Type */}
           <div className="space-y-2">
             <Label>Clip Type</Label>
             <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={isPrimary ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setIsPrimary(true)}
-                className={cn(isPrimary && 'bg-clip-primary hover:bg-clip-primary/90')}
-              >
-                <Star className="w-4 h-4 mr-2" />
-                Primary
+              <Button type="button" variant={isPrimary ? 'default' : 'outline'} size="sm" onClick={() => setIsPrimary(true)} className={cn(isPrimary && 'bg-clip-primary hover:bg-clip-primary/90')}>
+                <Star className="w-4 h-4 mr-2" />Primary
               </Button>
-              <Button
-                type="button"
-                variant={!isPrimary ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setIsPrimary(false)}
-                className={cn(!isPrimary && 'bg-clip-supplementary hover:bg-clip-supplementary/90')}
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Supplementary
+              <Button type="button" variant={!isPrimary ? 'default' : 'outline'} size="sm" onClick={() => setIsPrimary(false)} className={cn(!isPrimary && 'bg-clip-supplementary hover:bg-clip-supplementary/90')}>
+                <Sparkles className="w-4 h-4 mr-2" />Supplementary
               </Button>
             </div>
           </div>
-
-          {/* Label & Notes */}
           <div className="space-y-2">
             <Label htmlFor="label">Label (optional)</Label>
-            <Input
-              id="label"
-              placeholder="e.g., Best explanation of French Revolution causes"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              className="bg-background border-input"
-            />
+            <Input id="label" placeholder="e.g., Best explanation of French Revolution causes" value={label} onChange={(e) => setLabel(e.target.value)} className="bg-background border-input" />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="notes">Notes (optional)</Label>
-            <Textarea
-              id="notes"
-              placeholder="Add any additional notes..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="bg-background border-input resize-none"
-              rows={2}
-            />
+            <Textarea id="notes" placeholder="Add any additional notes..." value={notes} onChange={(e) => setNotes(e.target.value)} className="bg-background border-input resize-none" rows={2} />
           </div>
-
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={!videoUrl || !startTime || !endTime || !selectedSubTopicId}
-            >
-              Add Clip
-            </Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" disabled={!videoUrl || !startTime || !endTime || !selectedSubTopicId}>Add Clip</Button>
           </DialogFooter>
         </form>
       </DialogContent>
