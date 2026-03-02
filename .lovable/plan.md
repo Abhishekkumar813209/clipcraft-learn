@@ -1,45 +1,62 @@
 
 
-# Video Player UX Overhaul + Clips Organization
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-## Issues Identified (from your screenshots)
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-1. **Scroll problem** — Video player and clip form are stacked vertically, forcing you to scroll past the video every time you want to save a clip
-2. **No saved clips visible** — After adding clips, they don't appear below the video player for that video
-3. **YouTube "More Videos" overlay on pause** — YouTube hijacks the pause screen with recommendations (frustrating)
-4. **AI Doubt via screenshot** — You want to screenshot/select area of the video for AI. Unfortunately, YouTube iframe is cross-origin protected — browsers physically block any screenshot/canvas capture of embedded YouTube content. The transcript-based approach is the only viable method. We'll keep that but improve the UX.
-5. **Add Clips page — flat list** — Recently added clips are just a flat list, no organization by topic/subtopic
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-## Plan
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-### 1. Two-Column Layout for VideoPlayerView
-Split the page into two columns side-by-side:
-- **Left column (60%)**: Video player + playback controls + timeline + Set Start/End buttons
-- **Right column (40%)**: Scrollable panel with Assign to Sub-Topic form + clip type + label + Add button + list of clips already saved for this video
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-No more scrolling past the video. Everything is visible at once.
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-### 2. Show Saved Clips for Current Video
-Below the "Add Clip" button in the right column, show a list of clips that belong to the current YouTube video (filter `clips` where `videoId` matches). Each clip shows start→end time, label, sub-topic name, and a delete button.
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-### 3. Block YouTube Pause Overlay
-Add a transparent click-through overlay `div` on top of the YouTube iframe that activates when the video is paused. This overlay intercepts YouTube's "More Videos" recommendation popup. When user clicks the overlay, it calls `play()` to resume. YouTube's native pause overlay is blocked because our div sits on top.
+## 2. Clips Grouped by Video (within sub-topic)
 
-### 4. Add Clips Page — Folder/Tree Structure
-Replace the flat "Recently Added Clips" list with a collapsible tree structure:
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+
 ```text
-📁 Placement (Exam)
-  └─ 📂 DSA (Subject)
-      └─ 📂 Depesh Malviya (Topic)
-          └─ 📄 L-1 Repl and Output (Sub-Topic)
-              ├─ ⭐ 0:00 → 5:17  Getting Started With Node JS...
-              ├─ ⭐ 19:29 → 31:21  Getting Started With Node JS...
-              └─ ⭐ 32:31 → 45:28  Getting Started With Node JS...
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
 ```
-Collapsible accordion sections by Exam → Subject → Topic → SubTopic, with clips nested inside.
 
-### Files to Change
-- **`src/components/VideoPlayerView.tsx`** — Two-column layout, pause overlay, saved clips list
-- **`src/components/AddClipsView.tsx`** — Replace flat list with folder/tree structure
-- **`src/hooks/useYouTubePlayer.ts`** — No changes needed (rel=0 already set)
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
+
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 
