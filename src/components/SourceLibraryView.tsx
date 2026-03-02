@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Link, Youtube, Trash2, ExternalLink, FolderOpen, List } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
@@ -8,13 +9,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { extractYouTubeId } from '@/types';
 
-interface SourceLibraryViewProps {
-  onBrowsePlaylist: (sourceId: string) => void;
-}
-
-export function SourceLibraryView({ onBrowsePlaylist }: SourceLibraryViewProps) {
+export function SourceLibraryView() {
   const [showAddSource, setShowAddSource] = useState(false);
-  const { sources, deleteSource } = useStudyStore();
+  const { sources, deleteSource, setSelectedSource } = useStudyStore();
+  const navigate = useNavigate();
+
+  const handleBrowsePlaylist = (sourceId: string) => {
+    setSelectedSource(sourceId);
+    navigate(`/sources/${sourceId}`);
+  };
 
   return (
     <div className="flex-1 overflow-auto p-8">
@@ -40,7 +43,7 @@ export function SourceLibraryView({ onBrowsePlaylist }: SourceLibraryViewProps) 
           </div>
           <h3 className="font-display text-lg font-semibold mb-2">No saved sources</h3>
           <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
-            Save your favorite YouTube playlists or channels here. You'll be able to quickly select videos from these sources when creating clips.
+            Save your favorite YouTube playlists or channels here.
           </p>
           <Button onClick={() => setShowAddSource(true)}>
             <Plus className="w-4 h-4 mr-2" />
@@ -67,28 +70,18 @@ export function SourceLibraryView({ onBrowsePlaylist }: SourceLibraryViewProps) 
                   <h3 className="font-semibold truncate">{source.title}</h3>
                   <p className="text-sm text-muted-foreground capitalize">{source.type}</p>
                   {source.videoCount && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {source.videoCount} videos
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{source.videoCount} videos</p>
                   )}
                 </div>
               </div>
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
                 {source.type === 'playlist' && (
-                  <Button 
-                    variant="default" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => onBrowsePlaylist(source.id)}
-                  >
+                  <Button variant="default" size="sm" className="flex-1" onClick={() => handleBrowsePlaylist(source.id)}>
                     <List className="w-4 h-4 mr-2" />
                     Browse Videos
                   </Button>
                 )}
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={source.type !== 'playlist' ? 'flex-1' : ''}
+                <Button variant="ghost" size="sm" className={source.type !== 'playlist' ? 'flex-1' : ''}
                   onClick={() => {
                     const url = source.type === 'playlist'
                       ? `https://youtube.com/playlist?list=${source.youtubeId}`
@@ -99,12 +92,7 @@ export function SourceLibraryView({ onBrowsePlaylist }: SourceLibraryViewProps) 
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Open
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="text-destructive hover:text-destructive"
-                  onClick={() => deleteSource(source.id)}
-                >
+                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => deleteSource(source.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -131,16 +119,9 @@ function AddSourceDialog({ open, onOpenChange }: AddSourceDialogProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const youtubeId = extractYouTubeId(url);
     if (!youtubeId || !title.trim()) return;
-
-    await addSource({
-      type,
-      youtubeId,
-      title: title.trim(),
-    });
-
+    await addSource({ type, youtubeId, title: title.trim() });
     setUrl('');
     setTitle('');
     setType('playlist');
@@ -157,51 +138,27 @@ function AddSourceDialog({ open, onOpenChange }: AddSourceDialogProps) {
           <div className="space-y-2">
             <Label>Source Type</Label>
             <Select value={type} onValueChange={(v) => setType(v as 'playlist' | 'channel')}>
-              <SelectTrigger className="bg-background border-input">
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger className="bg-background border-input"><SelectValue /></SelectTrigger>
               <SelectContent className="bg-popover border-border">
                 <SelectItem value="playlist">Playlist</SelectItem>
                 <SelectItem value="channel">Channel</SelectItem>
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="url">YouTube URL</Label>
             <div className="relative">
               <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="url"
-                placeholder={type === 'playlist' 
-                  ? 'https://youtube.com/playlist?list=...'
-                  : 'https://youtube.com/channel/... or @handle'
-                }
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                className="pl-10 bg-background border-input"
-              />
+              <Input id="url" placeholder={type === 'playlist' ? 'https://youtube.com/playlist?list=...' : 'https://youtube.com/channel/...'} value={url} onChange={(e) => setUrl(e.target.value)} className="pl-10 bg-background border-input" />
             </div>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="title">Display Name</Label>
-            <Input
-              id="title"
-              placeholder="e.g., PW History Marathon, Unacademy Physics"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="bg-background border-input"
-            />
+            <Input id="title" placeholder="e.g., PW History Marathon" value={title} onChange={(e) => setTitle(e.target.value)} className="bg-background border-input" />
           </div>
-
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!url.trim() || !title.trim()}>
-              Add Source
-            </Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" disabled={!url.trim() || !title.trim()}>Add Source</Button>
           </DialogFooter>
         </form>
       </DialogContent>
