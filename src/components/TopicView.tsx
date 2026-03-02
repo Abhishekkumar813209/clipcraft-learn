@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ArrowLeft, Plus, Star, Sparkles, Play, Trash2, GripVertical, MoreVertical } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Plus, Star, Sparkles, Play, Trash2, GripVertical, MoreVertical, Copy } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -9,13 +10,11 @@ import { Label } from '@/components/ui/label';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { formatDuration } from '@/types';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
-interface TopicViewProps {
-  onBack: () => void;
-}
-
-export function TopicView({ onBack }: TopicViewProps) {
+export function TopicView() {
   const [showAddSubTopic, setShowAddSubTopic] = useState(false);
+  const navigate = useNavigate();
   const {
     exams,
     selectedSubjectId,
@@ -28,7 +27,6 @@ export function TopicView({ onBack }: TopicViewProps) {
     updateClip,
   } = useStudyStore();
 
-  // Find the topic
   let topic = null;
   let subject = null;
   let exam = null;
@@ -58,7 +56,6 @@ export function TopicView({ onBack }: TopicViewProps) {
     );
   }
 
-  // Calculate total duration
   const totalDuration = clips
     .filter((c) => subTopics.some((st) => st.id === c.subTopicId))
     .reduce((acc, c) => acc + (c.endTime - c.startTime), 0);
@@ -66,9 +63,8 @@ export function TopicView({ onBack }: TopicViewProps) {
   return (
     <>
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
         <div className="p-6 border-b border-border flex-shrink-0 animate-fade-in">
-          <Button variant="ghost" size="sm" onClick={onBack} className="mb-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
@@ -92,7 +88,6 @@ export function TopicView({ onBack }: TopicViewProps) {
           </div>
         </div>
 
-        {/* Sub-Topics */}
         <ScrollArea className="flex-1">
           <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
@@ -107,9 +102,7 @@ export function TopicView({ onBack }: TopicViewProps) {
 
             {subTopics.length === 0 ? (
               <div className="clip-card text-center py-12">
-                <h3 className="font-display text-lg font-semibold mb-2">
-                  No sub-topics yet
-                </h3>
+                <h3 className="font-display text-lg font-semibold mb-2">No sub-topics yet</h3>
                 <p className="text-muted-foreground text-sm mb-4">
                   Break this topic into concept-level sub-topics to organize your clips.
                 </p>
@@ -129,6 +122,7 @@ export function TopicView({ onBack }: TopicViewProps) {
                   onDeleteSubTopic={() => deleteSubTopic(subTopic.id)}
                   onDeleteClip={deleteClip}
                   onToggleClipType={(clipId, isPrimary) => updateClip(clipId, { isPrimary })}
+                  onPlayClip={(youtubeId, start, end) => navigate(`/player/${youtubeId}?start=${start}&end=${end}`)}
                 />
               ))
             )}
@@ -153,25 +147,21 @@ interface SubTopicSectionProps {
   onDeleteSubTopic: () => void;
   onDeleteClip: (id: string) => void;
   onToggleClipType: (id: string, isPrimary: boolean) => void;
+  onPlayClip: (youtubeId: string, start: number, end: number) => void;
 }
 
-function SubTopicSection({
-  subTopic,
-  index,
-  clips,
-  videos,
-  onDeleteSubTopic,
-  onDeleteClip,
-  onToggleClipType,
-}: SubTopicSectionProps) {
+function SubTopicSection({ subTopic, index, clips, videos, onDeleteSubTopic, onDeleteClip, onToggleClipType, onPlayClip }: SubTopicSectionProps) {
   const duration = clips.reduce((acc, c) => acc + (c.endTime - c.startTime), 0);
   const primaryCount = clips.filter((c) => c.isPrimary).length;
 
+  const copyClipLink = (video: any, clip: any) => {
+    const url = `https://youtube.com/watch?v=${video.youtubeId}&t=${clip.startTime}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Link copied!');
+  };
+
   return (
-    <div 
-      className="clip-card animate-fade-in"
-      style={{ animationDelay: `${index * 50}ms` }}
-    >
+    <div className="clip-card animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
@@ -187,17 +177,10 @@ function SubTopicSection({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-popover border-border">
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={onDeleteSubTopic}
-            >
-              Delete Sub-Topic
-            </DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive" onClick={onDeleteSubTopic}>Delete Sub-Topic</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -215,17 +198,11 @@ function SubTopicSection({
                 )}
               >
                 <GripVertical className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 cursor-grab" />
-                
                 <div className="w-20 h-12 rounded bg-muted flex-shrink-0 overflow-hidden">
                   {video?.youtubeId && (
-                    <img
-                      src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`} alt="" className="w-full h-full object-cover" />
                   )}
                 </div>
-
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     {clip.isPrimary ? (
@@ -233,9 +210,7 @@ function SubTopicSection({
                     ) : (
                       <Sparkles className="w-3.5 h-3.5 text-clip-supplementary flex-shrink-0" />
                     )}
-                    <span className="text-sm font-medium truncate">
-                      {clip.label || video?.title || 'Untitled'}
-                    </span>
+                    <span className="text-sm font-medium truncate">{clip.label || video?.title || 'Untitled'}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {formatDuration(clip.startTime)} → {formatDuration(clip.endTime)}
@@ -243,41 +218,17 @@ function SubTopicSection({
                     {formatDuration(clip.endTime - clip.startTime)}
                   </p>
                 </div>
-
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => onToggleClipType(clip.id, !clip.isPrimary)}
-                  >
-                    {clip.isPrimary ? (
-                      <Sparkles className="w-4 h-4 text-clip-supplementary" />
-                    ) : (
-                      <Star className="w-4 h-4 text-clip-primary" />
-                    )}
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onToggleClipType(clip.id, !clip.isPrimary)}>
+                    {clip.isPrimary ? <Sparkles className="w-4 h-4 text-clip-supplementary" /> : <Star className="w-4 h-4 text-clip-primary" />}
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => {
-                      if (video?.youtubeId) {
-                        window.open(
-                          `https://youtube.com/watch?v=${video.youtubeId}&t=${clip.startTime}`,
-                          '_blank'
-                        );
-                      }
-                    }}
-                  >
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => video?.youtubeId && onPlayClip(video.youtubeId, clip.startTime, clip.endTime)}>
                     <Play className="w-4 h-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-destructive hover:text-destructive"
-                    onClick={() => onDeleteClip(clip.id)}
-                  >
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => video && copyClipLink(video, clip)}>
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onDeleteClip(clip.id)}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -303,7 +254,6 @@ function AddSubTopicDialog({ open, onOpenChange, topicId }: AddSubTopicDialogPro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-
     await addSubTopic({ name: name.trim(), topicId });
     setName('');
     onOpenChange(false);
@@ -318,25 +268,12 @@ function AddSubTopicDialog({ open, onOpenChange, topicId }: AddSubTopicDialogPro
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">Sub-Topic Name</Label>
-            <Input
-              id="name"
-              placeholder="e.g., Causes of French Revolution"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-background border-input"
-            />
-            <p className="text-xs text-muted-foreground">
-              Sub-topics represent specific concepts. Clips will be organized under these.
-            </p>
+            <Input id="name" placeholder="e.g., Causes of French Revolution" value={name} onChange={(e) => setName(e.target.value)} className="bg-background border-input" />
+            <p className="text-xs text-muted-foreground">Sub-topics represent specific concepts.</p>
           </div>
-
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!name.trim()}>
-              Add Sub-Topic
-            </Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" disabled={!name.trim()}>Add Sub-Topic</Button>
           </DialogFooter>
         </form>
       </DialogContent>

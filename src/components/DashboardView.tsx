@@ -1,17 +1,15 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, BookOpen, Layers, FileText } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
 import { SubjectCard } from './SubjectCard';
 import { CreateSubjectDialog } from './CreateSubjectDialog';
-import { useState } from 'react';
 
-interface DashboardViewProps {
-  onViewChange: (view: 'dashboard' | 'sources' | 'clips' | 'topic') => void;
-}
-
-export function DashboardView({ onViewChange }: DashboardViewProps) {
+export function DashboardView() {
   const [showCreateSubject, setShowCreateSubject] = useState(false);
   const { exams, selectedExamId, getSubjectsByExam, clips } = useStudyStore();
+  const navigate = useNavigate();
   
   const selectedExam = exams.find((e) => e.id === selectedExamId);
   const subjects = selectedExamId ? getSubjectsByExam(selectedExamId) : [];
@@ -35,18 +33,12 @@ export function DashboardView({ onViewChange }: DashboardViewProps) {
     );
   }
 
-  // Calculate stats
   const totalClips = clips.length;
   const totalTopics = subjects.reduce((acc, s) => acc + (s.topics?.length || 0), 0);
-  const totalSubTopics = subjects.reduce(
-    (acc, s) => acc + (s.topics?.reduce((a, t) => a + (t.subTopics?.length || 0), 0) || 0),
-    0
-  );
 
   return (
     <>
       <div className="flex-1 overflow-auto p-8">
-        {/* Header */}
         <div className="mb-8 animate-fade-in">
           <div className="flex items-center gap-4 mb-2">
             <span className="text-4xl">{selectedExam.icon}</span>
@@ -59,14 +51,12 @@ export function DashboardView({ onViewChange }: DashboardViewProps) {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <StatCard icon={BookOpen} label="Subjects" value={subjects.length} />
           <StatCard icon={Layers} label="Topics" value={totalTopics} />
           <StatCard icon={FileText} label="Clips" value={totalClips} />
         </div>
 
-        {/* Subjects Grid */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-xl font-semibold">Subjects</h2>
           <Button onClick={() => setShowCreateSubject(true)} size="sm">
@@ -94,7 +84,7 @@ export function DashboardView({ onViewChange }: DashboardViewProps) {
                 key={subject.id} 
                 subject={subject} 
                 index={index}
-                onViewTopic={() => onViewChange('topic')}
+                onViewTopic={() => navigate('/topic')}
               />
             ))}
           </div>

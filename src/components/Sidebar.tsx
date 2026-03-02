@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { BookOpen, Library, Video, Plus, LogOut, ChevronRight, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { BookOpen, Library, Video, Plus, LogOut, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useStudyStore } from '@/stores/studyStore';
@@ -12,22 +13,24 @@ import { CreateExamDialog } from './CreateExamDialog';
 import { EditExamDialog } from './EditExamDialog';
 import { Exam } from '@/types';
 
-interface SidebarProps {
-  activeView: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader';
-  onViewChange: (view: 'dashboard' | 'sources' | 'clips' | 'topic' | 'playlist-browser' | 'video-player' | 'pdf-reader') => void;
-}
-
-export function Sidebar({ activeView, onViewChange }: SidebarProps) {
+export function Sidebar() {
   const [showCreateExam, setShowCreateExam] = useState(false);
   const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [deletingExam, setDeletingExam] = useState<Exam | null>(null);
   const { exams, selectedExamId, setSelectedExam, deleteExam } = useStudyStore();
   const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleDeleteExam = async () => {
     if (!deletingExam) return;
     await deleteExam(deletingExam.id);
     setDeletingExam(null);
+  };
+
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -48,10 +51,10 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="p-4 space-y-1">
-          <NavItem icon={BookOpen} label="Dashboard" active={activeView === 'dashboard'} onClick={() => onViewChange('dashboard')} />
-          <NavItem icon={Library} label="Source Library" active={activeView === 'sources'} onClick={() => onViewChange('sources')} />
-          <NavItem icon={Video} label="Add Clips" active={activeView === 'clips'} onClick={() => onViewChange('clips')} />
-          <NavItem icon={FileText} label="PDF Reader" active={activeView === 'pdf-reader'} onClick={() => onViewChange('pdf-reader')} />
+          <NavItem icon={BookOpen} label="Dashboard" active={isActive('/')} onClick={() => navigate('/')} />
+          <NavItem icon={Library} label="Source Library" active={isActive('/sources')} onClick={() => navigate('/sources')} />
+          <NavItem icon={Video} label="Add Clips" active={isActive('/clips')} onClick={() => navigate('/clips')} />
+          <NavItem icon={FileText} label="PDF Reader" active={isActive('/pdf')} onClick={() => navigate('/pdf')} />
         </nav>
 
         {/* Exams List */}
@@ -107,7 +110,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
                     )}
                     onClick={() => {
                       setSelectedExam(exam.id);
-                      onViewChange('dashboard');
+                      navigate('/');
                     }}
                   >
                     <span className="text-lg">{exam.icon || '📚'}</span>

@@ -23,6 +23,7 @@ interface YTPlayerOptions {
     rel?: number;
     enablejsapi?: number;
     origin?: string;
+    start?: number;
   };
   events?: {
     onReady?: (event: YTPlayerEvent) => void;
@@ -53,6 +54,8 @@ declare global {
 interface UseYouTubePlayerOptions {
   videoId: string;
   containerId: string;
+  startTime?: number;
+  endTime?: number;
   onReady?: () => void;
   onStateChange?: (state: number) => void;
   onError?: (error: number) => void;
@@ -75,7 +78,6 @@ let apiLoadPromise: Promise<void> | null = null;
 
 function loadYouTubeAPI(): Promise<void> {
   if (isAPILoaded) return Promise.resolve();
-  
   if (apiLoadPromise) return apiLoadPromise;
   
   apiLoadPromise = new Promise((resolve) => {
@@ -87,12 +89,10 @@ function loadYouTubeAPI(): Promise<void> {
         return;
       }
     }
-    
     window.onYouTubeIframeAPIReady = () => {
       isAPILoaded = true;
       resolve();
     };
-    
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -105,6 +105,8 @@ function loadYouTubeAPI(): Promise<void> {
 export function useYouTubePlayer({
   videoId,
   containerId,
+  startTime,
+  endTime,
   onReady,
   onStateChange,
   onError,
@@ -115,21 +117,32 @@ export function useYouTubePlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const intervalRef = useRef<number | null>(null);
+  const endTimeRef = useRef<number | undefined>(endTime);
+  const hasSeenkedToStart = useRef(false);
+
+  // Keep endTimeRef in sync
+  useEffect(() => {
+    endTimeRef.current = endTime;
+  }, [endTime]);
 
   const startTimeTracking = useCallback(() => {
     if (intervalRef.current) return;
-    
     intervalRef.current = window.setInterval(() => {
-      if (playerRef.current && isReady) {
+      if (playerRef.current) {
         try {
           const time = playerRef.current.getCurrentTime();
           setCurrentTime(Math.floor(time));
+          // Auto-pause at endTime
+          if (endTimeRef.current !== undefined && time >= endTimeRef.current) {
+            playerRef.current.pauseVideo();
+            setIsPlaying(false);
+          }
         } catch (e) {
           // Player might not be ready
         }
       }
     }, 250);
-  }, [isReady]);
+  }, []);
 
   const stopTimeTracking = useCallback(() => {
     if (intervalRef.current) {
@@ -140,19 +153,14 @@ export function useYouTubePlayer({
 
   useEffect(() => {
     let mounted = true;
+    hasSeenkedToStart.current = false;
 
     async function initPlayer() {
       await loadYouTubeAPI();
-      
       if (!mounted) return;
       
-      // Destroy existing player if any
       if (playerRef.current) {
-        try {
-          playerRef.current.destroy();
-        } catch (e) {
-          // Ignore
-        }
+        try { playerRef.current.destroy(); } catch (e) {}
         playerRef.current = null;
       }
       
@@ -167,12 +175,18 @@ export function useYouTubePlayer({
           rel: 0,
           enablejsapi: 1,
           origin: window.location.origin,
+          ...(startTime !== undefined ? { start: Math.floor(startTime) } : {}),
         },
         events: {
           onReady: (event) => {
             if (!mounted) return;
             setIsReady(true);
             setDuration(event.target.getDuration());
+            // Seek to startTime if provided
+            if (startTime !== undefined && !hasSeenkedToStart.current) {
+              event.target.seekTo(startTime, true);
+              hasSeenkedToStart.current = true;
+            }
             onReady?.();
             startTimeTracking();
           },
@@ -181,7 +195,6 @@ export function useYouTubePlayer({
             const state = event.data;
             setIsPlaying(state === window.YT.PlayerState.PLAYING);
             onStateChange?.(state);
-            
             if (state === window.YT.PlayerState.PLAYING) {
               startTimeTracking();
             }
@@ -199,24 +212,14 @@ export function useYouTubePlayer({
       mounted = false;
       stopTimeTracking();
       if (playerRef.current) {
-        try {
-          playerRef.current.destroy();
-        } catch (e) {
-          // Ignore
-        }
+        try { playerRef.current.destroy(); } catch (e) {}
         playerRef.current = null;
       }
     };
-  }, [videoId, containerId, onReady, onStateChange, onError, startTimeTracking, stopTimeTracking]);
+  }, [videoId, containerId, startTime, onReady, onStateChange, onError, startTimeTracking, stopTimeTracking]);
 
-  const play = useCallback(() => {
-    playerRef.current?.playVideo();
-  }, []);
-
-  const pause = useCallback(() => {
-    playerRef.current?.pauseVideo();
-  }, []);
-
+  const play = useCallback(() => { playerRef.current?.playVideo(); }, []);
+  const pause = useCallback(() => { playerRef.current?.pauseVideo(); }, []);
   const seekTo = useCallback((seconds: number) => {
     playerRef.current?.seekTo(seconds, true);
     setCurrentTime(Math.floor(seconds));
@@ -224,24 +227,10 @@ export function useYouTubePlayer({
 
   const getCurrentTime = useCallback(() => {
     if (playerRef.current && isReady) {
-      try {
-        return playerRef.current.getCurrentTime();
-      } catch (e) {
-        return currentTime;
-      }
+      try { return playerRef.current.getCurrentTime(); } catch (e) { return currentTime; }
     }
     return currentTime;
   }, [isReady, currentTime]);
 
-  return {
-    player: playerRef.current,
-    isReady,
-    isPlaying,
-    currentTime,
-    duration,
-    play,
-    pause,
-    seekTo,
-    getCurrentTime,
-  };
+  return { player: playerRef.current, isReady, isPlaying, currentTime, duration, play, pause, seekTo, getCurrentTime };
 }
