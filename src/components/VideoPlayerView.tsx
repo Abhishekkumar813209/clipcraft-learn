@@ -165,10 +165,11 @@ export function VideoPlayerView() {
               {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
             </Button>
             <Button variant="ghost" size="icon" onClick={() => {
-              if (window.history.length > 1) {
-                navigate(-1);
+              const sourceId = useStudyStore.getState().selectedSourceId;
+              if (sourceId) {
+                navigate(`/sources/${sourceId}`);
               } else {
-                navigate('/');
+                navigate('/sources');
               }
             }}>
               <ArrowLeft className="w-5 h-5" />
