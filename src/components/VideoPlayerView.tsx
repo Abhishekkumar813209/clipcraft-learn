@@ -124,11 +124,17 @@ export function VideoPlayerView() {
       } else if (e.key.toLowerCase() === 'g') {
         e.preventDefault();
         setShowChat(prev => !prev);
+      } else if (e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        handleSetStart();
+      } else if (e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        handleSetEndAndDraft();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo]);
+  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo, startTime]);
 
   const handleSetStart = () => {
     const time = getCurrentTime();
