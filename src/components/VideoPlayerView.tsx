@@ -168,7 +168,7 @@ export function VideoPlayerView() {
         {/* Two-column layout */}
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT: Video + Controls (60%) */}
-          <div className="w-[60%] flex flex-col overflow-auto p-6 space-y-4">
+          <div className="w-[64%] flex flex-col overflow-auto p-6 space-y-4">
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
               <div id="youtube-player" className="w-full h-full" />
               {!isPlaying && isReady && (
