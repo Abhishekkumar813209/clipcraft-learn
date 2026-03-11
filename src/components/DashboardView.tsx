@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Plus, BookOpen, Layers, FileText } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
