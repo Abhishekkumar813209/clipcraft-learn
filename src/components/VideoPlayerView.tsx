@@ -48,9 +48,6 @@ export function VideoPlayerView() {
   const [isPrimary, setIsPrimary] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const chatSendRef = useRef<((content: string) => void) | null>(null);
-  const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackVisible, setFeedbackVisible] = useState(false);
-  const feedbackTimeout = useRef<number | null>(null);
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
