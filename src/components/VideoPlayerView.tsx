@@ -165,7 +165,8 @@ export function VideoPlayerView() {
               {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
             </Button>
             <Button variant="ghost" size="icon" onClick={() => {
-              const sourceId = useStudyStore.getState().selectedSourceId;
+              const sourceFromUrl = searchParams.get('source');
+              const sourceId = sourceFromUrl || useStudyStore.getState().selectedSourceId;
               if (sourceId) {
                 navigate(`/sources/${sourceId}`);
               } else {

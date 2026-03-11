@@ -1,39 +1,62 @@
 
 
-## Plan: Make back arrow reliably navigate to the source playlist
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### Problem
-The current back arrow reads `selectedSourceId` from the zustand store, but since the store isn't persisted, if state is lost for any reason, `selectedSourceId` is `null` and navigation falls back to `/sources` instead of the specific playlist.
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Fix
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-**1. Pass sourceId when navigating to the player** (`PlaylistBrowserView.tsx`, line ~80)
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-Add `sourceId` as a query parameter when navigating to the video player:
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-```tsx
-navigate(`/player/${video.videoId}?source=${selectedSourceId}`);
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
+
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
+
+## 2. Clips Grouped by Video (within sub-topic)
+
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
 ```
 
-**2. Read sourceId from URL in VideoPlayerView** (`VideoPlayerView.tsx`)
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
 
-Read `source` from search params as the primary source, with store as fallback:
+## 3. In-App Clip Playback (start→end enforcement)
 
-```tsx
-const sourceFromUrl = searchParams.get('source');
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
 
-// In the back button onClick:
-const sourceId = sourceFromUrl || useStudyStore.getState().selectedSourceId;
-if (sourceId) {
-  navigate(`/sources/${sourceId}`);
-} else {
-  navigate('/sources');
-}
-```
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
 
-This makes the back navigation reliable regardless of store state.
+## Files to Change
 
-### Files to edit
-- `src/components/PlaylistBrowserView.tsx` — add `?source=` param to player navigation
-- `src/components/VideoPlayerView.tsx` — read `source` from URL params for back navigation
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 

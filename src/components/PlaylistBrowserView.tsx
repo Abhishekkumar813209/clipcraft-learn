@@ -77,7 +77,7 @@ export function PlaylistBrowserView() {
 
   const handleSelectVideo = (video: PlaylistVideo) => {
     setSelectedVideoForPlayer({ videoId: video.videoId, title: video.title });
-    navigate(`/player/${video.videoId}`);
+    navigate(`/player/${video.videoId}?source=${selectedSourceId}`);
   };
 
   return (
