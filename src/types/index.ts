@@ -73,6 +73,15 @@ export interface Exam {
   createdAt: Date;
 }
 
+export interface DraftClip {
+  id: string;
+  videoYoutubeId: string;
+  startTime: number;
+  endTime: number;
+  label: string;
+  createdAt?: Date;
+}
+
 // Helper types
 export type ClipType = 'primary' | 'supplementary';
 
