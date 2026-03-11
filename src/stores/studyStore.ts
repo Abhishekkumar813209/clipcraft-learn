@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
-import { Exam, Subject, Topic, SubTopic, Clip, YouTubeSource, Video } from '@/types';
+import { Exam, Subject, Topic, SubTopic, Clip, YouTubeSource, Video, DraftClip } from '@/types';
 
 interface StudyState {
   // Data
