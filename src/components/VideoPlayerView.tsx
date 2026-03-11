@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X } from 'lucide-react';
+import { useParams, useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X, PanelLeft, PanelLeftClose } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,6 +18,7 @@ export function VideoPlayerView() {
   const { videoId: routeVideoId } = useParams<{ videoId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { sidebarCollapsed, setSidebarCollapsed } = useOutletContext<{ sidebarCollapsed: boolean; setSidebarCollapsed: (v: boolean) => void }>();
 
   const videoId = routeVideoId || '';
   const clipStartTime = searchParams.get('start') ? Number(searchParams.get('start')) : undefined;
@@ -137,6 +138,9 @@ export function VideoPlayerView() {
         {/* Header */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-6 py-4">
           <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}>
+              {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
@@ -164,7 +168,7 @@ export function VideoPlayerView() {
         {/* Two-column layout */}
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT: Video + Controls (60%) */}
-          <div className="w-[60%] flex flex-col overflow-auto p-6 space-y-4">
+          <div className="w-[64%] flex flex-col overflow-auto p-6 space-y-4">
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
               <div id="youtube-player" className="w-full h-full" />
               {!isPlaying && isReady && (
@@ -222,7 +226,7 @@ export function VideoPlayerView() {
           </div>
 
           {/* RIGHT: Form + Saved Clips (40%) */}
-          <ScrollArea className="w-[40%] border-l border-border">
+          <ScrollArea className="w-[36%] border-l border-border">
             <div className="p-6 space-y-4">
               <div className="clip-card space-y-4">
                 <h3 className="font-display font-semibold">Assign to Sub-Topic</h3>
