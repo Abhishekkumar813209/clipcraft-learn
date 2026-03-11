@@ -37,7 +37,7 @@ export function SubjectCard({ subject, index }: SubjectCardProps) {
   const handleTopicClick = (topicId: string) => {
     setSelectedSubject(subject.id);
     setSelectedTopic(topicId);
-    onViewTopic();
+    navigate(`/topic/${topicId}`);
   };
 
   return (

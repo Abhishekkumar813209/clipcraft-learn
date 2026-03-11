@@ -84,7 +84,6 @@ export function DashboardView() {
                 key={subject.id} 
                 subject={subject} 
                 index={index}
-                onViewTopic={() => navigate('/topic')}
               />
             ))}
           </div>

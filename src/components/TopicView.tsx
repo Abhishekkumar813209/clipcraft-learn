@@ -175,7 +175,7 @@ export function TopicView() {
       <AddSubTopicDialog
         open={showAddSubTopic}
         onOpenChange={setShowAddSubTopic}
-        topicId={selectedTopicId!}
+        topicId={topicId!}
       />
     </>
   );
