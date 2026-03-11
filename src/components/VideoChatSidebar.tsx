@@ -35,6 +35,14 @@ export function VideoChatSidebar({ videoId, videoTitle, currentTime, onClose, se
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Expose sendMessage to parent via ref
+  useEffect(() => {
+    if (sendMessageRef) {
+      sendMessageRef.current = (content: string) => sendMessage(content);
+    }
+    return () => { if (sendMessageRef) sendMessageRef.current = null; };
+  });
+
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

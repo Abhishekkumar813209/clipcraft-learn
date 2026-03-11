@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { VideoChatSidebar } from '@/components/VideoChatSidebar';
+import { VideoScreenshotFrame } from '@/components/VideoScreenshotFrame';
 import { useStudyStore } from '@/stores/studyStore';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
 import { formatDuration } from '@/types';
