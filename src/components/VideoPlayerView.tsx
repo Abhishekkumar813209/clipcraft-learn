@@ -118,6 +118,9 @@ export function VideoPlayerView() {
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         seekTo(Math.min(duration, currentTime + 10));
+      } else if (e.code === 'KeyF') {
+        e.preventDefault();
+        setShowChat(prev => !prev);
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -179,6 +182,7 @@ export function VideoPlayerView() {
             <Button variant={showChat ? "default" : "outline"} size="sm" onClick={() => setShowChat(!showChat)} className="gap-2">
               <MessageSquare className="w-4 h-4" />
               AI Doubt
+              <kbd className="ml-1 text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">F</kbd>
             </Button>
           </div>
           {/* Clip mode banner */}

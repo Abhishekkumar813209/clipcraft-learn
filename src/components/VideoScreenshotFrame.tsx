@@ -13,39 +13,37 @@ const MIN_SIZE = 60;
 export function VideoScreenshotFrame({ onCapture }: VideoScreenshotFrameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [rect, setRect] = useState({ x: 40, y: 40, w: 200, h: 140 });
-  const dragRef = useRef<{ type: 'move' | HandleDirection; startX: number; startY: number; startRect: typeof rect } | null>(null);
+  const dragRef = useRef<{ type: 'move' | HandleDirection; startX: number; startY: number; startRect: typeof rect; pointerId: number } | null>(null);
 
-  const handleMouseDown = useCallback((type: 'move' | HandleDirection, e: React.MouseEvent) => {
+  const handlePointerDown = useCallback((type: 'move' | HandleDirection, e: React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    dragRef.current = { type, startX: e.clientX, startY: e.clientY, startRect: { ...rect } };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = { type, startX: e.clientX, startY: e.clientY, startRect: { ...rect }, pointerId: e.pointerId };
   }, [rect]);
 
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const d = dragRef.current;
-      if (!d) return;
-      const dx = e.clientX - d.startX;
-      const dy = e.clientY - d.startY;
-      const s = d.startRect;
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d) return;
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+    const s = d.startRect;
 
-      if (d.type === 'move') {
-        setRect({ ...s, x: Math.max(0, s.x + dx), y: Math.max(0, s.y + dy) });
-        return;
-      }
+    if (d.type === 'move') {
+      setRect({ ...s, x: Math.max(0, s.x + dx), y: Math.max(0, s.y + dy) });
+      return;
+    }
 
-      let { x, y, w, h } = s;
-      if (d.type.includes('e')) w = Math.max(MIN_SIZE, s.w + dx);
-      if (d.type.includes('w')) { w = Math.max(MIN_SIZE, s.w - dx); x = s.x + s.w - w; }
-      if (d.type.includes('s')) h = Math.max(MIN_SIZE, s.h + dy);
-      if (d.type.includes('n')) { h = Math.max(MIN_SIZE, s.h - dy); y = s.y + s.h - h; }
-      setRect({ x: Math.max(0, x), y: Math.max(0, y), w, h });
-    };
+    let { x, y, w, h } = s;
+    if (d.type.includes('e')) w = Math.max(MIN_SIZE, s.w + dx);
+    if (d.type.includes('w')) { w = Math.max(MIN_SIZE, s.w - dx); x = s.x + s.w - w; }
+    if (d.type.includes('s')) h = Math.max(MIN_SIZE, s.h + dy);
+    if (d.type.includes('n')) { h = Math.max(MIN_SIZE, s.h - dy); y = s.y + s.h - h; }
+    setRect({ x: Math.max(0, x), y: Math.max(0, y), w, h });
+  }, []);
 
-    const onUp = () => { dragRef.current = null; };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-    return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+  const handlePointerUp = useCallback(() => {
+    dragRef.current = null;
   }, []);
 
   const handles: { dir: HandleDirection; cursor: string; style: React.CSSProperties }[] = [
@@ -64,11 +62,13 @@ export function VideoScreenshotFrame({ onCapture }: VideoScreenshotFrameProps) {
       <div
         className="absolute border-2 border-primary rounded-md pointer-events-auto bg-primary/5"
         style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h }}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
       >
         {/* Drag area */}
         <div
           className="absolute inset-0 cursor-move flex items-center justify-center"
-          onMouseDown={(e) => handleMouseDown('move', e)}
+          onPointerDown={(e) => handlePointerDown('move', e)}
         >
           <Move className="w-5 h-5 text-primary/40" />
         </div>
@@ -79,7 +79,7 @@ export function VideoScreenshotFrame({ onCapture }: VideoScreenshotFrameProps) {
             key={dir}
             className="absolute w-3 h-3 bg-primary rounded-full border border-primary-foreground"
             style={{ ...style, cursor, position: 'absolute' }}
-            onMouseDown={(e) => handleMouseDown(dir, e)}
+            onPointerDown={(e) => handlePointerDown(dir, e)}
           />
         ))}
 
