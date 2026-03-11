@@ -1,62 +1,36 @@
 
 
-# Improvements: Clip Organization, Routing, and In-App Playback
+# Fix: Block YouTube Recommendations on Pause
 
-## 1. URL-Based Routing (fixes refresh/tab-change losing state)
+## Problem
+When video is paused, YouTube shows "More Videos" recommendations overlay inside the iframe, which is distracting and covers the video content.
 
-Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+## Solution
+Two-part fix:
 
-**`src/App.tsx`** — Add routes:
-- `/` → Dashboard
-- `/sources` → Source Library  
-- `/sources/:sourceId` → Playlist Browser
-- `/clips` → Add Clips
-- `/player/:videoId` → Video Player
-- `/pdf` → PDF Reader
-- `/topic` → Topic View
+### 1. Add restrictive `playerVars` in `src/hooks/useYouTubePlayer.ts`
+Add these YouTube player parameters to suppress as much as possible:
+- `iv_load_policy: 3` — disable video annotations
+- `disablekb: 1` — disable keyboard controls (we have our own)
 
-**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+### 2. Always-on transparent overlay in `src/components/VideoPlayerView.tsx`
+The current overlay only appears when paused. But the iframe renders above it because iframes have high stacking context. Fix:
+- Keep the overlay **always rendered** with `pointer-events-none` when playing
+- Switch to `pointer-events-auto` when paused, blocking all clicks to the iframe's recommendation UI
+- Add a higher `z-20` to ensure it sits above the iframe
+- The overlay intercepts clicks and resumes playback, so recommendations can never be interacted with
 
-**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
-
-All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
-
-## 2. Clips Grouped by Video (within sub-topic)
-
-In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
-
-```text
-📄 Striver Hard (4)
-  🎬 Video: "Majority Element | Striver SDE Sheet"
-    ⭐ 4:47 → 7:54  majority element brute force n2
-    ⭐ 6:17 → 10:02  Factorial ka logic
-  🎬 Video: "Moore's Voting Algorithm"  
-    ⭐ 10:54 → 16:50  Moore's voting algo
+```tsx
+// Always present, blocks iframe interactions when paused
+<div 
+  className={`absolute inset-0 z-20 ${!isPlaying && isReady ? 'cursor-pointer' : 'pointer-events-none'}`}
+  onClick={() => { if (!isPlaying && isReady) play(); }}
+/>
 ```
 
-Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
-
-## 3. In-App Clip Playback (start→end enforcement)
-
-When user clicks Play on a clip from the clips list:
-- Navigate to `/player/:youtubeId?start=X&end=Y`
-- `VideoPlayerView` reads query params, seeks to `startTime` on load
-- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
-- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
-
-**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
-
-## Files to Change
-
+### Files
 | File | Change |
 |------|--------|
-| `src/App.tsx` | Add child routes under `/` |
-| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
-| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
-| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
-| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
-| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
-| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
-| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
-| Other views | Update `onBack` to use `useNavigate(-1)` |
+| `src/hooks/useYouTubePlayer.ts` | Add `iv_load_policy: 3` to playerVars |
+| `src/components/VideoPlayerView.tsx` | Make overlay always-on, toggle pointer-events |
 
