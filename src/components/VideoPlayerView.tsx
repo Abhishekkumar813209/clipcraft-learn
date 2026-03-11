@@ -124,10 +124,10 @@ export function VideoPlayerView() {
       } else if (e.key.toLowerCase() === 'g') {
         e.preventDefault();
         setShowChat(prev => !prev);
-      } else if (e.key.toLowerCase() === 'c') {
+      } else if (e.key.toLowerCase() === 'm') {
         e.preventDefault();
         handleSetStart();
-      } else if (e.key.toLowerCase() === 'd') {
+      } else if (e.key.toLowerCase() === 'n') {
         e.preventDefault();
         handleSetEndAndDraft();
       }
