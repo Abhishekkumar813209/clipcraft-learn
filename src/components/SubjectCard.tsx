@@ -19,12 +19,12 @@ const SUBJECT_COLORS = [
 interface SubjectCardProps {
   subject: Subject;
   index: number;
-  onViewTopic: () => void;
 }
 
-export function SubjectCard({ subject, index, onViewTopic }: SubjectCardProps) {
+export function SubjectCard({ subject, index }: SubjectCardProps) {
   const [showCreateTopic, setShowCreateTopic] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
   const { deleteSubject, setSelectedSubject, setSelectedTopic, clips } = useStudyStore();
   
   const topics = subject.topics || [];
