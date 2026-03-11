@@ -18,6 +18,7 @@ interface VideoChatSidebarProps {
   videoTitle: string;
   currentTime: number;
   onClose: () => void;
+  sendMessageRef?: React.MutableRefObject<((content: string) => void) | null>;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/video-chat`;
