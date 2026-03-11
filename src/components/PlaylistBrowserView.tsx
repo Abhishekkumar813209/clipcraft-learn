@@ -16,7 +16,7 @@ interface PlaylistVideo {
 }
 
 export function PlaylistBrowserView() {
-  const { sources, selectedSourceId, setSelectedVideoForPlayer } = useStudyStore();
+  const { sources, selectedSourceId, setSelectedVideoForPlayer, updateSource } = useStudyStore();
   const navigate = useNavigate();
   const [videos, setVideos] = useState<PlaylistVideo[]>([]);
   const [filteredVideos, setFilteredVideos] = useState<PlaylistVideo[]>([]);
