@@ -170,6 +170,17 @@ export function VideoPlayerView() {
               {!isPlaying && isReady && (
                 <div className="absolute inset-0 cursor-pointer z-10" onClick={() => play()} title="Click to resume" />
               )}
+              {showChat && (
+                <VideoScreenshotFrame
+                  onCapture={() => {
+                    const ts = formatDuration(Math.floor(currentTime));
+                    const msg = `At ${ts}, explain what the instructor is showing on screen right now in detail.`;
+                    if (chatSendRef.current) {
+                      chatSendRef.current(msg);
+                    }
+                  }}
+                />
+              )}
             </div>
 
             <div className="clip-card">
