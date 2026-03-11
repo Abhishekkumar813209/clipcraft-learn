@@ -91,6 +91,7 @@ export const useStudyStore = create<StudyState>()((set, get) => ({
   sources: [],
   videos: [],
   clips: [],
+  draftClips: [],
   loading: false,
   selectedExamId: null,
   selectedSubjectId: null,
