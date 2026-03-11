@@ -148,6 +148,39 @@ export function VideoPlayerView() {
     toast.success(`End time set: ${formatDuration(Math.floor(time))}`);
   };
 
+  const handleSetEndAndDraft = () => {
+    const time = Math.floor(getCurrentTime());
+    if (startTime !== null && startTime < time) {
+      // Auto-create draft clip
+      const id = crypto.randomUUID();
+      setDraftClips(prev => [...prev, { id, startTime, endTime: time, label: '' }]);
+      setNewestDraftId(id);
+      toast.success(`Draft clip: ${formatDuration(startTime)} → ${formatDuration(time)}`);
+      setStartTime(null);
+      setEndTime(null);
+    } else {
+      setEndTime(time);
+      toast.success(`End time set: ${formatDuration(time)}`);
+    }
+  };
+
+  const handleDraftUpdateLabel = (id: string, label: string) => {
+    setDraftClips(prev => prev.map(d => d.id === id ? { ...d, label } : d));
+  };
+
+  const handleDraftDelete = (id: string) => {
+    setDraftClips(prev => prev.filter(d => d.id !== id));
+  };
+
+  const handleDraftSave = async (id: string, subTopicId: string, isPrim: boolean) => {
+    const draft = draftClips.find(d => d.id === id);
+    if (!draft) return;
+    const storedVideoId = await addVideo({ youtubeId: videoId, title: videoTitle, duration });
+    await addClip({ videoId: storedVideoId, startTime: draft.startTime, endTime: draft.endTime, label: draft.label.trim() || undefined, isPrimary: isPrim, subTopicId });
+    setDraftClips(prev => prev.filter(d => d.id !== id));
+    toast.success('Clip saved!');
+  };
+
   const handleAddClip = async () => {
     if (startTime === null || endTime === null) { toast.error('Please set both start and end times'); return; }
     if (startTime >= endTime) { toast.error('End time must be after start time'); return; }
