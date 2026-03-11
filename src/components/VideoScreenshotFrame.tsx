@@ -70,6 +70,8 @@ export function VideoScreenshotFrame({ onCapture }: VideoScreenshotFrameProps) {
     { dir: 'w', cursor: 'ew-resize', style: { top: '50%', left: -4, transform: 'translateY(-50%)' } },
   ];
 
+  if (!rect) return <div ref={containerRef} className="absolute inset-0 z-20 pointer-events-none" />;
+
   return (
     <div ref={containerRef} className="absolute inset-0 z-20 pointer-events-none">
       <div
