@@ -69,8 +69,10 @@ export function SourceLibraryView() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold truncate">{source.title}</h3>
                   <p className="text-sm text-muted-foreground capitalize">{source.type}</p>
-                  {source.videoCount && (
+                  {source.videoCount ? (
                     <p className="text-xs text-muted-foreground mt-1">{source.videoCount} videos</p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground mt-1">0</p>
                   )}
                 </div>
               </div>

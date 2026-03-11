@@ -49,8 +49,13 @@ export function PlaylistBrowserView() {
         if (!response.ok) throw new Error('Failed to fetch playlist videos');
         const result = await response.json();
         if (result.error) throw new Error(result.error);
-        setVideos(result.videos || []);
-        setFilteredVideos(result.videos || []);
+        const fetchedVideos = result.videos || [];
+        setVideos(fetchedVideos);
+        setFilteredVideos(fetchedVideos);
+        // Cache video count on source
+        if (source && fetchedVideos.length > 0) {
+          updateSource(source.id, { videoCount: fetchedVideos.length });
+        }
       } catch (err) {
         console.error('Error fetching playlist:', err);
         setError(err instanceof Error ? err.message : 'Failed to load playlist');
