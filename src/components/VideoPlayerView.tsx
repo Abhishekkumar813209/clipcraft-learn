@@ -164,7 +164,13 @@ export function VideoPlayerView() {
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}>
               {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <Button variant="ghost" size="icon" onClick={() => {
+              if (window.history.length > 1) {
+                navigate(-1);
+              } else {
+                navigate('/');
+              }
+            }}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <h1 className="font-display text-lg font-semibold truncate flex-1">{videoTitle}</h1>
