@@ -44,6 +44,7 @@ interface StudyState {
 
   // Actions - Sources
   addSource: (source: Omit<YouTubeSource, 'id' | 'createdAt'>) => Promise<string>;
+  updateSource: (id: string, updates: Partial<YouTubeSource>) => Promise<void>;
   deleteSource: (id: string) => Promise<void>;
 
   // Actions - Videos
