@@ -70,7 +70,7 @@ export function Sidebar() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-7 w-7 border-sidebar-border bg-sidebar-accent/50 hover:bg-sidebar-accent"
+                      className="h-7 w-7 border-primary/50 bg-primary text-primary-foreground hover:bg-primary/80"
                       onClick={() => setShowCreateExam(true)}
                     >
                       <Plus className="h-4 w-4" />
