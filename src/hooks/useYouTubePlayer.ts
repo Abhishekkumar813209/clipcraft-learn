@@ -174,6 +174,8 @@ export function useYouTubePlayer({
           modestbranding: 1,
           rel: 0,
           enablejsapi: 1,
+          iv_load_policy: 3,
+          disablekb: 1,
           origin: window.location.origin,
           ...(startTime !== undefined ? { start: Math.floor(startTime) } : {}),
         },
