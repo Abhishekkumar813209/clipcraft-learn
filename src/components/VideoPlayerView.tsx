@@ -104,6 +104,37 @@ export function VideoPlayerView() {
   useEffect(() => { setSelectedTopicId(''); setSelectedSubTopicId(''); }, [selectedSubjectId]);
   useEffect(() => { setSelectedSubTopicId(''); }, [selectedTopicId]);
 
+  const showFeedback = useCallback((text: string) => {
+    if (feedbackTimeout.current) clearTimeout(feedbackTimeout.current);
+    setFeedbackText(text);
+    setFeedbackVisible(true);
+    feedbackTimeout.current = window.setTimeout(() => setFeedbackVisible(false), 600);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (document.activeElement?.tagName || '').toUpperCase();
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
+      if (!isReady) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (isPlaying) { pause(); showFeedback('⏸ Pause'); }
+        else { play(); showFeedback('▶ Play'); }
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        seekTo(Math.max(0, currentTime - 10));
+        showFeedback('⏪ 10s');
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        seekTo(Math.min(duration, currentTime + 10));
+        showFeedback('⏩ 10s');
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo, showFeedback]);
+
   const handleSetStart = () => {
     const time = getCurrentTime();
     setStartTime(Math.floor(time));
