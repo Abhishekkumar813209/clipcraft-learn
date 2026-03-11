@@ -44,6 +44,7 @@ interface StudyState {
 
   // Actions - Sources
   addSource: (source: Omit<YouTubeSource, 'id' | 'createdAt'>) => Promise<string>;
+  updateSource: (id: string, updates: Partial<YouTubeSource>) => Promise<void>;
   deleteSource: (id: string) => Promise<void>;
 
   // Actions - Videos
@@ -479,6 +480,18 @@ export const useStudyStore = create<StudyState>()((set, get) => ({
     };
     set(s => ({ sources: [...s.sources, newSource] }));
     return data.id;
+  },
+  updateSource: async (id, updates) => {
+    const dbUpdates: Record<string, any> = {};
+    if (updates.videoCount !== undefined) dbUpdates.video_count = updates.videoCount;
+    if (updates.title !== undefined) dbUpdates.title = updates.title;
+    if (updates.thumbnailUrl !== undefined) dbUpdates.thumbnail_url = updates.thumbnailUrl;
+    if (Object.keys(dbUpdates).length > 0) {
+      await supabase.from('youtube_sources').update(dbUpdates).eq('id', id);
+    }
+    set(s => ({
+      sources: s.sources.map(src => src.id === id ? { ...src, ...updates } : src),
+    }));
   },
   deleteSource: async (id) => {
     await supabase.from('youtube_sources').delete().eq('id', id);
