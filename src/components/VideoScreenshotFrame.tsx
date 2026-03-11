@@ -12,7 +12,20 @@ const MIN_SIZE = 60;
 
 export function VideoScreenshotFrame({ onCapture }: VideoScreenshotFrameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [rect, setRect] = useState({ x: 40, y: 40, w: 200, h: 140 });
+  const [rect, setRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current || !containerRef.current) return;
+    const el = containerRef.current;
+    const cw = el.clientWidth;
+    const ch = el.clientHeight;
+    if (cw === 0 || ch === 0) return;
+    initialized.current = true;
+    const w = Math.round(cw * 0.45);
+    const h = Math.round(w * 9 / 16);
+    setRect({ x: Math.round((cw - w) / 2), y: Math.round((ch - h) / 2), w, h });
+  });
   const dragRef = useRef<{ type: 'move' | HandleDirection; startX: number; startY: number; startRect: typeof rect; pointerId: number } | null>(null);
 
   const handlePointerDown = useCallback((type: 'move' | HandleDirection, e: React.PointerEvent) => {
