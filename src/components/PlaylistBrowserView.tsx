@@ -64,7 +64,7 @@ export function PlaylistBrowserView() {
       }
     }
     fetchVideos();
-  }, [source]);
+  }, [source?.id, source?.youtubeId]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
