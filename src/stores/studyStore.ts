@@ -8,6 +8,7 @@ interface StudyState {
   sources: YouTubeSource[];
   videos: Video[];
   clips: Clip[];
+  draftClips: DraftClip[];
   loading: boolean;
 
   // Selection state
