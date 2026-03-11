@@ -6,15 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { useStudyStore } from '@/stores/studyStore';
-import { formatDuration } from '@/types';
+import { formatDuration, type DraftClip } from '@/types';
 import { toast } from 'sonner';
-
-export interface DraftClip {
-  id: string;
-  startTime: number;
-  endTime: number;
-  label: string;
-}
 
 interface DraftClipsPanelProps {
   draftClips: DraftClip[];
