@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronRight, MoreVertical, Plus, Layers } from 'lucide-react';
 import { Subject } from '@/types';
 import { useStudyStore } from '@/stores/studyStore';
