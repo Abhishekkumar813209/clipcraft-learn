@@ -24,6 +24,8 @@ interface YTPlayerOptions {
     enablejsapi?: number;
     origin?: string;
     start?: number;
+    iv_load_policy?: number;
+    disablekb?: number;
   };
   events?: {
     onReady?: (event: YTPlayerEvent) => void;
