@@ -6,15 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { useStudyStore } from '@/stores/studyStore';
-import { formatDuration } from '@/types';
+import { formatDuration, type DraftClip } from '@/types';
 import { toast } from 'sonner';
-
-export interface DraftClip {
-  id: string;
-  startTime: number;
-  endTime: number;
-  label: string;
-}
 
 interface DraftClipsPanelProps {
   draftClips: DraftClip[];
@@ -53,7 +46,7 @@ export function DraftClipsPanel({ draftClips, onUpdateLabel, onDelete, onSave, o
       </div>
       {draftClips.length === 0 ? (
         <p className="text-muted-foreground text-xs text-center py-3">
-          Press <kbd className="px-1 py-0.5 rounded bg-muted border border-border text-[10px] font-mono">C</kbd> to set start, <kbd className="px-1 py-0.5 rounded bg-muted border border-border text-[10px] font-mono">D</kbd> to set end
+          Press <kbd className="px-1 py-0.5 rounded bg-muted border border-border text-[10px] font-mono">M</kbd> to set start, <kbd className="px-1 py-0.5 rounded bg-muted border border-border text-[10px] font-mono">N</kbd> to set end
         </p>
       ) : (
         <div className="space-y-2">

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X, PanelLeft, PanelLeftClose } from 'lucide-react';
-import { DraftClipsPanel, type DraftClip } from '@/components/DraftClipsPanel';
+import { DraftClipsPanel } from '@/components/DraftClipsPanel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,11 +33,16 @@ export function VideoPlayerView() {
     exams, 
     clips,
     videos,
+    draftClips,
     addVideo, 
     addClip,
     deleteClip,
     addTopic,
     addSubTopic,
+    fetchDraftClips,
+    addDraftClip,
+    updateDraftClipLabel,
+    deleteDraftClip,
     getSubjectsByExam, 
     getTopicsBySubject, 
     getSubTopicsByTopic 
@@ -49,7 +54,6 @@ export function VideoPlayerView() {
   const [isPrimary, setIsPrimary] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const chatSendRef = useRef<((content: string) => void) | null>(null);
-  const [draftClips, setDraftClips] = useState<DraftClip[]>([]);
   const [newestDraftId, setNewestDraftId] = useState<string | null>(null);
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
@@ -104,6 +108,11 @@ export function VideoPlayerView() {
   useEffect(() => { setSelectedTopicId(''); setSelectedSubTopicId(''); }, [selectedSubjectId]);
   useEffect(() => { setSelectedSubTopicId(''); }, [selectedTopicId]);
 
+  // Fetch draft clips from DB on mount
+  useEffect(() => {
+    if (videoId) fetchDraftClips(videoId);
+  }, [videoId, fetchDraftClips]);
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -124,10 +133,10 @@ export function VideoPlayerView() {
       } else if (e.key.toLowerCase() === 'g') {
         e.preventDefault();
         setShowChat(prev => !prev);
-      } else if (e.key.toLowerCase() === 'c') {
+      } else if (e.key.toLowerCase() === 'm') {
         e.preventDefault();
         handleSetStart();
-      } else if (e.key.toLowerCase() === 'd') {
+      } else if (e.key.toLowerCase() === 'n') {
         e.preventDefault();
         handleSetEndAndDraft();
       }
@@ -148,12 +157,10 @@ export function VideoPlayerView() {
     toast.success(`End time set: ${formatDuration(Math.floor(time))}`);
   };
 
-  const handleSetEndAndDraft = () => {
+  const handleSetEndAndDraft = async () => {
     const time = Math.floor(getCurrentTime());
     if (startTime !== null && startTime < time) {
-      // Auto-create draft clip
-      const id = crypto.randomUUID();
-      setDraftClips(prev => [...prev, { id, startTime, endTime: time, label: '' }]);
+      const id = await addDraftClip({ videoYoutubeId: videoId, startTime, endTime: time, label: '' });
       setNewestDraftId(id);
       toast.success(`Draft clip: ${formatDuration(startTime)} → ${formatDuration(time)}`);
       setStartTime(null);
@@ -165,11 +172,11 @@ export function VideoPlayerView() {
   };
 
   const handleDraftUpdateLabel = (id: string, label: string) => {
-    setDraftClips(prev => prev.map(d => d.id === id ? { ...d, label } : d));
+    updateDraftClipLabel(id, label);
   };
 
   const handleDraftDelete = (id: string) => {
-    setDraftClips(prev => prev.filter(d => d.id !== id));
+    deleteDraftClip(id);
   };
 
   const handleDraftSave = async (id: string, subTopicId: string, isPrim: boolean) => {
@@ -177,7 +184,7 @@ export function VideoPlayerView() {
     if (!draft) return;
     const storedVideoId = await addVideo({ youtubeId: videoId, title: videoTitle, duration });
     await addClip({ videoId: storedVideoId, startTime: draft.startTime, endTime: draft.endTime, label: draft.label.trim() || undefined, isPrimary: isPrim, subTopicId });
-    setDraftClips(prev => prev.filter(d => d.id !== id));
+    await deleteDraftClip(id);
     toast.success('Clip saved!');
   };
 
@@ -316,14 +323,14 @@ export function VideoPlayerView() {
                 <Button variant={startTime !== null ? "default" : "outline"} onClick={handleSetStart} disabled={!isReady} className="justify-between">
                   <span>Set Start</span>
                   <span className="flex items-center gap-1">
-                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">C</kbd>
+                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">M</kbd>
                     <span className="font-mono text-sm opacity-70">{startTime !== null ? formatDuration(startTime) : '--:--'}</span>
                   </span>
                 </Button>
                 <Button variant={endTime !== null ? "default" : "outline"} onClick={handleSetEnd} disabled={!isReady} className="justify-between">
                   <span>Set End</span>
                   <span className="flex items-center gap-1">
-                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">D</kbd>
+                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">N</kbd>
                     <span className="font-mono text-sm opacity-70">{endTime !== null ? formatDuration(endTime) : '--:--'}</span>
                   </span>
                 </Button>

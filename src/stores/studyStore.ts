@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
-import { Exam, Subject, Topic, SubTopic, Clip, YouTubeSource, Video } from '@/types';
+import { Exam, Subject, Topic, SubTopic, Clip, YouTubeSource, Video, DraftClip } from '@/types';
 
 interface StudyState {
   // Data
@@ -8,6 +8,7 @@ interface StudyState {
   sources: YouTubeSource[];
   videos: Video[];
   clips: Clip[];
+  draftClips: DraftClip[];
   loading: boolean;
 
   // Selection state
@@ -58,6 +59,12 @@ interface StudyState {
   reorderClips: (subTopicId: string, clipIds: string[]) => void;
   getClipsBySubTopic: (subTopicId: string) => Clip[];
 
+  // Actions - Draft Clips
+  fetchDraftClips: (videoYoutubeId: string) => Promise<void>;
+  addDraftClip: (draft: Omit<DraftClip, 'id' | 'createdAt'>) => Promise<string>;
+  updateDraftClipLabel: (id: string, label: string) => Promise<void>;
+  deleteDraftClip: (id: string) => Promise<void>;
+
   // Selection actions
   setSelectedExam: (id: string | null) => void;
   setSelectedSubject: (id: string | null) => void;
@@ -84,6 +91,7 @@ export const useStudyStore = create<StudyState>()((set, get) => ({
   sources: [],
   videos: [],
   clips: [],
+  draftClips: [],
   loading: false,
   selectedExamId: null,
   selectedSubjectId: null,
@@ -592,6 +600,60 @@ export const useStudyStore = create<StudyState>()((set, get) => ({
   },
   getClipsBySubTopic: (subTopicId) => {
     return get().clips.filter(c => c.subTopicId === subTopicId).sort((a, b) => a.order - b.order);
+  },
+
+  // Draft Clips
+  fetchDraftClips: async (videoYoutubeId) => {
+    try {
+      const userId = await getUserId();
+      const { data, error } = await supabase
+        .from('draft_clips')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('video_youtube_id', videoYoutubeId)
+        .order('created_at');
+      if (error) throw error;
+      const drafts: DraftClip[] = (data || []).map((d: any) => ({
+        id: d.id,
+        videoYoutubeId: d.video_youtube_id,
+        startTime: d.start_time,
+        endTime: d.end_time,
+        label: d.label || '',
+        createdAt: new Date(d.created_at),
+      }));
+      set({ draftClips: drafts });
+    } catch (err) {
+      console.error('Failed to fetch draft clips:', err);
+    }
+  },
+  addDraftClip: async (draft) => {
+    const userId = await getUserId();
+    const { data, error } = await supabase.from('draft_clips').insert({
+      user_id: userId,
+      video_youtube_id: draft.videoYoutubeId,
+      start_time: draft.startTime,
+      end_time: draft.endTime,
+      label: draft.label || '',
+    }).select().single();
+    if (error) throw error;
+    const newDraft: DraftClip = {
+      id: data.id,
+      videoYoutubeId: data.video_youtube_id,
+      startTime: data.start_time,
+      endTime: data.end_time,
+      label: data.label || '',
+      createdAt: new Date(data.created_at),
+    };
+    set(s => ({ draftClips: [...s.draftClips, newDraft] }));
+    return data.id;
+  },
+  updateDraftClipLabel: async (id, label) => {
+    await supabase.from('draft_clips').update({ label }).eq('id', id);
+    set(s => ({ draftClips: s.draftClips.map(d => d.id === id ? { ...d, label } : d) }));
+  },
+  deleteDraftClip: async (id) => {
+    await supabase.from('draft_clips').delete().eq('id', id);
+    set(s => ({ draftClips: s.draftClips.filter(d => d.id !== id) }));
   },
 
   // Selection
