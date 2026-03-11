@@ -204,12 +204,6 @@ export function VideoPlayerView() {
                   </div>
                 </div>
               )}
-              {/* Keyboard shortcut feedback */}
-              <div className={`absolute inset-0 z-30 pointer-events-none flex items-center justify-center transition-opacity duration-300 ${feedbackVisible ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="px-5 py-2.5 rounded-full bg-black/70 text-white text-lg font-semibold backdrop-blur-sm">
-                  {feedbackText}
-                </div>
-              </div>
               {showChat && (
                 <VideoScreenshotFrame
                   onCapture={() => {
