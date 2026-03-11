@@ -18,6 +18,7 @@ export function VideoPlayerView() {
   const { videoId: routeVideoId } = useParams<{ videoId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { sidebarCollapsed, setSidebarCollapsed } = useOutletContext<{ sidebarCollapsed: boolean; setSidebarCollapsed: (v: boolean) => void }>();
 
   const videoId = routeVideoId || '';
   const clipStartTime = searchParams.get('start') ? Number(searchParams.get('start')) : undefined;
