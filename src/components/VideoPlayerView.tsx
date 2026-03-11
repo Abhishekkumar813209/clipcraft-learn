@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { QuickCreateSelect } from '@/components/QuickCreateSelect';
 import { VideoChatSidebar } from '@/components/VideoChatSidebar';
+import { VideoScreenshotFrame } from '@/components/VideoScreenshotFrame';
 import { useStudyStore } from '@/stores/studyStore';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
 import { formatDuration } from '@/types';
@@ -45,6 +46,7 @@ export function VideoPlayerView() {
   const [label, setLabel] = useState('');
   const [isPrimary, setIsPrimary] = useState(true);
   const [showChat, setShowChat] = useState(false);
+  const chatSendRef = useRef<((content: string) => void) | null>(null);
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
@@ -167,6 +169,17 @@ export function VideoPlayerView() {
               <div id="youtube-player" className="w-full h-full" />
               {!isPlaying && isReady && (
                 <div className="absolute inset-0 cursor-pointer z-10" onClick={() => play()} title="Click to resume" />
+              )}
+              {showChat && (
+                <VideoScreenshotFrame
+                  onCapture={() => {
+                    const ts = formatDuration(Math.floor(currentTime));
+                    const msg = `At ${ts}, explain what the instructor is showing on screen right now in detail.`;
+                    if (chatSendRef.current) {
+                      chatSendRef.current(msg);
+                    }
+                  }}
+                />
               )}
             </div>
 
@@ -295,7 +308,7 @@ export function VideoPlayerView() {
       </div>
 
       {showChat && (
-        <VideoChatSidebar videoId={videoId} videoTitle={videoTitle} currentTime={currentTime} onClose={() => setShowChat(false)} />
+        <VideoChatSidebar videoId={videoId} videoTitle={videoTitle} currentTime={currentTime} onClose={() => setShowChat(false)} sendMessageRef={chatSendRef} />
       )}
     </div>
   );

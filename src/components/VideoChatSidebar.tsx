@@ -18,11 +18,12 @@ interface VideoChatSidebarProps {
   videoTitle: string;
   currentTime: number;
   onClose: () => void;
+  sendMessageRef?: React.MutableRefObject<((content: string) => void) | null>;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/video-chat`;
 
-export function VideoChatSidebar({ videoId, videoTitle, currentTime, onClose }: VideoChatSidebarProps) {
+export function VideoChatSidebar({ videoId, videoTitle, currentTime, onClose, sendMessageRef }: VideoChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +34,14 @@ export function VideoChatSidebar({ videoId, videoTitle, currentTime, onClose }: 
   const [rangeEnd, setRangeEnd] = useState('');
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Expose sendMessage to parent via ref
+  useEffect(() => {
+    if (sendMessageRef) {
+      sendMessageRef.current = (content: string) => sendMessage(content);
+    }
+    return () => { if (sendMessageRef) sendMessageRef.current = null; };
+  });
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });

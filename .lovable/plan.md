@@ -1,56 +1,62 @@
 
 
-# Video Player UX: Auto-hide Sidebar + Resizable Screenshot Frame for AI
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-## Two Features
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### 1. Auto-collapse sidebar on `/player/*` routes
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-**Current behavior**: Sidebar is always visible, eating 256px of horizontal space on the video player page.
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-**Fix in `src/pages/Index.tsx`**:
-- Detect if current route starts with `/player/` using `useLocation()`
-- Auto-set `sidebarCollapsed = true` when on player routes
-- The existing toggle button (PanelLeft icon) already works to bring it back
-- Add a `useEffect` that watches `location.pathname` and collapses sidebar when entering `/player/`
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-### 2. Resizable selection frame on video for AI screenshot queries
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-**Concept**: When user clicks "AI Doubt", a draggable + resizable rectangle overlay appears on top of the video. User positions/resizes it over the area they want to ask about, clicks a "Ask AI about this" button, the frame area is captured as a screenshot and sent to the AI.
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-**New component `src/components/VideoScreenshotFrame.tsx`**:
-- Renders an absolutely-positioned div overlay on the video container
-- **Draggable**: mousedown on the frame body to move it
-- **Resizable from 8 handles**: 4 corners + 4 edges, each with a small drag handle
-- Uses `mousedown/mousemove/mouseup` events with state for position (`x, y`) and size (`width, height`)
-- Semi-transparent border with highlighted handles
-- Contains a floating "Capture & Ask AI" button
-- On capture: uses `html2canvas` or the native Canvas API to screenshot the video iframe region — **however**, YouTube iframes are cross-origin so we can't screenshot them directly
+## 2. Clips Grouped by Video (within sub-topic)
 
-**Screenshot approach** (since YouTube iframe can't be captured):
-- Instead of actual screenshot, capture the **frame coordinates relative to video** and convert to a **timestamp + description** approach
-- OR: Use the YouTube video thumbnail at the current timestamp as context: `https://img.youtube.com/vi/{videoId}/hqdefault.jpg` (static thumbnail, not frame-accurate)
-- **Best approach**: Send the current timestamp + frame position description to the AI, along with transcript context. The AI already has transcript access. The frame acts as a visual UX cue for the student to focus their question.
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
-**Revised approach**: The frame overlay is a UX affordance. When user captures:
-1. Record current video timestamp
-2. Auto-populate the chat input with "At [timestamp], explain what's shown on screen"
-3. The AI uses transcript context around that timestamp to answer
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
+```
 
-**Integration in `src/components/VideoPlayerView.tsx`**:
-- When `showChat` is true, render `<VideoScreenshotFrame>` over the video container
-- Frame has a "Ask about this" button that triggers the chat with timestamp context
-- Pass `onCapture` callback that sends a message to VideoChatSidebar
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
 
-**Integration in `src/components/VideoChatSidebar.tsx`**:
-- Accept an optional `onSendMessage` ref or expose a `sendMessage` function via callback so the frame can trigger messages
+## 3. In-App Clip Playback (start→end enforcement)
 
-### Files to change
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
 
 | File | Change |
 |------|--------|
-| `src/pages/Index.tsx` | Auto-collapse sidebar on `/player/` routes |
-| `src/components/VideoScreenshotFrame.tsx` | New: draggable + resizable frame overlay |
-| `src/components/VideoPlayerView.tsx` | Show frame when AI mode active, wire up capture → chat |
-| `src/components/VideoChatSidebar.tsx` | Accept external message trigger |
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 
