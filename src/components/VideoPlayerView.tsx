@@ -226,7 +226,7 @@ export function VideoPlayerView() {
           </div>
 
           {/* RIGHT: Form + Saved Clips (40%) */}
-          <ScrollArea className="w-[40%] border-l border-border">
+          <ScrollArea className="w-[36%] border-l border-border">
             <div className="p-6 space-y-4">
               <div className="clip-card space-y-4">
                 <h3 className="font-display font-semibold">Assign to Sub-Topic</h3>

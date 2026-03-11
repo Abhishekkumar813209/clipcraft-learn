@@ -42,20 +42,24 @@ const Index = () => {
 
   if (!user) return null;
 
+  const isPlayerRoute = location.pathname.startsWith('/player/');
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {!sidebarCollapsed && <Sidebar />}
       <main className="flex-1 flex flex-col overflow-hidden relative">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-2 left-2 z-10 h-8 w-8"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
-        >
-          {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-        </Button>
-        <Outlet />
+        {!isPlayerRoute && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 left-2 z-10 h-8 w-8"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+          >
+            {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+          </Button>
+        )}
+        <Outlet context={{ sidebarCollapsed, setSidebarCollapsed }} />
       </main>
     </div>
   );
