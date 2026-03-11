@@ -334,6 +334,15 @@ export function VideoPlayerView() {
           {/* RIGHT: Form + Saved Clips (40%) */}
           <ScrollArea className="w-[36%] border-l border-border">
             <div className="p-6 space-y-4">
+              {/* Draft Clips Panel */}
+              <DraftClipsPanel
+                draftClips={draftClips}
+                onUpdateLabel={handleDraftUpdateLabel}
+                onDelete={handleDraftDelete}
+                onSave={handleDraftSave}
+                onPlay={(t) => { seekTo(t); play(); }}
+                newestDraftId={newestDraftId}
+              />
               <div className="clip-card space-y-4">
                 <h3 className="font-display font-semibold">Assign to Sub-Topic</h3>
                 <div className="space-y-3">
