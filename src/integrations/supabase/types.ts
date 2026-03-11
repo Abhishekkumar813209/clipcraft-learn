@@ -74,6 +74,36 @@ export type Database = {
           },
         ]
       }
+      draft_clips: {
+        Row: {
+          created_at: string | null
+          end_time: number
+          id: string
+          label: string | null
+          start_time: number
+          user_id: string
+          video_youtube_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_time: number
+          id?: string
+          label?: string | null
+          start_time: number
+          user_id: string
+          video_youtube_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_time?: number
+          id?: string
+          label?: string | null
+          start_time?: number
+          user_id?: string
+          video_youtube_id?: string
+        }
+        Relationships: []
+      }
       exams: {
         Row: {
           created_at: string | null
