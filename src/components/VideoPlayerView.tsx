@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X, PanelLeft, PanelLeftClose } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -48,6 +48,9 @@ export function VideoPlayerView() {
   const [isPrimary, setIsPrimary] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const chatSendRef = useRef<((content: string) => void) | null>(null);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
+  const feedbackTimeout = useRef<number | null>(null);
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
@@ -100,6 +103,37 @@ export function VideoPlayerView() {
   useEffect(() => { setSelectedSubjectId(''); setSelectedTopicId(''); setSelectedSubTopicId(''); }, [selectedExamId]);
   useEffect(() => { setSelectedTopicId(''); setSelectedSubTopicId(''); }, [selectedSubjectId]);
   useEffect(() => { setSelectedSubTopicId(''); }, [selectedTopicId]);
+
+  const showFeedback = useCallback((text: string) => {
+    if (feedbackTimeout.current) clearTimeout(feedbackTimeout.current);
+    setFeedbackText(text);
+    setFeedbackVisible(true);
+    feedbackTimeout.current = window.setTimeout(() => setFeedbackVisible(false), 600);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (document.activeElement?.tagName || '').toUpperCase();
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
+      if (!isReady) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (isPlaying) { pause(); showFeedback('⏸ Pause'); }
+        else { play(); showFeedback('▶ Play'); }
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        seekTo(Math.max(0, currentTime - 10));
+        showFeedback('⏪ 10s');
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        seekTo(Math.min(duration, currentTime + 10));
+        showFeedback('⏩ 10s');
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo, showFeedback]);
 
   const handleSetStart = () => {
     const time = getCurrentTime();
@@ -181,6 +215,12 @@ export function VideoPlayerView() {
                   </div>
                 </div>
               )}
+              {/* Keyboard shortcut feedback */}
+              <div className={`absolute inset-0 z-30 pointer-events-none flex items-center justify-center transition-opacity duration-300 ${feedbackVisible ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="px-5 py-2.5 rounded-full bg-black/70 text-white text-lg font-semibold backdrop-blur-sm">
+                  {feedbackText}
+                </div>
+              </div>
               {showChat && (
                 <VideoScreenshotFrame
                   onCapture={() => {
