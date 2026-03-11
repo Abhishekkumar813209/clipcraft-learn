@@ -8,7 +8,6 @@ import { CreateSubjectDialog } from './CreateSubjectDialog';
 export function DashboardView() {
   const [showCreateSubject, setShowCreateSubject] = useState(false);
   const { exams, selectedExamId, getSubjectsByExam, clips } = useStudyStore();
-  const navigate = useNavigate();
   
   const selectedExam = exams.find((e) => e.id === selectedExamId);
   const subjects = selectedExamId ? getSubjectsByExam(selectedExamId) : [];
