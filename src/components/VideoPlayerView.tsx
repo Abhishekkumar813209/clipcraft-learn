@@ -108,6 +108,11 @@ export function VideoPlayerView() {
   useEffect(() => { setSelectedTopicId(''); setSelectedSubTopicId(''); }, [selectedSubjectId]);
   useEffect(() => { setSelectedSubTopicId(''); }, [selectedTopicId]);
 
+  // Fetch draft clips from DB on mount
+  useEffect(() => {
+    if (videoId) fetchDraftClips(videoId);
+  }, [videoId, fetchDraftClips]);
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
