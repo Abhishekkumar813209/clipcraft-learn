@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { useStudyStore } from '@/stores/studyStore';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,6 +8,14 @@ import { PanelLeftClose, PanelLeft, Loader2 } from 'lucide-react';
 
 const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const location = useLocation();
+
+  // Auto-collapse sidebar on player routes to maximize video space
+  useEffect(() => {
+    if (location.pathname.startsWith('/player/')) {
+      setSidebarCollapsed(true);
+    }
+  }, [location.pathname]);
   const { fetchAllData, loading } = useStudyStore();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
