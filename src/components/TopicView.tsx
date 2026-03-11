@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Plus, Star, Sparkles, Play, Trash2, GripVertical, MoreVertical, Copy } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { formatDuration } from '@/types';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -15,16 +16,18 @@ import { toast } from 'sonner';
 export function TopicView() {
   const [showAddSubTopic, setShowAddSubTopic] = useState(false);
   const navigate = useNavigate();
+  const { topicId } = useParams<{ topicId: string }>();
   const {
     exams,
-    selectedSubjectId,
-    selectedTopicId,
     clips,
     videos,
     getSubTopicsByTopic,
     deleteSubTopic,
     deleteClip,
     updateClip,
+    setSelectedExam,
+    setSelectedSubject,
+    setSelectedTopic,
   } = useStudyStore();
 
   let topic = null;
@@ -33,20 +36,29 @@ export function TopicView() {
 
   for (const e of exams) {
     for (const s of e.subjects || []) {
-      if (s.id === selectedSubjectId) {
-        subject = s;
-        exam = e;
-        for (const t of s.topics || []) {
-          if (t.id === selectedTopicId) {
-            topic = t;
-            break;
-          }
+      for (const t of s.topics || []) {
+        if (t.id === topicId) {
+          topic = t;
+          subject = s;
+          exam = e;
+          break;
         }
       }
+      if (topic) break;
     }
+    if (topic) break;
   }
 
-  const subTopics = selectedTopicId ? getSubTopicsByTopic(selectedTopicId) : [];
+  // Sync store selection state from URL param
+  useEffect(() => {
+    if (exam && subject && topic) {
+      setSelectedExam(exam.id);
+      setSelectedSubject(subject.id);
+      setSelectedTopic(topic.id);
+    }
+  }, [exam?.id, subject?.id, topic?.id]);
+
+  const subTopics = topicId ? getSubTopicsByTopic(topicId) : [];
 
   if (!topic) {
     return (
@@ -69,11 +81,41 @@ export function TopicView() {
             Back to Dashboard
           </Button>
           
+          <Breadcrumb className="mb-3">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  className="cursor-pointer hover:underline"
+                  onClick={() => {
+                    if (exam) setSelectedExam(exam.id);
+                    navigate('/');
+                  }}
+                >
+                  {exam?.icon} {exam?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  className="cursor-pointer hover:underline"
+                  onClick={() => {
+                    if (exam) setSelectedExam(exam.id);
+                    if (subject) setSelectedSubject(subject.id);
+                    navigate('/');
+                  }}
+                >
+                  {subject?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-semibold">{topic.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">
-                {exam?.icon} {exam?.name} / {subject?.name}
-              </p>
               <h1 className="font-display text-2xl font-bold">{topic.name}</h1>
               {topic.description && (
                 <p className="text-muted-foreground mt-1">{topic.description}</p>
@@ -133,7 +175,7 @@ export function TopicView() {
       <AddSubTopicDialog
         open={showAddSubTopic}
         onOpenChange={setShowAddSubTopic}
-        topicId={selectedTopicId!}
+        topicId={topicId!}
       />
     </>
   );

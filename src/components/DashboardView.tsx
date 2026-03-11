@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Plus, BookOpen, Layers, FileText } from 'lucide-react';
 import { useStudyStore } from '@/stores/studyStore';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,6 @@ import { CreateSubjectDialog } from './CreateSubjectDialog';
 export function DashboardView() {
   const [showCreateSubject, setShowCreateSubject] = useState(false);
   const { exams, selectedExamId, getSubjectsByExam, clips } = useStudyStore();
-  const navigate = useNavigate();
   
   const selectedExam = exams.find((e) => e.id === selectedExamId);
   const subjects = selectedExamId ? getSubjectsByExam(selectedExamId) : [];
@@ -84,7 +82,6 @@ export function DashboardView() {
                 key={subject.id} 
                 subject={subject} 
                 index={index}
-                onViewTopic={() => navigate('/topic')}
               />
             ))}
           </div>

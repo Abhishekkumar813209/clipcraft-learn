@@ -35,7 +35,7 @@ const App = () => (
               <Route path="clips" element={<AddClipsView />} />
               <Route path="player/:videoId" element={<VideoPlayerView />} />
               <Route path="pdf" element={<PdfReaderView />} />
-              <Route path="topic" element={<TopicView />} />
+              <Route path="topic/:topicId" element={<TopicView />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
