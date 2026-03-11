@@ -110,21 +110,19 @@ export function VideoPlayerView() {
 
       if (e.code === 'Space') {
         e.preventDefault();
-        if (isPlaying) { pause(); showFeedback('⏸ Pause'); }
-        else { play(); showFeedback('▶ Play'); }
+        if (isPlaying) { pause(); }
+        else { play(); }
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
         seekTo(Math.max(0, currentTime - 10));
-        showFeedback('⏪ 10s');
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         seekTo(Math.min(duration, currentTime + 10));
-        showFeedback('⏩ 10s');
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo, showFeedback]);
+  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo]);
 
   const handleSetStart = () => {
     const time = getCurrentTime();
