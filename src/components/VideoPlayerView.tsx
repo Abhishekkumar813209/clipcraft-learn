@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X, PanelLeft, PanelLeftClose } from 'lucide-react';
-import { DraftClipsPanel, type DraftClip } from '@/components/DraftClipsPanel';
+import { DraftClipsPanel } from '@/components/DraftClipsPanel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
