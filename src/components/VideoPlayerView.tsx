@@ -297,6 +297,19 @@ export function VideoPlayerView() {
                     onClick={() => { seekTo(clip.startTime); play(); }}
                   />
                 ))}
+                {/* Draft clip markers */}
+                {duration > 0 && draftClips.map(draft => (
+                  <div
+                    key={draft.id}
+                    className="absolute inset-y-0 rounded-full cursor-pointer bg-emerald-400/60 border-x border-dashed border-emerald-500"
+                    style={{
+                      left: `${(draft.startTime / duration) * 100}%`,
+                      width: `${Math.max(((draft.endTime - draft.startTime) / duration) * 100, 0.5)}%`,
+                    }}
+                    title={`Draft: ${draft.label || 'Unlabeled'} (${formatDuration(draft.startTime)} → ${formatDuration(draft.endTime)})`}
+                    onClick={() => { seekTo(draft.startTime); play(); }}
+                  />
+                ))}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
