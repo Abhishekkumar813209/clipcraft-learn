@@ -171,9 +171,10 @@ export function VideoPlayerView() {
           <div className="w-[64%] flex flex-col overflow-auto p-6 space-y-4">
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
               <div id="youtube-player" className="w-full h-full" />
-              {!isPlaying && isReady && (
-                <div className="absolute inset-0 cursor-pointer z-10" onClick={() => play()} title="Click to resume" />
-              )}
+              <div 
+                className={`absolute inset-0 z-20 ${!isPlaying && isReady ? 'cursor-pointer' : 'pointer-events-none'}`}
+                onClick={() => { if (!isPlaying && isReady) play(); }}
+              />
               {showChat && (
                 <VideoScreenshotFrame
                   onCapture={() => {
