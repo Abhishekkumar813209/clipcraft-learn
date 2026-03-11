@@ -177,7 +177,7 @@ export function useYouTubePlayer({
           rel: 0,
           enablejsapi: 1,
           iv_load_policy: 3,
-          disablekb: 1,
+          disablekb: 0,
           origin: window.location.origin,
           ...(startTime !== undefined ? { start: Math.floor(startTime) } : {}),
         },
