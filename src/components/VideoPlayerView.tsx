@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft, Clock, Play, Pause, SkipBack, SkipForward, Plus, Check, MessageSquare, Trash2, Star, Sparkles, X, PanelLeft, PanelLeftClose } from 'lucide-react';
+import { DraftClipsPanel, type DraftClip } from '@/components/DraftClipsPanel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -48,6 +49,8 @@ export function VideoPlayerView() {
   const [isPrimary, setIsPrimary] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const chatSendRef = useRef<((content: string) => void) | null>(null);
+  const [draftClips, setDraftClips] = useState<DraftClip[]>([]);
+  const [newestDraftId, setNewestDraftId] = useState<string | null>(null);
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
@@ -121,11 +124,17 @@ export function VideoPlayerView() {
       } else if (e.key.toLowerCase() === 'g') {
         e.preventDefault();
         setShowChat(prev => !prev);
+      } else if (e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        handleSetStart();
+      } else if (e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        handleSetEndAndDraft();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo]);
+  }, [isReady, isPlaying, currentTime, duration, play, pause, seekTo, startTime]);
 
   const handleSetStart = () => {
     const time = getCurrentTime();
@@ -137,6 +146,39 @@ export function VideoPlayerView() {
     const time = getCurrentTime();
     setEndTime(Math.floor(time));
     toast.success(`End time set: ${formatDuration(Math.floor(time))}`);
+  };
+
+  const handleSetEndAndDraft = () => {
+    const time = Math.floor(getCurrentTime());
+    if (startTime !== null && startTime < time) {
+      // Auto-create draft clip
+      const id = crypto.randomUUID();
+      setDraftClips(prev => [...prev, { id, startTime, endTime: time, label: '' }]);
+      setNewestDraftId(id);
+      toast.success(`Draft clip: ${formatDuration(startTime)} → ${formatDuration(time)}`);
+      setStartTime(null);
+      setEndTime(null);
+    } else {
+      setEndTime(time);
+      toast.success(`End time set: ${formatDuration(time)}`);
+    }
+  };
+
+  const handleDraftUpdateLabel = (id: string, label: string) => {
+    setDraftClips(prev => prev.map(d => d.id === id ? { ...d, label } : d));
+  };
+
+  const handleDraftDelete = (id: string) => {
+    setDraftClips(prev => prev.filter(d => d.id !== id));
+  };
+
+  const handleDraftSave = async (id: string, subTopicId: string, isPrim: boolean) => {
+    const draft = draftClips.find(d => d.id === id);
+    if (!draft) return;
+    const storedVideoId = await addVideo({ youtubeId: videoId, title: videoTitle, duration });
+    await addClip({ videoId: storedVideoId, startTime: draft.startTime, endTime: draft.endTime, label: draft.label.trim() || undefined, isPrimary: isPrim, subTopicId });
+    setDraftClips(prev => prev.filter(d => d.id !== id));
+    toast.success('Clip saved!');
   };
 
   const handleAddClip = async () => {
@@ -255,16 +297,35 @@ export function VideoPlayerView() {
                     onClick={() => { seekTo(clip.startTime); play(); }}
                   />
                 ))}
+                {/* Draft clip markers */}
+                {duration > 0 && draftClips.map(draft => (
+                  <div
+                    key={draft.id}
+                    className="absolute inset-y-0 rounded-full cursor-pointer bg-emerald-400/60 border-x border-dashed border-emerald-500"
+                    style={{
+                      left: `${(draft.startTime / duration) * 100}%`,
+                      width: `${Math.max(((draft.endTime - draft.startTime) / duration) * 100, 0.5)}%`,
+                    }}
+                    title={`Draft: ${draft.label || 'Unlabeled'} (${formatDuration(draft.startTime)} → ${formatDuration(draft.endTime)})`}
+                    onClick={() => { seekTo(draft.startTime); play(); }}
+                  />
+                ))}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <Button variant={startTime !== null ? "default" : "outline"} onClick={handleSetStart} disabled={!isReady} className="justify-between">
                   <span>Set Start</span>
-                  <span className="font-mono text-sm opacity-70">{startTime !== null ? formatDuration(startTime) : '--:--'}</span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">C</kbd>
+                    <span className="font-mono text-sm opacity-70">{startTime !== null ? formatDuration(startTime) : '--:--'}</span>
+                  </span>
                 </Button>
                 <Button variant={endTime !== null ? "default" : "outline"} onClick={handleSetEnd} disabled={!isReady} className="justify-between">
                   <span>Set End</span>
-                  <span className="font-mono text-sm opacity-70">{endTime !== null ? formatDuration(endTime) : '--:--'}</span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">D</kbd>
+                    <span className="font-mono text-sm opacity-70">{endTime !== null ? formatDuration(endTime) : '--:--'}</span>
+                  </span>
                 </Button>
               </div>
             </div>
@@ -273,6 +334,15 @@ export function VideoPlayerView() {
           {/* RIGHT: Form + Saved Clips (40%) */}
           <ScrollArea className="w-[36%] border-l border-border">
             <div className="p-6 space-y-4">
+              {/* Draft Clips Panel */}
+              <DraftClipsPanel
+                draftClips={draftClips}
+                onUpdateLabel={handleDraftUpdateLabel}
+                onDelete={handleDraftDelete}
+                onSave={handleDraftSave}
+                onPlay={(t) => { seekTo(t); play(); }}
+                newestDraftId={newestDraftId}
+              />
               <div className="clip-card space-y-4">
                 <h3 className="font-display font-semibold">Assign to Sub-Topic</h3>
                 <div className="space-y-3">

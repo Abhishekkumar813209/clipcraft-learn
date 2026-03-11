@@ -1,30 +1,62 @@
 
 
-## Plan: Quick-Mark Mode with C/D Shortcuts + Draft Clips System
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### Changes — all in `src/components/VideoPlayerView.tsx`
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-**1. Add C/D keyboard shortcuts (case-insensitive)**
-- `C` → calls `handleSetStart()` (same as clicking Set Start button)
-- `D` → calls `handleSetEnd()` (same as clicking Set End button)
-- Add `<kbd>C</kbd>` and `<kbd>D</kbd>` badges on Set Start / Set End buttons
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-**2. Draft Clips system**
-- New state: `draftClips: { id: string, startTime: number, endTime: number, label: string }[]`
-- When both start AND end are set, after pressing D, auto-push a draft clip with empty label and reset start/end. Show a toast with the time range.
-- Draft clips appear on the timeline as green dashed markers (`bg-emerald-400/60 border-dashed`), distinct from saved clips (amber/blue)
-- Hovering a draft marker shows label via `title` attribute
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-**3. Draft Clips panel (right sidebar, above Saved Clips)**
-- Each draft shows: time range, editable label input, play button, delete button
-- Expanding "Assign" on a draft shows the exam → subject → topic → sub-topic selector + save button
-- Saving calls `addClip()` with the selected sub-topic and removes from drafts
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-**4. G shortcut — remove fullscreen note**
-- G shortcut stays as-is for normal mode (toggles AI Doubt). No special fullscreen handling needed since native fullscreen takes over the page and our keydown listener won't fire anyway. No misleading "works in fullscreen" claims in UI.
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-**5. Inline label prompt after C+D**
-- After a draft is created, the most recent draft in the panel auto-focuses its label input so user can quickly type a label and move on
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-### No other files need changes.
+## 2. Clips Grouped by Video (within sub-topic)
+
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
+```
+
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
+
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 
