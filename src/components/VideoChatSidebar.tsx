@@ -23,7 +23,7 @@ interface VideoChatSidebarProps {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/video-chat`;
 
-export function VideoChatSidebar({ videoId, videoTitle, currentTime, onClose }: VideoChatSidebarProps) {
+export function VideoChatSidebar({ videoId, videoTitle, currentTime, onClose, sendMessageRef }: VideoChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
