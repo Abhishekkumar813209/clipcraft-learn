@@ -315,11 +315,17 @@ export function VideoPlayerView() {
               <div className="grid grid-cols-2 gap-3">
                 <Button variant={startTime !== null ? "default" : "outline"} onClick={handleSetStart} disabled={!isReady} className="justify-between">
                   <span>Set Start</span>
-                  <span className="font-mono text-sm opacity-70">{startTime !== null ? formatDuration(startTime) : '--:--'}</span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">C</kbd>
+                    <span className="font-mono text-sm opacity-70">{startTime !== null ? formatDuration(startTime) : '--:--'}</span>
+                  </span>
                 </Button>
                 <Button variant={endTime !== null ? "default" : "outline"} onClick={handleSetEnd} disabled={!isReady} className="justify-between">
                   <span>Set End</span>
-                  <span className="font-mono text-sm opacity-70">{endTime !== null ? formatDuration(endTime) : '--:--'}</span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-muted text-muted-foreground border border-border">D</kbd>
+                    <span className="font-mono text-sm opacity-70">{endTime !== null ? formatDuration(endTime) : '--:--'}</span>
+                  </span>
                 </Button>
               </div>
             </div>
