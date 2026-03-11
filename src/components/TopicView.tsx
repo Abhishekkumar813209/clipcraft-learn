@@ -81,11 +81,41 @@ export function TopicView() {
             Back to Dashboard
           </Button>
           
+          <Breadcrumb className="mb-3">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  className="cursor-pointer hover:underline"
+                  onClick={() => {
+                    if (exam) setSelectedExam(exam.id);
+                    navigate('/');
+                  }}
+                >
+                  {exam?.icon} {exam?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  className="cursor-pointer hover:underline"
+                  onClick={() => {
+                    if (exam) setSelectedExam(exam.id);
+                    if (subject) setSelectedSubject(subject.id);
+                    navigate('/');
+                  }}
+                >
+                  {subject?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-semibold">{topic.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">
-                {exam?.icon} {exam?.name} / {subject?.name}
-              </p>
               <h1 className="font-display text-2xl font-bold">{topic.name}</h1>
               {topic.description && (
                 <p className="text-muted-foreground mt-1">{topic.description}</p>
