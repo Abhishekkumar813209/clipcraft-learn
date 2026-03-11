@@ -207,7 +207,7 @@ export function VideoPlayerView() {
               <div id="youtube-player" className="w-full h-full" />
               {!isPlaying && isReady && (
                 <div 
-                  className="absolute inset-0 z-20 bg-background/60 backdrop-blur-sm cursor-pointer flex items-center justify-center transition-opacity duration-200"
+                  className="absolute inset-0 z-20 bg-black/40 cursor-pointer flex items-center justify-center transition-opacity duration-200"
                   onClick={() => play()}
                 >
                   <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
