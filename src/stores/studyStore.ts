@@ -59,6 +59,12 @@ interface StudyState {
   reorderClips: (subTopicId: string, clipIds: string[]) => void;
   getClipsBySubTopic: (subTopicId: string) => Clip[];
 
+  // Actions - Draft Clips
+  fetchDraftClips: (videoYoutubeId: string) => Promise<void>;
+  addDraftClip: (draft: Omit<DraftClip, 'id' | 'createdAt'>) => Promise<string>;
+  updateDraftClipLabel: (id: string, label: string) => Promise<void>;
+  deleteDraftClip: (id: string) => Promise<void>;
+
   // Selection actions
   setSelectedExam: (id: string | null) => void;
   setSelectedSubject: (id: string | null) => void;
