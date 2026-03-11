@@ -194,16 +194,6 @@ export function VideoPlayerView() {
           <div className="w-[64%] flex flex-col overflow-auto p-6 space-y-4">
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
               <div id="youtube-player" className="w-full h-full" />
-              {!isPlaying && isReady && (
-                <div 
-                  className="absolute inset-0 z-20 bg-black/40 cursor-pointer flex items-center justify-center transition-opacity duration-200"
-                  onClick={() => play()}
-                >
-                  <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
-                    <Play className="w-7 h-7 text-primary-foreground ml-1" />
-                  </div>
-                </div>
-              )}
               {showChat && (
                 <VideoScreenshotFrame
                   onCapture={() => {
