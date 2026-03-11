@@ -157,12 +157,10 @@ export function VideoPlayerView() {
     toast.success(`End time set: ${formatDuration(Math.floor(time))}`);
   };
 
-  const handleSetEndAndDraft = () => {
+  const handleSetEndAndDraft = async () => {
     const time = Math.floor(getCurrentTime());
     if (startTime !== null && startTime < time) {
-      // Auto-create draft clip
-      const id = crypto.randomUUID();
-      setDraftClips(prev => [...prev, { id, startTime, endTime: time, label: '' }]);
+      const id = await addDraftClip({ videoYoutubeId: videoId, startTime, endTime: time, label: '' });
       setNewestDraftId(id);
       toast.success(`Draft clip: ${formatDuration(startTime)} → ${formatDuration(time)}`);
       setStartTime(null);
@@ -174,11 +172,11 @@ export function VideoPlayerView() {
   };
 
   const handleDraftUpdateLabel = (id: string, label: string) => {
-    setDraftClips(prev => prev.map(d => d.id === id ? { ...d, label } : d));
+    updateDraftClipLabel(id, label);
   };
 
   const handleDraftDelete = (id: string) => {
-    setDraftClips(prev => prev.filter(d => d.id !== id));
+    deleteDraftClip(id);
   };
 
   const handleDraftSave = async (id: string, subTopicId: string, isPrim: boolean) => {
@@ -186,7 +184,7 @@ export function VideoPlayerView() {
     if (!draft) return;
     const storedVideoId = await addVideo({ youtubeId: videoId, title: videoTitle, duration });
     await addClip({ videoId: storedVideoId, startTime: draft.startTime, endTime: draft.endTime, label: draft.label.trim() || undefined, isPrimary: isPrim, subTopicId });
-    setDraftClips(prev => prev.filter(d => d.id !== id));
+    await deleteDraftClip(id);
     toast.success('Clip saved!');
   };
 
