@@ -230,6 +230,19 @@ export function VideoPlayerView() {
                 {isClipMode && duration > 0 && (
                   <div className="absolute inset-y-0 bg-primary/50 rounded-full" style={{ left: `${(clipStartTime! / duration) * 100}%`, width: `${((clipEndTime! - clipStartTime!) / duration) * 100}%` }} />
                 )}
+                {/* Saved clip markers */}
+                {duration > 0 && videoClips.map(clip => (
+                  <div
+                    key={clip.id}
+                    className={`absolute inset-y-0 rounded-full cursor-pointer ${clip.isPrimary ? 'bg-amber-400/70' : 'bg-blue-400/70'}`}
+                    style={{
+                      left: `${(clip.startTime / duration) * 100}%`,
+                      width: `${Math.max(((clip.endTime - clip.startTime) / duration) * 100, 0.5)}%`,
+                    }}
+                    title={`${clip.label || 'Clip'}: ${formatDuration(clip.startTime)} → ${formatDuration(clip.endTime)}`}
+                    onClick={() => { seekTo(clip.startTime); play(); }}
+                  />
+                ))}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
