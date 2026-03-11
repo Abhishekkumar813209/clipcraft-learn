@@ -308,7 +308,8 @@ export function VideoPlayerView() {
       </div>
 
       {showChat && (
-        <VideoChatSidebar videoId={videoId} videoTitle={videoTitle} currentTime={currentTime} onClose={() => setShowChat(false)} />
+        <VideoChatSidebar videoId={videoId} videoTitle={videoTitle} currentTime={currentTime} onClose={() => setShowChat(false)} sendMessageRef={chatSendRef} />
+      )}
       )}
     </div>
   );
