@@ -118,7 +118,7 @@ export function VideoPlayerView() {
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         seekTo(Math.min(duration, currentTime + 10));
-      } else if (e.code === 'KeyF') {
+      } else if (e.code === 'KeyG') {
         e.preventDefault();
         setShowChat(prev => !prev);
       }
