@@ -101,12 +101,6 @@ export function VideoPlayerView() {
   useEffect(() => { setSelectedTopicId(''); setSelectedSubTopicId(''); }, [selectedSubjectId]);
   useEffect(() => { setSelectedSubTopicId(''); }, [selectedTopicId]);
 
-  const showFeedback = useCallback((text: string) => {
-    if (feedbackTimeout.current) clearTimeout(feedbackTimeout.current);
-    setFeedbackText(text);
-    setFeedbackVisible(true);
-    feedbackTimeout.current = window.setTimeout(() => setFeedbackVisible(false), 600);
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
