@@ -1,62 +1,25 @@
 
 
-# Improvements: Clip Organization, Routing, and In-App Playback
+## Plan: Remove blur from pause shield + test keyboard shortcuts
 
-## 1. URL-Based Routing (fixes refresh/tab-change losing state)
+### Problem
+The pause shield overlay on the video player has `bg-background/60 backdrop-blur-sm` which creates a blurry effect over the video thumbnail (as seen in the screenshot). User wants recommendations hidden but without the blur.
 
-Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+### Change
+**File: `src/components/VideoPlayerView.tsx` (line 210)**
 
-**`src/App.tsx`** — Add routes:
-- `/` → Dashboard
-- `/sources` → Source Library  
-- `/sources/:sourceId` → Playlist Browser
-- `/clips` → Add Clips
-- `/player/:videoId` → Video Player
-- `/pdf` → PDF Reader
-- `/topic` → Topic View
+Replace the blurry shield with a clean dark overlay — no blur, just a semi-transparent black background:
 
-**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+```tsx
+// Before
+className="absolute inset-0 z-20 bg-background/60 backdrop-blur-sm cursor-pointer ..."
 
-**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
-
-All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
-
-## 2. Clips Grouped by Video (within sub-topic)
-
-In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
-
-```text
-📄 Striver Hard (4)
-  🎬 Video: "Majority Element | Striver SDE Sheet"
-    ⭐ 4:47 → 7:54  majority element brute force n2
-    ⭐ 6:17 → 10:02  Factorial ka logic
-  🎬 Video: "Moore's Voting Algorithm"  
-    ⭐ 10:54 → 16:50  Moore's voting algo
+// After  
+className="absolute inset-0 z-20 bg-black/70 cursor-pointer ..."
 ```
 
-Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+This keeps the shield functional (blocks YouTube recommendations, click to play) but removes the blur so the video thumbnail looks clean behind it.
 
-## 3. In-App Clip Playback (start→end enforcement)
-
-When user clicks Play on a clip from the clips list:
-- Navigate to `/player/:youtubeId?start=X&end=Y`
-- `VideoPlayerView` reads query params, seeks to `startTime` on load
-- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
-- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
-
-**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
-
-## Files to Change
-
-| File | Change |
-|------|--------|
-| `src/App.tsx` | Add child routes under `/` |
-| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
-| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
-| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
-| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
-| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
-| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
-| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
-| Other views | Update `onBack` to use `useNavigate(-1)` |
+### Testing
+Will also verify keyboard shortcuts (Space, Arrow keys) and visual feedback are working correctly.
 
