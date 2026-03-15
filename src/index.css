@@ -249,3 +249,21 @@
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+/* Red beacon glow for UPSC power section */
+@keyframes red-beacon {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.1);
+  }
+}
+
+.red-beacon-glow {
+  background: radial-gradient(ellipse 60% 40% at 50% 15%, hsl(0 80% 45% / 0.35), transparent 70%),
+              radial-gradient(ellipse 40% 30% at 50% 15%, hsl(0 90% 55% / 0.2), transparent 60%);
+  animation: red-beacon 1.5s ease-in-out infinite;
+}
