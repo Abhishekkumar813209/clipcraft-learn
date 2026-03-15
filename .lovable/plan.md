@@ -1,39 +1,62 @@
 
 
-## Plan: UPSC Motivation 3D Page
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### What
-A new `/upsc` route with a lightweight 3D motivational page using `@react-three/fiber` + `@react-three/drei`. It'll feature:
-- A slowly rotating 3D emblem/trophy with particle stars around it
-- Motivational text overlay: "IAS 2027 — Tu Banega!" with a countdown timer to UPSC 2027 Prelims
-- Inspirational quotes that cycle every few seconds
-- Warm gradient background with subtle glow effects
-- A "Back to Study" button linking back to dashboard
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Lightweight strategy
-- Use simple geometries (torus, sphere, icosahedron) — no heavy 3D models
-- Low particle count (~50 stars)
-- `frameloop="demand"` or keep animations minimal
-- Lazy load the 3D component with `React.lazy`
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-### Files to create/edit
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-1. **Install deps**: `@react-three/fiber@^8.18`, `three@^0.160`, `@react-three/drei@^9.122.0`
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-2. **Create `src/pages/UpscMotivation.tsx`**
-   - Full-screen page with Canvas
-   - 3D scene: slowly spinning golden icosahedron (trophy-like), orbiting small spheres (stars), subtle ambient + point lights
-   - HTML overlay (drei's `Html`): countdown to UPSC 2027 (days remaining), rotating motivational quotes, "IAS Officer Banne Wala Hai Tu 🔥" heading
-   - "Back to Study →" button at bottom
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-3. **Edit `src/App.tsx`** — Add route `/upsc` as child of Index layout
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-4. **Edit `src/components/Sidebar.tsx`** — Add "UPSC Motivation" nav item with a trophy/target icon
+## 2. Clips Grouped by Video (within sub-topic)
 
-### Quotes pool
-- "Discipline is the bridge between goals and accomplishment"
-- "UPSC is not about talent, it's about consistency"
-- "2027 mein tera naam hoga IAS toppers mein"
-- "Har din ka effort compound hota hai"
-- "Abhi nahi toh kab? Uth aur padh!"
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
+```
+
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
+
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 

@@ -15,6 +15,7 @@ import { TopicView } from "./components/TopicView";
 import { PlaylistBrowserView } from "./components/PlaylistBrowserView";
 import { VideoPlayerView } from "./components/VideoPlayerView";
 import { PdfReaderView } from "./components/PdfReaderView";
+import UpscMotivation from "./pages/UpscMotivation";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="clips" element={<AddClipsView />} />
               <Route path="player/:videoId" element={<VideoPlayerView />} />
               <Route path="pdf" element={<PdfReaderView />} />
+              <Route path="upsc" element={<UpscMotivation />} />
               <Route path="topic/:topicId" element={<TopicView />} />
             </Route>
             <Route path="*" element={<NotFound />} />

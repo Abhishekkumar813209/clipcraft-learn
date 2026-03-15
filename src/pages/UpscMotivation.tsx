@@ -1,0 +1,211 @@
+import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Stars, Float } from '@react-three/drei';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Flame } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import * as THREE from 'three';
+
+const QUOTES = [
+  "Discipline is the bridge between goals and accomplishment 💪",
+  "UPSC is not about talent, it's about consistency 🎯",
+  "2027 mein tera naam hoga IAS toppers mein 🏆",
+  "Har din ka effort compound hota hai 📈",
+  "Abhi nahi toh kab? Uth aur padh! 🔥",
+  "Tu woh hai jo haar ke bhi nahi haarta 🦁",
+  "IAS banna hai toh comfort zone chhod de 🚀",
+  "Tera sapna bada hai, mehnat bhi badi kar ⚡",
+  "Nation builders roz thoda zyada karte hain 🇮🇳",
+  "Consistency > Intensity. Roz padh, roz badh 📚",
+];
+
+const TARGET_DATE = new Date('2027-05-23T00:00:00+05:30');
+
+function getCountdown() {
+  const now = new Date();
+  const diff = TARGET_DATE.getTime() - now.getTime();
+  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  return {
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((diff / (1000 * 60)) % 60),
+    seconds: Math.floor((diff / 1000) % 60),
+  };
+}
+
+function RotatingEmblem() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const ringRef = useRef<THREE.Mesh>(null);
+
+  useFrame((_, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta * 0.3;
+      meshRef.current.rotation.x += delta * 0.1;
+    }
+    if (ringRef.current) {
+      ringRef.current.rotation.z += delta * 0.2;
+      ringRef.current.rotation.x += delta * 0.05;
+    }
+  });
+
+  return (
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
+      <group>
+        {/* Main Icosahedron */}
+        <mesh ref={meshRef}>
+          <icosahedronGeometry args={[1.4, 0]} />
+          <meshStandardMaterial
+            color="#f59e0b"
+            emissive="#d97706"
+            emissiveIntensity={0.4}
+            metalness={0.8}
+            roughness={0.2}
+            wireframe
+          />
+        </mesh>
+        {/* Inner glowing sphere */}
+        <mesh>
+          <sphereGeometry args={[0.6, 16, 16]} />
+          <meshStandardMaterial
+            color="#fbbf24"
+            emissive="#f59e0b"
+            emissiveIntensity={0.8}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+        {/* Orbiting ring */}
+        <mesh ref={ringRef}>
+          <torusGeometry args={[2, 0.03, 8, 64]} />
+          <meshStandardMaterial
+            color="#fbbf24"
+            emissive="#f59e0b"
+            emissiveIntensity={0.5}
+          />
+        </mesh>
+      </group>
+    </Float>
+  );
+}
+
+function Scene() {
+  return (
+    <>
+      <ambientLight intensity={0.3} />
+      <pointLight position={[5, 5, 5]} intensity={1} color="#f59e0b" />
+      <pointLight position={[-5, -5, 3]} intensity={0.5} color="#3b82f6" />
+      <RotatingEmblem />
+      <Stars radius={50} depth={30} count={80} factor={3} saturation={0.5} fade speed={0.5} />
+    </>
+  );
+}
+
+export default function UpscMotivation() {
+  const navigate = useNavigate();
+  const [countdown, setCountdown] = useState(getCountdown());
+  const [quoteIndex, setQuoteIndex] = useState(0);
+  const [fadeIn, setFadeIn] = useState(true);
+
+  useEffect(() => {
+    const timer = setInterval(() => setCountdown(getCountdown()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFadeIn(false);
+      setTimeout(() => {
+        setQuoteIndex((i) => (i + 1) % QUOTES.length);
+        setFadeIn(true);
+      }, 400);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const countdownBlocks = useMemo(() => [
+    { value: countdown.days, label: 'Days' },
+    { value: countdown.hours, label: 'Hours' },
+    { value: countdown.minutes, label: 'Min' },
+    { value: countdown.seconds, label: 'Sec' },
+  ], [countdown]);
+
+  return (
+    <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-amber-950">
+      {/* 3D Canvas */}
+      <div className="absolute inset-0">
+        <Suspense fallback={null}>
+          <Canvas
+            camera={{ position: [0, 0, 6], fov: 50 }}
+            dpr={[1, 1.5]}
+            gl={{ antialias: true, alpha: true }}
+          >
+            <Scene />
+          </Canvas>
+        </Suspense>
+      </div>
+
+      {/* Overlay Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 pointer-events-none">
+        {/* Back Button */}
+        <div className="absolute top-4 left-4 pointer-events-auto">
+          <Button
+            variant="ghost"
+            className="text-amber-200/80 hover:text-amber-100 hover:bg-amber-900/30"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Study
+          </Button>
+        </div>
+
+        {/* Main heading */}
+        <div className="text-center space-y-2 mb-8">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Flame className="h-8 w-8 text-amber-400 animate-pulse" />
+            <Flame className="h-6 w-6 text-orange-500 animate-pulse" style={{ animationDelay: '0.3s' }} />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
+            IAS Officer Banne Wala Hai Tu
+          </h1>
+          <p className="text-lg md:text-xl text-amber-200/70 font-medium">
+            UPSC CSE 2027 — Tera Sapna, Teri Mehnat 🇮🇳
+          </p>
+        </div>
+
+        {/* Countdown */}
+        <div className="flex gap-3 md:gap-5 mb-10">
+          {countdownBlocks.map((block) => (
+            <div key={block.label} className="flex flex-col items-center">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-black/50 backdrop-blur-md border border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-900/20">
+                <span className="text-2xl md:text-3xl font-bold text-amber-300 font-mono tabular-nums">
+                  {String(block.value).padStart(2, '0')}
+                </span>
+              </div>
+              <span className="text-xs text-amber-200/50 mt-1.5 uppercase tracking-widest">{block.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Quote */}
+        <div className="max-w-xl text-center h-16 flex items-center justify-center">
+          <p
+            className={`text-lg md:text-xl text-amber-100/90 font-medium italic transition-opacity duration-400 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+          >
+            "{QUOTES[quoteIndex]}"
+          </p>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-8 pointer-events-auto">
+          <Button
+            onClick={() => navigate('/')}
+            className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-lg px-8 py-6 rounded-xl shadow-xl shadow-amber-900/40 transition-all hover:scale-105"
+          >
+            <Flame className="h-5 w-5 mr-2" />
+            Ab Padhai Shuru Kar! 🚀
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

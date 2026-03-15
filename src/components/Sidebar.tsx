@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, Library, Video, Plus, LogOut, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { BookOpen, Library, Video, Plus, LogOut, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2, Trophy } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -55,6 +55,7 @@ export function Sidebar() {
           <NavItem icon={Library} label="Source Library" active={isActive('/sources')} onClick={() => navigate('/sources')} />
           <NavItem icon={Video} label="Add Clips" active={isActive('/clips')} onClick={() => navigate('/clips')} />
           <NavItem icon={FileText} label="PDF Reader" active={isActive('/pdf')} onClick={() => navigate('/pdf')} />
+          <NavItem icon={Trophy} label="UPSC Motivation" active={isActive('/upsc')} onClick={() => navigate('/upsc')} />
         </nav>
 
         {/* Exams List */}
