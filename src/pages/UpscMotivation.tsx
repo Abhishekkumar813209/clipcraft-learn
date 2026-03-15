@@ -206,12 +206,19 @@ export default function UpscMotivation() {
 
       {/* Section 2 — Power & Respect (Red Beacon) */}
       <section ref={section2Ref} className="relative w-full min-h-screen snap-start overflow-hidden bg-black flex items-center justify-center">
-        {/* Red beacon background effect */}
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-black to-gray-950" />
+        {/* YouTube background video — Fortuner VIP convoy */}
+        <div className="absolute inset-0 overflow-hidden">
+          <iframe
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] md:w-[120%] md:h-[120%] pointer-events-none"
+            src="https://www.youtube.com/embed/gCbGmAFqLoU?autoplay=1&mute=1&loop=1&playlist=gCbGmAFqLoU&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd720"
+            title="VIP Convoy Background"
+            allow="autoplay; encrypted-media"
+            frameBorder="0"
+          />
+        </div>
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/65" />
         <div className="absolute inset-0 red-beacon-glow" />
-        {/* Subtle road lines */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-gray-900/80 to-transparent" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1/3 bg-gradient-to-t from-yellow-500/20 to-transparent" />
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-5xl mx-auto px-6 py-16">
