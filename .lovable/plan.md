@@ -1,62 +1,42 @@
 
 
-# Improvements: Clip Organization, Routing, and In-App Playback
+## Plan: Add Scrollable Video Section — Fortuner with Red Light
 
-## 1. URL-Based Routing (fixes refresh/tab-change losing state)
+### What
+Make the UPSC Motivation page scrollable. The current 3D section stays as the **first full-screen section**. Below it, add a **second full-screen section** with a looping background video of a Fortuner with red beacon light (VIP convoy style), overlaid with motivational text about what IAS life represents — Power, Respect, Authority.
 
-Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+### Approach
 
-**`src/App.tsx`** — Add routes:
-- `/` → Dashboard
-- `/sources` → Source Library  
-- `/sources/:sourceId` → Playlist Browser
-- `/clips` → Add Clips
-- `/player/:videoId` → Video Player
-- `/pdf` → PDF Reader
-- `/topic` → Topic View
+**File: `src/pages/UpscMotivation.tsx`**
 
-**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+1. **Make page scrollable**: Change the outer container from `h-full overflow-hidden` to `min-h-screen overflow-y-auto` with snap scrolling (`snap-y snap-mandatory`)
 
-**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
+2. **Section 1 (existing)**: Wrap current 3D + overlay content in a `h-screen snap-start` div — no changes to content
 
-All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
+3. **Section 2 (new — Fortuner Video Section)**:
+   - Full-screen `h-screen snap-start` section with a `<video>` background
+   - Video: Use a royalty-free dark Fortuner/SUV convoy video from a public CDN or embed a YouTube video as background. Since we can't host videos, we'll use a **YouTube embed** (muted, autoplay, loop) of a VIP convoy Fortuner video as an iframe background
+   - Dark overlay on top of video (`bg-black/60`)
+   - Content overlay with 4 bold text cards in a grid:
+     - 🔴 **Power** — "Tera ek order, system hilega"
+     - 💰 **Respect** — "Salute milega har jagah"
+     - 🏛️ **Authority** — "District tera hoga"
+     - 🇮🇳 **Impact** — "Crores ki zindagi badlegi"
+   - Each card: glassmorphism style (`bg-white/10 backdrop-blur-md border border-white/20`)
+   - Bottom text: "Ye sab tera hoga — bas padh le" with a scroll-up arrow
 
-## 2. Clips Grouped by Video (within sub-topic)
+4. **Scroll indicator**: Add a subtle bouncing down-arrow at bottom of Section 1 to hint "scroll down"
 
-In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+### Video Strategy
+Since we can't host video files, we'll use a YouTube embed as background iframe (muted, autoplay, loop, no controls). I'll pick a generic VIP convoy / red light Fortuner video ID. Alternatively, we can use a CSS-animated gradient with red flashing light effect as fallback if iframe doesn't look clean.
 
-```text
-📄 Striver Hard (4)
-  🎬 Video: "Majority Element | Striver SDE Sheet"
-    ⭐ 4:47 → 7:54  majority element brute force n2
-    ⭐ 6:17 → 10:02  Factorial ka logic
-  🎬 Video: "Moore's Voting Algorithm"  
-    ⭐ 10:54 → 16:50  Moore's voting algo
-```
+**Better approach**: Use a pure CSS animated background — dark road scene with a pulsing red beacon light effect (CSS radial gradient animation). This avoids external dependencies and copyright issues entirely, keeps it lightweight.
 
-Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+### CSS Animation for Red Beacon
+- Pulsing red radial gradient at the top of section 2
+- Dark gradient background simulating night road
+- Red glow animation cycling every 1.5s
 
-## 3. In-App Clip Playback (start→end enforcement)
-
-When user clicks Play on a clip from the clips list:
-- Navigate to `/player/:youtubeId?start=X&end=Y`
-- `VideoPlayerView` reads query params, seeks to `startTime` on load
-- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
-- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
-
-**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
-
-## Files to Change
-
-| File | Change |
-|------|--------|
-| `src/App.tsx` | Add child routes under `/` |
-| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
-| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
-| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
-| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
-| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
-| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
-| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
-| Other views | Update `onBack` to use `useNavigate(-1)` |
+### Files to edit
+- `src/pages/UpscMotivation.tsx` — restructure to scrollable sections, add Section 2
 
