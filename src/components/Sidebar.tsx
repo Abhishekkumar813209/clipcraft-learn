@@ -55,6 +55,7 @@ export function Sidebar() {
           <NavItem icon={Library} label="Source Library" active={isActive('/sources')} onClick={() => navigate('/sources')} />
           <NavItem icon={Video} label="Add Clips" active={isActive('/clips')} onClick={() => navigate('/clips')} />
           <NavItem icon={FileText} label="PDF Reader" active={isActive('/pdf')} onClick={() => navigate('/pdf')} />
+          <NavItem icon={Trophy} label="UPSC Motivation" active={isActive('/upsc')} onClick={() => navigate('/upsc')} />
         </nav>
 
         {/* Exams List */}
