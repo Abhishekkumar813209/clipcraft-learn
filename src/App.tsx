@@ -15,6 +15,7 @@ import { TopicView } from "./components/TopicView";
 import { PlaylistBrowserView } from "./components/PlaylistBrowserView";
 import { VideoPlayerView } from "./components/VideoPlayerView";
 import { PdfReaderView } from "./components/PdfReaderView";
+import UpscMotivation from "./pages/UpscMotivation";
 
 const queryClient = new QueryClient();
 
