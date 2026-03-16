@@ -24,6 +24,10 @@ import NqtLayout from "./pages/NqtLayout";
 import NqtDashboard from "./pages/NqtDashboard";
 import NqtPractice from "./pages/NqtPractice";
 import NqtPracticeSession from "./pages/NqtPracticeSession";
+import BpscLayout from "./pages/BpscLayout";
+import BpscDashboard from "./pages/BpscDashboard";
+import BpscPractice from "./pages/BpscPractice";
+import BpscPracticeSession from "./pages/BpscPracticeSession";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +60,11 @@ const App = () => (
               <Route index element={<NqtDashboard />} />
               <Route path="practice" element={<NqtPractice />} />
               <Route path="practice/:topic" element={<NqtPracticeSession />} />
+            </Route>
+            <Route path="/bpsc" element={<BpscLayout />}>
+              <Route index element={<BpscDashboard />} />
+              <Route path="practice" element={<BpscPractice />} />
+              <Route path="practice/:topic" element={<BpscPracticeSession />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
