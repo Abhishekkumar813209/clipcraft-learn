@@ -149,6 +149,116 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_questions: {
+        Row: {
+          correct_option: number
+          created_at: string | null
+          difficulty: Database["public"]["Enums"]["ssc_difficulty"]
+          exam: Database["public"]["Enums"]["ssc_exam"] | null
+          explanation: string | null
+          id: string
+          is_pyq: boolean
+          options: Json
+          question_text: string
+          topic: Database["public"]["Enums"]["ssc_topic"]
+          user_id: string | null
+          year: number | null
+        }
+        Insert: {
+          correct_option?: number
+          created_at?: string | null
+          difficulty?: Database["public"]["Enums"]["ssc_difficulty"]
+          exam?: Database["public"]["Enums"]["ssc_exam"] | null
+          explanation?: string | null
+          id?: string
+          is_pyq?: boolean
+          options?: Json
+          question_text: string
+          topic: Database["public"]["Enums"]["ssc_topic"]
+          user_id?: string | null
+          year?: number | null
+        }
+        Update: {
+          correct_option?: number
+          created_at?: string | null
+          difficulty?: Database["public"]["Enums"]["ssc_difficulty"]
+          exam?: Database["public"]["Enums"]["ssc_exam"] | null
+          explanation?: string | null
+          id?: string
+          is_pyq?: boolean
+          options?: Json
+          question_text?: string
+          topic?: Database["public"]["Enums"]["ssc_topic"]
+          user_id?: string | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      ssc_user_progress: {
+        Row: {
+          answered_at: string
+          id: string
+          is_correct: boolean
+          question_id: string
+          time_taken_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          answered_at?: string
+          id?: string
+          is_correct: boolean
+          question_id: string
+          time_taken_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          answered_at?: string
+          id?: string
+          is_correct?: boolean
+          question_id?: string
+          time_taken_seconds?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ssc_user_progress_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "ssc_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ssc_user_stats: {
+        Row: {
+          correct_count: number
+          date: string
+          id: string
+          questions_solved: number
+          streak_days: number
+          user_id: string
+          xp_points: number
+        }
+        Insert: {
+          correct_count?: number
+          date?: string
+          id?: string
+          questions_solved?: number
+          streak_days?: number
+          user_id: string
+          xp_points?: number
+        }
+        Update: {
+          correct_count?: number
+          date?: string
+          id?: string
+          questions_solved?: number
+          streak_days?: number
+          user_id?: string
+          xp_points?: number
+        }
+        Relationships: []
+      }
       sub_topics: {
         Row: {
           description: string | null
@@ -337,7 +447,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ssc_difficulty: "easy" | "medium" | "hard"
+      ssc_exam: "CGL" | "CHSL" | "MTS" | "GD"
+      ssc_topic:
+        | "idioms_phrases"
+        | "one_word_substitution"
+        | "synonyms_antonyms"
+        | "error_detection"
+        | "sentence_improvement"
+        | "fill_in_blanks"
+        | "cloze_test"
+        | "reading_comprehension"
+        | "active_passive"
+        | "direct_indirect"
+        | "parajumbles"
+        | "spelling_correction"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -464,6 +588,23 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      ssc_difficulty: ["easy", "medium", "hard"],
+      ssc_exam: ["CGL", "CHSL", "MTS", "GD"],
+      ssc_topic: [
+        "idioms_phrases",
+        "one_word_substitution",
+        "synonyms_antonyms",
+        "error_detection",
+        "sentence_improvement",
+        "fill_in_blanks",
+        "cloze_test",
+        "reading_comprehension",
+        "active_passive",
+        "direct_indirect",
+        "parajumbles",
+        "spelling_correction",
+      ],
+    },
   },
 } as const

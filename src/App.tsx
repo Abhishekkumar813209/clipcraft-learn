@@ -16,6 +16,10 @@ import { PlaylistBrowserView } from "./components/PlaylistBrowserView";
 import { VideoPlayerView } from "./components/VideoPlayerView";
 import { PdfReaderView } from "./components/PdfReaderView";
 import UpscMotivation from "./pages/UpscMotivation";
+import SscLayout from "./pages/SscLayout";
+import SscDashboard from "./pages/SscDashboard";
+import SscPractice from "./pages/SscPractice";
+import SscPracticeSession from "./pages/SscPracticeSession";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +42,11 @@ const App = () => (
               <Route path="pdf" element={<PdfReaderView />} />
               <Route path="upsc" element={<UpscMotivation />} />
               <Route path="topic/:topicId" element={<TopicView />} />
+            </Route>
+            <Route path="/ssc" element={<SscLayout />}>
+              <Route index element={<SscDashboard />} />
+              <Route path="practice" element={<SscPractice />} />
+              <Route path="practice/:topic" element={<SscPracticeSession />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

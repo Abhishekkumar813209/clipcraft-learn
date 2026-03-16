@@ -1,76 +1,62 @@
 
 
-## Plan: SSC English Practice Platform — Phase 1 (Core)
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### Overview
-Build a standalone SSC English learning section at `/ssc/*` routes with its own sidebar navigation, separate from the existing StudyBrain app. Phase 1 covers: Dashboard, Practice Section, and Question Database with seeded sample data.
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Architecture
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
+
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
+
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
+
+## 2. Clips Grouped by Video (within sub-topic)
+
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
 ```text
-/ssc                → SSC Dashboard (stats, streak, weak topics)
-/ssc/practice       → Topic grid (12 modules)
-/ssc/practice/:topic → Question practice UI (timer, MCQ, explanation)
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
 ```
 
-Existing StudyBrain routes remain untouched. A link in the main Sidebar will navigate to `/ssc`.
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
 
-### Database Schema (New Tables)
+## 3. In-App Clip Playback (start→end enforcement)
 
-**1. `ssc_questions`** — Stores all questions
-- `id`, `user_id` (null for seeded/global), `topic` (enum: idioms, synonyms, etc.), `exam` (CGL/CHSL/MTS/GD), `year` (nullable), `question_text`, `options` (jsonb array), `correct_option` (int), `explanation`, `difficulty` (easy/medium/hard), `is_pyq` (boolean)
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
 
-**2. `ssc_user_progress`** — Tracks per-question attempts
-- `id`, `user_id`, `question_id`, `is_correct`, `answered_at`, `time_taken_seconds`
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
 
-**3. `ssc_user_stats`** — Daily aggregated stats
-- `id`, `user_id`, `date`, `questions_solved`, `correct_count`, `streak_days`, `xp_points`
+## Files to Change
 
-All tables have RLS: users see only their own progress. Questions with `user_id IS NULL` are globally visible (seeded data).
-
-### Seed Data
-Insert ~50-100 sample questions across all 12 topics with realistic SSC-style MCQs, correct answers, and explanations. Mix of PYQ-tagged and general questions.
-
-### UI Components
-
-**SSC Layout (`/ssc` wrapper)**
-- Own sidebar with: Dashboard, Practice, PYQ Mode (grayed out — Phase 2), Vocabulary (Phase 2), Mock Test (Phase 2)
-- Clean Duolingo-inspired design: rounded cards, progress rings, warm colors
-
-**SSC Dashboard**
-- Daily goal ring (target: 30 questions)
-- Questions solved today / accuracy %
-- Streak counter with fire icon
-- Weak topics list (topics with <60% accuracy)
-- XP points display
-
-**Practice Grid (`/ssc/practice`)**
-- 12 topic cards in a responsive grid (3 cols desktop, 2 tablet, 1 mobile)
-- Each card shows: topic name, icon, questions available, user accuracy %
-
-**Practice Session (`/ssc/practice/:topic`)**
-- One question at a time, 4 MCQ options
-- Timer per question (30 seconds default)
-- On answer: show correct/wrong + explanation
-- Progress bar showing question X of N
-- End screen: score, accuracy, time taken
-
-### Files to Create
-1. `src/pages/SscLayout.tsx` — Layout wrapper with SSC sidebar
-2. `src/pages/SscDashboard.tsx` — Dashboard with stats
-3. `src/pages/SscPractice.tsx` — Topic grid
-4. `src/pages/SscPracticeSession.tsx` — Question practice UI
-5. `src/hooks/useSscQuestions.ts` — Fetch/filter questions
-6. `src/hooks/useSscProgress.ts` — Track & fetch user progress
-7. `src/types/ssc.ts` — Types for SSC domain
-
-### Files to Edit
-- `src/App.tsx` — Add `/ssc/*` routes
-- `src/components/Sidebar.tsx` — Add "SSC English" nav link
-
-### Migration
-- Create 3 tables + RLS policies + seed ~80 sample questions via SQL migration
-
-### Phase 2 (Later)
-PYQ Mode filters, Vocabulary Builder, Mock Tests, Spaced Repetition, Leaderboard, Level system
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 
