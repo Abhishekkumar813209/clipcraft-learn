@@ -52,6 +52,11 @@ const App = () => (
               <Route path="practice" element={<SscPractice />} />
               <Route path="practice/:topic" element={<SscPracticeSession />} />
             </Route>
+            <Route path="/nqt" element={<NqtLayout />}>
+              <Route index element={<NqtDashboard />} />
+              <Route path="practice" element={<NqtPractice />} />
+              <Route path="practice/:topic" element={<NqtPracticeSession />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
