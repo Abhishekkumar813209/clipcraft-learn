@@ -67,6 +67,8 @@ const App = () => (
               <Route index element={<BpscDashboard />} />
               <Route path="practice" element={<BpscPractice />} />
               <Route path="practice/:topic" element={<BpscPracticeSession />} />
+              <Route path="pyq" element={<BpscPyqPractice />} />
+              <Route path="pyq/upload" element={<BpscPyqUpload />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

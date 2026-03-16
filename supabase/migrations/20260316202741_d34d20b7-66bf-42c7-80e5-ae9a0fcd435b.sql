@@ -1,0 +1,1 @@
+ALTER TYPE public.ssc_exam ADD VALUE IF NOT EXISTS 'BPSC';
