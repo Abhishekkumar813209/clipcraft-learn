@@ -506,6 +506,15 @@ export type Database = {
         | "multi_variable_logic"
         | "caselet_reasoning"
         | "pattern_deduction"
+        | "indian_history"
+        | "bihar_history"
+        | "indian_polity"
+        | "indian_economy"
+        | "geography_india"
+        | "geography_bihar"
+        | "environment_ecology"
+        | "general_science"
+        | "current_affairs_bpsc"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -692,6 +701,15 @@ export const Constants = {
         "multi_variable_logic",
         "caselet_reasoning",
         "pattern_deduction",
+        "indian_history",
+        "bihar_history",
+        "indian_polity",
+        "indian_economy",
+        "geography_india",
+        "geography_bihar",
+        "environment_ecology",
+        "general_science",
+        "current_affairs_bpsc",
       ],
     },
   },

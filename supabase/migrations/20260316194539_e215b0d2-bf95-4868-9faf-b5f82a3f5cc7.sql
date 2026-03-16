@@ -1,0 +1,9 @@
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'indian_history';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'bihar_history';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'indian_polity';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'indian_economy';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'geography_india';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'geography_bihar';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'environment_ecology';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'general_science';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'current_affairs_bpsc';
