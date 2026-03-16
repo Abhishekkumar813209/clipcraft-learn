@@ -24,6 +24,10 @@ import NqtLayout from "./pages/NqtLayout";
 import NqtDashboard from "./pages/NqtDashboard";
 import NqtPractice from "./pages/NqtPractice";
 import NqtPracticeSession from "./pages/NqtPracticeSession";
+import BpscLayout from "./pages/BpscLayout";
+import BpscDashboard from "./pages/BpscDashboard";
+import BpscPractice from "./pages/BpscPractice";
+import BpscPracticeSession from "./pages/BpscPracticeSession";
 
 const queryClient = new QueryClient();
 
