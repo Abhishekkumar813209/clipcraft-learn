@@ -1,62 +1,69 @@
 
 
-# Improvements: Clip Organization, Routing, and In-App Playback
+## Plan: BPSC Preparation Platform at `/bpsc/*`
 
-## 1. URL-Based Routing (fixes refresh/tab-change losing state)
+### Overview
+Add a standalone BPSC (Bihar Public Service Commission) exam prep section following the exact same architecture as NQT and SSC modules. Reuses `ssc_questions`, `ssc_user_progress`, `ssc_user_stats` tables with new topic enum values.
 
-Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+### Phase 1 Scope (This Build)
+- Dashboard, Prelims Practice (9 topics), AI Explanations
+- Mains, PYQ Mode, Mock Tests, Current Affairs, Smart Revision, PYQ Trend Analysis marked as "Coming Soon"
 
-**`src/App.tsx`** — Add routes:
-- `/` → Dashboard
-- `/sources` → Source Library  
-- `/sources/:sourceId` → Playlist Browser
-- `/clips` → Add Clips
-- `/player/:videoId` → Video Player
-- `/pdf` → PDF Reader
-- `/topic` → Topic View
+### 1. Database Changes
 
-**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+**Extend `ssc_topic` enum** with BPSC-specific values:
+- `indian_history`, `bihar_history`, `indian_polity`, `indian_economy`, `geography_india`, `geography_bihar`, `environment_ecology`, `general_science`, `current_affairs_bpsc`
 
-**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
+**Seed ~40 sample questions** across all 9 Prelims GS topics.
 
-All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
-
-## 2. Clips Grouped by Video (within sub-topic)
-
-In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+### 2. New Type File — `src/types/bpsc.ts`
 
 ```text
-📄 Striver Hard (4)
-  🎬 Video: "Majority Element | Striver SDE Sheet"
-    ⭐ 4:47 → 7:54  majority element brute force n2
-    ⭐ 6:17 → 10:02  Factorial ka logic
-  🎬 Video: "Moore's Voting Algorithm"  
-    ⭐ 10:54 → 16:50  Moore's voting algo
+BpscSubject = 'general_studies'
+
+BPSC_SUBJECT_TOPICS mapping:
+  general_studies: indian_history, bihar_history, indian_polity, indian_economy,
+                   geography_india, geography_bihar, environment_ecology,
+                   general_science, current_affairs_bpsc
+
+BPSC_TOPIC_META: label + icon for each topic
 ```
 
-Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+### 3. New Files
 
-## 3. In-App Clip Playback (start→end enforcement)
+| File | Purpose |
+|------|---------|
+| `src/types/bpsc.ts` | Topics, subjects, metadata |
+| `src/pages/BpscLayout.tsx` | Sidebar with Dashboard, Prelims Practice, Mains (disabled), PYQ (disabled), Mock Tests (disabled), Current Affairs (disabled) |
+| `src/pages/BpscDashboard.tsx` | Stats, streak, weak topics, topic overview |
+| `src/pages/BpscPractice.tsx` | Topic grid for General Studies |
+| `src/pages/BpscPracticeSession.tsx` | Timed MCQ with AI explain (reuses nqt-explain edge function) |
+| `src/hooks/useBpscQuestions.ts` | Fetch questions filtered to BPSC topics |
+| `src/hooks/useBpscProgress.ts` | Progress tracking using same DB tables |
 
-When user clicks Play on a clip from the clips list:
-- Navigate to `/player/:youtubeId?start=X&end=Y`
-- `VideoPlayerView` reads query params, seeks to `startTime` on load
-- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
-- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+### 4. Files to Edit
 
-**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+- `src/App.tsx` — Add `/bpsc/*` routes
+- `src/components/Sidebar.tsx` — Add "BPSC Prep" nav link with `Landmark` icon
+- Migration SQL — Extend enum + seed questions
 
-## Files to Change
+### 5. Routing
 
-| File | Change |
-|------|--------|
-| `src/App.tsx` | Add child routes under `/` |
-| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
-| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
-| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
-| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
-| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
-| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
-| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
-| Other views | Update `onBack` to use `useNavigate(-1)` |
+```text
+/bpsc                    → BPSC Dashboard
+/bpsc/practice           → Topic grid (Prelims GS)
+/bpsc/practice/:topic    → Timed MCQ session
+```
+
+### 6. Coming Soon (Phase 2)
+- Mains preparation (GS Paper 1, Paper 2, Essay Writing, Optional)
+- PYQ Practice Mode with year/subject/topic filters
+- Mock Tests with timer + score analysis
+- Current Affairs section
+- Smart Revision (spaced repetition)
+- PYQ Trend Analysis charts
+
+### UI
+- Green/emerald color scheme for BPSC branding
+- Same Duolingo-inspired clean design as other modules
 
