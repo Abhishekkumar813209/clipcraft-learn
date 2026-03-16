@@ -462,6 +462,33 @@ export type Database = {
         | "direct_indirect"
         | "parajumbles"
         | "spelling_correction"
+        | "percentage"
+        | "profit_loss"
+        | "ratio_proportion"
+        | "average"
+        | "time_work"
+        | "time_speed_distance"
+        | "number_system"
+        | "algebra"
+        | "geometry"
+        | "trigonometry"
+        | "data_interpretation"
+        | "simplification"
+        | "analogy"
+        | "coding_decoding"
+        | "series"
+        | "blood_relation"
+        | "direction"
+        | "syllogism"
+        | "puzzle"
+        | "venn_diagram"
+        | "statement_conclusion"
+        | "history"
+        | "polity"
+        | "geography"
+        | "economy"
+        | "static_gk"
+        | "current_affairs"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -604,6 +631,33 @@ export const Constants = {
         "direct_indirect",
         "parajumbles",
         "spelling_correction",
+        "percentage",
+        "profit_loss",
+        "ratio_proportion",
+        "average",
+        "time_work",
+        "time_speed_distance",
+        "number_system",
+        "algebra",
+        "geometry",
+        "trigonometry",
+        "data_interpretation",
+        "simplification",
+        "analogy",
+        "coding_decoding",
+        "series",
+        "blood_relation",
+        "direction",
+        "syllogism",
+        "puzzle",
+        "venn_diagram",
+        "statement_conclusion",
+        "history",
+        "polity",
+        "geography",
+        "economy",
+        "static_gk",
+        "current_affairs",
       ],
     },
   },
