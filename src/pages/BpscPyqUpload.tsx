@@ -213,7 +213,7 @@ export default function BpscPyqUpload() {
     }
   };
 
-  const yearOptions = Array.from({ length: 30 }, (_, i) => (2024 - i).toString());
+  const yearOptions = Array.from({ length: 31 }, (_, i) => (2025 - i).toString());
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
