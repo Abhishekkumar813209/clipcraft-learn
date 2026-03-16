@@ -489,6 +489,23 @@ export type Database = {
         | "economy"
         | "static_gk"
         | "current_affairs"
+        | "probability"
+        | "permutation_combination"
+        | "simple_compound_interest"
+        | "seating_arrangement"
+        | "pattern_recognition"
+        | "sentence_correction"
+        | "vocabulary"
+        | "sentence_rearrangement"
+        | "advanced_probability"
+        | "perm_comb_puzzles"
+        | "logical_mathematics"
+        | "mixture_problems"
+        | "data_sufficiency"
+        | "seating_puzzles"
+        | "multi_variable_logic"
+        | "caselet_reasoning"
+        | "pattern_deduction"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -658,6 +675,23 @@ export const Constants = {
         "economy",
         "static_gk",
         "current_affairs",
+        "probability",
+        "permutation_combination",
+        "simple_compound_interest",
+        "seating_arrangement",
+        "pattern_recognition",
+        "sentence_correction",
+        "vocabulary",
+        "sentence_rearrangement",
+        "advanced_probability",
+        "perm_comb_puzzles",
+        "logical_mathematics",
+        "mixture_problems",
+        "data_sufficiency",
+        "seating_puzzles",
+        "multi_variable_logic",
+        "caselet_reasoning",
+        "pattern_deduction",
       ],
     },
   },

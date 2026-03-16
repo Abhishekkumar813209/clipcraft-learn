@@ -1,92 +1,62 @@
 
 
-## Plan: TCS NQT Preparation Platform at `/nqt/*`
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### Overview
-Build a standalone TCS NQT prep section at `/nqt` routes, separate from the existing SSC platform. Reuses the same database tables (`ssc_questions`, `ssc_user_progress`, `ssc_user_stats`) and hooks pattern, but with NQT-specific topic definitions, branding, and an AI explanation edge function.
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Phase 1 Scope (This Build)
-- Dashboard, Practice (3 subjects + Advanced), AI Explanations
-- Mock Tests and deep analytics deferred to Phase 2
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-### Database Changes
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-**Extend `ssc_topic` enum** with new NQT-specific values:
-- `probability`, `permutation_combination`, `simple_compound_interest` (Aptitude)
-- `seating_arrangement`, `pattern_recognition` (Reasoning)
-- `sentence_correction`, `vocabulary`, `sentence_rearrangement` (Verbal)
-- `advanced_probability`, `perm_comb_puzzles`, `logical_mathematics`, `mixture_problems`, `data_sufficiency` (Advanced Aptitude)
-- `seating_puzzles`, `multi_variable_logic`, `caselet_reasoning`, `pattern_deduction` (Advanced Reasoning)
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-Many existing enum values (percentage, profit_loss, coding_decoding, error_detection, etc.) are shared with SSC and will be reused.
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-**Seed ~100 sample questions** tagged for NQT topics with explanations.
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-### Type System — `src/types/nqt.ts`
+## 2. Clips Grouped by Video (within sub-topic)
 
-```text
-NqtSubject = 'aptitude' | 'reasoning' | 'verbal' | 'advanced'
-
-SUBJECT_TOPICS mapping:
-  aptitude: percentage, profit_loss, ratio_proportion, average, time_work, 
-            time_speed_distance, probability, permutation_combination, 
-            number_system, simple_compound_interest
-  reasoning: series, coding_decoding, blood_relation, direction, 
-             seating_arrangement, puzzle, pattern_recognition, analogy
-  verbal: sentence_correction, error_detection, reading_comprehension, 
-          vocabulary, synonyms_antonyms, fill_in_blanks, sentence_rearrangement
-  advanced: advanced_probability, perm_comb_puzzles, logical_mathematics, 
-            mixture_problems, data_sufficiency, seating_puzzles, 
-            multi_variable_logic, caselet_reasoning, pattern_deduction
-```
-
-### Routing
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
 ```text
-/nqt                    → NQT Dashboard
-/nqt/practice           → Subject selector + topic grid
-/nqt/practice/:topic    → Timed MCQ session (reuse pattern from SSC)
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
 ```
 
-Add "TCS NQT" nav link to main StudyBrain sidebar.
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
 
-### New Files
+## 3. In-App Clip Playback (start→end enforcement)
 
-| File | Purpose |
-|------|---------|
-| `src/types/nqt.ts` | NQT subjects, topics, metadata |
-| `src/pages/NqtLayout.tsx` | Layout with NQT sidebar (Dashboard, Practice, Mock Tests [disabled], Progress [disabled]) |
-| `src/pages/NqtDashboard.tsx` | Dashboard with stats, streak, weak topics, subject overview |
-| `src/pages/NqtPractice.tsx` | Subject selector (4 cards) + topic grid |
-| `src/pages/NqtPracticeSession.tsx` | Timed MCQ UI with AI explanation button |
-| `src/hooks/useNqtQuestions.ts` | Fetch questions filtered to NQT topics |
-| `src/hooks/useNqtProgress.ts` | Progress tracking (reuses same DB tables) |
-| `supabase/functions/nqt-explain/index.ts` | AI explanation edge function using Lovable AI |
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
 
-### Files to Edit
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
 
-- `src/App.tsx` — Add `/nqt/*` routes
-- `src/components/Sidebar.tsx` — Add NQT nav link
+## Files to Change
 
-### AI Explanation System
-
-Create an edge function `nqt-explain` that:
-- Takes a question, correct answer, and user's answer
-- Calls Lovable AI (google/gemini-3-flash-preview) to generate:
-  - Concept explanation
-  - Step-by-step solution
-  - Shortcut method
-- Returns structured explanation
-- User clicks "AI Explain" button after answering to get detailed explanation
-
-### UI Design
-- Same Duolingo-inspired clean design as SSC section
-- NQT branding: blue/indigo color scheme, TCS NQT logo area
-- Mobile-friendly responsive layout
-- The practice session shows a new "AI Explain" button alongside the static explanation
-
-### Phase 2 (Later)
-- Full-length mock tests with timer + sectional scoring
-- Performance analytics with improvement graphs
-- Smart practice engine (random question sets by exam pattern)
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 

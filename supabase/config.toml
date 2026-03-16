@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.video-chat]
 verify_jwt = false
+
+[functions.nqt-explain]
+verify_jwt = false
