@@ -1,0 +1,29 @@
+
+-- Add new topic values to ssc_topic enum
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'percentage';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'profit_loss';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'ratio_proportion';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'average';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'time_work';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'time_speed_distance';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'number_system';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'algebra';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'geometry';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'trigonometry';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'data_interpretation';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'simplification';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'analogy';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'coding_decoding';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'series';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'blood_relation';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'direction';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'syllogism';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'puzzle';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'venn_diagram';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'statement_conclusion';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'history';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'polity';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'geography';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'economy';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'static_gk';
+ALTER TYPE public.ssc_topic ADD VALUE IF NOT EXISTS 'current_affairs';

@@ -1,6 +1,6 @@
 import { useSscTodayStats, useSscTopicAccuracy } from '@/hooks/useSscProgress';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
-import { TOPIC_META, SSC_TOPICS } from '@/types/ssc';
+import { TOPIC_META, SSC_TOPICS, SSC_SUBJECTS, SUBJECT_TOPICS, getSubjectForTopic } from '@/types/ssc';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Flame, Target, Zap, TrendingUp } from 'lucide-react';
@@ -28,7 +28,7 @@ export default function SscDashboard() {
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Welcome back! 👋</h1>
-        <p className="text-muted-foreground">Keep up your practice streak for SSC English mastery.</p>
+        <p className="text-muted-foreground">Keep up your practice streak for SSC exam mastery.</p>
       </div>
 
       {/* Stat cards */}
@@ -63,9 +63,14 @@ export default function SscDashboard() {
               {weakTopics.map((t) => {
                 const a = topicAccuracy![t]!;
                 const pct = Math.round((a.correct / a.total) * 100);
+                const subject = getSubjectForTopic(t);
+                const subjectMeta = SSC_SUBJECTS.find(s => s.key === subject);
                 return (
                   <div key={t} className="flex items-center justify-between">
-                    <span className="text-sm">{TOPIC_META[t].icon} {TOPIC_META[t].label}</span>
+                    <span className="text-sm">
+                      {TOPIC_META[t].icon} {TOPIC_META[t].label}
+                      <span className="text-xs text-muted-foreground ml-2">({subjectMeta?.label})</span>
+                    </span>
                     <span className="text-sm font-medium text-destructive">{pct}%</span>
                   </div>
                 );
@@ -75,30 +80,37 @@ export default function SscDashboard() {
         </Card>
       )}
 
-      {/* Quick topic overview */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Topics Overview</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {SSC_TOPICS.map((t) => {
-              const acc = topicAccuracy?.[t];
-              const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
-              const count = questionCounts?.[t] || 0;
-              return (
-                <div key={t} className="flex items-center gap-2 p-2 rounded-lg bg-accent/30">
-                  <span className="text-lg">{TOPIC_META[t].icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium truncate">{TOPIC_META[t].label}</p>
-                    <p className="text-[10px] text-muted-foreground">{count} Qs {pct !== null ? `• ${pct}%` : ''}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Subject-wise overview */}
+      {SSC_SUBJECTS.map((subject) => {
+        const subTopics = SUBJECT_TOPICS[subject.key];
+        return (
+          <Card key={subject.key}>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <span>{subject.icon}</span> {subject.label}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {subTopics.map((t) => {
+                  const acc = topicAccuracy?.[t];
+                  const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
+                  const count = questionCounts?.[t] || 0;
+                  return (
+                    <div key={t} className="flex items-center gap-2 p-2 rounded-lg bg-accent/30">
+                      <span className="text-lg">{TOPIC_META[t].icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium truncate">{TOPIC_META[t].label}</p>
+                        <p className="text-[10px] text-muted-foreground">{count} Qs {pct !== null ? `• ${pct}%` : ''}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }
