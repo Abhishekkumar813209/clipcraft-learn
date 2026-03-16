@@ -1,53 +1,62 @@
 
 
-## Plan: Page-by-Page AI Extraction with Page Range Selector
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### Problem
-The current approach concatenates all PDF text into one big string, then splits by character count into chunks. This means:
-- AI gets fragments of questions split mid-sentence
-- Only 1 API call covers the whole PDF, extracting very few questions
-- User has no control over which pages to process
-- Your PDF appears to be image-based (scanned), so pdfjs extracts no text — the AI hallucinated 9 questions from empty input
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Solution
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-**1. Page-by-page processing** — Send each page's text to the AI individually (or in small batches of 3-5 pages). This ensures complete questions per chunk and lets us show real-time progress.
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-**2. Page range selector** — After PDF is loaded, show a "From page / To page" input so users can choose which pages to extract from (e.g., pages 5–40, skipping cover/instructions).
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-**3. Per-page text preview** — After loading, show a quick preview of how much text each page has. If pages have no text (scanned PDF), warn the user that the PDF is image-based and extraction may not work well.
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-**4. Delay between API calls** — Add a 1-second delay between page batches to avoid rate limiting.
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-### Changes
+## 2. Clips Grouped by Video (within sub-topic)
 
-**`src/pages/BpscPyqUpload.tsx`**:
-- Store text per-page in an array (`string[]`) instead of one big string
-- Add `startPage` and `endPage` number inputs (default: 1 to pageCount)
-- Show text character count per page after loading (warn if pages are empty)
-- Change `handleExtract` to process pages in batches of 3-5, sending each batch as a separate API call with a 1s delay between calls
-- Show progress like "Processing pages 5-9 of 40... (found 12 questions so far)"
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
-**`supabase/functions/bpsc-pyq-extract/index.ts`**:
-- No changes needed — it already accepts `pageText` and returns questions
-
-### UI Addition
-After PDF is loaded, below the file picker:
-```
-Page Range:  [From: 1] — [To: 46]    (46 pages total)
-⚠️ Pages 1-3 have very little text — consider starting from page 4
-
-[Extract Questions with AI]
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
 ```
 
-### Processing Flow
-```
-For pages startPage to endPage, in batches of 3:
-  1. Concatenate 3 pages of text
-  2. Call bpsc-pyq-extract with that text
-  3. Append returned questions to results
-  4. Update progress: "Batch 4/14 — 28 questions found"
-  5. Wait 1 second
-  6. Next batch
-```
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
+
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 

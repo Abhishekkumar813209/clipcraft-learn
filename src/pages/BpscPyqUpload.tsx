@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { BPSC_TOPIC_META, BPSC_ALL_TOPICS, type BpscTopic } from '@/types/bpsc';
-import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle, AlertTriangle } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -27,6 +28,16 @@ interface ExtractedQuestion {
   explanation: string;
 }
 
+interface PageInfo {
+  pageNum: number;
+  text: string;
+  charCount: number;
+}
+
+const BATCH_SIZE = 3;
+const DELAY_MS = 1000;
+const LOW_TEXT_THRESHOLD = 50;
+
 export default function BpscPyqUpload() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -35,13 +46,17 @@ export default function BpscPyqUpload() {
 
   const [year, setYear] = useState<string>('2024');
   const [pdfName, setPdfName] = useState<string>('');
-  const [extractedText, setExtractedText] = useState<string>('');
+  const [pages, setPages] = useState<PageInfo[]>([]);
   const [questions, setQuestions] = useState<ExtractedQuestion[]>([]);
   const [extracting, setExtracting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState<'upload' | 'review'>('upload');
   const [pageCount, setPageCount] = useState(0);
   const [progress, setProgress] = useState('');
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [startPage, setStartPage] = useState(1);
+  const [endPage, setEndPage] = useState(1);
+  const [questionsFoundSoFar, setQuestionsFoundSoFar] = useState(0);
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -53,54 +68,78 @@ export default function BpscPyqUpload() {
 
     setPdfName(file.name);
     setProgress('Reading PDF...');
+    setPages([]);
+    setQuestions([]);
+    setQuestionsFoundSoFar(0);
 
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      setPageCount(pdf.numPages);
+      const totalPages = pdf.numPages;
+      setPageCount(totalPages);
 
-      let fullText = '';
-      const maxPages = Math.min(pdf.numPages, 50);
+      const maxPages = Math.min(totalPages, 50);
+      const pageInfos: PageInfo[] = [];
+
       for (let i = 1; i <= maxPages; i++) {
         setProgress(`Extracting text from page ${i}/${maxPages}...`);
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
         const pageText = content.items.map((item: any) => item.str).join(' ');
-        fullText += `\n--- Page ${i} ---\n${pageText}`;
+        pageInfos.push({ pageNum: i, text: pageText, charCount: pageText.trim().length });
       }
 
-      setExtractedText(fullText);
-      setProgress(`${maxPages} pages extracted. Ready to process.`);
+      setPages(pageInfos);
+      setStartPage(1);
+      setEndPage(maxPages);
+      setProgress(`${maxPages} pages loaded. Select page range and extract.`);
     } catch (err) {
       toast({ title: 'PDF Error', description: 'Could not read the PDF file.', variant: 'destructive' });
       setProgress('');
     }
   }, [toast]);
 
+  const lowTextPages = pages.filter(p => p.charCount < LOW_TEXT_THRESHOLD);
+  const emptyPages = pages.filter(p => p.charCount === 0);
+  const hasLowTextWarning = lowTextPages.length > pages.length * 0.5 && pages.length > 0;
+
   const handleExtract = async () => {
-    if (!extractedText) return;
+    if (pages.length === 0) return;
     setExtracting(true);
-    setProgress('AI is extracting questions...');
+    setQuestionsFoundSoFar(0);
+    setQuestions([]);
+
+    const selectedPages = pages.filter(p => p.pageNum >= startPage && p.pageNum <= endPage);
+    const totalBatches = Math.ceil(selectedPages.length / BATCH_SIZE);
 
     try {
-      // Process in chunks of ~15 pages worth of text to avoid token limits
-      const chunkSize = 15000;
-      const chunks: string[] = [];
-      for (let i = 0; i < extractedText.length; i += chunkSize) {
-        chunks.push(extractedText.slice(i, i + chunkSize));
-      }
-
       let allQuestions: ExtractedQuestion[] = [];
-      for (let i = 0; i < chunks.length; i++) {
-        setProgress(`Processing chunk ${i + 1}/${chunks.length}...`);
+
+      for (let batchIdx = 0; batchIdx < totalBatches; batchIdx++) {
+        const batchPages = selectedPages.slice(batchIdx * BATCH_SIZE, (batchIdx + 1) * BATCH_SIZE);
+        const batchText = batchPages.map(p => `\n--- Page ${p.pageNum} ---\n${p.text}`).join('\n');
+
+        // Skip batches with very little text
+        if (batchText.trim().length < 30) {
+          setProgress(`Batch ${batchIdx + 1}/${totalBatches} — skipped (no text)`);
+          continue;
+        }
+
+        const fromPage = batchPages[0].pageNum;
+        const toPage = batchPages[batchPages.length - 1].pageNum;
+        setProgress(`Processing pages ${fromPage}–${toPage} (batch ${batchIdx + 1}/${totalBatches})... ${allQuestions.length} questions found`);
+        setProgressPercent(Math.round(((batchIdx + 1) / totalBatches) * 100));
+
         const { data, error } = await supabase.functions.invoke('bpsc-pyq-extract', {
-          body: { pageText: chunks[i], year: parseInt(year) },
+          body: { pageText: batchText, year: parseInt(year) },
         });
 
         if (error) {
           if ((error as any)?.status === 429) {
-            toast({ title: 'Rate limited', description: 'Please wait a moment and try again.', variant: 'destructive' });
-            break;
+            toast({ title: 'Rate limited', description: 'Waiting and retrying...', variant: 'destructive' });
+            await new Promise(r => setTimeout(r, 3000));
+            batchIdx--; // retry this batch
+            continue;
           }
           if ((error as any)?.status === 402) {
             toast({ title: 'Credits exhausted', description: 'Please add credits to continue.', variant: 'destructive' });
@@ -111,12 +150,19 @@ export default function BpscPyqUpload() {
 
         if (data?.questions) {
           allQuestions = [...allQuestions, ...data.questions];
+          setQuestionsFoundSoFar(allQuestions.length);
+        }
+
+        // Delay between batches to avoid rate limiting
+        if (batchIdx < totalBatches - 1) {
+          await new Promise(r => setTimeout(r, DELAY_MS));
         }
       }
 
       setQuestions(allQuestions);
       setStep('review');
-      setProgress(`Extracted ${allQuestions.length} questions.`);
+      setProgress(`Extracted ${allQuestions.length} questions from pages ${startPage}–${endPage}.`);
+      setProgressPercent(100);
       toast({ title: 'Extraction complete', description: `Found ${allQuestions.length} questions.` });
     } catch (err: any) {
       toast({ title: 'Extraction failed', description: err.message || 'AI could not extract questions.', variant: 'destructive' });
@@ -152,7 +198,6 @@ export default function BpscPyqUpload() {
         year: parseInt(year),
       }));
 
-      // Insert in batches of 20
       for (let i = 0; i < rows.length; i += 20) {
         const batch = rows.slice(i, i + 20);
         const { error } = await supabase.from('ssc_questions').insert(batch);
@@ -225,20 +270,82 @@ export default function BpscPyqUpload() {
                 </div>
               </div>
 
+              {/* Page Range Selector */}
+              {pages.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">From Page</label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={endPage}
+                        value={startPage}
+                        onChange={e => setStartPage(Math.max(1, Math.min(parseInt(e.target.value) || 1, endPage)))}
+                      />
+                    </div>
+                    <span className="mt-6 text-muted-foreground font-medium">—</span>
+                    <div className="flex-1">
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">To Page</label>
+                      <Input
+                        type="number"
+                        min={startPage}
+                        max={pages.length}
+                        value={endPage}
+                        onChange={e => setEndPage(Math.max(startPage, Math.min(parseInt(e.target.value) || 1, pages.length)))}
+                      />
+                    </div>
+                    <div className="mt-6">
+                      <Badge variant="outline" className="whitespace-nowrap">
+                        {endPage - startPage + 1} pages selected
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Text density warnings */}
+                  {hasLowTextWarning && (
+                    <div className="flex gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm">
+                      <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
+                      <div>
+                        <p className="font-medium text-destructive">This PDF appears to be scanned/image-based</p>
+                        <p className="text-muted-foreground">{emptyPages.length} of {pages.length} pages have no extractable text. AI extraction may not work well.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {lowTextPages.length > 0 && lowTextPages.length <= pages.length * 0.5 && (
+                    <p className="text-xs text-muted-foreground">
+                      💡 Pages with little text: {lowTextPages.map(p => p.pageNum).join(', ')} — consider adjusting your range to skip these.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Progress display */}
               {progress && (
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  {extracting && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {progress}
-                </p>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    {extracting && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {progress}
+                  </p>
+                  {extracting && (
+                    <div className="space-y-1">
+                      <Progress value={progressPercent} className="h-2" />
+                      {questionsFoundSoFar > 0 && (
+                        <p className="text-xs text-emerald-600 font-medium">{questionsFoundSoFar} questions found so far</p>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
 
               <Button
                 onClick={handleExtract}
-                disabled={!extractedText || extracting}
+                disabled={pages.length === 0 || extracting}
                 className="w-full gap-2"
               >
                 {extracting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                Extract Questions with AI
+                {extracting ? `Extracting... (${questionsFoundSoFar} found)` : `Extract Questions (Pages ${startPage}–${endPage})`}
               </Button>
             </CardContent>
           </Card>
@@ -250,8 +357,9 @@ export default function BpscPyqUpload() {
                 <p className="font-medium text-foreground">Tips for best results:</p>
                 <ul className="list-disc pl-4 mt-1 space-y-0.5">
                   <li>Upload clear, text-based PDFs (not scanned images)</li>
-                  <li>Maximum 50 pages will be processed</li>
-                  <li>AI will auto-classify questions by subject</li>
+                  <li>Maximum 50 pages will be loaded</li>
+                  <li>Use the page range selector to skip cover/instruction pages</li>
+                  <li>AI processes 3 pages at a time for better accuracy</li>
                   <li>You can review and edit before saving</li>
                 </ul>
               </div>
@@ -268,7 +376,7 @@ export default function BpscPyqUpload() {
               <p className="text-sm text-muted-foreground">{questions.length} questions found • Year: {year}</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => { setStep('upload'); setQuestions([]); }}>
+              <Button variant="outline" onClick={() => { setStep('upload'); setQuestions([]); setProgressPercent(0); setQuestionsFoundSoFar(0); }}>
                 Re-upload
               </Button>
               <Button onClick={handleSaveAll} disabled={saving || questions.length === 0} className="gap-2">
