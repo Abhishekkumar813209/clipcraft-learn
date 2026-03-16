@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, Library, Video, Plus, LogOut, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2, Trophy, Languages } from 'lucide-react';
+import { BookOpen, Library, Video, Plus, LogOut, GraduationCap, FileText, MoreHorizontal, Pencil, Trash2, Trophy, Languages, Briefcase } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
