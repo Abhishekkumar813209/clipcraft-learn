@@ -448,7 +448,7 @@ export type Database = {
     }
     Enums: {
       ssc_difficulty: "easy" | "medium" | "hard"
-      ssc_exam: "CGL" | "CHSL" | "MTS" | "GD"
+      ssc_exam: "CGL" | "CHSL" | "MTS" | "GD" | "BPSC"
       ssc_topic:
         | "idioms_phrases"
         | "one_word_substitution"
@@ -643,7 +643,7 @@ export const Constants = {
   public: {
     Enums: {
       ssc_difficulty: ["easy", "medium", "hard"],
-      ssc_exam: ["CGL", "CHSL", "MTS", "GD"],
+      ssc_exam: ["CGL", "CHSL", "MTS", "GD", "BPSC"],
       ssc_topic: [
         "idioms_phrases",
         "one_word_substitution",

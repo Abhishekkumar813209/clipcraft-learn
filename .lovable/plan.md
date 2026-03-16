@@ -1,63 +1,62 @@
 
 
-## Plan: BPSC PYQ Upload & Smart Extraction from PDFs
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### How It Works
-1. User uploads a PYQ PDF on the `/bpsc/pyq` page
-2. PDF is read client-side (existing pdfjs-dist pattern — zero cloud storage)
-3. Extracted text is sent to a new edge function `bpsc-pyq-extract` which uses AI to parse individual MCQ questions, classify them by BPSC topic, and return structured data
-4. User reviews extracted questions, edits if needed, then saves to database
-5. A separate PYQ Practice view lets users filter by **topic** and **year**
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Database Changes
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-**Extend `ssc_exam` enum** to include `'BPSC'` so PYQ questions can be tagged with `exam = 'BPSC'`.
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-No new tables needed — reuses `ssc_questions` with `is_pyq = true`, `exam = 'BPSC'`, and `year` set.
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-### New Edge Function: `supabase/functions/bpsc-pyq-extract/index.ts`
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-- Receives: `{ pageText: string, year: number }`
-- Uses Lovable AI (gemini-3-flash-preview) with tool calling to extract structured output:
-  - `question_text`, `options[]`, `correct_option`, `explanation`, `topic` (auto-classified into BPSC topics), `difficulty`
-- Returns array of extracted questions
-- Handles 429/402 errors
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-### New Files
+## 2. Clips Grouped by Video (within sub-topic)
 
-| File | Purpose |
-|------|---------|
-| `supabase/functions/bpsc-pyq-extract/index.ts` | AI extraction edge function |
-| `src/pages/BpscPyqUpload.tsx` | Upload PDF → extract → review → save flow |
-| `src/pages/BpscPyqPractice.tsx` | Filter by topic + year, then practice PYQs |
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
-### Files to Edit
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
+```
+
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
 
 | File | Change |
 |------|--------|
-| `src/App.tsx` | Add `/bpsc/pyq` and `/bpsc/pyq/upload` routes |
-| `src/pages/BpscLayout.tsx` | Enable PYQ nav item, add Upload sub-link |
-| `supabase/config.toml` | Add `bpsc-pyq-extract` function config |
-
-### UI Flow
-
-**PYQ Upload Page (`/bpsc/pyq/upload`)**:
-- File picker for PDF
-- Year input (e.g. 2023, 2022)
-- "Extract Questions" button → shows loading while AI processes
-- Review table showing extracted questions with topic tags
-- User can edit/delete individual questions before saving
-- "Save All to Database" button → inserts into `ssc_questions` with `is_pyq=true, exam='BPSC', year=<selected>`
-
-**PYQ Practice Page (`/bpsc/pyq`)**:
-- Filter bar: Topic dropdown + Year dropdown (populated from DB)
-- Question cards in practice session format (reuses BpscPracticeSession pattern)
-- Shows year badge on each question
-
-### AI Extraction Prompt Strategy
-The edge function prompt instructs AI to:
-- Parse each MCQ from the text (question + 4 options + answer)
-- Auto-classify into one of the 9 BPSC topics
-- Generate brief explanation if not present
-- Return via tool calling for structured JSON output
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 

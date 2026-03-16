@@ -28,6 +28,8 @@ import BpscLayout from "./pages/BpscLayout";
 import BpscDashboard from "./pages/BpscDashboard";
 import BpscPractice from "./pages/BpscPractice";
 import BpscPracticeSession from "./pages/BpscPracticeSession";
+import BpscPyqPractice from "./pages/BpscPyqPractice";
+import BpscPyqUpload from "./pages/BpscPyqUpload";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +67,8 @@ const App = () => (
               <Route index element={<BpscDashboard />} />
               <Route path="practice" element={<BpscPractice />} />
               <Route path="practice/:topic" element={<BpscPracticeSession />} />
+              <Route path="pyq" element={<BpscPyqPractice />} />
+              <Route path="pyq/upload" element={<BpscPyqUpload />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
