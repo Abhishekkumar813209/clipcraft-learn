@@ -28,6 +28,8 @@ import BpscLayout from "./pages/BpscLayout";
 import BpscDashboard from "./pages/BpscDashboard";
 import BpscPractice from "./pages/BpscPractice";
 import BpscPracticeSession from "./pages/BpscPracticeSession";
+import BpscPyqPractice from "./pages/BpscPyqPractice";
+import BpscPyqUpload from "./pages/BpscPyqUpload";
 
 const queryClient = new QueryClient();
 
