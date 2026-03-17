@@ -188,6 +188,7 @@ export default function BpscPyqUpload() {
     setSaving(true);
 
     try {
+      const monthVal = month && month !== 'none' ? parseInt(month) : null;
       const rows = questions.map(q => ({
         user_id: user.id,
         question_text: q.question_text,
@@ -199,6 +200,7 @@ export default function BpscPyqUpload() {
         is_pyq: true,
         exam: 'BPSC' as any,
         year: parseInt(year),
+        month: monthVal,
       }));
 
       for (let i = 0; i < rows.length; i += 20) {
