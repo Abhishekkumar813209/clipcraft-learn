@@ -45,6 +45,7 @@ export default function BpscPyqUpload() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [year, setYear] = useState<string>('2024');
+  const [month, setMonth] = useState<string>('');
   const [pdfName, setPdfName] = useState<string>('');
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [questions, setQuestions] = useState<ExtractedQuestion[]>([]);
