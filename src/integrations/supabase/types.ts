@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      bpsc_mains_questions: {
+        Row: {
+          created_at: string
+          difficulty: Database["public"]["Enums"]["ssc_difficulty"]
+          id: string
+          is_pyq: boolean
+          marks: number
+          model_answer: string | null
+          paper: Database["public"]["Enums"]["bpsc_mains_paper"]
+          question_text: string
+          topic: string
+          word_limit: number | null
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["ssc_difficulty"]
+          id?: string
+          is_pyq?: boolean
+          marks?: number
+          model_answer?: string | null
+          paper: Database["public"]["Enums"]["bpsc_mains_paper"]
+          question_text: string
+          topic: string
+          word_limit?: number | null
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["ssc_difficulty"]
+          id?: string
+          is_pyq?: boolean
+          marks?: number
+          model_answer?: string | null
+          paper?: Database["public"]["Enums"]["bpsc_mains_paper"]
+          question_text?: string
+          topic?: string
+          word_limit?: number | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      bpsc_mains_user_answers: {
+        Row: {
+          ai_feedback: string | null
+          ai_score: number | null
+          answer_text: string
+          id: string
+          question_id: string
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          ai_score?: number | null
+          answer_text: string
+          id?: string
+          question_id: string
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          ai_score?: number | null
+          answer_text?: string
+          id?: string
+          question_id?: string
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bpsc_mains_user_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "bpsc_mains_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clips: {
         Row: {
           created_at: string | null
@@ -450,6 +530,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      bpsc_mains_paper: "gs1" | "gs2" | "essay" | "hindi"
       ssc_difficulty: "easy" | "medium" | "hard"
       ssc_exam: "CGL" | "CHSL" | "MTS" | "GD" | "BPSC"
       ssc_topic:
@@ -647,6 +728,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      bpsc_mains_paper: ["gs1", "gs2", "essay", "hindi"],
       ssc_difficulty: ["easy", "medium", "hard"],
       ssc_exam: ["CGL", "CHSL", "MTS", "GD", "BPSC"],
       ssc_topic: [
