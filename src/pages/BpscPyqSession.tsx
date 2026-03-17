@@ -23,6 +23,7 @@ export default function BpscPyqSession() {
 
   const topicFilter = searchParams.get('topic') || 'all';
   const yearFilter = searchParams.get('year') || 'all';
+  const monthFilter = searchParams.get('month') || 'all';
   const qIndex = parseInt(searchParams.get('q') || '0');
 
   const [selected, setSelected] = useState<number | null>(null);
