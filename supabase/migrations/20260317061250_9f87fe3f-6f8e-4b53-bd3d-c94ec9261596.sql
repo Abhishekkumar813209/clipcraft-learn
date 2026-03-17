@@ -1,0 +1,1 @@
+ALTER TABLE ssc_questions ADD COLUMN month integer;

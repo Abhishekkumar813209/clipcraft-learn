@@ -23,6 +23,7 @@ export default function BpscPyqSession() {
 
   const topicFilter = searchParams.get('topic') || 'all';
   const yearFilter = searchParams.get('year') || 'all';
+  const monthFilter = searchParams.get('month') || 'all';
   const qIndex = parseInt(searchParams.get('q') || '0');
 
   const [selected, setSelected] = useState<number | null>(null);
@@ -62,9 +63,10 @@ export default function BpscPyqSession() {
     return pyqQuestions.filter(q => {
       if (topicFilter !== 'all' && q.topic !== topicFilter) return false;
       if (yearFilter !== 'all' && q.year !== parseInt(yearFilter)) return false;
+      if (monthFilter !== 'all' && (q as any).month !== parseInt(monthFilter)) return false;
       return true;
     }).sort((a, b) => a.id.localeCompare(b.id));
-  }, [pyqQuestions, topicFilter, yearFilter]);
+  }, [pyqQuestions, topicFilter, yearFilter, monthFilter]);
 
   const current = filtered[qIndex];
 
@@ -112,7 +114,7 @@ export default function BpscPyqSession() {
 
   const nextQuestion = () => {
     if (qIndex + 1 >= filtered.length) {
-      navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}`);
+      navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}&month=${monthFilter}`);
       toast({ title: 'Practice complete!', description: `${stats.correct} correct, ${stats.wrong} wrong` });
       return;
     }
@@ -164,7 +166,7 @@ export default function BpscPyqSession() {
     <div className="p-6 max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <button onClick={() => navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}`)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={() => navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}&month=${monthFilter}`)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to PYQ
         </button>
         <div className="flex items-center gap-2">

@@ -45,6 +45,7 @@ export default function BpscPyqUpload() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [year, setYear] = useState<string>('2024');
+  const [month, setMonth] = useState<string>('');
   const [pdfName, setPdfName] = useState<string>('');
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [questions, setQuestions] = useState<ExtractedQuestion[]>([]);
@@ -187,6 +188,7 @@ export default function BpscPyqUpload() {
     setSaving(true);
 
     try {
+      const monthVal = month && month !== 'none' ? parseInt(month) : null;
       const rows = questions.map(q => ({
         user_id: user.id,
         question_text: q.question_text,
@@ -198,6 +200,7 @@ export default function BpscPyqUpload() {
         is_pyq: true,
         exam: 'BPSC' as any,
         year: parseInt(year),
+        month: monthVal,
       }));
 
       for (let i = 0; i < rows.length; i += 20) {
@@ -244,6 +247,20 @@ export default function BpscPyqUpload() {
                     <SelectContent>
                       {yearOptions.map(y => (
                         <SelectItem key={y} value={y}>{y}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-foreground mb-1.5 block">Exam Month</label>
+                  <Select value={month} onValueChange={setMonth}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Not specified" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Not specified</SelectItem>
+                      {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
+                        <SelectItem key={i+1} value={(i+1).toString()}>{m}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -387,7 +404,7 @@ export default function BpscPyqUpload() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-foreground">Review Extracted Questions</h2>
-              <p className="text-sm text-muted-foreground">{questions.length} questions found • Year: {year}</p>
+              <p className="text-sm text-muted-foreground">{questions.length} questions found • Year: {year}{month && month !== 'none' ? ` • ${['January','February','March','April','May','June','July','August','September','October','November','December'][parseInt(month)-1]}` : ''}</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => { setStep('upload'); setQuestions([]); setProgressPercent(0); setQuestionsFoundSoFar(0); }}>
