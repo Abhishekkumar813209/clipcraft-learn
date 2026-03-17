@@ -359,7 +359,7 @@ export default function BpscPyqUpload() {
                 className="w-full gap-2"
               >
                 {extracting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {extracting ? `Extracting... (${questionsFoundSoFar} found)` : `Extract Questions (Pages ${startPage}–${endPage})`}
+                {extracting ? `Extracting... (${questionsFoundSoFar} found)` : `Extract Questions (Pages ${startPage || '1'}–${endPage || pages.length})`}
               </Button>
             </CardContent>
           </Card>
