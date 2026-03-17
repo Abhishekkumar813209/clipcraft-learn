@@ -34,6 +34,8 @@ export const BPSC_TOPIC_META: Record<BpscTopic, { label: string; icon: string }>
   environment_ecology: { label: 'Environment & Ecology', icon: '🌿' },
   general_science: { label: 'General Science', icon: '🔬' },
   current_affairs_bpsc: { label: 'Current Affairs', icon: '📰' },
+  aptitude_bpsc: { label: 'Aptitude', icon: '🧮' },
+  reasoning_bpsc: { label: 'Reasoning', icon: '🧠' },
 };
 
 export interface BpscQuestion {
