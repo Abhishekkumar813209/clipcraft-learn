@@ -1,62 +1,27 @@
 
 
-# Improvements: Clip Organization, Routing, and In-App Playback
+## Plan: Add 200 PYQs — One Word Substitution + Synonyms & Antonyms
 
-## 1. URL-Based Routing (fixes refresh/tab-change losing state)
+### What
+Seed 100 One Word Substitution and 100 Synonyms & Antonyms actual SSC PYQs into the database using the existing `seed-ssc-questions` edge function.
 
-Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+### How
+Two sequential calls to the already-deployed edge function:
 
-**`src/App.tsx`** — Add routes:
-- `/` → Dashboard
-- `/sources` → Source Library  
-- `/sources/:sourceId` → Playlist Browser
-- `/clips` → Add Clips
-- `/player/:videoId` → Video Player
-- `/pdf` → PDF Reader
-- `/topic` → Topic View
+1. **Call 1**: `topic: "one_word_substitution"`, 100 questions — SSC CGL/CHSL/MTS PYQs (2016-2024) with `is_pyq: true`, exam tags, year tags, difficulty spread, explanations.
 
-**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+2. **Call 2**: `topic: "synonyms_antonyms"`, 100 questions — same metadata structure.
 
-**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
+No code changes needed. The edge function already handles delete-then-insert for each topic. Both topic values already exist in the `ssc_topic` enum.
 
-All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
+### Content Coverage
 
-## 2. Clips Grouped by Video (within sub-topic)
+**One Word Substitution** — e.g., Ambidextrous, Autobiography, Bibliophile, Cacophony, Epitaph, Genocide, Misogynist, Omnivore, Philanthropist, etc.
 
-In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+**Synonyms & Antonyms** — e.g., Abandon/Forsake, Benevolent/Malevolent, Candid/Secretive, Diligent/Lazy, Ephemeral/Permanent, etc.
 
-```text
-📄 Striver Hard (4)
-  🎬 Video: "Majority Element | Striver SDE Sheet"
-    ⭐ 4:47 → 7:54  majority element brute force n2
-    ⭐ 6:17 → 10:02  Factorial ka logic
-  🎬 Video: "Moore's Voting Algorithm"  
-    ⭐ 10:54 → 16:50  Moore's voting algo
-```
+Each question: 4 options, correct index, explanation, difficulty (easy/medium/hard), exam (CGL/CHSL/MTS), year (2016-2024).
 
-Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
-
-## 3. In-App Clip Playback (start→end enforcement)
-
-When user clicks Play on a clip from the clips list:
-- Navigate to `/player/:youtubeId?start=X&end=Y`
-- `VideoPlayerView` reads query params, seeks to `startTime` on load
-- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
-- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
-
-**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
-
-## Files to Change
-
-| File | Change |
-|------|--------|
-| `src/App.tsx` | Add child routes under `/` |
-| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
-| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
-| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
-| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
-| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
-| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
-| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
-| Other views | Update `onBack` to use `useNavigate(-1)` |
+### Files Changed
+None — only edge function invocations to seed data.
 
