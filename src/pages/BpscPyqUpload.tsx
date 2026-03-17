@@ -54,8 +54,8 @@ export default function BpscPyqUpload() {
   const [pageCount, setPageCount] = useState(0);
   const [progress, setProgress] = useState('');
   const [progressPercent, setProgressPercent] = useState(0);
-  const [startPage, setStartPage] = useState(1);
-  const [endPage, setEndPage] = useState(1);
+  const [startPage, setStartPage] = useState('');
+  const [endPage, setEndPage] = useState('');
   const [questionsFoundSoFar, setQuestionsFoundSoFar] = useState(0);
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,8 +90,8 @@ export default function BpscPyqUpload() {
       }
 
       setPages(pageInfos);
-      setStartPage(1);
-      setEndPage(maxPages);
+      setStartPage('');
+      setEndPage('');
       setProgress(`${maxPages} pages loaded. Select page range and extract.`);
     } catch (err) {
       toast({ title: 'PDF Error', description: 'Could not read the PDF file.', variant: 'destructive' });
@@ -105,11 +105,13 @@ export default function BpscPyqUpload() {
 
   const handleExtract = async () => {
     if (pages.length === 0) return;
+    const sp = parseInt(startPage) || 1;
+    const ep = parseInt(endPage) || pages.length;
     setExtracting(true);
     setQuestionsFoundSoFar(0);
     setQuestions([]);
 
-    const selectedPages = pages.filter(p => p.pageNum >= startPage && p.pageNum <= endPage);
+    const selectedPages = pages.filter(p => p.pageNum >= sp && p.pageNum <= ep);
     const totalBatches = Math.ceil(selectedPages.length / BATCH_SIZE);
 
     try {
@@ -161,7 +163,7 @@ export default function BpscPyqUpload() {
 
       setQuestions(allQuestions);
       setStep('review');
-      setProgress(`Extracted ${allQuestions.length} questions from pages ${startPage}–${endPage}.`);
+      setProgress(`Extracted ${allQuestions.length} questions from pages ${sp}–${ep}.`);
       setProgressPercent(100);
       toast({ title: 'Extraction complete', description: `Found ${allQuestions.length} questions.` });
     } catch (err: any) {
@@ -277,27 +279,39 @@ export default function BpscPyqUpload() {
                     <div className="flex-1">
                       <label className="text-sm font-medium text-foreground mb-1.5 block">From Page</label>
                       <Input
-                        type="number"
-                        min={1}
-                        max={endPage}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder=""
                         value={startPage}
-                        onChange={e => setStartPage(Math.max(1, Math.min(parseInt(e.target.value) || 1, endPage)))}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          setStartPage(val);
+                        }}
                       />
                     </div>
                     <span className="mt-6 text-muted-foreground font-medium">—</span>
                     <div className="flex-1">
                       <label className="text-sm font-medium text-foreground mb-1.5 block">To Page</label>
                       <Input
-                        type="number"
-                        min={startPage}
-                        max={pages.length}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder=""
                         value={endPage}
-                        onChange={e => setEndPage(Math.max(startPage, Math.min(parseInt(e.target.value) || 1, pages.length)))}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          setEndPage(val);
+                        }}
                       />
                     </div>
                     <div className="mt-6">
                       <Badge variant="outline" className="whitespace-nowrap">
-                        {endPage - startPage + 1} pages selected
+                        {(() => {
+                          const sp = parseInt(startPage) || 1;
+                          const ep = parseInt(endPage) || pages.length;
+                          return `${Math.max(0, ep - sp + 1)} pages selected`;
+                        })()}
                       </Badge>
                     </div>
                   </div>
@@ -345,7 +359,7 @@ export default function BpscPyqUpload() {
                 className="w-full gap-2"
               >
                 {extracting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {extracting ? `Extracting... (${questionsFoundSoFar} found)` : `Extract Questions (Pages ${startPage}–${endPage})`}
+                {extracting ? `Extracting... (${questionsFoundSoFar} found)` : `Extract Questions (Pages ${startPage || '1'}–${endPage || pages.length})`}
               </Button>
             </CardContent>
           </Card>
