@@ -279,27 +279,39 @@ export default function BpscPyqUpload() {
                     <div className="flex-1">
                       <label className="text-sm font-medium text-foreground mb-1.5 block">From Page</label>
                       <Input
-                        type="number"
-                        min={1}
-                        max={endPage}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder=""
                         value={startPage}
-                        onChange={e => setStartPage(Math.max(1, Math.min(parseInt(e.target.value) || 1, endPage)))}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          setStartPage(val);
+                        }}
                       />
                     </div>
                     <span className="mt-6 text-muted-foreground font-medium">—</span>
                     <div className="flex-1">
                       <label className="text-sm font-medium text-foreground mb-1.5 block">To Page</label>
                       <Input
-                        type="number"
-                        min={startPage}
-                        max={pages.length}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder=""
                         value={endPage}
-                        onChange={e => setEndPage(Math.max(startPage, Math.min(parseInt(e.target.value) || 1, pages.length)))}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          setEndPage(val);
+                        }}
                       />
                     </div>
                     <div className="mt-6">
                       <Badge variant="outline" className="whitespace-nowrap">
-                        {endPage - startPage + 1} pages selected
+                        {(() => {
+                          const sp = parseInt(startPage) || 1;
+                          const ep = parseInt(endPage) || pages.length;
+                          return `${Math.max(0, ep - sp + 1)} pages selected`;
+                        })()}
                       </Badge>
                     </div>
                   </div>
