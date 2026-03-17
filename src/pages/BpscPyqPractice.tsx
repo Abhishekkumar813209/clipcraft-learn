@@ -60,12 +60,20 @@ export default function BpscPyqPractice() {
     return [...new Set(pyqQuestions.map(q => q.month).filter((m): m is number => m != null))].sort((a, b) => a - b);
   }, [pyqQuestions]);
 
+  const filteredByYearMonth = useMemo(() => {
+    if (!pyqQuestions) return [];
+    return pyqQuestions.filter(q => {
+      if (yearFilter !== 'all' && q.year !== parseInt(yearFilter)) return false;
+      if (monthFilter !== 'all' && q.month !== parseInt(monthFilter)) return false;
+      return true;
+    });
+  }, [pyqQuestions, yearFilter, monthFilter]);
+
   const topicCounts = useMemo(() => {
-    if (!pyqQuestions) return {};
     const counts: Record<string, number> = {};
-    pyqQuestions.forEach(q => { counts[q.topic] = (counts[q.topic] || 0) + 1; });
+    filteredByYearMonth.forEach(q => { counts[q.topic] = (counts[q.topic] || 0) + 1; });
     return counts;
-  }, [pyqQuestions]);
+  }, [filteredByYearMonth]);
 
   const filtered = useMemo(() => {
     if (!pyqQuestions) return [];
