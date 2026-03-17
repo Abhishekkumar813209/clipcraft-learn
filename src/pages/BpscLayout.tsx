@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/bpsc', icon: BookOpen },
   { label: 'Prelims Practice', path: '/bpsc/practice', icon: Grid3X3 },
-  { label: 'Mains Prep', path: '/bpsc/mains', icon: FileText, disabled: true },
+  { label: 'Mains Prep', path: '/bpsc/mains', icon: FileText },
   { label: 'PYQ Practice', path: '/bpsc/pyq', icon: ClipboardList },
   { label: 'Mock Tests', path: '/bpsc/mock', icon: BarChart3, disabled: true },
   { label: 'Current Affairs', path: '/bpsc/current-affairs', icon: Newspaper, disabled: true },

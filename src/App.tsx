@@ -70,6 +70,9 @@ const App = () => (
               <Route index element={<BpscDashboard />} />
               <Route path="practice" element={<BpscPractice />} />
               <Route path="practice/:topic" element={<BpscPracticeSession />} />
+              <Route path="mains" element={<BpscMains />} />
+              <Route path="mains/:paper" element={<BpscMains />} />
+              <Route path="mains/q/:id" element={<BpscMainsQuestion />} />
               <Route path="pyq" element={<BpscPyqPractice />} />
               <Route path="pyq/practice" element={<BpscPyqSession />} />
               <Route path="pyq/upload" element={<BpscPyqUpload />} />
