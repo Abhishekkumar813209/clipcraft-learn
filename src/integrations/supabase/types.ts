@@ -515,6 +515,8 @@ export type Database = {
         | "environment_ecology"
         | "general_science"
         | "current_affairs_bpsc"
+        | "aptitude_bpsc"
+        | "reasoning_bpsc"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -710,6 +712,8 @@ export const Constants = {
         "environment_ecology",
         "general_science",
         "current_affairs_bpsc",
+        "aptitude_bpsc",
+        "reasoning_bpsc",
       ],
     },
   },
