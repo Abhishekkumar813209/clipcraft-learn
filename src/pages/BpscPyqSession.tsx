@@ -166,7 +166,7 @@ export default function BpscPyqSession() {
     <div className="p-6 max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <button onClick={() => navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}`)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={() => navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}&month=${monthFilter}`)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to PYQ
         </button>
         <div className="flex items-center gap-2">

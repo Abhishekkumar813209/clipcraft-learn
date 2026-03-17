@@ -9,21 +9,19 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload, Filter } from 'lucide-react';
 
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 export default function BpscPyqPractice() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const topicFilter = searchParams.get('topic') || 'all';
   const yearFilter = searchParams.get('year') || 'all';
+  const monthFilter = searchParams.get('month') || 'all';
 
-  const setTopicFilter = (v: string) => {
+  const setFilter = (key: string, v: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set('topic', v);
-    setSearchParams(params, { replace: true });
-  };
-  const setYearFilter = (v: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('year', v);
+    params.set(key, v);
     setSearchParams(params, { replace: true });
   };
 
@@ -47,6 +45,7 @@ export default function BpscPyqPractice() {
         explanation: q.explanation,
         difficulty: q.difficulty,
         year: q.year,
+        month: q.month as number | null,
       }));
     },
   });
@@ -54,6 +53,11 @@ export default function BpscPyqPractice() {
   const availableYears = useMemo(() => {
     if (!pyqQuestions) return [];
     return [...new Set(pyqQuestions.map(q => q.year).filter(Boolean))].sort((a, b) => b - a);
+  }, [pyqQuestions]);
+
+  const availableMonths = useMemo(() => {
+    if (!pyqQuestions) return [];
+    return [...new Set(pyqQuestions.map(q => q.month).filter((m): m is number => m != null))].sort((a, b) => a - b);
   }, [pyqQuestions]);
 
   const topicCounts = useMemo(() => {
@@ -68,13 +72,14 @@ export default function BpscPyqPractice() {
     return pyqQuestions.filter(q => {
       if (topicFilter !== 'all' && q.topic !== topicFilter) return false;
       if (yearFilter !== 'all' && q.year !== parseInt(yearFilter)) return false;
+      if (monthFilter !== 'all' && q.month !== parseInt(monthFilter)) return false;
       return true;
     });
-  }, [pyqQuestions, topicFilter, yearFilter]);
+  }, [pyqQuestions, topicFilter, yearFilter, monthFilter]);
 
   const startPractice = () => {
     if (filtered.length === 0) return;
-    navigate(`/bpsc/pyq/practice?topic=${topicFilter}&year=${yearFilter}&q=0`);
+    navigate(`/bpsc/pyq/practice?topic=${topicFilter}&year=${yearFilter}&month=${monthFilter}&q=0`);
   };
 
   if (isLoading) {
@@ -99,7 +104,7 @@ export default function BpscPyqPractice() {
         <CardContent className="p-4">
           <div className="flex items-center gap-3 flex-wrap">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <Select value={topicFilter} onValueChange={setTopicFilter}>
+            <Select value={topicFilter} onValueChange={v => setFilter('topic', v)}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="All Topics" />
               </SelectTrigger>
@@ -113,7 +118,7 @@ export default function BpscPyqPractice() {
               </SelectContent>
             </Select>
 
-            <Select value={yearFilter} onValueChange={setYearFilter}>
+            <Select value={yearFilter} onValueChange={v => setFilter('year', v)}>
               <SelectTrigger className="w-36">
                 <SelectValue placeholder="All Years" />
               </SelectTrigger>
@@ -124,6 +129,20 @@ export default function BpscPyqPractice() {
                 ))}
               </SelectContent>
             </Select>
+
+            {availableMonths.length > 0 && (
+              <Select value={monthFilter} onValueChange={v => setFilter('month', v)}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Months" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Months</SelectItem>
+                  {availableMonths.map(m => (
+                    <SelectItem key={m} value={m.toString()}>{MONTH_NAMES[m - 1]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
             <div className="ml-auto text-sm text-muted-foreground">
               {filtered.length} questions match
@@ -139,7 +158,7 @@ export default function BpscPyqPractice() {
       {totalPyqs > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {BPSC_ALL_TOPICS.filter(t => topicCounts[t]).map(t => (
-            <Card key={t} className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setTopicFilter(t)}>
+            <Card key={t} className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setFilter('topic', t)}>
               <CardContent className="p-4 flex items-center gap-3">
                 <span className="text-2xl">{BPSC_TOPIC_META[t]?.icon}</span>
                 <div className="flex-1">
