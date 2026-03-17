@@ -47,3 +47,37 @@ export interface BpscQuestion {
   explanation: string | null;
   difficulty: 'easy' | 'medium' | 'hard';
 }
+
+// --- BPSC Mains Types ---
+
+export type BpscMainsPaper = 'gs1' | 'gs2' | 'essay' | 'hindi';
+
+export const BPSC_MAINS_PAPERS: { key: BpscMainsPaper; label: string; icon: string; description: string }[] = [
+  { key: 'gs1', label: 'GS Paper 1', icon: '📘', description: 'General Science, Polity, Economy, Geography, History' },
+  { key: 'gs2', label: 'GS Paper 2', icon: '📗', description: 'Indian & Bihar History, Culture, Geography of Bihar' },
+  { key: 'essay', label: 'Essay', icon: '✍️', description: 'Hindi/English essay writing' },
+  { key: 'hindi', label: 'Hindi', icon: '🔤', description: 'Hindi language proficiency' },
+];
+
+export interface BpscMainsQuestion {
+  id: string;
+  paper: BpscMainsPaper;
+  topic: string;
+  question_text: string;
+  model_answer: string | null;
+  marks: number;
+  word_limit: number | null;
+  year: number | null;
+  is_pyq: boolean;
+  difficulty: 'easy' | 'medium' | 'hard';
+}
+
+export interface BpscMainsUserAnswer {
+  id: string;
+  user_id: string;
+  question_id: string;
+  answer_text: string;
+  ai_feedback: string | null;
+  ai_score: number | null;
+  submitted_at: string;
+}

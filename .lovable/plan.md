@@ -1,81 +1,62 @@
 
 
-## Plan: BPSC Mains Section — PYQ Browser + Answer Writing Practice
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### What's Missing
-The sidebar has "Mains Prep" with `disabled: true` and no route/page exists for `/bpsc/mains`. Need to build a full Mains section with PYQ browsing and AI-powered answer writing practice.
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### BPSC Mains Structure
-BPSC Mains has 4 papers:
-- **GS Paper 1** (General Science, Indian Polity, Economy, Geography, History)
-- **GS Paper 2** (Indian & Bihar History, Culture, Geography of Bihar)
-- **Essay** (Hindi/English essay writing)
-- **Hindi** (Hindi language proficiency)
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-### Database Changes
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-**New table: `bpsc_mains_questions`**
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | PK |
-| paper | enum (`gs1`, `gs2`, `essay`, `hindi`) | Which mains paper |
-| topic | text | Sub-topic within the paper |
-| question_text | text | The descriptive question |
-| model_answer | text | Model/ideal answer (nullable) |
-| marks | integer | Marks for the question |
-| word_limit | integer | Suggested word limit (nullable) |
-| year | integer | PYQ year (nullable) |
-| is_pyq | boolean | default true |
-| difficulty | enum | easy/medium/hard |
-| created_at | timestamptz | default now() |
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-RLS: Public read (no user_id needed — global content), similar to `ssc_questions` pattern.
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-**New table: `bpsc_mains_user_answers`**
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | PK |
-| user_id | uuid | FK to auth.users |
-| question_id | uuid | FK to bpsc_mains_questions |
-| answer_text | text | User's written answer |
-| ai_feedback | text | AI evaluation (nullable) |
-| ai_score | integer | AI-assigned score (nullable) |
-| submitted_at | timestamptz | default now() |
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-RLS: Users can CRUD own answers only.
+## 2. Clips Grouped by Video (within sub-topic)
 
-### New Files
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
-| File | Purpose |
-|------|---------|
-| `src/types/bpsc.ts` | Add mains paper types and topic metadata |
-| `src/pages/BpscMains.tsx` | Main landing — browse papers, filter by year, see PYQs |
-| `src/pages/BpscMainsQuestion.tsx` | Single question view — read question, write answer, get AI feedback |
-| `src/hooks/useBpscMains.ts` | Hooks for fetching mains questions and user answers |
-| `supabase/functions/bpsc-mains-evaluate/index.ts` | Edge function — AI evaluates user's answer against model answer |
-
-### UI Flow
-
-1. **`/bpsc/mains`** — Grid of 4 paper cards (GS-1, GS-2, Essay, Hindi). Each shows question count + year filter dropdown. Click a paper to see its questions.
-2. **Question list** — Filterable by year, topic. Each shows marks, word limit, whether user has attempted.
-3. **Question detail** — Shows question + word limit + marks. Textarea for answer writing. Submit button triggers AI evaluation via edge function. Shows AI feedback + score + model answer after submission.
-
-### Edge Function: `bpsc-mains-evaluate`
-- Takes: question_text, model_answer, user_answer, marks, word_limit
-- Uses Lovable AI (gemini-2.5-flash) to evaluate answer on: content accuracy, structure, language, completeness
-- Returns: score (out of marks), detailed feedback, improvement suggestions
-- Saves result to `bpsc_mains_user_answers`
-
-### Route Changes in `App.tsx`
-```
-/bpsc/mains          → BpscMains (paper browser)
-/bpsc/mains/:paper   → BpscMains (filtered by paper)
-/bpsc/mains/q/:id    → BpscMainsQuestion (answer writing)
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
 ```
 
-### Sidebar Update
-Remove `disabled: true` from "Mains Prep" nav item in `BpscLayout.tsx`.
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
 
-### Seed Initial Content
-Use the existing `seed-ssc-questions` pattern to create a small seeder call with ~20-30 BPSC mains PYQs across all 4 papers to populate initial content.
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
+
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 

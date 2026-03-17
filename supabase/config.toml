@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.nqt-explain]
 verify_jwt = false
+
+[functions.bpsc-mains-evaluate]
+verify_jwt = false

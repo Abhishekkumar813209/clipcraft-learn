@@ -28,6 +28,8 @@ import BpscLayout from "./pages/BpscLayout";
 import BpscDashboard from "./pages/BpscDashboard";
 import BpscPractice from "./pages/BpscPractice";
 import BpscPracticeSession from "./pages/BpscPracticeSession";
+import BpscMains from "./pages/BpscMains";
+import BpscMainsQuestion from "./pages/BpscMainsQuestion";
 import BpscPyqPractice from "./pages/BpscPyqPractice";
 import BpscPyqUpload from "./pages/BpscPyqUpload";
 import BpscPyqSession from "./pages/BpscPyqSession";
@@ -68,6 +70,9 @@ const App = () => (
               <Route index element={<BpscDashboard />} />
               <Route path="practice" element={<BpscPractice />} />
               <Route path="practice/:topic" element={<BpscPracticeSession />} />
+              <Route path="mains" element={<BpscMains />} />
+              <Route path="mains/:paper" element={<BpscMains />} />
+              <Route path="mains/q/:id" element={<BpscMainsQuestion />} />
               <Route path="pyq" element={<BpscPyqPractice />} />
               <Route path="pyq/practice" element={<BpscPyqSession />} />
               <Route path="pyq/upload" element={<BpscPyqUpload />} />
