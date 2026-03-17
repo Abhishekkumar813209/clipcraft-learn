@@ -1,7 +1,7 @@
 export const BPSC_ALL_TOPICS = [
   'indian_history', 'bihar_history', 'indian_polity', 'indian_economy',
   'geography_india', 'geography_bihar', 'environment_ecology',
-  'general_science', 'current_affairs_bpsc',
+  'general_science', 'current_affairs_bpsc', 'aptitude_bpsc', 'reasoning_bpsc',
 ] as const;
 
 export type BpscTopic = typeof BPSC_ALL_TOPICS[number];
@@ -16,7 +16,7 @@ export const BPSC_SUBJECT_TOPICS: Record<BpscSubject, BpscTopic[]> = {
   general_studies: [
     'indian_history', 'bihar_history', 'indian_polity', 'indian_economy',
     'geography_india', 'geography_bihar', 'environment_ecology',
-    'general_science', 'current_affairs_bpsc',
+    'general_science', 'current_affairs_bpsc', 'aptitude_bpsc', 'reasoning_bpsc',
   ],
 };
 
@@ -34,6 +34,8 @@ export const BPSC_TOPIC_META: Record<BpscTopic, { label: string; icon: string }>
   environment_ecology: { label: 'Environment & Ecology', icon: '🌿' },
   general_science: { label: 'General Science', icon: '🔬' },
   current_affairs_bpsc: { label: 'Current Affairs', icon: '📰' },
+  aptitude_bpsc: { label: 'Aptitude', icon: '🧮' },
+  reasoning_bpsc: { label: 'Reasoning', icon: '🧠' },
 };
 
 export interface BpscQuestion {

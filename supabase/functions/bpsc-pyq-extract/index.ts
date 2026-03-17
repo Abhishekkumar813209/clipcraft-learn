@@ -11,7 +11,7 @@ const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const BPSC_TOPICS = [
   "indian_history", "bihar_history", "indian_polity", "indian_economy",
   "geography_india", "geography_bihar", "environment_ecology",
-  "general_science", "current_affairs_bpsc",
+  "general_science", "current_affairs_bpsc", "aptitude_bpsc", "reasoning_bpsc",
 ];
 
 serve(async (req) => {
