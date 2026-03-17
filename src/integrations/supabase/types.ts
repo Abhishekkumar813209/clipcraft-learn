@@ -158,6 +158,7 @@ export type Database = {
           explanation: string | null
           id: string
           is_pyq: boolean
+          month: number | null
           options: Json
           question_text: string
           topic: Database["public"]["Enums"]["ssc_topic"]
@@ -172,6 +173,7 @@ export type Database = {
           explanation?: string | null
           id?: string
           is_pyq?: boolean
+          month?: number | null
           options?: Json
           question_text: string
           topic: Database["public"]["Enums"]["ssc_topic"]
@@ -186,6 +188,7 @@ export type Database = {
           explanation?: string | null
           id?: string
           is_pyq?: boolean
+          month?: number | null
           options?: Json
           question_text?: string
           topic?: Database["public"]["Enums"]["ssc_topic"]
