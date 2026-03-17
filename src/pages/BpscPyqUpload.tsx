@@ -404,7 +404,7 @@ export default function BpscPyqUpload() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-foreground">Review Extracted Questions</h2>
-              <p className="text-sm text-muted-foreground">{questions.length} questions found • Year: {year}</p>
+              <p className="text-sm text-muted-foreground">{questions.length} questions found • Year: {year}{month && month !== 'none' ? ` • ${['January','February','March','April','May','June','July','August','September','October','November','December'][parseInt(month)-1]}` : ''}</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => { setStep('upload'); setQuestions([]); setProgressPercent(0); setQuestionsFoundSoFar(0); }}>
