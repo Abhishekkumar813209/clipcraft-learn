@@ -54,8 +54,8 @@ export default function BpscPyqUpload() {
   const [pageCount, setPageCount] = useState(0);
   const [progress, setProgress] = useState('');
   const [progressPercent, setProgressPercent] = useState(0);
-  const [startPage, setStartPage] = useState(1);
-  const [endPage, setEndPage] = useState(1);
+  const [startPage, setStartPage] = useState('');
+  const [endPage, setEndPage] = useState('');
   const [questionsFoundSoFar, setQuestionsFoundSoFar] = useState(0);
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
