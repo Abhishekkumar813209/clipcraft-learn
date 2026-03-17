@@ -105,11 +105,13 @@ export default function BpscPyqUpload() {
 
   const handleExtract = async () => {
     if (pages.length === 0) return;
+    const sp = parseInt(startPage) || 1;
+    const ep = parseInt(endPage) || pages.length;
     setExtracting(true);
     setQuestionsFoundSoFar(0);
     setQuestions([]);
 
-    const selectedPages = pages.filter(p => p.pageNum >= startPage && p.pageNum <= endPage);
+    const selectedPages = pages.filter(p => p.pageNum >= sp && p.pageNum <= ep);
     const totalBatches = Math.ceil(selectedPages.length / BATCH_SIZE);
 
     try {
