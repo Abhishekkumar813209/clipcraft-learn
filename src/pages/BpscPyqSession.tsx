@@ -63,9 +63,10 @@ export default function BpscPyqSession() {
     return pyqQuestions.filter(q => {
       if (topicFilter !== 'all' && q.topic !== topicFilter) return false;
       if (yearFilter !== 'all' && q.year !== parseInt(yearFilter)) return false;
+      if (monthFilter !== 'all' && (q as any).month !== parseInt(monthFilter)) return false;
       return true;
     }).sort((a, b) => a.id.localeCompare(b.id));
-  }, [pyqQuestions, topicFilter, yearFilter]);
+  }, [pyqQuestions, topicFilter, yearFilter, monthFilter]);
 
   const current = filtered[qIndex];
 
