@@ -1,39 +1,62 @@
 
 
-## Plan: Make Topic Cards Show Filtered Counts
+# Improvements: Clip Organization, Routing, and In-App Playback
 
-### Problem
-The topic cards at the bottom always show total counts from all questions (`topicCounts` is computed from `pyqQuestions` — the full unfiltered dataset). When user selects a year or month filter, the cards should reflect only the matching questions.
+## 1. URL-Based Routing (fixes refresh/tab-change losing state)
 
-### Solution
+Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
 
-Change `topicCounts` to be computed from the `filtered` list instead of the full `pyqQuestions` list. This means:
+**`src/App.tsx`** — Add routes:
+- `/` → Dashboard
+- `/sources` → Source Library  
+- `/sources/:sourceId` → Playlist Browser
+- `/clips` → Add Clips
+- `/player/:videoId` → Video Player
+- `/pdf` → PDF Reader
+- `/topic` → Topic View
 
-1. **`topicCounts` uses `filtered` data** — When year or month is selected, topic cards update to show only questions matching those filters. When topic filter is active, we exclude it from the count computation so you still see per-topic breakdown.
+**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
 
-2. **Card visibility** — Only show cards for topics that have questions in the filtered set (already done via `.filter(t => topicCounts[t])`).
+**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
 
-### Changes
+All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
 
-**`src/pages/BpscPyqPractice.tsx`** (single file change):
-- Recompute `topicCounts` from a "filtered-except-topic" list. This filters by year and month but NOT by topic, so you can see the per-topic breakdown within the selected year/month.
-- Replace lines 63-68:
-  ```typescript
-  const filteredByYearMonth = useMemo(() => {
-    if (!pyqQuestions) return [];
-    return pyqQuestions.filter(q => {
-      if (yearFilter !== 'all' && q.year !== parseInt(yearFilter)) return false;
-      if (monthFilter !== 'all' && q.month !== parseInt(monthFilter)) return false;
-      return true;
-    });
-  }, [pyqQuestions, yearFilter, monthFilter]);
+## 2. Clips Grouped by Video (within sub-topic)
 
-  const topicCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    filteredByYearMonth.forEach(q => { counts[q.topic] = (counts[q.topic] || 0) + 1; });
-    return counts;
-  }, [filteredByYearMonth]);
-  ```
+In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
 
-This way: select "2024" → cards show only 2024 question counts per topic. Select a specific month → further narrows. Topic dropdown counts in the filter bar also update accordingly.
+```text
+📄 Striver Hard (4)
+  🎬 Video: "Majority Element | Striver SDE Sheet"
+    ⭐ 4:47 → 7:54  majority element brute force n2
+    ⭐ 6:17 → 10:02  Factorial ka logic
+  🎬 Video: "Moore's Voting Algorithm"  
+    ⭐ 10:54 → 16:50  Moore's voting algo
+```
+
+Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+
+## 3. In-App Clip Playback (start→end enforcement)
+
+When user clicks Play on a clip from the clips list:
+- Navigate to `/player/:youtubeId?start=X&end=Y`
+- `VideoPlayerView` reads query params, seeks to `startTime` on load
+- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
+- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+
+**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+
+## Files to Change
+
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Add child routes under `/` |
+| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
+| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
+| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
+| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
+| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
+| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
+| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
+| Other views | Update `onBack` to use `useNavigate(-1)` |
 
