@@ -90,8 +90,8 @@ export default function BpscPyqUpload() {
       }
 
       setPages(pageInfos);
-      setStartPage(1);
-      setEndPage(maxPages);
+      setStartPage('');
+      setEndPage('');
       setProgress(`${maxPages} pages loaded. Select page range and extract.`);
     } catch (err) {
       toast({ title: 'PDF Error', description: 'Could not read the PDF file.', variant: 'destructive' });
