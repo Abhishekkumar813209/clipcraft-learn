@@ -114,7 +114,7 @@ export default function BpscPyqSession() {
 
   const nextQuestion = () => {
     if (qIndex + 1 >= filtered.length) {
-      navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}`);
+      navigate(`/bpsc/pyq?topic=${topicFilter}&year=${yearFilter}&month=${monthFilter}`);
       toast({ title: 'Practice complete!', description: `${stats.correct} correct, ${stats.wrong} wrong` });
       return;
     }
