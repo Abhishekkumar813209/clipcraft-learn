@@ -1,27 +1,81 @@
 
 
-## Plan: Add 200 PYQs — One Word Substitution + Synonyms & Antonyms
+## Plan: BPSC Mains Section — PYQ Browser + Answer Writing Practice
 
-### What
-Seed 100 One Word Substitution and 100 Synonyms & Antonyms actual SSC PYQs into the database using the existing `seed-ssc-questions` edge function.
+### What's Missing
+The sidebar has "Mains Prep" with `disabled: true` and no route/page exists for `/bpsc/mains`. Need to build a full Mains section with PYQ browsing and AI-powered answer writing practice.
 
-### How
-Two sequential calls to the already-deployed edge function:
+### BPSC Mains Structure
+BPSC Mains has 4 papers:
+- **GS Paper 1** (General Science, Indian Polity, Economy, Geography, History)
+- **GS Paper 2** (Indian & Bihar History, Culture, Geography of Bihar)
+- **Essay** (Hindi/English essay writing)
+- **Hindi** (Hindi language proficiency)
 
-1. **Call 1**: `topic: "one_word_substitution"`, 100 questions — SSC CGL/CHSL/MTS PYQs (2016-2024) with `is_pyq: true`, exam tags, year tags, difficulty spread, explanations.
+### Database Changes
 
-2. **Call 2**: `topic: "synonyms_antonyms"`, 100 questions — same metadata structure.
+**New table: `bpsc_mains_questions`**
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | PK |
+| paper | enum (`gs1`, `gs2`, `essay`, `hindi`) | Which mains paper |
+| topic | text | Sub-topic within the paper |
+| question_text | text | The descriptive question |
+| model_answer | text | Model/ideal answer (nullable) |
+| marks | integer | Marks for the question |
+| word_limit | integer | Suggested word limit (nullable) |
+| year | integer | PYQ year (nullable) |
+| is_pyq | boolean | default true |
+| difficulty | enum | easy/medium/hard |
+| created_at | timestamptz | default now() |
 
-No code changes needed. The edge function already handles delete-then-insert for each topic. Both topic values already exist in the `ssc_topic` enum.
+RLS: Public read (no user_id needed — global content), similar to `ssc_questions` pattern.
 
-### Content Coverage
+**New table: `bpsc_mains_user_answers`**
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | PK |
+| user_id | uuid | FK to auth.users |
+| question_id | uuid | FK to bpsc_mains_questions |
+| answer_text | text | User's written answer |
+| ai_feedback | text | AI evaluation (nullable) |
+| ai_score | integer | AI-assigned score (nullable) |
+| submitted_at | timestamptz | default now() |
 
-**One Word Substitution** — e.g., Ambidextrous, Autobiography, Bibliophile, Cacophony, Epitaph, Genocide, Misogynist, Omnivore, Philanthropist, etc.
+RLS: Users can CRUD own answers only.
 
-**Synonyms & Antonyms** — e.g., Abandon/Forsake, Benevolent/Malevolent, Candid/Secretive, Diligent/Lazy, Ephemeral/Permanent, etc.
+### New Files
 
-Each question: 4 options, correct index, explanation, difficulty (easy/medium/hard), exam (CGL/CHSL/MTS), year (2016-2024).
+| File | Purpose |
+|------|---------|
+| `src/types/bpsc.ts` | Add mains paper types and topic metadata |
+| `src/pages/BpscMains.tsx` | Main landing — browse papers, filter by year, see PYQs |
+| `src/pages/BpscMainsQuestion.tsx` | Single question view — read question, write answer, get AI feedback |
+| `src/hooks/useBpscMains.ts` | Hooks for fetching mains questions and user answers |
+| `supabase/functions/bpsc-mains-evaluate/index.ts` | Edge function — AI evaluates user's answer against model answer |
 
-### Files Changed
-None — only edge function invocations to seed data.
+### UI Flow
+
+1. **`/bpsc/mains`** — Grid of 4 paper cards (GS-1, GS-2, Essay, Hindi). Each shows question count + year filter dropdown. Click a paper to see its questions.
+2. **Question list** — Filterable by year, topic. Each shows marks, word limit, whether user has attempted.
+3. **Question detail** — Shows question + word limit + marks. Textarea for answer writing. Submit button triggers AI evaluation via edge function. Shows AI feedback + score + model answer after submission.
+
+### Edge Function: `bpsc-mains-evaluate`
+- Takes: question_text, model_answer, user_answer, marks, word_limit
+- Uses Lovable AI (gemini-2.5-flash) to evaluate answer on: content accuracy, structure, language, completeness
+- Returns: score (out of marks), detailed feedback, improvement suggestions
+- Saves result to `bpsc_mains_user_answers`
+
+### Route Changes in `App.tsx`
+```
+/bpsc/mains          → BpscMains (paper browser)
+/bpsc/mains/:paper   → BpscMains (filtered by paper)
+/bpsc/mains/q/:id    → BpscMainsQuestion (answer writing)
+```
+
+### Sidebar Update
+Remove `disabled: true` from "Mains Prep" nav item in `BpscLayout.tsx`.
+
+### Seed Initial Content
+Use the existing `seed-ssc-questions` pattern to create a small seeder call with ~20-30 BPSC mains PYQs across all 4 papers to populate initial content.
 
