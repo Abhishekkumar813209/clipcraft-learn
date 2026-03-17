@@ -249,6 +249,20 @@ export default function BpscPyqUpload() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-foreground mb-1.5 block">Exam Month</label>
+                  <Select value={month} onValueChange={setMonth}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Not specified" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Not specified</SelectItem>
+                      {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
+                        <SelectItem key={i+1} value={(i+1).toString()}>{m}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div>
