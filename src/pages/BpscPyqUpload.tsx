@@ -163,7 +163,7 @@ export default function BpscPyqUpload() {
 
       setQuestions(allQuestions);
       setStep('review');
-      setProgress(`Extracted ${allQuestions.length} questions from pages ${startPage}–${endPage}.`);
+      setProgress(`Extracted ${allQuestions.length} questions from pages ${sp}–${ep}.`);
       setProgressPercent(100);
       toast({ title: 'Extraction complete', description: `Found ${allQuestions.length} questions.` });
     } catch (err: any) {
