@@ -532,7 +532,7 @@ export type Database = {
     Enums: {
       bpsc_mains_paper: "gs1" | "gs2" | "essay" | "hindi"
       ssc_difficulty: "easy" | "medium" | "hard"
-      ssc_exam: "CGL" | "CHSL" | "MTS" | "GD" | "BPSC"
+      ssc_exam: "CGL" | "CHSL" | "MTS" | "GD" | "BPSC" | "RBI"
       ssc_topic:
         | "idioms_phrases"
         | "one_word_substitution"
@@ -601,6 +601,12 @@ export type Database = {
         | "current_affairs_bpsc"
         | "aptitude_bpsc"
         | "reasoning_bpsc"
+        | "economic_social_issues"
+        | "monetary_policy"
+        | "fiscal_policy"
+        | "banking_regulation"
+        | "financial_markets"
+        | "management_theory"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -730,7 +736,7 @@ export const Constants = {
     Enums: {
       bpsc_mains_paper: ["gs1", "gs2", "essay", "hindi"],
       ssc_difficulty: ["easy", "medium", "hard"],
-      ssc_exam: ["CGL", "CHSL", "MTS", "GD", "BPSC"],
+      ssc_exam: ["CGL", "CHSL", "MTS", "GD", "BPSC", "RBI"],
       ssc_topic: [
         "idioms_phrases",
         "one_word_substitution",
@@ -799,6 +805,12 @@ export const Constants = {
         "current_affairs_bpsc",
         "aptitude_bpsc",
         "reasoning_bpsc",
+        "economic_social_issues",
+        "monetary_policy",
+        "fiscal_policy",
+        "banking_regulation",
+        "financial_markets",
+        "management_theory",
       ],
     },
   },
