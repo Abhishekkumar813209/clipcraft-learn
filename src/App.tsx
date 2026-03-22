@@ -33,6 +33,10 @@ import BpscMainsQuestion from "./pages/BpscMainsQuestion";
 import BpscPyqPractice from "./pages/BpscPyqPractice";
 import BpscPyqUpload from "./pages/BpscPyqUpload";
 import BpscPyqSession from "./pages/BpscPyqSession";
+import RbiLayout from "./pages/RbiLayout";
+import RbiDashboard from "./pages/RbiDashboard";
+import RbiPractice from "./pages/RbiPractice";
+import RbiPracticeSession from "./pages/RbiPracticeSession";
 
 const queryClient = new QueryClient();
 
