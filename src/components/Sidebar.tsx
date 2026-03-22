@@ -59,6 +59,7 @@ export function Sidebar() {
           <NavItem icon={Languages} label="SSC English" active={isActive('/ssc')} onClick={() => navigate('/ssc')} />
           <NavItem icon={Briefcase} label="TCS NQT" active={isActive('/nqt')} onClick={() => navigate('/nqt')} />
           <NavItem icon={Landmark} label="BPSC Prep" active={isActive('/bpsc')} onClick={() => navigate('/bpsc')} />
+          <NavItem icon={Landmark} label="RBI Grade B" active={isActive('/rbi')} onClick={() => navigate('/rbi')} />
         </nav>
 
         {/* Exams List */}

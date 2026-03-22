@@ -81,6 +81,11 @@ const App = () => (
               <Route path="pyq/practice" element={<BpscPyqSession />} />
               <Route path="pyq/upload" element={<BpscPyqUpload />} />
             </Route>
+            <Route path="/rbi" element={<RbiLayout />}>
+              <Route index element={<RbiDashboard />} />
+              <Route path="practice" element={<RbiPractice />} />
+              <Route path="practice/:topic" element={<RbiPracticeSession />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
