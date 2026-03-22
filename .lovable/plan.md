@@ -1,62 +1,59 @@
 
 
-# Improvements: Clip Organization, Routing, and In-App Playback
+## Plan: Add RBI Grade B Segment
 
-## 1. URL-Based Routing (fixes refresh/tab-change losing state)
+### What
+Add "RBI Grade B" as a new exam prep section in the main sidebar and build its layout + dashboard + practice flow — same pattern as SSC, NQT, and BPSC.
 
-Currently `Index.tsx` uses `useState` for all views — refresh = back to dashboard. Fix by converting to proper URL routes:
+### RBI Grade B Structure
+RBI Grade B has 3 phases:
+- **Phase 1**: General Awareness, English, Quantitative Aptitude, Reasoning
+- **Phase 2**: Economic & Social Issues, Finance & Management
+- **Phase 3**: Interview (not applicable for practice)
 
-**`src/App.tsx`** — Add routes:
-- `/` → Dashboard
-- `/sources` → Source Library  
-- `/sources/:sourceId` → Playlist Browser
-- `/clips` → Add Clips
-- `/player/:videoId` → Video Player
-- `/pdf` → PDF Reader
-- `/topic` → Topic View
+### Files to Create
 
-**`src/pages/Index.tsx`** — Becomes a layout wrapper with `<Outlet />`. Each view becomes its own route child.
+| File | Purpose |
+|------|---------|
+| `src/types/rbi.ts` | Topics, subjects, metadata (Phase 1 & 2 topics) |
+| `src/pages/RbiLayout.tsx` | Sidebar layout (like SscLayout) with nav: Dashboard, Practice, Mock Test |
+| `src/pages/RbiDashboard.tsx` | Stats dashboard — daily goal, accuracy, streak, topic cards |
+| `src/pages/RbiPractice.tsx` | Subject → topic grid for practice |
+| `src/pages/RbiPracticeSession.tsx` | Question-by-question practice session |
+| `src/hooks/useRbiQuestions.ts` | Fetch questions from DB |
+| `src/hooks/useRbiProgress.ts` | Track progress/stats |
 
-**`src/components/Sidebar.tsx`** — Use `<NavLink>` / `useNavigate()` instead of `onViewChange` callbacks.
+### Database Changes
 
-All views updated to use `useNavigate()` / `useParams()` instead of prop callbacks.
+**New enum**: `rbi_topic` — covering Phase 1 (GA, English, Quant, Reasoning) and Phase 2 (ESI, F&M) topics.
 
-## 2. Clips Grouped by Video (within sub-topic)
+**New table**: `rbi_questions` — same structure as `ssc_questions` (question_text, options, correct_option, explanation, topic, difficulty, is_pyq, exam, year).
 
-In `AddClipsView.tsx` `ClipsTree`, after reaching a sub-topic, group clips by `videoId` and show:
+**New table**: `rbi_progress` — same as `ssc_progress` (user_id, question_id, selected_option, is_correct, answered_at).
 
-```text
-📄 Striver Hard (4)
-  🎬 Video: "Majority Element | Striver SDE Sheet"
-    ⭐ 4:47 → 7:54  majority element brute force n2
-    ⭐ 6:17 → 10:02  Factorial ka logic
-  🎬 Video: "Moore's Voting Algorithm"  
-    ⭐ 10:54 → 16:50  Moore's voting algo
+RLS: Public read on questions, user-only on progress.
+
+### Route Changes in `App.tsx`
+```
+/rbi           → RbiLayout
+  /rbi         → RbiDashboard
+  /rbi/practice → RbiPractice
+  /rbi/practice/:topic → RbiPracticeSession
 ```
 
-Each clip row gets a "copy link" button that generates `https://youtube.com/watch?v={id}&t={startTime}&end={endTime}` (YouTube doesn't support `end` natively, but we generate the timestamped URL).
+### Sidebar Change (`src/components/Sidebar.tsx`)
+Add nav item:
+```
+{ icon: Landmark, label: "RBI Grade B", path: "/rbi" }
+```
+(Use `Landmark` icon — fits banking/RBI theme)
 
-## 3. In-App Clip Playback (start→end enforcement)
+### Topics Covered
 
-When user clicks Play on a clip from the clips list:
-- Navigate to `/player/:youtubeId?start=X&end=Y`
-- `VideoPlayerView` reads query params, seeks to `startTime` on load
-- Add an `endTime` boundary check in the time tracking interval — when `currentTime >= endTime`, auto-pause the video
-- Show a banner: "Playing clip: 4:47 → 7:54 — [Watch Full Video]"
+**Phase 1**: idioms_phrases, synonyms_antonyms, error_detection, reading_comprehension, percentage, profit_loss, number_system, data_interpretation, analogy, coding_decoding, series, syllogism, history, polity, economy, current_affairs
 
-**`useYouTubePlayer.ts`** — Add optional `endTime` prop. In the time tracking interval, if `currentTime >= endTime`, call `pause()`.
+**Phase 2**: economic_social_issues, monetary_policy, fiscal_policy, banking_regulation, financial_markets, management_theory
 
-## Files to Change
-
-| File | Change |
-|------|--------|
-| `src/App.tsx` | Add child routes under `/` |
-| `src/pages/Index.tsx` | Convert to layout with `<Outlet />`, remove useState view switching |
-| `src/components/Sidebar.tsx` | Use `useNavigate`/`useLocation` for nav |
-| `src/components/AddClipsView.tsx` | Group clips by video, add play-in-app + copy-link buttons |
-| `src/components/VideoPlayerView.tsx` | Read `start`/`end` query params, enforce end-time boundary |
-| `src/hooks/useYouTubePlayer.ts` | Add optional `endTime` auto-pause |
-| `src/components/PlaylistBrowserView.tsx` | Use `useNavigate` instead of `onSelectVideo` prop |
-| `src/components/SourceLibraryView.tsx` | Use `useNavigate` instead of `onBrowsePlaylist` prop |
-| Other views | Update `onBack` to use `useNavigate(-1)` |
+### No Initial Seeding
+Tables will be created empty. Questions can be seeded later via edge function (same pattern as SSC).
 
