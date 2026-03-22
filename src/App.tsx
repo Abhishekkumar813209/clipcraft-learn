@@ -33,6 +33,10 @@ import BpscMainsQuestion from "./pages/BpscMainsQuestion";
 import BpscPyqPractice from "./pages/BpscPyqPractice";
 import BpscPyqUpload from "./pages/BpscPyqUpload";
 import BpscPyqSession from "./pages/BpscPyqSession";
+import RbiLayout from "./pages/RbiLayout";
+import RbiDashboard from "./pages/RbiDashboard";
+import RbiPractice from "./pages/RbiPractice";
+import RbiPracticeSession from "./pages/RbiPracticeSession";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +80,11 @@ const App = () => (
               <Route path="pyq" element={<BpscPyqPractice />} />
               <Route path="pyq/practice" element={<BpscPyqSession />} />
               <Route path="pyq/upload" element={<BpscPyqUpload />} />
+            </Route>
+            <Route path="/rbi" element={<RbiLayout />}>
+              <Route index element={<RbiDashboard />} />
+              <Route path="practice" element={<RbiPractice />} />
+              <Route path="practice/:topic" element={<RbiPracticeSession />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
