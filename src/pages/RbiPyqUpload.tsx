@@ -321,6 +321,24 @@ export default function RbiPyqUpload() {
 
               {pages.length > 0 && (
                 <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Phase</label>
+                    <RadioGroup value={phase} onValueChange={(v) => setPhase(v as 'all' | 'phase1' | 'phase2')} className="flex gap-4">
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="all" id="phase-all" />
+                        <Label htmlFor="phase-all" className="text-sm cursor-pointer">Auto-detect</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="phase1" id="phase-1" />
+                        <Label htmlFor="phase-1" className="text-sm cursor-pointer">Phase 1 (Eng, Quant, Reasoning, GA)</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="phase2" id="phase-2" />
+                        <Label htmlFor="phase-2" className="text-sm cursor-pointer">Phase 2 (ESI & FM)</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
                   <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <label className="text-sm font-medium text-foreground mb-1.5 block">From Page</label>
