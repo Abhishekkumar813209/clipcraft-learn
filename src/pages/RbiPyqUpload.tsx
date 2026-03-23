@@ -144,8 +144,9 @@ export default function RbiPyqUpload() {
         setProgressPercent(Math.round(((batchIdx + 1) / totalBatches) * 100));
         setQuestionsFoundSoFar(previousCount + newQuestions.length);
 
+        const extractionTopics = phase === 'phase1' ? RBI_PHASE1_TOPICS : phase === 'phase2' ? RBI_PHASE2_TOPICS : [...RBI_ALL_TOPICS];
         const { data, error } = await supabase.functions.invoke('pyq-extract', {
-          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...RBI_ALL_TOPICS] },
+          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...extractionTopics] },
         });
 
         if (error) {
