@@ -338,21 +338,43 @@ export default function RbiPyqUpload() {
               {pages.length > 0 && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Phase</label>
-                    <RadioGroup value={phase} onValueChange={(v) => setPhase(v as 'all' | 'phase1' | 'phase2')} className="flex gap-4">
+                    <label className="text-sm font-medium text-foreground mb-2 block">Subject / Phase</label>
+                    <RadioGroup value={subjectFilter} onValueChange={(v) => setSubjectFilter(v as any)} className="flex flex-wrap gap-3">
                       <div className="flex items-center gap-2">
-                        <RadioGroupItem value="all" id="phase-all" />
-                        <Label htmlFor="phase-all" className="text-sm cursor-pointer">Auto-detect</Label>
+                        <RadioGroupItem value="all" id="sf-all" />
+                        <Label htmlFor="sf-all" className="text-sm cursor-pointer">Auto-detect</Label>
                       </div>
                       <div className="flex items-center gap-2">
-                        <RadioGroupItem value="phase1" id="phase-1" />
-                        <Label htmlFor="phase-1" className="text-sm cursor-pointer">Phase 1 (Eng, Quant, Reasoning, GA)</Label>
+                        <RadioGroupItem value="phase1" id="sf-p1" />
+                        <Label htmlFor="sf-p1" className="text-sm cursor-pointer">Phase 1 (All)</Label>
                       </div>
                       <div className="flex items-center gap-2">
-                        <RadioGroupItem value="phase2" id="phase-2" />
-                        <Label htmlFor="phase-2" className="text-sm cursor-pointer">Phase 2 (ESI, FM, English)</Label>
+                        <RadioGroupItem value="esi" id="sf-esi" />
+                        <Label htmlFor="sf-esi" className="text-sm cursor-pointer">Phase 2 – ESI</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="fm" id="sf-fm" />
+                        <Label htmlFor="sf-fm" className="text-sm cursor-pointer">Phase 2 – FM</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="english_p2" id="sf-eng2" />
+                        <Label htmlFor="sf-eng2" className="text-sm cursor-pointer">Phase 2 – English</Label>
                       </div>
                     </RadioGroup>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Answer Key starts at page (optional)</label>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      placeholder="e.g. 45"
+                      value={answerKeyPage}
+                      onChange={e => setAnswerKeyPage(e.target.value.replace(/[^0-9]/g, ''))}
+                      className="w-40"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">If provided, answer key text will be sent to AI for correct answer mapping</p>
                   </div>
 
                   <div className="flex items-center gap-3">
