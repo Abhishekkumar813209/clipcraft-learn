@@ -1,25 +1,26 @@
 
 
-## Plan: Include Question Directions in Extraction
+## Plan: Add Missing RBI Topic Values to Database Enum
 
 ### Problem
-In competitive exam papers, many questions have a shared "Direction" or passage (e.g., "Read the following passage and answer Q1-5" or "Direction: Select the correctly spelt word"). The AI extractor currently ignores these and only captures the bare question, losing important context.
+Questions fail to save with error `invalid input value for enum ssc_topic: "ga"` because the database `ssc_topic` enum is missing 4 RBI Phase 1 values: `english`, `quant`, `reasoning`, `ga`. Only `esi`, `fm`, `english_p2` were added in the last migration.
 
 ### Fix
-Update the `pyq-extract` edge function's system prompt to instruct the AI to **prepend the relevant direction/passage to each question's `question_text`**. This way, when practicing, the student sees the full context.
+Run a single migration to add the 4 missing values to the `ssc_topic` enum.
 
 ### Changes
 
-**`supabase/functions/pyq-extract/index.ts`** — Add rules to the system prompt:
-- "If a question has a Direction, instruction, or passage that applies to it, prepend it to the question_text separated by a newline. E.g.: `Direction: Choose the synonym of the underlined word.\n\nThe word 'benevolent' means...`"
-- "For reading comprehension, include the passage text before the question"
-- "Multiple questions sharing the same direction should each have it prepended individually"
+**Migration SQL:**
+```sql
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'english';
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'quant';
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'reasoning';
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'ga';
+```
 
-### Files
+No code changes needed — the frontend and types are already correct. This is purely a database enum gap.
 
 | File | Action |
 |------|--------|
-| `supabase/functions/pyq-extract/index.ts` | Edit — update system prompt to capture directions |
-
-No frontend changes needed — the `question_text` field already renders with `whitespace-pre-wrap` in the practice session, so newlines will display correctly.
+| New migration | Add 4 missing enum values to `ssc_topic` |
 
