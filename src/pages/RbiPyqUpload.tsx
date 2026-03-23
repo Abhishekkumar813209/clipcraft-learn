@@ -471,7 +471,12 @@ export default function RbiPyqUpload() {
                         <p className="text-xs text-muted-foreground mt-1">
                           Options: {q.options.map((o, j) => `${String.fromCharCode(65 + j)}) ${o}`).join(' | ')}
                         </p>
-                        <p className="text-xs text-primary mt-0.5">Answer: {String.fromCharCode(65 + q.correct_option)}</p>
+                        <p className="text-xs text-primary mt-0.5">
+                          Answer: {String.fromCharCode(65 + q.correct_option)}
+                          <Badge variant="outline" className="ml-2 text-[10px]">
+                            {RBI_TOPIC_META[q.topic]?.phase || 'Phase 1'}
+                          </Badge>
+                        </p>
                       </TableCell>
                       <TableCell>
                         <Select value={q.topic} onValueChange={(v) => updateQuestionTopic(i, v as RbiTopic)}>
