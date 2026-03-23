@@ -1,46 +1,45 @@
 
 
-## Plan: Iterative Extraction — Keep State Across Multiple Runs
+## Plan: Simplify RBI Topic Classification to 5 Broad Subjects
 
 ### Problem
-Currently, clicking "Extract" **clears all previously found questions** (line 112: `setQuestions([])`). So if you extract pages 1-50, then want to do 51-100, you lose everything from the first run.
+The AI extractor is classifying questions into 30+ granular sub-topics (e.g., `idioms_phrases`, `profit_loss`, `syllogism`). This makes categorization unreliable — the AI often misclassifies at that granularity. You want just **5 broad subjects**:
 
-### Fix
-Simple but important changes to `RbiPyqUpload.tsx`:
+1. **English** — All English language questions
+2. **Quant** — Maths / Quantitative Aptitude
+3. **Reasoning** — Logical Reasoning
+4. **GA** — General Awareness
+5. **ESI & FM** — Economic & Social Issues, Finance & Management
 
-1. **Don't clear questions on new extraction** — append new questions to existing ones instead of resetting
-2. **Load all pages from PDF** (up to 200) into memory for text extraction, but keep the page range selector so you extract in chunks of your choice (e.g. 1-50, then 51-100)
-3. **Show cumulative count** — "42 questions total (18 new from this batch)"
-4. **Add "Clear All" button** — explicit action to reset, not automatic
-5. **Review screen shows all accumulated questions** — from all extraction runs combined
+### Changes
 
-### What Changes
+**1. `src/types/rbi.ts`** — Simplify `RBI_ALL_TOPICS` to just 5 values: `english`, `quant`, `reasoning`, `ga`, `esi_finance`. Update `RBI_TOPIC_META` to have 5 entries. Remove the old granular topic list and `RBI_SUBJECT_TOPICS` mapping (subjects = topics now).
 
-**`src/pages/RbiPyqUpload.tsx`**
-- Remove `maxPages = Math.min(totalPages, 50)` — load all pages (up to 200) for text reading
-- In `handleExtract`: instead of `setQuestions([])`, append to existing: `setQuestions(prev => [...prev, ...newQuestions])`
-- Don't reset `questionsFoundSoFar` to 0 — track cumulative total
-- Add a "Clear Questions" button that explicitly resets
-- After extraction, auto-update startPage/endPage to suggest the next range (e.g. after 1-50, suggest 51-100)
-- Keep the 50-page-per-extraction range limit as a soft guide (warn if range > 50)
+**2. `src/pages/RbiPyqUpload.tsx`** — Pass the 5 simplified topics to `pyq-extract`. The AI will now classify each question into one of 5 buckets — much more accurate. Topic reassignment dropdown shows 5 options.
 
-### Flow
-```text
-Upload 100-page PDF → All 100 pages loaded in memory
-  → Set range 1-50 → Extract → 25 questions found
-  → Set range 51-100 → Extract → 20 questions appended → 45 total
-  → Review all 45 questions → Save
-```
+**3. `src/pages/RbiPractice.tsx`** — Remove the subject→topic two-level navigation. Show 5 topic cards directly (each is now a broad subject).
 
-### Also Make Edge Function Generalized
-Create `supabase/functions/pyq-extract/index.ts` that accepts `exam` and `topics` params, so both RBI and BPSC (and future exams) use one function. Update `RbiPyqUpload` and `BpscPyqUpload` to call it.
+**4. `src/pages/RbiPyqPractice.tsx`** — Update topic filter to use 5 simplified topics.
+
+**5. `src/pages/RbiPyqAnalysis.tsx`** — Update charts to use 5 topics. Remove subject-level grouping (redundant now).
+
+**6. `src/pages/RbiPyqSession.tsx`** — Update topic references.
+
+**7. `src/hooks/useRbiQuestions.ts` & `src/hooks/useRbiProgress.ts`** — Update topic list references.
+
+### No DB Changes
+The `ssc_questions.topic` column stores text — old granular values will still exist in DB but new extractions will use the 5 broad topics. Existing questions with old topics won't break (they just won't match the new 5-topic filter — negligible since you're re-extracting anyway).
 
 ### Files
 
 | File | Action |
 |------|--------|
-| `src/pages/RbiPyqUpload.tsx` | Edit — append mode, remove 50-page load cap, next-range suggestion |
-| `src/pages/BpscPyqUpload.tsx` | Edit — same append mode + use generalized function |
-| `supabase/functions/pyq-extract/index.ts` | Create — generalized extractor accepting exam + topics |
-| `supabase/config.toml` | Edit — add pyq-extract config |
+| `src/types/rbi.ts` | Rewrite — 5 broad topics only |
+| `src/pages/RbiPyqUpload.tsx` | Edit — pass 5 topics to extractor |
+| `src/pages/RbiPractice.tsx` | Edit — flat 5-card layout |
+| `src/pages/RbiPyqPractice.tsx` | Edit — simplified filters |
+| `src/pages/RbiPyqAnalysis.tsx` | Edit — 5-topic charts |
+| `src/pages/RbiPyqSession.tsx` | Edit — topic references |
+| `src/hooks/useRbiQuestions.ts` | Edit — topic list |
+| `src/hooks/useRbiProgress.ts` | Edit — topic list |
 
