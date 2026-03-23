@@ -1,60 +1,46 @@
 
 
-## Plan: RBI Grade B PYQ Upload + Analysis Dashboard
+## Plan: Iterative Extraction — Keep State Across Multiple Runs
 
-### What
-Build a PYQ upload system for RBI Grade B (same pattern as BPSC PYQ upload) plus an analysis dashboard showing topic frequency, difficulty trends, and year-wise breakdowns across 6 years of papers.
+### Problem
+Currently, clicking "Extract" **clears all previously found questions** (line 112: `setQuestions([])`). So if you extract pages 1-50, then want to do 51-100, you lose everything from the first run.
 
-### Implementation
+### Fix
+Simple but important changes to `RbiPyqUpload.tsx`:
 
-**1. Edge Function: `rbi-pyq-extract`**
-- Clone the `bpsc-pyq-extract` pattern but with RBI topics from `src/types/rbi.ts`
-- AI extracts MCQs from PDF text, classifies by RBI topic, assigns difficulty, identifies correct answer
-- Uses tool calling for structured output
-- Handles rate limits (429) and credit exhaustion (402)
+1. **Don't clear questions on new extraction** — append new questions to existing ones instead of resetting
+2. **Load all pages from PDF** (up to 200) into memory for text extraction, but keep the page range selector so you extract in chunks of your choice (e.g. 1-50, then 51-100)
+3. **Show cumulative count** — "42 questions total (18 new from this batch)"
+4. **Add "Clear All" button** — explicit action to reset, not automatic
+5. **Review screen shows all accumulated questions** — from all extraction runs combined
 
-**2. New Page: `RbiPyqUpload.tsx`**
-- Mirrors `BpscPyqUpload.tsx` but uses RBI topics/types
-- PDF upload → client-side text extraction via pdfjs-dist → page range selection → batch AI extraction (3 pages/batch)
-- Review table with topic reassignment, difficulty badges, delete option
-- Saves to `ssc_questions` table with `exam: 'RBI'`, `is_pyq: true`, year tag
+### What Changes
 
-**3. New Page: `RbiPyqAnalysis.tsx`**
-- **Topic Frequency Chart**: Bar chart showing which topics appear most across 6 years
-- **Year-wise Breakdown**: Table/grid showing question count per topic per year
-- **Difficulty Distribution**: Easy/Medium/Hard split per year
-- **Subject-wise Summary**: Aggregated by Phase 1 subjects (English, Quant, Reasoning, GA) and Phase 2 (ESI & Finance)
-- All data pulled from `ssc_questions` where `exam = 'RBI'` and `is_pyq = true`
+**`src/pages/RbiPyqUpload.tsx`**
+- Remove `maxPages = Math.min(totalPages, 50)` — load all pages (up to 200) for text reading
+- In `handleExtract`: instead of `setQuestions([])`, append to existing: `setQuestions(prev => [...prev, ...newQuestions])`
+- Don't reset `questionsFoundSoFar` to 0 — track cumulative total
+- Add a "Clear Questions" button that explicitly resets
+- After extraction, auto-update startPage/endPage to suggest the next range (e.g. after 1-50, suggest 51-100)
+- Keep the 50-page-per-extraction range limit as a soft guide (warn if range > 50)
 
-**4. New Page: `RbiPyqPractice.tsx`**
-- Filter by year, topic, difficulty — practice extracted PYQs
-- Same practice session pattern as existing modules
+### Flow
+```text
+Upload 100-page PDF → All 100 pages loaded in memory
+  → Set range 1-50 → Extract → 25 questions found
+  → Set range 51-100 → Extract → 20 questions appended → 45 total
+  → Review all 45 questions → Save
+```
 
-**5. Route & Nav Updates**
-- Add routes: `/rbi/pyq`, `/rbi/pyq/upload`, `/rbi/pyq/analysis`, `/rbi/pyq/practice`
-- Add "PYQ Bank" nav item in `RbiLayout.tsx` sidebar
-- Sub-navigation within PYQ section for Upload, Analysis, Practice
+### Also Make Edge Function Generalized
+Create `supabase/functions/pyq-extract/index.ts` that accepts `exam` and `topics` params, so both RBI and BPSC (and future exams) use one function. Update `RbiPyqUpload` and `BpscPyqUpload` to call it.
 
 ### Files
 
 | File | Action |
 |------|--------|
-| `supabase/functions/rbi-pyq-extract/index.ts` | Create — AI extraction with RBI topics |
-| `src/pages/RbiPyqUpload.tsx` | Create — PDF upload + review |
-| `src/pages/RbiPyqAnalysis.tsx` | Create — charts + trends dashboard |
-| `src/pages/RbiPyqPractice.tsx` | Create — PYQ browser + filter |
-| `src/pages/RbiPyqSession.tsx` | Create — practice session for PYQs |
-| `src/pages/RbiLayout.tsx` | Edit — add PYQ Bank nav item |
-| `src/App.tsx` | Edit — add 4 new routes under `/rbi` |
-
-### No DB Changes Needed
-The existing `ssc_questions` table already supports `exam: 'RBI'`, `is_pyq: true`, `year`, and all RBI topics via the shared enum. No migration required.
-
-### Flow
-```text
-Upload PDF → Select page range → AI extracts questions (3 pages/batch)
-    → Review & edit topics/answers → Save to DB
-    → View Analysis Dashboard (topic frequency, difficulty trends, year breakdown)
-    → Practice PYQs with filters
-```
+| `src/pages/RbiPyqUpload.tsx` | Edit — append mode, remove 50-page load cap, next-range suggestion |
+| `src/pages/BpscPyqUpload.tsx` | Edit — same append mode + use generalized function |
+| `supabase/functions/pyq-extract/index.ts` | Create — generalized extractor accepting exam + topics |
+| `supabase/config.toml` | Edit — add pyq-extract config |
 
