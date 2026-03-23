@@ -37,6 +37,10 @@ import RbiLayout from "./pages/RbiLayout";
 import RbiDashboard from "./pages/RbiDashboard";
 import RbiPractice from "./pages/RbiPractice";
 import RbiPracticeSession from "./pages/RbiPracticeSession";
+import RbiPyqPractice from "./pages/RbiPyqPractice";
+import RbiPyqUpload from "./pages/RbiPyqUpload";
+import RbiPyqAnalysis from "./pages/RbiPyqAnalysis";
+import RbiPyqSession from "./pages/RbiPyqSession";
 
 const queryClient = new QueryClient();
 
