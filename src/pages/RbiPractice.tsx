@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { RBI_ALL_TOPICS, RBI_TOPIC_META } from '@/types/rbi';
+import { RBI_ALL_TOPICS, RBI_TOPIC_META, RBI_PHASE1_TOPICS, RBI_PHASE2_TOPICS } from '@/types/rbi';
 import { useRbiQuestionCount } from '@/hooks/useRbiQuestions';
 import { useRbiTopicAccuracy } from '@/hooks/useRbiProgress';
 import { Card, CardContent } from '@/components/ui/card';
