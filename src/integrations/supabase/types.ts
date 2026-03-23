@@ -607,6 +607,9 @@ export type Database = {
         | "banking_regulation"
         | "financial_markets"
         | "management_theory"
+        | "esi"
+        | "fm"
+        | "english_p2"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -811,6 +814,9 @@ export const Constants = {
         "banking_regulation",
         "financial_markets",
         "management_theory",
+        "esi",
+        "fm",
+        "english_p2",
       ],
     },
   },
