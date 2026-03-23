@@ -145,9 +145,24 @@ export default function RbiPyqUpload() {
         setProgressPercent(Math.round(((batchIdx + 1) / totalBatches) * 100));
         setQuestionsFoundSoFar(previousCount + newQuestions.length);
 
-        const extractionTopics = phase === 'phase1' ? RBI_PHASE1_TOPICS : phase === 'phase2' ? RBI_PHASE2_TOPICS : [...RBI_ALL_TOPICS];
+        const extractionTopics = subjectFilter === 'phase1' ? RBI_PHASE1_TOPICS
+          : subjectFilter === 'esi' ? ['esi'] as RbiTopic[]
+          : subjectFilter === 'fm' ? ['fm'] as RbiTopic[]
+          : subjectFilter === 'english_p2' ? ['english_p2'] as RbiTopic[]
+          : [...RBI_ALL_TOPICS];
+
+        // Build answer key text from parsed pages if answer key page is set
+        let akText: string | undefined;
+        if (answerKeyPage) {
+          const akPageNum = parseInt(answerKeyPage);
+          if (akPageNum > 0 && akPageNum <= pages.length) {
+            const akPages = pages.filter(p => p.pageNum >= akPageNum);
+            akText = akPages.map(p => `--- Page ${p.pageNum} ---\n${p.text}`).join('\n');
+          }
+        }
+
         const { data, error } = await supabase.functions.invoke('pyq-extract', {
-          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...extractionTopics] },
+          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...extractionTopics], ...(akText ? { answerKeyText: akText } : {}) },
         });
 
         if (error) {
