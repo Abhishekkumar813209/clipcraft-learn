@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { RBI_TOPIC_META, RBI_ALL_TOPICS, type RbiTopic } from '@/types/rbi';
-import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle, AlertTriangle, XCircle } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -37,6 +37,7 @@ interface PageInfo {
 const BATCH_SIZE = 3;
 const DELAY_MS = 1000;
 const LOW_TEXT_THRESHOLD = 50;
+const MAX_PAGES = 200;
 
 export default function RbiPyqUpload() {
   const navigate = useNavigate();
@@ -57,6 +58,7 @@ export default function RbiPyqUpload() {
   const [startPage, setStartPage] = useState('');
   const [endPage, setEndPage] = useState('');
   const [questionsFoundSoFar, setQuestionsFoundSoFar] = useState(0);
+  const [lastExtractedRange, setLastExtractedRange] = useState('');
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,6 +73,7 @@ export default function RbiPyqUpload() {
     setPages([]);
     setQuestions([]);
     setQuestionsFoundSoFar(0);
+    setLastExtractedRange('');
 
     try {
       const arrayBuffer = await file.arrayBuffer();
@@ -78,11 +81,11 @@ export default function RbiPyqUpload() {
       const totalPages = pdf.numPages;
       setPageCount(totalPages);
 
-      const maxPages = Math.min(totalPages, 50);
+      const loadPages = Math.min(totalPages, MAX_PAGES);
       const pageInfos: PageInfo[] = [];
 
-      for (let i = 1; i <= maxPages; i++) {
-        setProgress(`Extracting text from page ${i}/${maxPages}...`);
+      for (let i = 1; i <= loadPages; i++) {
+        setProgress(`Extracting text from page ${i}/${loadPages}...`);
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
         const pageText = content.items.map((item: any) => item.str).join(' ');
@@ -90,9 +93,9 @@ export default function RbiPyqUpload() {
       }
 
       setPages(pageInfos);
-      setStartPage('');
-      setEndPage('');
-      setProgress(`${maxPages} pages loaded. Select page range and extract.`);
+      setStartPage('1');
+      setEndPage(Math.min(50, loadPages).toString());
+      setProgress(`${loadPages} pages loaded. Select page range and extract.`);
     } catch (err) {
       toast({ title: 'PDF Error', description: 'Could not read the PDF file.', variant: 'destructive' });
       setProgress('');
@@ -107,15 +110,20 @@ export default function RbiPyqUpload() {
     if (pages.length === 0) return;
     const sp = parseInt(startPage) || 1;
     const ep = parseInt(endPage) || pages.length;
+
+    if (ep - sp + 1 > 50) {
+      toast({ title: 'Range too large', description: 'Select max 50 pages per extraction. You can extract more in the next run.', variant: 'destructive' });
+      return;
+    }
+
     setExtracting(true);
-    setQuestionsFoundSoFar(0);
-    setQuestions([]);
+    const previousCount = questions.length;
 
     const selectedPages = pages.filter(p => p.pageNum >= sp && p.pageNum <= ep);
     const totalBatches = Math.ceil(selectedPages.length / BATCH_SIZE);
 
     try {
-      let allQuestions: ExtractedQuestion[] = [];
+      let newQuestions: ExtractedQuestion[] = [];
 
       for (let batchIdx = 0; batchIdx < totalBatches; batchIdx++) {
         const batchPages = selectedPages.slice(batchIdx * BATCH_SIZE, (batchIdx + 1) * BATCH_SIZE);
@@ -128,11 +136,12 @@ export default function RbiPyqUpload() {
 
         const fromPage = batchPages[0].pageNum;
         const toPage = batchPages[batchPages.length - 1].pageNum;
-        setProgress(`Processing pages ${fromPage}–${toPage} (batch ${batchIdx + 1}/${totalBatches})... ${allQuestions.length} questions found`);
+        setProgress(`Processing pages ${fromPage}–${toPage} (batch ${batchIdx + 1}/${totalBatches})... ${previousCount + newQuestions.length} questions total`);
         setProgressPercent(Math.round(((batchIdx + 1) / totalBatches) * 100));
+        setQuestionsFoundSoFar(previousCount + newQuestions.length);
 
-        const { data, error } = await supabase.functions.invoke('rbi-pyq-extract', {
-          body: { pageText: batchText, year: parseInt(year) },
+        const { data, error } = await supabase.functions.invoke('pyq-extract', {
+          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...RBI_ALL_TOPICS] },
         });
 
         if (error) {
@@ -150,8 +159,8 @@ export default function RbiPyqUpload() {
         }
 
         if (data?.questions) {
-          allQuestions = [...allQuestions, ...data.questions];
-          setQuestionsFoundSoFar(allQuestions.length);
+          newQuestions = [...newQuestions, ...data.questions];
+          setQuestionsFoundSoFar(previousCount + newQuestions.length);
         }
 
         if (batchIdx < totalBatches - 1) {
@@ -159,11 +168,24 @@ export default function RbiPyqUpload() {
         }
       }
 
-      setQuestions(allQuestions);
-      setStep('review');
-      setProgress(`Extracted ${allQuestions.length} questions from pages ${sp}–${ep}.`);
+      // Append to existing questions
+      setQuestions(prev => [...prev, ...newQuestions]);
+      setLastExtractedRange(`${sp}–${ep}`);
+
+      // Auto-suggest next range
+      const nextStart = ep + 1;
+      if (nextStart <= pages.length) {
+        setStartPage(nextStart.toString());
+        setEndPage(Math.min(nextStart + 49, pages.length).toString());
+      }
+
+      if (newQuestions.length > 0 || questions.length > 0) {
+        setStep('review');
+      }
+
+      setProgress(`Extracted ${newQuestions.length} new questions from pages ${sp}–${ep}. Total: ${previousCount + newQuestions.length}`);
       setProgressPercent(100);
-      toast({ title: 'Extraction complete', description: `Found ${allQuestions.length} questions.` });
+      toast({ title: 'Extraction complete', description: `Found ${newQuestions.length} new questions (${previousCount + newQuestions.length} total).` });
     } catch (err: any) {
       toast({ title: 'Extraction failed', description: err.message || 'AI could not extract questions.', variant: 'destructive' });
       setProgress('Extraction failed.');
@@ -178,6 +200,13 @@ export default function RbiPyqUpload() {
 
   const updateQuestionTopic = (idx: number, topic: RbiTopic) => {
     setQuestions(prev => prev.map((q, i) => i === idx ? { ...q, topic } : q));
+  };
+
+  const clearAllQuestions = () => {
+    setQuestions([]);
+    setQuestionsFoundSoFar(0);
+    setLastExtractedRange('');
+    toast({ title: 'Cleared', description: 'All extracted questions removed.' });
   };
 
   const handleSaveAll = async () => {
@@ -225,8 +254,25 @@ export default function RbiPyqUpload() {
 
       <div>
         <h1 className="text-2xl font-bold text-foreground">Upload RBI Grade B PYQ Paper</h1>
-        <p className="text-muted-foreground text-sm mt-1">Upload a PDF of RBI Grade B previous year questions. AI will extract and classify questions automatically.</p>
+        <p className="text-muted-foreground text-sm mt-1">Upload a PDF and extract questions in batches of up to 50 pages. State is preserved between extractions.</p>
       </div>
+
+      {/* Accumulated questions indicator */}
+      {questions.length > 0 && step === 'upload' && (
+        <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10 border border-primary/20">
+          <p className="text-sm font-medium text-foreground">
+            📦 {questions.length} questions accumulated{lastExtractedRange && ` (last: pages ${lastExtractedRange})`}
+          </p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={clearAllQuestions} className="gap-1">
+              <XCircle className="h-3.5 w-3.5" /> Clear All
+            </Button>
+            <Button size="sm" onClick={() => setStep('review')} className="gap-1">
+              Review & Save
+            </Button>
+          </div>
+        </div>
+      )}
 
       {step === 'upload' && (
         <div className="space-y-4">
@@ -287,7 +333,8 @@ export default function RbiPyqUpload() {
                         {(() => {
                           const sp = parseInt(startPage) || 1;
                           const ep = parseInt(endPage) || pages.length;
-                          return `${Math.max(0, ep - sp + 1)} pages selected`;
+                          const count = Math.max(0, ep - sp + 1);
+                          return `${count} pages${count > 50 ? ' ⚠️ max 50' : ''}`;
                         })()}
                       </Badge>
                     </div>
@@ -321,7 +368,7 @@ export default function RbiPyqUpload() {
                     <div className="space-y-1">
                       <Progress value={progressPercent} className="h-2" />
                       {questionsFoundSoFar > 0 && (
-                        <p className="text-xs text-primary font-medium">{questionsFoundSoFar} questions found so far</p>
+                        <p className="text-xs text-primary font-medium">{questionsFoundSoFar} questions total</p>
                       )}
                     </div>
                   )}
@@ -330,7 +377,7 @@ export default function RbiPyqUpload() {
 
               <Button onClick={handleExtract} disabled={pages.length === 0 || extracting} className="w-full gap-2">
                 {extracting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {extracting ? `Extracting... (${questionsFoundSoFar} found)` : `Extract Questions (Pages ${startPage || '1'}–${endPage || pages.length})`}
+                {extracting ? `Extracting... (${questionsFoundSoFar} total)` : `Extract Questions (Pages ${startPage || '1'}–${endPage || pages.length})`}
               </Button>
             </CardContent>
           </Card>
@@ -342,10 +389,10 @@ export default function RbiPyqUpload() {
                 <p className="font-medium text-foreground">Tips for best results:</p>
                 <ul className="list-disc pl-4 mt-1 space-y-0.5">
                   <li>Upload clear, text-based PDFs (not scanned images)</li>
-                  <li>Maximum 50 pages will be loaded</li>
-                  <li>Use the page range selector to skip cover/instruction pages</li>
-                  <li>AI processes 3 pages at a time for better accuracy</li>
-                  <li>You can review and edit before saving</li>
+                  <li>All pages are loaded, extract up to 50 pages per run</li>
+                  <li>Questions accumulate — extract pages 1-50, then 51-100</li>
+                  <li>Page range auto-advances after each extraction</li>
+                  <li>You can review and edit all questions before saving</li>
                 </ul>
               </div>
             </div>
@@ -361,8 +408,11 @@ export default function RbiPyqUpload() {
               <p className="text-sm text-muted-foreground">{questions.length} questions found • Year: {year}</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => { setStep('upload'); setQuestions([]); setProgressPercent(0); setQuestionsFoundSoFar(0); }}>
-                Re-upload
+              <Button variant="outline" onClick={() => setStep('upload')}>
+                Extract More
+              </Button>
+              <Button variant="outline" onClick={clearAllQuestions} className="gap-1 text-destructive">
+                <XCircle className="h-4 w-4" /> Clear All
               </Button>
               <Button onClick={handleSaveAll} disabled={saving || questions.length === 0} className="gap-2">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
