@@ -1,11 +1,12 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Grid3X3, FileText, ArrowLeft } from 'lucide-react';
+import { BookOpen, Grid3X3, FileText, ArrowLeft, Library } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/rbi', icon: BookOpen },
   { label: 'Practice', path: '/rbi/practice', icon: Grid3X3 },
+  { label: 'PYQ Bank', path: '/rbi/pyq', icon: Library },
   { label: 'Mock Test', path: '/rbi/mock', icon: FileText, disabled: true },
 ];
 

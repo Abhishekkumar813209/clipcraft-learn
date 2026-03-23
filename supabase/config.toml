@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.bpsc-mains-evaluate]
 verify_jwt = false
+
+[functions.rbi-pyq-extract]
+verify_jwt = false
