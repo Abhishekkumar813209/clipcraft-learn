@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.rbi-pyq-extract]
 verify_jwt = false
+
+[functions.pyq-extract]
+verify_jwt = false
