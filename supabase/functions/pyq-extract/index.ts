@@ -44,7 +44,10 @@ Rules:
 - If a question has less or more than 4 options, skip it
 - Clean up OCR artifacts and formatting issues
 - Keep the original language of the question (Hindi or English)
-- If you cannot determine the correct answer, set correct_option to 0 and note it in the explanation`;
+- If you cannot determine the correct answer, set correct_option to 0 and note it in the explanation
+- IMPORTANT: If a question is preceded by a "Direction", instruction, or reading comprehension passage that provides context for answering it, you MUST prepend that full direction/passage text to the question_text, separated by a double newline. Example: "Direction: Choose the word which is most similar in meaning to the underlined word.\n\nThe manager was very benevolent towards his employees."
+- For reading comprehension sections, include the full passage text before each question that references it
+- If multiple questions share the same direction or passage, prepend it individually to EACH question's question_text so every question is self-contained`;
 
     const topicSchema = topicList.length > 0
       ? { type: "string", enum: topicList, description: `${examName} topic classification` }
