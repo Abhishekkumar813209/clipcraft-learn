@@ -74,38 +74,4 @@ function renderTopicCard(topic: string, counts: Record<string, number> | undefin
           const acc = accuracy?.[topic];
           const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
 
-          return (
-            <Card
-              key={topic}
-              className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
-              onClick={() => navigate(`/rbi/practice/${topic}`)}
-            >
-              <CardContent className="p-5">
-                <div className="flex items-start gap-3">
-                  <span className="text-3xl">{meta.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground">{meta.label}</h3>
-                    <p className="text-xs text-muted-foreground">{meta.phase}</p>
-                    <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>
-                    {pct !== null && (
-                      <div className="mt-3">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground">Accuracy</span>
-                          <span className="font-medium" style={{ color: pct >= 60 ? 'hsl(var(--primary))' : 'hsl(var(--destructive))' }}>{pct}%</span>
-                        </div>
-                        <Progress value={pct} className="h-1.5" />
-                      </div>
-                    )}
-                    {pct === null && (
-                      <p className="text-xs text-muted-foreground/60 mt-2">Not started yet</p>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-    </div>
-  );
 }
