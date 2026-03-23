@@ -62,7 +62,8 @@ export default function RbiPyqUpload() {
   const [endPage, setEndPage] = useState('');
   const [questionsFoundSoFar, setQuestionsFoundSoFar] = useState(0);
   const [lastExtractedRange, setLastExtractedRange] = useState('');
-  const [phase, setPhase] = useState<'all' | 'phase1' | 'phase2'>('all');
+  const [subjectFilter, setSubjectFilter] = useState<'all' | 'phase1' | 'esi' | 'fm' | 'english_p2'>('all');
+  const [answerKeyPage, setAnswerKeyPage] = useState<string>('');
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
