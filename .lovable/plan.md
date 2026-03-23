@@ -1,26 +1,32 @@
 
 
-## Current Architecture — Why `ssc_topic`?
+## Plan: Add Phase Filter to PYQ Practice & Analysis
 
-The app uses **one shared table** (`ssc_questions`) for all exam questions — SSC, BPSC, NQT, and RBI. The `ssc_topic` enum is the column type for that table. So when we add RBI topics like `english`, `quant`, `ga`, we're adding them to that shared enum. The name `ssc_topic` is just legacy naming from when SSC was the first exam added.
+### Current State
+- **Phase is NOT stored** as a separate column in the database. It's derived from the topic (e.g., `english`/`quant`/`reasoning`/`ga` = Phase 1, `esi`/`fm`/`english_p2` = Phase 2).
+- This derivation is already defined in `RBI_TOPIC_META` (each topic has a `phase` field) and `RBI_PHASE1_TOPICS` / `RBI_PHASE2_TOPICS` constants.
+- **No DB change needed** — phase can be filtered client-side using the topic→phase mapping.
 
-**The migration that just ran is correct.** It added the 4 missing Phase 1 values (`english`, `quant`, `reasoning`, `ga`) to the `ssc_topic` enum so RBI questions can be saved. Without this, saving fails with `invalid input value for enum ssc_topic: "ga"`.
+### Changes
 
-### Two options going forward:
+**1. `src/pages/RbiPyqPractice.tsx`** — Add Phase filter
+- Add a `phase` URL param (`all` / `phase1` / `phase2`)
+- Filter questions by phase before computing topic counts
+- Show phase filter dropdown alongside existing Subject and Year filters
+- Topic cards only show topics belonging to selected phase
 
-**Option A: Keep as-is (recommended for now)**
-- The shared table works fine functionally
-- RBI hooks already filter by RBI-specific topics using `.in('topic', [...RBI_ALL_TOPICS])`
-- No migration or code rewrite needed
-- Just confusing naming — but only visible in code, not to users
+**2. `src/pages/RbiPyqAnalysis.tsx`** — Add Phase + Year + Subject filters
+- Add filter bar at top with: Phase (All/Phase 1/Phase 2), Subject dropdown, Year dropdown
+- Filter all chart data through these filters
+- Charts update reactively based on selection
 
-**Option B: Create a separate `rbi_questions` table**
-- Cleaner separation but requires: new table, new migration, new RLS policies, rewriting all RBI hooks and pages
-- Significant effort for a cosmetic improvement
-- Can be done later as a refactor
+### No migration needed
+Phase is derivable from topic via `RBI_PHASE1_TOPICS` / `RBI_PHASE2_TOPICS`. No new column required.
 
-### Verdict
-The migration is correct and your RBI questions will save properly now. The `ssc_topic` enum name is just an internal label — users never see it. **Retry saving your extracted questions — it should work now.**
+### Files
 
-No additional changes needed at this point.
+| File | Action |
+|------|--------|
+| `src/pages/RbiPyqPractice.tsx` | Add phase filter to URL params and filtering logic |
+| `src/pages/RbiPyqAnalysis.tsx` | Add phase, subject, year filter bar above charts |
 
