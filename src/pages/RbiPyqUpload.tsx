@@ -10,7 +10,9 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { RBI_TOPIC_META, RBI_ALL_TOPICS, type RbiTopic } from '@/types/rbi';
+import { RBI_TOPIC_META, RBI_ALL_TOPICS, RBI_PHASE1_TOPICS, RBI_PHASE2_TOPICS, type RbiTopic } from '@/types/rbi';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle, AlertTriangle, XCircle } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -60,6 +62,7 @@ export default function RbiPyqUpload() {
   const [endPage, setEndPage] = useState('');
   const [questionsFoundSoFar, setQuestionsFoundSoFar] = useState(0);
   const [lastExtractedRange, setLastExtractedRange] = useState('');
+  const [phase, setPhase] = useState<'all' | 'phase1' | 'phase2'>('all');
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -141,8 +144,9 @@ export default function RbiPyqUpload() {
         setProgressPercent(Math.round(((batchIdx + 1) / totalBatches) * 100));
         setQuestionsFoundSoFar(previousCount + newQuestions.length);
 
+        const extractionTopics = phase === 'phase1' ? RBI_PHASE1_TOPICS : phase === 'phase2' ? RBI_PHASE2_TOPICS : [...RBI_ALL_TOPICS];
         const { data, error } = await supabase.functions.invoke('pyq-extract', {
-          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...RBI_ALL_TOPICS] },
+          body: { pageText: batchText, year: parseInt(year), exam: 'RBI Grade B', topics: [...extractionTopics] },
         });
 
         if (error) {
@@ -317,6 +321,24 @@ export default function RbiPyqUpload() {
 
               {pages.length > 0 && (
                 <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Phase</label>
+                    <RadioGroup value={phase} onValueChange={(v) => setPhase(v as 'all' | 'phase1' | 'phase2')} className="flex gap-4">
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="all" id="phase-all" />
+                        <Label htmlFor="phase-all" className="text-sm cursor-pointer">Auto-detect</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="phase1" id="phase-1" />
+                        <Label htmlFor="phase-1" className="text-sm cursor-pointer">Phase 1 (Eng, Quant, Reasoning, GA)</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="phase2" id="phase-2" />
+                        <Label htmlFor="phase-2" className="text-sm cursor-pointer">Phase 2 (ESI & FM)</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
                   <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <label className="text-sm font-medium text-foreground mb-1.5 block">From Page</label>
@@ -449,7 +471,12 @@ export default function RbiPyqUpload() {
                         <p className="text-xs text-muted-foreground mt-1">
                           Options: {q.options.map((o, j) => `${String.fromCharCode(65 + j)}) ${o}`).join(' | ')}
                         </p>
-                        <p className="text-xs text-primary mt-0.5">Answer: {String.fromCharCode(65 + q.correct_option)}</p>
+                        <p className="text-xs text-primary mt-0.5">
+                          Answer: {String.fromCharCode(65 + q.correct_option)}
+                          <Badge variant="outline" className="ml-2 text-[10px]">
+                            {RBI_TOPIC_META[q.topic]?.phase || 'Phase 1'}
+                          </Badge>
+                        </p>
                       </TableCell>
                       <TableCell>
                         <Select value={q.topic} onValueChange={(v) => updateQuestionTopic(i, v as RbiTopic)}>
