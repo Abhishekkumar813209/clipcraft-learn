@@ -69,9 +69,4 @@ function renderTopicCard(topic: string, counts: Record<string, number> | undefin
       </CardContent>
     </Card>
   );
-          const meta = RBI_TOPIC_META[topic];
-          const count = counts?.[topic] || 0;
-          const acc = accuracy?.[topic];
-          const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
-
 }
