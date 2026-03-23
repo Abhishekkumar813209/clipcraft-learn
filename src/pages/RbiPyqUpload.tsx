@@ -10,7 +10,9 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { RBI_TOPIC_META, RBI_ALL_TOPICS, type RbiTopic } from '@/types/rbi';
+import { RBI_TOPIC_META, RBI_ALL_TOPICS, RBI_PHASE1_TOPICS, RBI_PHASE2_TOPICS, type RbiTopic } from '@/types/rbi';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle, AlertTriangle, XCircle } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
