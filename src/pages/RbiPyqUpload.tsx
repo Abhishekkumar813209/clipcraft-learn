@@ -334,7 +334,7 @@ export default function RbiPyqUpload() {
                       </div>
                       <div className="flex items-center gap-2">
                         <RadioGroupItem value="phase2" id="phase-2" />
-                        <Label htmlFor="phase-2" className="text-sm cursor-pointer">Phase 2 (ESI & FM)</Label>
+                        <Label htmlFor="phase-2" className="text-sm cursor-pointer">Phase 2 (ESI, FM, English)</Label>
                       </div>
                     </RadioGroup>
                   </div>
