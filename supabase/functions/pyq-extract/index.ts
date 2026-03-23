@@ -64,7 +64,7 @@ Rules:
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Extract all MCQ questions from this ${examName} ${year || ""} exam paper text:\n\n${pageText}` },
+          { role: "user", content: `Extract all MCQ questions from this ${examName} ${year || ""} exam paper text:\n\n${pageText}${answerKeyText ? `\n\n--- ANSWER KEY ---\n${answerKeyText}` : ''}` },
         ],
         tools: [{
           type: "function",
