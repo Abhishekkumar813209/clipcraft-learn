@@ -1,6 +1,6 @@
 import { useRbiTodayStats, useRbiTopicAccuracy } from '@/hooks/useRbiProgress';
 import { useRbiQuestionCount } from '@/hooks/useRbiQuestions';
-import { RBI_TOPIC_META, RBI_ALL_TOPICS, RBI_SUBJECTS, RBI_SUBJECT_TOPICS, getRbiSubjectForTopic } from '@/types/rbi';
+import { RBI_TOPIC_META, RBI_ALL_TOPICS } from '@/types/rbi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Flame, Target, Zap, TrendingUp } from 'lucide-react';
@@ -53,20 +53,18 @@ export default function RbiDashboard() {
       {weakTopics.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base text-destructive">⚠️ Weak Topics (below 60%)</CardTitle>
+            <CardTitle className="text-base text-destructive">⚠️ Weak Subjects (below 60%)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               {weakTopics.map((t) => {
                 const a = topicAccuracy![t]!;
                 const pct = Math.round((a.correct / a.total) * 100);
-                const subject = getRbiSubjectForTopic(t);
-                const subjectMeta = RBI_SUBJECTS.find(s => s.key === subject);
                 return (
                   <div key={t} className="flex items-center justify-between">
                     <span className="text-sm">
                       {RBI_TOPIC_META[t].icon} {RBI_TOPIC_META[t].label}
-                      <span className="text-xs text-muted-foreground ml-2">({subjectMeta?.label})</span>
+                      <span className="text-xs text-muted-foreground ml-2">({RBI_TOPIC_META[t].phase})</span>
                     </span>
                     <span className="text-sm font-medium text-destructive">{pct}%</span>
                   </div>
@@ -77,37 +75,31 @@ export default function RbiDashboard() {
         </Card>
       )}
 
-      {RBI_SUBJECTS.map((subject) => {
-        const subTopics = RBI_SUBJECT_TOPICS[subject.key];
-        return (
-          <Card key={subject.key}>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <span>{subject.icon}</span> {subject.label}
-                <span className="text-xs font-normal text-muted-foreground ml-auto">{subject.phase}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {subTopics.map((t) => {
-                  const acc = topicAccuracy?.[t];
-                  const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
-                  const count = questionCounts?.[t] || 0;
-                  return (
-                    <div key={t} className="flex items-center gap-2 p-2 rounded-lg bg-accent/30">
-                      <span className="text-lg">{RBI_TOPIC_META[t].icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium truncate">{RBI_TOPIC_META[t].label}</p>
-                        <p className="text-[10px] text-muted-foreground">{count} Qs {pct !== null ? `• ${pct}%` : ''}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Subject Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {RBI_ALL_TOPICS.map((t) => {
+              const meta = RBI_TOPIC_META[t];
+              const acc = topicAccuracy?.[t];
+              const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
+              const count = questionCounts?.[t] || 0;
+              return (
+                <div key={t} className="flex items-center gap-3 p-3 rounded-lg bg-accent/30 border border-border">
+                  <span className="text-2xl">{meta.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{meta.label}</p>
+                    <p className="text-xs text-muted-foreground">{meta.phase}</p>
+                    <p className="text-xs text-muted-foreground">{count} Qs {pct !== null ? `• ${pct}% accuracy` : ''}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
