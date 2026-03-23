@@ -1,41 +1,56 @@
 
 
-## Plan: Add Phase Selection for RBI PYQ Extraction
+## Plan: Split Phase 2 into 3 Separate Subjects
 
 ### Problem
-Your RBI PYQ PDFs have Phase 1 and Phase 2 questions mixed together. The AI classifier needs a hint about which phase the current page range belongs to, so it can categorize accurately into the right subset of topics.
+Phase 2 currently has only one combined topic `esi_finance`. But RBI Grade B Phase 2 actually has **3 subjects**: ESI, Finance & Management, and English. These need separate categorization.
 
-### Solution
-Add a **Phase selector** (Phase 1 / Phase 2 / Auto-detect) on the upload page. When you select a phase, only that phase's topics are sent to the AI extractor — making classification much more accurate.
+### New Topic Structure
 
-- **Phase 1** → sends topics: `english`, `quant`, `reasoning`, `ga`
-- **Phase 2** → sends topics: `esi_finance`
-- **Auto-detect** → sends all 5 topics (current behavior)
+**Phase 1 (4 subjects):** English, Quant, Reasoning, GA
+**Phase 2 (3 subjects):** ESI, Finance & Management, English
 
-This way you extract pages 1-50 with Phase 1 selected, then pages 51-100 with Phase 2, and questions accumulate correctly with proper topic labels.
+Note: English appears in both phases — they're different papers. We'll use `english_p2` for Phase 2 English to distinguish.
+
+**Updated `RBI_ALL_TOPICS`:**
+```
+english, quant, reasoning, ga, esi, fm, english_p2
+```
 
 ### Changes
 
-**1. `src/types/rbi.ts`** — Add helper constants:
-```typescript
-export const RBI_PHASE1_TOPICS: RbiTopic[] = ['english', 'quant', 'reasoning', 'ga'];
-export const RBI_PHASE2_TOPICS: RbiTopic[] = ['esi_finance'];
-```
+**1. `src/types/rbi.ts`**
+- Replace `esi_finance` with `esi`, `fm`, `english_p2`
+- Update `RBI_ALL_TOPICS` to 7 topics
+- `RBI_PHASE1_TOPICS = ['english', 'quant', 'reasoning', 'ga']`
+- `RBI_PHASE2_TOPICS = ['esi', 'fm', 'english_p2']`
+- Update `RBI_TOPIC_META` with proper labels:
+  - `esi` → "Economic & Social Issues" (Phase 2)
+  - `fm` → "Finance & Management" (Phase 2)
+  - `english_p2` → "English (Phase 2)" (Phase 2)
 
-**2. `src/pages/RbiPyqUpload.tsx`**:
-- Add `phase` state: `'all' | 'phase1' | 'phase2'` (default `'all'`)
-- Add a Phase selector (radio buttons or Select) next to the page range picker
-- In `handleExtract`, pick topics based on phase selection and pass to edge function
-- Show phase badge on each question in review table
-- The review table groups/shows which phase each question belongs to (derived from topic)
+**2. `src/pages/RbiPyqUpload.tsx`**
+- Phase 2 radio label updated to show "ESI, FM, English"
+- Topic reassignment dropdown now shows all 7 topics
+
+**3. `src/pages/RbiPractice.tsx`** — Show 7 topic cards grouped by phase
+
+**4. `src/pages/RbiPyqPractice.tsx`** — Update filters for 7 topics
+
+**5. `src/pages/RbiPyqAnalysis.tsx`** — Update charts for 7 topics
+
+**6. `src/hooks/useRbiQuestions.ts` & `src/hooks/useRbiProgress.ts`** — Updated topic references
 
 ### Files
 
 | File | Action |
 |------|--------|
-| `src/types/rbi.ts` | Add phase topic constants |
-| `src/pages/RbiPyqUpload.tsx` | Add phase selector, filter topics sent to AI |
-
-### No edge function changes needed
-The `pyq-extract` function already accepts dynamic topics — we just send fewer topics based on phase selection.
+| `src/types/rbi.ts` | Rewrite — 7 topics, phase groupings |
+| `src/pages/RbiPyqUpload.tsx` | Edit — phase 2 label, topic dropdown |
+| `src/pages/RbiPractice.tsx` | Edit — 7 topic cards with phase sections |
+| `src/pages/RbiPyqPractice.tsx` | Edit — updated filters |
+| `src/pages/RbiPyqAnalysis.tsx` | Edit — updated charts |
+| `src/hooks/useRbiQuestions.ts` | Edit — topic list |
+| `src/hooks/useRbiProgress.ts` | Edit — topic list |
+| `src/pages/RbiDashboard.tsx` | Edit — updated topic references |
 
