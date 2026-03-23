@@ -610,6 +610,10 @@ export type Database = {
         | "esi"
         | "fm"
         | "english_p2"
+        | "english"
+        | "quant"
+        | "reasoning"
+        | "ga"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -817,6 +821,10 @@ export const Constants = {
         "esi",
         "fm",
         "english_p2",
+        "english",
+        "quant",
+        "reasoning",
+        "ga",
       ],
     },
   },

@@ -1,0 +1,4 @@
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'english';
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'quant';
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'reasoning';
+ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'ga';
