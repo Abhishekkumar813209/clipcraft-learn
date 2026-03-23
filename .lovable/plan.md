@@ -1,26 +1,26 @@
 
 
-## Plan: Add Missing RBI Topic Values to Database Enum
+## Current Architecture — Why `ssc_topic`?
 
-### Problem
-Questions fail to save with error `invalid input value for enum ssc_topic: "ga"` because the database `ssc_topic` enum is missing 4 RBI Phase 1 values: `english`, `quant`, `reasoning`, `ga`. Only `esi`, `fm`, `english_p2` were added in the last migration.
+The app uses **one shared table** (`ssc_questions`) for all exam questions — SSC, BPSC, NQT, and RBI. The `ssc_topic` enum is the column type for that table. So when we add RBI topics like `english`, `quant`, `ga`, we're adding them to that shared enum. The name `ssc_topic` is just legacy naming from when SSC was the first exam added.
 
-### Fix
-Run a single migration to add the 4 missing values to the `ssc_topic` enum.
+**The migration that just ran is correct.** It added the 4 missing Phase 1 values (`english`, `quant`, `reasoning`, `ga`) to the `ssc_topic` enum so RBI questions can be saved. Without this, saving fails with `invalid input value for enum ssc_topic: "ga"`.
 
-### Changes
+### Two options going forward:
 
-**Migration SQL:**
-```sql
-ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'english';
-ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'quant';
-ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'reasoning';
-ALTER TYPE ssc_topic ADD VALUE IF NOT EXISTS 'ga';
-```
+**Option A: Keep as-is (recommended for now)**
+- The shared table works fine functionally
+- RBI hooks already filter by RBI-specific topics using `.in('topic', [...RBI_ALL_TOPICS])`
+- No migration or code rewrite needed
+- Just confusing naming — but only visible in code, not to users
 
-No code changes needed — the frontend and types are already correct. This is purely a database enum gap.
+**Option B: Create a separate `rbi_questions` table**
+- Cleaner separation but requires: new table, new migration, new RLS policies, rewriting all RBI hooks and pages
+- Significant effort for a cosmetic improvement
+- Can be done later as a refactor
 
-| File | Action |
-|------|--------|
-| New migration | Add 4 missing enum values to `ssc_topic` |
+### Verdict
+The migration is correct and your RBI questions will save properly now. The `ssc_topic` enum name is just an internal label — users never see it. **Retry saving your extracted questions — it should work now.**
+
+No additional changes needed at this point.
 
