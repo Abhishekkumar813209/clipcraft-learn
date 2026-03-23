@@ -5,7 +5,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { RBI_TOPIC_META, RBI_ALL_TOPICS, type RbiTopic } from '@/types/rbi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload, Filter, BarChart3 } from 'lucide-react';
 
@@ -107,10 +106,10 @@ export default function RbiPyqPractice() {
             <Filter className="h-4 w-4 text-muted-foreground" />
             <Select value={topicFilter} onValueChange={v => setFilter('topic', v)}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="All Topics" />
+                <SelectValue placeholder="All Subjects" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Topics</SelectItem>
+                <SelectItem value="all">All Subjects</SelectItem>
                 {RBI_ALL_TOPICS.map(t => (
                   <SelectItem key={t} value={t}>
                     {RBI_TOPIC_META[t]?.icon} {RBI_TOPIC_META[t]?.label} ({topicCounts[t] || 0})
