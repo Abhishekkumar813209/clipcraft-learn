@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { RBI_TOPIC_META, RBI_ALL_TOPICS, type RbiTopic } from '@/types/rbi';
+
 import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, AlertCircle, AlertTriangle, XCircle } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 

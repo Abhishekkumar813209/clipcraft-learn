@@ -8,9 +8,9 @@ export function useRbiQuestions(topic?: RbiTopic) {
     queryFn: async () => {
       let query = supabase.from('ssc_questions').select('*');
       if (topic) {
-        query = query.eq('topic', topic);
+        query = query.eq('topic', topic as any);
       } else {
-        query = query.in('topic', [...RBI_ALL_TOPICS]);
+        query = query.in('topic', [...RBI_ALL_TOPICS] as any);
       }
       const { data, error } = await query;
       if (error) throw error;
@@ -34,7 +34,7 @@ export function useRbiQuestionCount() {
       const { data, error } = await supabase
         .from('ssc_questions')
         .select('topic')
-        .in('topic', [...RBI_ALL_TOPICS]);
+        .in('topic', [...RBI_ALL_TOPICS] as any);
       if (error) throw error;
       const counts: Record<string, number> = {};
       (data || []).forEach((q: any) => {

@@ -2,16 +2,15 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { RBI_TOPIC_META, RBI_ALL_TOPICS, RBI_SUBJECTS, RBI_SUBJECT_TOPICS, type RbiTopic } from '@/types/rbi';
+import { RBI_TOPIC_META, RBI_ALL_TOPICS, type RbiTopic } from '@/types/rbi';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ArrowLeft, Upload } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const DIFFICULTY_COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' };
-const SUBJECT_COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#06b6d4'];
+const TOPIC_COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#06b6d4'];
 
 export default function RbiPyqAnalysis() {
   const navigate = useNavigate();
@@ -39,22 +38,22 @@ export default function RbiPyqAnalysis() {
     return [...new Set(pyqQuestions.map(q => q.year).filter(Boolean))].sort((a, b) => a! - b!) as number[];
   }, [pyqQuestions]);
 
-  // Topic frequency data
   const topicFrequency = useMemo(() => {
     if (!pyqQuestions) return [];
     const counts: Record<string, number> = {};
     pyqQuestions.forEach(q => { counts[q.topic] = (counts[q.topic] || 0) + 1; });
-    return Object.entries(counts)
-      .map(([topic, count]) => ({
+    return RBI_ALL_TOPICS
+      .filter(t => counts[t])
+      .map((topic, idx) => ({
         topic,
-        label: RBI_TOPIC_META[topic as RbiTopic]?.label || topic,
-        icon: RBI_TOPIC_META[topic as RbiTopic]?.icon || '',
-        count,
+        label: RBI_TOPIC_META[topic]?.label || topic,
+        icon: RBI_TOPIC_META[topic]?.icon || '',
+        count: counts[topic] || 0,
+        color: TOPIC_COLORS[idx % TOPIC_COLORS.length],
       }))
       .sort((a, b) => b.count - a.count);
   }, [pyqQuestions]);
 
-  // Year-wise topic breakdown
   const yearTopicGrid = useMemo(() => {
     if (!pyqQuestions || years.length === 0) return {};
     const grid: Record<string, Record<number, number>> = {};
@@ -66,7 +65,6 @@ export default function RbiPyqAnalysis() {
     return grid;
   }, [pyqQuestions, years]);
 
-  // Difficulty distribution per year
   const difficultyByYear = useMemo(() => {
     if (!pyqQuestions) return [];
     const map: Record<number, Record<string, number>> = {};
@@ -77,16 +75,6 @@ export default function RbiPyqAnalysis() {
     });
     return years.map(y => ({ year: y, ...map[y] }));
   }, [pyqQuestions, years]);
-
-  // Subject-wise summary
-  const subjectSummary = useMemo(() => {
-    if (!pyqQuestions) return [];
-    return RBI_SUBJECTS.map((sub, idx) => {
-      const topics = RBI_SUBJECT_TOPICS[sub.key];
-      const count = pyqQuestions.filter(q => (topics as readonly string[]).includes(q.topic)).length;
-      return { ...sub, count, color: SUBJECT_COLORS[idx % SUBJECT_COLORS.length] };
-    }).filter(s => s.count > 0);
-  }, [pyqQuestions]);
 
   if (isLoading) {
     return <div className="flex items-center justify-center h-full text-muted-foreground">Loading analysis...</div>;
@@ -123,15 +111,14 @@ export default function RbiPyqAnalysis() {
         </Card>
       ) : (
         <>
-          {/* Subject-wise pie chart */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card>
               <CardContent className="p-4">
                 <h3 className="font-semibold text-foreground mb-3">Subject Distribution</h3>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie data={subjectSummary} dataKey="count" nameKey="label" cx="50%" cy="50%" outerRadius={90} label={({ label, count }) => `${label} (${count})`}>
-                      {subjectSummary.map((s, i) => (
+                    <Pie data={topicFrequency} dataKey="count" nameKey="label" cx="50%" cy="50%" outerRadius={90} label={({ label, count }) => `${label} (${count})`}>
+                      {topicFrequency.map((s, i) => (
                         <Cell key={i} fill={s.color} />
                       ))}
                     </Pie>
@@ -159,11 +146,10 @@ export default function RbiPyqAnalysis() {
             </Card>
           </div>
 
-          {/* Topic frequency bar chart */}
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-semibold text-foreground mb-3">Topic Frequency (Most Asked)</h3>
-              <ResponsiveContainer width="100%" height={Math.max(300, topicFrequency.length * 28)}>
+              <h3 className="font-semibold text-foreground mb-3">Subject Frequency (Most Asked)</h3>
+              <ResponsiveContainer width="100%" height={Math.max(200, topicFrequency.length * 50)}>
                 <BarChart data={topicFrequency} layout="vertical">
                   <XAxis type="number" />
                   <YAxis dataKey="label" type="category" width={160} tick={{ fontSize: 12 }} />
@@ -174,16 +160,15 @@ export default function RbiPyqAnalysis() {
             </CardContent>
           </Card>
 
-          {/* Year-wise topic grid */}
           {years.length > 0 && (
             <Card>
               <CardContent className="p-4">
-                <h3 className="font-semibold text-foreground mb-3">Year-wise Topic Breakdown</h3>
+                <h3 className="font-semibold text-foreground mb-3">Year-wise Subject Breakdown</h3>
                 <div className="overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Topic</TableHead>
+                        <TableHead>Subject</TableHead>
                         {years.map(y => <TableHead key={y} className="text-center w-16">{y}</TableHead>)}
                         <TableHead className="text-center w-16">Total</TableHead>
                       </TableRow>
