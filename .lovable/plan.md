@@ -1,31 +1,29 @@
 
 
-## Plan: Show Each Word in Its Own Row
+## Plan: Add Word Definition Column
 
 ### Problem
-Currently the review table groups all words under a root into a single cell as badges. The user wants each word displayed in its own dedicated row with clear columns.
+The review table shows Root, Root Meaning, and Word — but no **definition/meaning** for each word. The `ssc_vocabulary` table already has a `meaning` column, but the AI extraction doesn't produce word definitions.
 
-### Change
+### Changes
 
-**`src/pages/SscVocabUpload.tsx`** — Restructure the review table
+**1. `supabase/functions/ssc-vocab-extract/index.ts`** — Extract word definitions
 
-Replace the current grouped-by-root table with a flat table where every word gets its own row:
+- Update the function schema to return words as objects `{ word, meaning }` instead of plain strings
+- Add prompt instruction: "For each word, provide a brief 3-8 word English definition/meaning"
+- Update the `words` array schema from `items: { type: "string" }` to objects with `word` and `meaning` properties
 
-| # | Root | Root Meaning | Word | Actions |
-|---|------|-------------|------|---------|
-| 1 | AB | Away from | abbreviate | Move / Remove |
-| 2 | AB | Away from | abdicate | Move / Remove |
-| 3 | ABS | Away | absent | Move / Remove |
+**2. `src/pages/SscVocabUpload.tsx`** — Show definition column + update data model
 
-- Each word = one row with columns: #, Root, Root Meaning, Word, Actions
-- Root rows that share the same root will visually repeat the root (or use a subtle grouping separator)
-- Keep the "Move Word" popover and "Remove" button in the Actions column
-- Keep the summary badge showing total words/roots count at the top
-- Add a root-group header row (optional subtle separator) between different roots for readability
+- Update `VocabEntry` interface: change `words: string[]` to `words: { word: string; meaning: string }[]`
+- Add a **Definition** column between Word and Actions in the review table
+- Update merge logic, move-word logic, and save logic to handle the new structure
+- Make definitions editable (inline text input) so users can correct AI-generated meanings before saving
 
 ### Files
 
 | File | Change |
 |------|--------|
-| `src/pages/SscVocabUpload.tsx` | Flatten review table to one-word-per-row layout |
+| `supabase/functions/ssc-vocab-extract/index.ts` | Return `{word, meaning}` objects + prompt update |
+| `src/pages/SscVocabUpload.tsx` | Add Definition column, update data model, editable definitions |
 
