@@ -41,12 +41,12 @@ a) formal b) casual c) exam-type
 Each with: sentence, Hindi translation, 1 grammar insight
 
 MCQs (4): Synonym, Antonym, Fill in the blank, Error detection
-Each with: question, 4 options, correct answer
+Each with: question, 4 options (each option must have english text AND its hindi meaning), correct answer (in english)
 
 ROOT LEVEL EXERCISES:
-- 5 Fill in the blanks
-- 3 Hindi to English translations
-- 3 Error correction sentences
+- 5 Fill in the blanks (each with hindi meaning of the sentence)
+- 3 Hindi to English translations (each with grammar explanation in both English and Hindi)
+- 3 Error correction sentences (each with explanation of WHY it's wrong and the correct grammar rule, in both English and Hindi)
 - 3 One word substitution questions
 
 RULES: Short & clear, grammar correct, natural Hindi, no repetition, exam-level difficulty.`;
@@ -103,8 +103,19 @@ Definition: ${meaning || "no definition"}`;
                         type: "object",
                         properties: {
                           question: { type: "string" },
-                          options: { type: "array", items: { type: "string" } },
-                          answer: { type: "string" },
+                          options: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              properties: {
+                                english: { type: "string" },
+                                hindi: { type: "string" },
+                              },
+                              required: ["english", "hindi"],
+                              additionalProperties: false,
+                            },
+                          },
+                          answer: { type: "string", description: "The correct english option text" },
                         },
                         required: ["question", "options", "answer"],
                         additionalProperties: false,
@@ -121,8 +132,12 @@ Definition: ${meaning || "no definition"}`;
                       type: "array",
                       items: {
                         type: "object",
-                        properties: { question: { type: "string" }, answer: { type: "string" } },
-                        required: ["question", "answer"],
+                        properties: {
+                          question: { type: "string" },
+                          answer: { type: "string" },
+                          hindi: { type: "string", description: "Hindi meaning of the sentence" },
+                        },
+                        required: ["question", "answer", "hindi"],
                         additionalProperties: false,
                       },
                     },
@@ -130,8 +145,13 @@ Definition: ${meaning || "no definition"}`;
                       type: "array",
                       items: {
                         type: "object",
-                        properties: { hindi: { type: "string" }, english: { type: "string" } },
-                        required: ["hindi", "english"],
+                        properties: {
+                          hindi: { type: "string" },
+                          english: { type: "string" },
+                          explanation: { type: "string", description: "Grammar structure explanation in English" },
+                          explanation_hindi: { type: "string", description: "Grammar structure explanation in Hindi" },
+                        },
+                        required: ["hindi", "english", "explanation", "explanation_hindi"],
                         additionalProperties: false,
                       },
                     },
@@ -139,8 +159,13 @@ Definition: ${meaning || "no definition"}`;
                       type: "array",
                       items: {
                         type: "object",
-                        properties: { sentence: { type: "string" }, corrected: { type: "string" } },
-                        required: ["sentence", "corrected"],
+                        properties: {
+                          sentence: { type: "string" },
+                          corrected: { type: "string" },
+                          explanation: { type: "string", description: "Why the error exists and the correct grammar rule in English" },
+                          explanation_hindi: { type: "string", description: "Why the error exists and the correct grammar rule in Hindi" },
+                        },
+                        required: ["sentence", "corrected", "explanation", "explanation_hindi"],
                         additionalProperties: false,
                       },
                     },
