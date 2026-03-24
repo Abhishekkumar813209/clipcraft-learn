@@ -342,6 +342,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_vocabulary: {
+        Row: {
+          created_at: string
+          example_sentence: string | null
+          id: string
+          meaning: string | null
+          root: string | null
+          root_meaning: string | null
+          source_book: string | null
+          user_id: string | null
+          word: string
+        }
+        Insert: {
+          created_at?: string
+          example_sentence?: string | null
+          id?: string
+          meaning?: string | null
+          root?: string | null
+          root_meaning?: string | null
+          source_book?: string | null
+          user_id?: string | null
+          word: string
+        }
+        Update: {
+          created_at?: string
+          example_sentence?: string | null
+          id?: string
+          meaning?: string | null
+          root?: string | null
+          root_meaning?: string | null
+          source_book?: string | null
+          user_id?: string | null
+          word?: string
+        }
+        Relationships: []
+      }
       sub_topics: {
         Row: {
           description: string | null
