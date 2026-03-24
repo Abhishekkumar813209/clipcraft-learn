@@ -240,10 +240,14 @@ export default function SscVocabUpload() {
 
   const moveWord = (fromIdx: number, wordIdx: number, toIdx: number) => {
     setEntries(prev => {
-      const word = prev[fromIdx].words[wordIdx];
+      const wordEntry = prev[fromIdx].words[wordIdx];
       return prev.map((e, i) => {
         if (i === fromIdx) return { ...e, words: e.words.filter((_, wi) => wi !== wordIdx) };
-        if (i === toIdx) return { ...e, words: [...new Set([...e.words, word])].sort() };
+        if (i === toIdx) {
+          const exists = e.words.some(w => w.word === wordEntry.word);
+          if (exists) return e;
+          return { ...e, words: [...e.words, wordEntry].sort((a, b) => a.word.localeCompare(b.word)) };
+        }
         return e;
       }).filter(e => e.words.length > 0);
     });
