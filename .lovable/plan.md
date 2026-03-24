@@ -1,58 +1,51 @@
 
 
-## Plan: Progressive Word Loading + DB Caching for Learn Module
+## Plan: Enhanced UI + Richer Content for Learn Module
 
 ### What Changes
 
-Three key improvements to the Learn Root feature:
+Two areas of improvement:
 
-1. **Per-word AI generation** — Instead of generating all words at once, the edge function accepts a single word and returns its module. The frontend loads the first word immediately, then background-fetches the rest one by one.
+**A. AI Content Enhancements** — Update the edge function prompt and schema to include:
+1. **MCQ options with Hindi meanings** — Each option becomes `{ english, hindi }` so users see Hindi alongside English
+2. **Error correction with grammar explanation** — Add `explanation` and `explanation_hindi` fields explaining WHY it's wrong and the correct grammar rule
+3. **Translation with grammar explanation** — Add `explanation` field explaining the grammar structure used
+4. **Fill in the blanks with Hindi meaning** — Add `hindi` field for each fill-blank question
 
-2. **DB caching** — Create a `ssc_vocab_learn_cache` table to store AI-generated content per word. On revisit, load from cache instantly (no AI call). 
-
-3. **Next/Prev navigation** — Add word navigation buttons at the top so users can flip between words without scrolling through all cards.
-
-### Database
-
-New table: `ssc_vocab_learn_cache`
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid (PK) | |
-| user_id | uuid (FK auth.users) | |
-| root | text | Root word |
-| word | text | The vocabulary word |
-| module_data | jsonb | Full AI-generated word module (meaning, synonyms, sentences, mcqs) |
-| exercises_data | jsonb | Root-level exercises (stored once per root, on first word) |
-| created_at | timestamptz | |
-
-Unique constraint on `(user_id, word)`. RLS: users can only read/write their own rows.
-
-### Edge Function (`ssc-vocab-learn`)
-
-- Change to accept a **single word** instead of all words: `{ root, root_meaning, word, meaning }`
-- Generate module for just that one word + root exercises
-- Return the single word's module data
-- Keeps same AI prompt structure but scoped to one word
-
-### Frontend (`SscVocabLearn.tsx`)
-
-- **State**: Track `wordModules: Record<string, WordModule>`, `currentWordIdx`, `wordList` (from DB), `exercisesData`, loading states per word
-- **Flow on mount**:
-  1. Fetch word list from `ssc_vocabulary` for this root
-  2. Check `ssc_vocab_learn_cache` for any cached modules
-  3. If first word is cached → show immediately. If not → call edge function for first word only
-  4. After first word loads, start background-fetching remaining uncached words one by one
-  5. Save each AI response to `ssc_vocab_learn_cache`
-- **Navigation**: Show Prev/Next buttons at the top with word name + loading indicator
-- **Single word view**: Show only the current word's card (expanded), not all cards at once
-- Root exercises shown below the current word (available once generated)
+**B. UI Overhaul** — Make the page visually premium:
+1. Gradient header with glassmorphism nav bar
+2. Colored section headers with icons for each section (Meaning, Synonyms, Sentences, MCQs)
+3. MCQ options show Hindi meaning in smaller text below the English option
+4. Error correction shows grammar explanation (bilingual) when answer is revealed
+5. Translation exercises show grammar explanation when revealed
+6. Fill in the blanks show Hindi meaning of the sentence
+7. Better card styling with subtle borders, shadows, and section separators
 
 ### Files
 
-| File | Action |
+| File | Change |
 |------|--------|
-| Migration SQL | New `ssc_vocab_learn_cache` table with RLS |
-| `supabase/functions/ssc-vocab-learn/index.ts` | Refactor to single-word generation |
-| `src/pages/SscVocabLearn.tsx` | Progressive loading, navigation, DB cache read/write |
+| `supabase/functions/ssc-vocab-learn/index.ts` | Update prompt + schema: add `hindi` to MCQ options, `explanation`/`explanation_hindi` to error_correction, `explanation` to translation, `hindi` to fill_blanks |
+| `src/pages/SscVocabLearn.tsx` | Update interfaces, redesign UI with premium styling, render new fields |
+
+### Schema Changes (Edge Function)
+
+```
+// MCQ options: string[] → { english: string, hindi: string }[]
+// error_correction: add explanation, explanation_hindi
+// translation: add explanation
+// fill_blanks: add hindi
+```
+
+### UI Details
+
+- MCQ option buttons: show English on top, Hindi below in muted smaller text
+- Error correction reveal: show corrected sentence + explanation block (English + Hindi) with grammar rule highlighted
+- Translation reveal: show English answer + grammar explanation
+- Fill in the blanks: show Hindi meaning of the sentence below the English question
+- Section headers with colored left borders and icons
+- Nav bar with glassmorphism effect
+- Word title with gradient underline
+
+Note: Since the schema changes add new fields, cached data won't have them. The UI will gracefully handle missing fields with optional chaining.
 
