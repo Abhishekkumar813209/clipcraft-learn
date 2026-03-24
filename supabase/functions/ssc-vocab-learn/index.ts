@@ -14,12 +14,12 @@ serve(async (req) => {
   }
 
   try {
-    const { root, root_meaning, words } = await req.json();
+    const { root, root_meaning, word, meaning } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    if (!words || !Array.isArray(words) || words.length === 0) {
-      return new Response(JSON.stringify({ error: "No words provided" }), {
+    if (!word) {
+      return new Response(JSON.stringify({ error: "No word provided" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -27,70 +27,34 @@ serve(async (req) => {
 
     const systemPrompt = `You are an expert English vocabulary trainer for competitive exams (SSC, RBI, CAT).
 
-You will be given:
-- a root word
-- its meaning
-- a list of words with definitions
+You will be given a single word with its root and definition.
 
-Your task is to enrich each word into a complete learning module.
+FOR THE WORD, GENERATE:
 
-FOR EACH WORD, GENERATE:
+Meaning: Convert definition into simple Hinglish explanation
+Synonyms: 3 relevant synonyms
+Antonyms: 3 correct antonyms
+One Word Substitution: If applicable, a logical one-word substitution, else a close conceptual phrase
 
-Meaning:
-- Convert definition into simple Hinglish explanation
+Sentences (3):
+a) formal b) casual c) exam-type
+Each with: sentence, Hindi translation, 1 grammar insight
 
-Synonyms:
-- Provide 3 relevant synonyms
-
-Antonyms:
-- Provide 3 correct antonyms
-
-One Word Substitution:
-- If applicable, create a logical one-word substitution
-- If not obvious, create a close conceptual phrase
-
-Sentences (IMPORTANT):
-Generate 3 sentences:
-a) formal
-b) casual
-c) exam-type
-
-For EACH sentence include:
-- sentence
-- Hindi translation
-- 1 short grammar insight (e.g., tense, modal, subject-verb agreement)
-
-MCQs (PER WORD):
-Create 4 MCQs:
-- Synonym
-- Antonym
-- Fill in the blank
-- Error detection
-
-Each MCQ must have:
-- question
-- 4 options
-- correct answer
+MCQs (4): Synonym, Antonym, Fill in the blank, Error detection
+Each with: question, 4 options, correct answer
 
 ROOT LEVEL EXERCISES:
-Generate:
 - 5 Fill in the blanks
 - 3 Hindi to English translations
 - 3 Error correction sentences
 - 3 One word substitution questions
 
-IMPORTANT RULES:
-- Keep explanations short and clear
-- Ensure grammar correctness
-- Hindi should be natural (not literal translation)
-- Avoid repetition
-- Maintain exam-level difficulty`;
+RULES: Short & clear, grammar correct, natural Hindi, no repetition, exam-level difficulty.`;
 
     const userContent = `Root: ${root || "N/A"}
 Root Meaning: ${root_meaning || "N/A"}
-
-Words:
-${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n")}`;
+Word: ${word}
+Definition: ${meaning || "no definition"}`;
 
     const response = await fetch(AI_URL, {
       method: "POST",
@@ -99,7 +63,7 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-pro",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userContent },
@@ -107,53 +71,48 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
         tools: [{
           type: "function",
           function: {
-            name: "generate_learning_module",
-            description: "Generate a complete vocabulary learning module for a root and its words",
+            name: "generate_word_module",
+            description: "Generate a vocabulary learning module for a single word",
             parameters: {
               type: "object",
               properties: {
-                root: { type: "string" },
-                root_meaning: { type: "string" },
-                words: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      word: { type: "string" },
-                      meaning: { type: "string", description: "Hinglish explanation" },
-                      synonyms: { type: "array", items: { type: "string" } },
-                      antonyms: { type: "array", items: { type: "string" } },
-                      one_word_substitution: { type: "string" },
-                      sentences: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            sentence: { type: "string" },
-                            hindi: { type: "string" },
-                            grammar: { type: "string" },
-                          },
-                          required: ["sentence", "hindi", "grammar"],
-                          additionalProperties: false,
+                word_module: {
+                  type: "object",
+                  properties: {
+                    word: { type: "string" },
+                    meaning: { type: "string", description: "Hinglish explanation" },
+                    synonyms: { type: "array", items: { type: "string" } },
+                    antonyms: { type: "array", items: { type: "string" } },
+                    one_word_substitution: { type: "string" },
+                    sentences: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          sentence: { type: "string" },
+                          hindi: { type: "string" },
+                          grammar: { type: "string" },
                         },
-                      },
-                      mcqs: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            question: { type: "string" },
-                            options: { type: "array", items: { type: "string" } },
-                            answer: { type: "string" },
-                          },
-                          required: ["question", "options", "answer"],
-                          additionalProperties: false,
-                        },
+                        required: ["sentence", "hindi", "grammar"],
+                        additionalProperties: false,
                       },
                     },
-                    required: ["word", "meaning", "synonyms", "antonyms", "one_word_substitution", "sentences", "mcqs"],
-                    additionalProperties: false,
+                    mcqs: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          question: { type: "string" },
+                          options: { type: "array", items: { type: "string" } },
+                          answer: { type: "string" },
+                        },
+                        required: ["question", "options", "answer"],
+                        additionalProperties: false,
+                      },
+                    },
                   },
+                  required: ["word", "meaning", "synonyms", "antonyms", "one_word_substitution", "sentences", "mcqs"],
+                  additionalProperties: false,
                 },
                 exercises: {
                   type: "object",
@@ -162,10 +121,7 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
                       type: "array",
                       items: {
                         type: "object",
-                        properties: {
-                          question: { type: "string" },
-                          answer: { type: "string" },
-                        },
+                        properties: { question: { type: "string" }, answer: { type: "string" } },
                         required: ["question", "answer"],
                         additionalProperties: false,
                       },
@@ -174,10 +130,7 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
                       type: "array",
                       items: {
                         type: "object",
-                        properties: {
-                          hindi: { type: "string" },
-                          english: { type: "string" },
-                        },
+                        properties: { hindi: { type: "string" }, english: { type: "string" } },
                         required: ["hindi", "english"],
                         additionalProperties: false,
                       },
@@ -186,10 +139,7 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
                       type: "array",
                       items: {
                         type: "object",
-                        properties: {
-                          sentence: { type: "string" },
-                          corrected: { type: "string" },
-                        },
+                        properties: { sentence: { type: "string" }, corrected: { type: "string" } },
                         required: ["sentence", "corrected"],
                         additionalProperties: false,
                       },
@@ -198,10 +148,7 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
                       type: "array",
                       items: {
                         type: "object",
-                        properties: {
-                          description: { type: "string" },
-                          answer: { type: "string" },
-                        },
+                        properties: { description: { type: "string" }, answer: { type: "string" } },
                         required: ["description", "answer"],
                         additionalProperties: false,
                       },
@@ -211,12 +158,12 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
                   additionalProperties: false,
                 },
               },
-              required: ["root", "root_meaning", "words", "exercises"],
+              required: ["word_module", "exercises"],
               additionalProperties: false,
             },
           },
         }],
-        tool_choice: { type: "function", function: { name: "generate_learning_module" } },
+        tool_choice: { type: "function", function: { name: "generate_word_module" } },
         stream: false,
       }),
     });
@@ -224,7 +171,7 @@ ${words.map((w: any) => `- ${w.word}: ${w.meaning || "no definition"}`).join("\n
     if (!response.ok) {
       const status = response.status;
       if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await response.text();
       console.error("AI error:", status, t);
       return new Response(JSON.stringify({ error: "AI service error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
