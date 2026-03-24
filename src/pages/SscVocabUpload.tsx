@@ -18,10 +18,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
+interface WordEntry {
+  word: string;
+  meaning: string;
+}
+
 interface VocabEntry {
   root: string | null;
   root_meaning: string | null;
-  words: string[];
+  words: WordEntry[];
 }
 
 interface PageInfo {
@@ -165,14 +170,26 @@ export default function SscVocabUpload() {
           const key = (entry.root || '__no_root__').toLowerCase().trim();
           const existing = rootMap.get(key);
           if (existing) {
-            const mergedWords = [...new Set([...existing.words, ...entry.words].map(w => w.toLowerCase()))].sort();
+            const existingWordMap = new Map(existing.words.map(w => [w.word.toLowerCase(), w]));
+            for (const w of entry.words) {
+              const k = w.word.toLowerCase();
+              if (!existingWordMap.has(k)) {
+                existingWordMap.set(k, { word: k, meaning: w.meaning });
+              }
+            }
+            const mergedWords = Array.from(existingWordMap.values()).sort((a, b) => a.word.localeCompare(b.word));
             rootMap.set(key, {
               root: existing.root || entry.root,
               root_meaning: existing.root_meaning || entry.root_meaning,
               words: mergedWords,
             });
           } else {
-            rootMap.set(key, { ...entry, words: [...new Set(entry.words.map(w => w.toLowerCase()))].sort() });
+            const wordMap = new Map<string, WordEntry>();
+            for (const w of entry.words) {
+              const k = w.word.toLowerCase();
+              if (!wordMap.has(k)) wordMap.set(k, { word: k, meaning: w.meaning });
+            }
+            rootMap.set(key, { ...entry, words: Array.from(wordMap.values()).sort((a, b) => a.word.localeCompare(b.word)) });
           }
         }
         
@@ -223,10 +240,14 @@ export default function SscVocabUpload() {
 
   const moveWord = (fromIdx: number, wordIdx: number, toIdx: number) => {
     setEntries(prev => {
-      const word = prev[fromIdx].words[wordIdx];
+      const wordEntry = prev[fromIdx].words[wordIdx];
       return prev.map((e, i) => {
         if (i === fromIdx) return { ...e, words: e.words.filter((_, wi) => wi !== wordIdx) };
-        if (i === toIdx) return { ...e, words: [...new Set([...e.words, word])].sort() };
+        if (i === toIdx) {
+          const exists = e.words.some(w => w.word === wordEntry.word);
+          if (exists) return e;
+          return { ...e, words: [...e.words, wordEntry].sort((a, b) => a.word.localeCompare(b.word)) };
+        }
         return e;
       }).filter(e => e.words.length > 0);
     });
@@ -239,11 +260,12 @@ export default function SscVocabUpload() {
 
     try {
       const rows = entries.flatMap(entry =>
-        entry.words.map(word => ({
+        entry.words.map(w => ({
           user_id: user.id,
           root: entry.root || null,
           root_meaning: entry.root_meaning || null,
-          word: word.toLowerCase(),
+          word: w.word.toLowerCase(),
+          meaning: w.meaning || null,
           source_book: sourceBook || null,
         }))
       );
@@ -405,7 +427,8 @@ export default function SscVocabUpload() {
                   <TableHead className="w-10">#</TableHead>
                   <TableHead className="w-36">Root</TableHead>
                   <TableHead className="w-44">Root Meaning</TableHead>
-                  <TableHead>Word</TableHead>
+                  <TableHead className="w-40">Word</TableHead>
+                  <TableHead>Definition</TableHead>
                   <TableHead className="w-24">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -413,7 +436,7 @@ export default function SscVocabUpload() {
                 {(() => {
                   let wordNum = 0;
                   return entries.map((entry, entryIdx) => (
-                    entry.words.map((word, wordIdx) => {
+                    entry.words.map((wordEntry, wordIdx) => {
                       wordNum++;
                       const isFirstOfRoot = wordIdx === 0;
                       return (
@@ -425,7 +448,21 @@ export default function SscVocabUpload() {
                           <TableCell className={`text-sm ${isFirstOfRoot ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>
                             {isFirstOfRoot ? (entry.root_meaning || '—') : ''}
                           </TableCell>
-                          <TableCell className="font-medium">{word}</TableCell>
+                          <TableCell className="font-medium">{wordEntry.word}</TableCell>
+                          <TableCell>
+                            <Input
+                              value={wordEntry.meaning || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setEntries(prev => prev.map((ent, ei) => {
+                                  if (ei !== entryIdx) return ent;
+                                  return { ...ent, words: ent.words.map((w, wi) => wi === wordIdx ? { ...w, meaning: val } : w) };
+                                }));
+                              }}
+                              placeholder="Add definition..."
+                              className="h-7 text-xs"
+                            />
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1">
                               <Popover>

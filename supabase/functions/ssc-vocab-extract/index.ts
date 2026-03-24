@@ -67,7 +67,12 @@ EXTRA RULES:
 - Sort words alphabetically within each entry
 - Ensure no duplicates within each root entry
 - Each entry should have one root (or null) with its associated words
-- Do NOT merge entries from different roots — keep them separate even if roots look similar`;
+- Do NOT merge entries from different roots — keep them separate even if roots look similar
+
+DEFINITION RULES:
+- For EVERY word extracted, provide a brief English definition/meaning (3-8 words)
+- The definition should be concise and clear (e.g., "to give up a position", "extremely careful and precise")
+- If unsure of the exact meaning, provide the most common usage`;
 
     const response = await fetch(AI_URL, {
       method: "POST",
@@ -98,8 +103,16 @@ EXTRA RULES:
                       root_meaning: { type: "string", description: "Meaning of the root word, or null" },
                       words: {
                         type: "array",
-                        items: { type: "string" },
-                        description: "List of valid English words associated with this root, lowercase, sorted alphabetically",
+                        items: {
+                          type: "object",
+                          properties: {
+                            word: { type: "string", description: "The English word, lowercase" },
+                            meaning: { type: "string", description: "Brief 3-8 word English definition" },
+                          },
+                          required: ["word", "meaning"],
+                          additionalProperties: false,
+                        },
+                        description: "List of valid English words with meanings associated with this root, sorted alphabetically by word",
                       },
                     },
                     required: ["words"],
