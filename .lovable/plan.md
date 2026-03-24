@@ -1,36 +1,31 @@
 
 
-## Plan: Fix Root-Word Mixing in Vocabulary Extraction
+## Plan: Show Each Word in Its Own Row
 
 ### Problem
-When 5 pages are sent together, the AI sometimes assigns words to the wrong root. Additionally, the deduplication logic strips words from later entries even if they belong to different roots. Looking at image 1 (extracted) vs image 2 (original PDF), words like "abbreviate" and "abdicate" appear under root "abs" when they should be under "ab".
+Currently the review table groups all words under a root into a single cell as badges. The user wants each word displayed in its own dedicated row with clear columns.
 
-### Root Causes
-1. **Batch size too large** — 5 pages of dense vocabulary tables overwhelm the AI's ability to maintain root boundaries
-2. **Flat deduplication** — the global `seenWords` set removes a word from its correct root if it appeared earlier under a wrong root
-3. **Weak prompt** — no instruction to strictly match words to the root shown in the same table row
+### Change
 
-### Changes
+**`src/pages/SscVocabUpload.tsx`** — Restructure the review table
 
-**1. `supabase/functions/ssc-vocab-extract/index.ts`** — Strengthen the system prompt
+Replace the current grouped-by-root table with a flat table where every word gets its own row:
 
-Add explicit instructions:
-- "Each word MUST only be assigned to the root it appears next to in the original table/list. Do NOT infer roots from word prefixes."
-- "If a word appears in a row with root AB, it goes under AB — even if the word also starts with ABS."
-- "Preserve the exact grouping from the source material."
+| # | Root | Root Meaning | Word | Actions |
+|---|------|-------------|------|---------|
+| 1 | AB | Away from | abbreviate | Move / Remove |
+| 2 | AB | Away from | abdicate | Move / Remove |
+| 3 | ABS | Away | absent | Move / Remove |
 
-Also reduce model to `google/gemini-2.5-pro` for better accuracy on structured table parsing.
-
-**2. `src/pages/SscVocabUpload.tsx`** — Fix merge logic + add root-level editing
-
-- **Reduce BATCH_SIZE from 5 to 2** — smaller batches = less mixing
-- **Smart merge by root**: Instead of flat dedup, merge entries with the same root name together, combining their word lists
-- **Add "Move Word" capability in review**: clicking a word shows a dropdown of existing roots to reassign it to — lets user fix any remaining mistakes before saving
+- Each word = one row with columns: #, Root, Root Meaning, Word, Actions
+- Root rows that share the same root will visually repeat the root (or use a subtle grouping separator)
+- Keep the "Move Word" popover and "Remove" button in the Actions column
+- Keep the summary badge showing total words/roots count at the top
+- Add a root-group header row (optional subtle separator) between different roots for readability
 
 ### Files
 
-| File | Action |
+| File | Change |
 |------|--------|
-| `supabase/functions/ssc-vocab-extract/index.ts` | Stronger prompt + better model |
-| `src/pages/SscVocabUpload.tsx` | Reduce batch size, smart merge by root, add move-word UI |
+| `src/pages/SscVocabUpload.tsx` | Flatten review table to one-word-per-row layout |
 
