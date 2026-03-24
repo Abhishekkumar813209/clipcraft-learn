@@ -423,15 +423,39 @@ export default function SscVocabUpload() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {entry.words.map((word, wi) => (
-                          <Badge
-                            key={wi}
-                            variant="outline"
-                            className="text-xs cursor-pointer hover:bg-destructive/10 hover:border-destructive/30"
-                            onClick={() => removeWord(idx, wi)}
-                            title="Click to remove"
-                          >
-                            {word}
-                          </Badge>
+                          <Popover key={wi}>
+                            <PopoverTrigger asChild>
+                              <Badge
+                                variant="outline"
+                                className="text-xs cursor-pointer hover:bg-accent hover:border-primary/30 gap-1"
+                                title="Click to move or remove"
+                              >
+                                {word}
+                                <ArrowRightLeft className="h-2.5 w-2.5 opacity-50" />
+                              </Badge>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-2" align="start">
+                              <div className="space-y-1">
+                                <p className="text-xs font-medium text-muted-foreground px-1 pb-1">Move to root:</p>
+                                {entries.map((target, ti) => ti !== idx && (
+                                  <button
+                                    key={ti}
+                                    onClick={() => moveWord(idx, wi, ti)}
+                                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                                  >
+                                    {target.root || '(no root)'}
+                                    {target.root_meaning && <span className="text-muted-foreground ml-1">({target.root_meaning})</span>}
+                                  </button>
+                                ))}
+                                <button
+                                  onClick={() => removeWord(idx, wi)}
+                                  className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-destructive/10 text-destructive transition-colors"
+                                >
+                                  Remove word
+                                </button>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                         ))}
                       </div>
                     </TableCell>
