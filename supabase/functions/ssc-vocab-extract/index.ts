@@ -67,7 +67,12 @@ EXTRA RULES:
 - Sort words alphabetically within each entry
 - Ensure no duplicates within each root entry
 - Each entry should have one root (or null) with its associated words
-- Do NOT merge entries from different roots — keep them separate even if roots look similar`;
+- Do NOT merge entries from different roots — keep them separate even if roots look similar
+
+DEFINITION RULES:
+- For EVERY word extracted, provide a brief English definition/meaning (3-8 words)
+- The definition should be concise and clear (e.g., "to give up a position", "extremely careful and precise")
+- If unsure of the exact meaning, provide the most common usage`;
 
     const response = await fetch(AI_URL, {
       method: "POST",
