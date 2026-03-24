@@ -1,11 +1,12 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Grid3X3, Trophy, BookMarked, FileText, ArrowLeft, Calculator, Brain, Globe } from 'lucide-react';
+import { BookOpen, Grid3X3, Trophy, BookMarked, FileText, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/ssc', icon: BookOpen },
   { label: 'Practice', path: '/ssc/practice', icon: Grid3X3 },
+  { label: 'Vocabulary', path: '/ssc/vocab', icon: BookMarked },
   { label: 'PYQ Mode', path: '/ssc/pyq', icon: Trophy, disabled: true },
   { label: 'Mock Test', path: '/ssc/mock', icon: FileText, disabled: true },
 ];
