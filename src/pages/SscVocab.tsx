@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Upload, Search, BookOpen } from 'lucide-react';
 
+
 interface VocabWord {
   id: string;
   root: string | null;
@@ -149,7 +150,7 @@ export default function SscVocab() {
 
       <div className="space-y-4">
         {grouped.map(([root, rootWords]) => (
-          <Card key={root}>
+          <Card key={root} className={root !== '__none__' ? 'cursor-pointer hover:border-primary/40 transition-colors' : ''} onClick={() => root !== '__none__' && navigate(`/ssc/vocab/learn/${encodeURIComponent(root)}`)}>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 {root !== '__none__' ? (
@@ -162,7 +163,12 @@ export default function SscVocab() {
                 ) : (
                   <span className="text-sm text-muted-foreground font-medium">No root</span>
                 )}
-                <Badge variant="outline" className="ml-auto text-xs">{rootWords.length} words</Badge>
+                {root !== '__none__' && (
+                  <Badge variant="outline" className="ml-auto text-xs gap-1 text-primary border-primary/30">
+                    <BookOpen className="h-3 w-3" /> Learn
+                  </Badge>
+                )}
+                <Badge variant="outline" className={`text-xs ${root !== '__none__' ? '' : 'ml-auto'}`}>{rootWords.length} words</Badge>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {rootWords.map(w => (
