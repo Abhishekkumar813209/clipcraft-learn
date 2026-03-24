@@ -170,14 +170,26 @@ export default function SscVocabUpload() {
           const key = (entry.root || '__no_root__').toLowerCase().trim();
           const existing = rootMap.get(key);
           if (existing) {
-            const mergedWords = [...new Set([...existing.words, ...entry.words].map(w => w.toLowerCase()))].sort();
+            const existingWordMap = new Map(existing.words.map(w => [w.word.toLowerCase(), w]));
+            for (const w of entry.words) {
+              const k = w.word.toLowerCase();
+              if (!existingWordMap.has(k)) {
+                existingWordMap.set(k, { word: k, meaning: w.meaning });
+              }
+            }
+            const mergedWords = Array.from(existingWordMap.values()).sort((a, b) => a.word.localeCompare(b.word));
             rootMap.set(key, {
               root: existing.root || entry.root,
               root_meaning: existing.root_meaning || entry.root_meaning,
               words: mergedWords,
             });
           } else {
-            rootMap.set(key, { ...entry, words: [...new Set(entry.words.map(w => w.toLowerCase()))].sort() });
+            const wordMap = new Map<string, WordEntry>();
+            for (const w of entry.words) {
+              const k = w.word.toLowerCase();
+              if (!wordMap.has(k)) wordMap.set(k, { word: k, meaning: w.meaning });
+            }
+            rootMap.set(key, { ...entry, words: Array.from(wordMap.values()).sort((a, b) => a.word.localeCompare(b.word)) });
           }
         }
         
