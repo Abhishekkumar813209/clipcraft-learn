@@ -403,70 +403,63 @@ export default function SscVocabUpload() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10">#</TableHead>
-                  <TableHead className="w-32">Root</TableHead>
-                  <TableHead className="w-40">Root Meaning</TableHead>
-                  <TableHead>Words</TableHead>
-                  <TableHead className="w-16">Count</TableHead>
-                  <TableHead className="w-12"></TableHead>
+                  <TableHead className="w-36">Root</TableHead>
+                  <TableHead className="w-44">Root Meaning</TableHead>
+                  <TableHead>Word</TableHead>
+                  <TableHead className="w-24">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {entries.map((entry, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell className="text-muted-foreground text-xs">{idx + 1}</TableCell>
-                    <TableCell className="font-mono font-bold text-primary">
-                      {entry.root || '—'}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {entry.root_meaning || '—'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {entry.words.map((word, wi) => (
-                          <Popover key={wi}>
-                            <PopoverTrigger asChild>
-                              <Badge
-                                variant="outline"
-                                className="text-xs cursor-pointer hover:bg-accent hover:border-primary/30 gap-1"
-                                title="Click to move or remove"
-                              >
-                                {word}
-                                <ArrowRightLeft className="h-2.5 w-2.5 opacity-50" />
-                              </Badge>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-48 p-2" align="start">
-                              <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground px-1 pb-1">Move to root:</p>
-                                {entries.map((target, ti) => ti !== idx && (
-                                  <button
-                                    key={ti}
-                                    onClick={() => moveWord(idx, wi, ti)}
-                                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-accent transition-colors"
-                                  >
-                                    {target.root || '(no root)'}
-                                    {target.root_meaning && <span className="text-muted-foreground ml-1">({target.root_meaning})</span>}
+                {(() => {
+                  let wordNum = 0;
+                  return entries.map((entry, entryIdx) => (
+                    entry.words.map((word, wordIdx) => {
+                      wordNum++;
+                      const isFirstOfRoot = wordIdx === 0;
+                      return (
+                        <TableRow key={`${entryIdx}-${wordIdx}`} className={isFirstOfRoot && entryIdx > 0 ? 'border-t-2 border-primary/20' : ''}>
+                          <TableCell className="text-muted-foreground text-xs">{wordNum}</TableCell>
+                          <TableCell className={`font-mono font-bold ${isFirstOfRoot ? 'text-primary' : 'text-primary/40'}`}>
+                            {isFirstOfRoot ? (entry.root || '—') : ''}
+                          </TableCell>
+                          <TableCell className={`text-sm ${isFirstOfRoot ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>
+                            {isFirstOfRoot ? (entry.root_meaning || '—') : ''}
+                          </TableCell>
+                          <TableCell className="font-medium">{word}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <button className="text-muted-foreground hover:text-primary transition-colors" title="Move to another root">
+                                    <ArrowRightLeft className="h-3.5 w-3.5" />
                                   </button>
-                                ))}
-                                <button
-                                  onClick={() => removeWord(idx, wi)}
-                                  className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-destructive/10 text-destructive transition-colors"
-                                >
-                                  Remove word
-                                </button>
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm font-medium">{entry.words.length}</TableCell>
-                    <TableCell>
-                      <button onClick={() => removeEntry(idx)} className="text-muted-foreground hover:text-destructive transition-colors">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                                </PopoverTrigger>
+                                <PopoverContent className="w-48 p-2" align="start">
+                                  <div className="space-y-1">
+                                    <p className="text-xs font-medium text-muted-foreground px-1 pb-1">Move to root:</p>
+                                    {entries.map((target, ti) => ti !== entryIdx && (
+                                      <button
+                                        key={ti}
+                                        onClick={() => moveWord(entryIdx, wordIdx, ti)}
+                                        className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                                      >
+                                        {target.root || '(no root)'}
+                                        {target.root_meaning && <span className="text-muted-foreground ml-1">({target.root_meaning})</span>}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                              <button onClick={() => removeWord(entryIdx, wordIdx)} className="text-muted-foreground hover:text-destructive transition-colors" title="Remove word">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ));
+                })()}
               </TableBody>
             </Table>
           </div>
