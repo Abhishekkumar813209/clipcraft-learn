@@ -260,11 +260,12 @@ export default function SscVocabUpload() {
 
     try {
       const rows = entries.flatMap(entry =>
-        entry.words.map(word => ({
+        entry.words.map(w => ({
           user_id: user.id,
           root: entry.root || null,
           root_meaning: entry.root_meaning || null,
-          word: word.toLowerCase(),
+          word: w.word.toLowerCase(),
+          meaning: w.meaning || null,
           source_book: sourceBook || null,
         }))
       );
