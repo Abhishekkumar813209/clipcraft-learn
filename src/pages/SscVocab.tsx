@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Upload, Search, BookOpen } from 'lucide-react';
 
+
 interface VocabWord {
   id: string;
   root: string | null;

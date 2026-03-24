@@ -73,6 +73,7 @@ const App = () => (
               <Route path="practice/:topic" element={<SscPracticeSession />} />
               <Route path="vocab" element={<SscVocab />} />
               <Route path="vocab/upload" element={<SscVocabUpload />} />
+              <Route path="vocab/learn/:root" element={<SscVocabLearn />} />
             </Route>
             <Route path="/nqt" element={<NqtLayout />}>
               <Route index element={<NqtDashboard />} />
