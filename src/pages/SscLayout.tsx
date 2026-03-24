@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/ssc', icon: BookOpen },
   { label: 'Practice', path: '/ssc/practice', icon: Grid3X3 },
+  { label: 'Vocabulary', path: '/ssc/vocab', icon: BookMarked },
   { label: 'PYQ Mode', path: '/ssc/pyq', icon: Trophy, disabled: true },
   { label: 'Mock Test', path: '/ssc/mock', icon: FileText, disabled: true },
 ];
