@@ -156,20 +156,27 @@ export default function SscVocabUpload() {
         }
       }
 
-      // Merge and deduplicate
+      // Smart merge by root name (not flat dedup)
       setEntries(prev => {
-        const merged = [...prev, ...newEntries];
-        // Deduplicate words across all entries
-        const seenWords = new Set<string>();
-        return merged.map(entry => {
-          const uniqueWords = entry.words.filter(w => {
-            const lw = w.toLowerCase();
-            if (seenWords.has(lw)) return false;
-            seenWords.add(lw);
-            return true;
-          });
-          return { ...entry, words: uniqueWords };
-        }).filter(e => e.words.length > 0);
+        const all = [...prev, ...newEntries];
+        const rootMap = new Map<string, VocabEntry>();
+        
+        for (const entry of all) {
+          const key = (entry.root || '__no_root__').toLowerCase().trim();
+          const existing = rootMap.get(key);
+          if (existing) {
+            const mergedWords = [...new Set([...existing.words, ...entry.words].map(w => w.toLowerCase()))].sort();
+            rootMap.set(key, {
+              root: existing.root || entry.root,
+              root_meaning: existing.root_meaning || entry.root_meaning,
+              words: mergedWords,
+            });
+          } else {
+            rootMap.set(key, { ...entry, words: [...new Set(entry.words.map(w => w.toLowerCase()))].sort() });
+          }
+        }
+        
+        return Array.from(rootMap.values()).filter(e => e.words.length > 0);
       });
 
       setLastExtractedRange(`${sp}–${ep}`);
