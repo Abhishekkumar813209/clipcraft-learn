@@ -342,6 +342,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_vocab_learn_cache: {
+        Row: {
+          created_at: string
+          exercises_data: Json | null
+          id: string
+          module_data: Json
+          root: string
+          user_id: string
+          word: string
+        }
+        Insert: {
+          created_at?: string
+          exercises_data?: Json | null
+          id?: string
+          module_data: Json
+          root: string
+          user_id: string
+          word: string
+        }
+        Update: {
+          created_at?: string
+          exercises_data?: Json | null
+          id?: string
+          module_data?: Json
+          root?: string
+          user_id?: string
+          word?: string
+        }
+        Relationships: []
+      }
       ssc_vocabulary: {
         Row: {
           created_at: string
