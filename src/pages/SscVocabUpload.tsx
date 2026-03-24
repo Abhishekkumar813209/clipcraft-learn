@@ -30,8 +30,8 @@ interface PageInfo {
   charCount: number;
 }
 
-const BATCH_SIZE = 5;
-const DELAY_MS = 1500;
+const BATCH_SIZE = 2;
+const DELAY_MS = 2000;
 const MAX_PAGES = 500;
 
 export default function SscVocabUpload() {
