@@ -18,10 +18,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
+interface WordEntry {
+  word: string;
+  meaning: string;
+}
+
 interface VocabEntry {
   root: string | null;
   root_meaning: string | null;
-  words: string[];
+  words: WordEntry[];
 }
 
 interface PageInfo {
