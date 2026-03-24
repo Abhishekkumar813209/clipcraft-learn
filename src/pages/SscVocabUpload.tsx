@@ -436,7 +436,7 @@ export default function SscVocabUpload() {
                 {(() => {
                   let wordNum = 0;
                   return entries.map((entry, entryIdx) => (
-                    entry.words.map((word, wordIdx) => {
+                    entry.words.map((wordEntry, wordIdx) => {
                       wordNum++;
                       const isFirstOfRoot = wordIdx === 0;
                       return (
@@ -448,7 +448,21 @@ export default function SscVocabUpload() {
                           <TableCell className={`text-sm ${isFirstOfRoot ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>
                             {isFirstOfRoot ? (entry.root_meaning || '—') : ''}
                           </TableCell>
-                          <TableCell className="font-medium">{word}</TableCell>
+                          <TableCell className="font-medium">{wordEntry.word}</TableCell>
+                          <TableCell>
+                            <Input
+                              value={wordEntry.meaning || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setEntries(prev => prev.map((ent, ei) => {
+                                  if (ei !== entryIdx) return ent;
+                                  return { ...ent, words: ent.words.map((w, wi) => wi === wordIdx ? { ...w, meaning: val } : w) };
+                                }));
+                              }}
+                              placeholder="Add definition..."
+                              className="h-7 text-xs"
+                            />
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1">
                               <Popover>
