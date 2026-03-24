@@ -31,10 +31,17 @@ You will be given raw text extracted from a vocabulary book PDF. The text may be
 
 Your task is to clean, interpret, and extract structured vocabulary data.
 
+CRITICAL RULE — STRICT ROOT-TO-WORD MAPPING:
+- Each word MUST ONLY be assigned to the root it appears next to in the original table/list/row in the source material.
+- Do NOT infer or guess roots from word prefixes. Only use the root explicitly shown in the source.
+- If a word appears in a row/section with root "AB", it goes under "AB" — even if the word also starts with "ABS" or "AD".
+- Preserve the EXACT grouping from the source material. Do not reorganize or re-assign words.
+- When in doubt, keep the word under the root it was listed with in the original text.
+
 OBJECTIVE:
-- Identify the ROOT word (if present).
-- Extract the ROOT meaning.
-- Extract all valid English words associated with that root OR present in the list.
+- Identify the ROOT word (if present) — use exactly what is shown in the source.
+- Extract the ROOT meaning exactly as given.
+- Extract all valid English words listed under that root.
 
 Ignore noise such as: page numbers, headings unrelated to vocabulary, table borders or formatting symbols, incomplete or broken words, duplicate entries.
 
@@ -58,9 +65,9 @@ WORD VALIDATION:
 
 EXTRA RULES:
 - Sort words alphabetically within each entry
-- Ensure no duplicates
-- Group words by their root when possible
-- Each entry should have one root (or null) with its associated words`;
+- Ensure no duplicates within each root entry
+- Each entry should have one root (or null) with its associated words
+- Do NOT merge entries from different roots — keep them separate even if roots look similar`;
 
     const response = await fetch(AI_URL, {
       method: "POST",
@@ -69,7 +76,7 @@ EXTRA RULES:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-pro",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Extract all vocabulary words from this text:\n\n${pageText}` },

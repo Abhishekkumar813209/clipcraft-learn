@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, XCircle } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Loader2, Trash2, Save, Sparkles, XCircle, ArrowRightLeft } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -29,8 +30,8 @@ interface PageInfo {
   charCount: number;
 }
 
-const BATCH_SIZE = 5;
-const DELAY_MS = 1500;
+const BATCH_SIZE = 2;
+const DELAY_MS = 2000;
 const MAX_PAGES = 500;
 
 export default function SscVocabUpload() {
@@ -155,20 +156,27 @@ export default function SscVocabUpload() {
         }
       }
 
-      // Merge and deduplicate
+      // Smart merge by root name (not flat dedup)
       setEntries(prev => {
-        const merged = [...prev, ...newEntries];
-        // Deduplicate words across all entries
-        const seenWords = new Set<string>();
-        return merged.map(entry => {
-          const uniqueWords = entry.words.filter(w => {
-            const lw = w.toLowerCase();
-            if (seenWords.has(lw)) return false;
-            seenWords.add(lw);
-            return true;
-          });
-          return { ...entry, words: uniqueWords };
-        }).filter(e => e.words.length > 0);
+        const all = [...prev, ...newEntries];
+        const rootMap = new Map<string, VocabEntry>();
+        
+        for (const entry of all) {
+          const key = (entry.root || '__no_root__').toLowerCase().trim();
+          const existing = rootMap.get(key);
+          if (existing) {
+            const mergedWords = [...new Set([...existing.words, ...entry.words].map(w => w.toLowerCase()))].sort();
+            rootMap.set(key, {
+              root: existing.root || entry.root,
+              root_meaning: existing.root_meaning || entry.root_meaning,
+              words: mergedWords,
+            });
+          } else {
+            rootMap.set(key, { ...entry, words: [...new Set(entry.words.map(w => w.toLowerCase()))].sort() });
+          }
+        }
+        
+        return Array.from(rootMap.values()).filter(e => e.words.length > 0);
       });
 
       setLastExtractedRange(`${sp}–${ep}`);
@@ -211,6 +219,18 @@ export default function SscVocabUpload() {
     setEntries([]);
     setLastExtractedRange('');
     toast({ title: 'Cleared', description: 'All extracted words removed.' });
+  };
+
+  const moveWord = (fromIdx: number, wordIdx: number, toIdx: number) => {
+    setEntries(prev => {
+      const word = prev[fromIdx].words[wordIdx];
+      return prev.map((e, i) => {
+        if (i === fromIdx) return { ...e, words: e.words.filter((_, wi) => wi !== wordIdx) };
+        if (i === toIdx) return { ...e, words: [...new Set([...e.words, word])].sort() };
+        return e;
+      }).filter(e => e.words.length > 0);
+    });
+    toast({ title: 'Moved', description: `Word moved to root "${entries[toIdx]?.root || '—'}"` });
   };
 
   const handleSaveAll = async () => {
@@ -403,15 +423,39 @@ export default function SscVocabUpload() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {entry.words.map((word, wi) => (
-                          <Badge
-                            key={wi}
-                            variant="outline"
-                            className="text-xs cursor-pointer hover:bg-destructive/10 hover:border-destructive/30"
-                            onClick={() => removeWord(idx, wi)}
-                            title="Click to remove"
-                          >
-                            {word}
-                          </Badge>
+                          <Popover key={wi}>
+                            <PopoverTrigger asChild>
+                              <Badge
+                                variant="outline"
+                                className="text-xs cursor-pointer hover:bg-accent hover:border-primary/30 gap-1"
+                                title="Click to move or remove"
+                              >
+                                {word}
+                                <ArrowRightLeft className="h-2.5 w-2.5 opacity-50" />
+                              </Badge>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-2" align="start">
+                              <div className="space-y-1">
+                                <p className="text-xs font-medium text-muted-foreground px-1 pb-1">Move to root:</p>
+                                {entries.map((target, ti) => ti !== idx && (
+                                  <button
+                                    key={ti}
+                                    onClick={() => moveWord(idx, wi, ti)}
+                                    className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                                  >
+                                    {target.root || '(no root)'}
+                                    {target.root_meaning && <span className="text-muted-foreground ml-1">({target.root_meaning})</span>}
+                                  </button>
+                                ))}
+                                <button
+                                  onClick={() => removeWord(idx, wi)}
+                                  className="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-destructive/10 text-destructive transition-colors"
+                                >
+                                  Remove word
+                                </button>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                         ))}
                       </div>
                     </TableCell>
