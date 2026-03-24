@@ -221,6 +221,18 @@ export default function SscVocabUpload() {
     toast({ title: 'Cleared', description: 'All extracted words removed.' });
   };
 
+  const moveWord = (fromIdx: number, wordIdx: number, toIdx: number) => {
+    setEntries(prev => {
+      const word = prev[fromIdx].words[wordIdx];
+      return prev.map((e, i) => {
+        if (i === fromIdx) return { ...e, words: e.words.filter((_, wi) => wi !== wordIdx) };
+        if (i === toIdx) return { ...e, words: [...new Set([...e.words, word])].sort() };
+        return e;
+      }).filter(e => e.words.length > 0);
+    });
+    toast({ title: 'Moved', description: `Word moved to root "${entries[toIdx]?.root || '—'}"` });
+  };
+
   const handleSaveAll = async () => {
     if (!user || totalWords === 0) return;
     setSaving(true);
