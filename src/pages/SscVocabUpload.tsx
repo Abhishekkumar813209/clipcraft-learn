@@ -31,7 +31,7 @@ interface PageInfo {
 
 const BATCH_SIZE = 5;
 const DELAY_MS = 1500;
-const MAX_PAGES = 200;
+const MAX_PAGES = 500;
 
 export default function SscVocabUpload() {
   const navigate = useNavigate();
