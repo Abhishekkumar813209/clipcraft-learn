@@ -103,8 +103,16 @@ DEFINITION RULES:
                       root_meaning: { type: "string", description: "Meaning of the root word, or null" },
                       words: {
                         type: "array",
-                        items: { type: "string" },
-                        description: "List of valid English words associated with this root, lowercase, sorted alphabetically",
+                        items: {
+                          type: "object",
+                          properties: {
+                            word: { type: "string", description: "The English word, lowercase" },
+                            meaning: { type: "string", description: "Brief 3-8 word English definition" },
+                          },
+                          required: ["word", "meaning"],
+                          additionalProperties: false,
+                        },
+                        description: "List of valid English words with meanings associated with this root, sorted alphabetically by word",
                       },
                     },
                     required: ["words"],
