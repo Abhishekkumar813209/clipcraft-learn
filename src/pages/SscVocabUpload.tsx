@@ -427,7 +427,8 @@ export default function SscVocabUpload() {
                   <TableHead className="w-10">#</TableHead>
                   <TableHead className="w-36">Root</TableHead>
                   <TableHead className="w-44">Root Meaning</TableHead>
-                  <TableHead>Word</TableHead>
+                  <TableHead className="w-40">Word</TableHead>
+                  <TableHead>Definition</TableHead>
                   <TableHead className="w-24">Actions</TableHead>
                 </TableRow>
               </TableHeader>
