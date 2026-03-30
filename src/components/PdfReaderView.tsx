@@ -54,6 +54,8 @@ async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: nu
   return content.items.map((item: any) => item.str).join(' ');
 }
 
+const PDF_SESSION_KEY = 'pdf-reader-state';
+
 export function PdfReaderView() {
   const navigate = useNavigate();
   const onBack = () => navigate('/');
@@ -63,6 +65,7 @@ export function PdfReaderView() {
   const [totalPages, setTotalPages] = useState(0);
   const [zoom, setZoom] = useState(1.2);
   const [fileName, setFileName] = useState('');
+  const [restoringPdf, setRestoringPdf] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [pageText, setPageText] = useState('');
   const [thumbnails, setThumbnails] = useState<Map<number, string>>(new Map());
