@@ -416,6 +416,14 @@ export function PdfReaderView() {
   const showOverlayTranslation = showTranslation && activeLanguage !== 'english' && viewMode === 'overlay' && translatedText.has(translationCacheKey);
 
   if (!pdfDoc) {
+    if (restoringPdf) {
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Restoring your PDF…</p>
+        </div>
+      );
+    }
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8">
         <div className="text-center space-y-3">
