@@ -1,51 +1,31 @@
 
 
-## Plan: Enhanced UI + Richer Content for Learn Module
+## Plan: Persist PDF State Across Tab Changes
 
-### What Changes
+### Problem
+When navigating away from the PDF reader (`/pdf`) to another tab and back, React Router unmounts `PdfReaderView`, destroying all state — the loaded PDF, current page, zoom, translations, etc. The user has to re-upload the PDF every time.
 
-Two areas of improvement:
+### Solution
+Store the PDF file as a base64 data URL in `sessionStorage` along with key state (page number, zoom, filename). On remount, restore the PDF from sessionStorage automatically — no re-upload needed.
 
-**A. AI Content Enhancements** — Update the edge function prompt and schema to include:
-1. **MCQ options with Hindi meanings** — Each option becomes `{ english, hindi }` so users see Hindi alongside English
-2. **Error correction with grammar explanation** — Add `explanation` and `explanation_hindi` fields explaining WHY it's wrong and the correct grammar rule
-3. **Translation with grammar explanation** — Add `explanation` field explaining the grammar structure used
-4. **Fill in the blanks with Hindi meaning** — Add `hindi` field for each fill-blank question
+### Changes
 
-**B. UI Overhaul** — Make the page visually premium:
-1. Gradient header with glassmorphism nav bar
-2. Colored section headers with icons for each section (Meaning, Synonyms, Sentences, MCQs)
-3. MCQ options show Hindi meaning in smaller text below the English option
-4. Error correction shows grammar explanation (bilingual) when answer is revealed
-5. Translation exercises show grammar explanation when revealed
-6. Fill in the blanks show Hindi meaning of the sentence
-7. Better card styling with subtle borders, shadows, and section separators
+**`src/components/PdfReaderView.tsx`**
+
+1. **On file upload** — after reading the file, also convert it to a base64 data URL and save to `sessionStorage` along with `fileName`, `currentPage`, and `zoom`
+2. **On mount** — check `sessionStorage` for a saved PDF. If found, reload the PDF document from the stored data URL and restore page/zoom state. This skips the upload screen entirely.
+3. **On page/zoom change** — update the stored values in `sessionStorage`
+4. **On explicit close/clear** — remove the sessionStorage entry
+
+This approach:
+- Keeps the zero-storage-cost policy (no server uploads)
+- Survives tab switches within the same session
+- Has a ~50MB practical limit per sessionStorage entry which covers most PDFs
+- Doesn't require changes to routing or parent components
 
 ### Files
 
 | File | Change |
 |------|--------|
-| `supabase/functions/ssc-vocab-learn/index.ts` | Update prompt + schema: add `hindi` to MCQ options, `explanation`/`explanation_hindi` to error_correction, `explanation` to translation, `hindi` to fill_blanks |
-| `src/pages/SscVocabLearn.tsx` | Update interfaces, redesign UI with premium styling, render new fields |
-
-### Schema Changes (Edge Function)
-
-```
-// MCQ options: string[] → { english: string, hindi: string }[]
-// error_correction: add explanation, explanation_hindi
-// translation: add explanation
-// fill_blanks: add hindi
-```
-
-### UI Details
-
-- MCQ option buttons: show English on top, Hindi below in muted smaller text
-- Error correction reveal: show corrected sentence + explanation block (English + Hindi) with grammar rule highlighted
-- Translation reveal: show English answer + grammar explanation
-- Fill in the blanks: show Hindi meaning of the sentence below the English question
-- Section headers with colored left borders and icons
-- Nav bar with glassmorphism effect
-- Word title with gradient underline
-
-Note: Since the schema changes add new fields, cached data won't have them. The UI will gracefully handle missing fields with optional chaining.
+| `src/components/PdfReaderView.tsx` | Add sessionStorage persistence for PDF data URL + restore on mount |
 
