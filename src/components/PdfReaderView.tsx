@@ -54,6 +54,8 @@ async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: nu
   return content.items.map((item: any) => item.str).join(' ');
 }
 
+const PDF_SESSION_KEY = 'pdf-reader-state';
+
 export function PdfReaderView() {
   const navigate = useNavigate();
   const onBack = () => navigate('/');
@@ -63,6 +65,7 @@ export function PdfReaderView() {
   const [totalPages, setTotalPages] = useState(0);
   const [zoom, setZoom] = useState(1.2);
   const [fileName, setFileName] = useState('');
+  const [restoringPdf, setRestoringPdf] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [pageText, setPageText] = useState('');
   const [thumbnails, setThumbnails] = useState<Map<number, string>>(new Map());
@@ -144,6 +147,72 @@ export function PdfReaderView() {
     }
   }, []);
 
+  const loadPdfFromDataUrl = useCallback(async (dataUrl: string, name: string, page: number, z: number) => {
+    const resp = await fetch(dataUrl);
+    const ab = await resp.arrayBuffer();
+    const doc = await pdfjsLib.getDocument({ data: ab }).promise;
+    setPdfDoc(doc);
+    setTotalPages(doc.numPages);
+    setFileName(name);
+    setCurrentPage(page);
+    setZoom(z);
+    setThumbnails(new Map());
+    setTranslatedText(new Map());
+    setShowTranslation(false);
+    setActiveLanguage('english');
+
+    await renderPage(doc, page, z);
+
+    const thumbMap = new Map<number, string>();
+    const batch = Math.min(doc.numPages, 20);
+    for (let i = 1; i <= batch; i++) {
+      const data = await renderThumbnail(doc, i);
+      thumbMap.set(i, data);
+      if (i % 5 === 0) setThumbnails(new Map(thumbMap));
+    }
+    setThumbnails(new Map(thumbMap));
+
+    if (doc.numPages > batch) {
+      (async () => {
+        for (let i = batch + 1; i <= doc.numPages; i++) {
+          const data = await renderThumbnail(doc, i);
+          thumbMap.set(i, data);
+          if (i % 10 === 0) setThumbnails(new Map(thumbMap));
+        }
+        setThumbnails(new Map(thumbMap));
+      })();
+    }
+  }, [renderPage, renderThumbnail]);
+
+  // Restore PDF from sessionStorage on mount
+  useEffect(() => {
+    const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+    if (saved) {
+      try {
+        const { dataUrl, fileName: fn, currentPage: cp, zoom: z } = JSON.parse(saved);
+        if (dataUrl) {
+          loadPdfFromDataUrl(dataUrl, fn || '', cp || 1, z || 1.2).finally(() => setRestoringPdf(false));
+          return;
+        }
+      } catch {}
+    }
+    setRestoringPdf(false);
+  }, []);
+
+  // Persist page/zoom changes to sessionStorage
+  useEffect(() => {
+    if (!pdfDoc) return;
+    const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        state.currentPage = currentPage;
+        state.zoom = zoom;
+        sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
+      } catch {}
+    }
+  }, [currentPage, zoom, pdfDoc]);
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -157,6 +226,22 @@ export function PdfReaderView() {
     setTranslatedText(new Map());
     setShowTranslation(false);
     setActiveLanguage('english');
+
+    // Save to sessionStorage as dataURL
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify({
+          dataUrl: reader.result as string,
+          fileName: file.name,
+          currentPage: 1,
+          zoom,
+        }));
+      } catch (e) {
+        console.warn('PDF too large for sessionStorage', e);
+      }
+    };
+    reader.readAsDataURL(file);
 
     await renderPage(doc, 1, zoom);
 
@@ -331,6 +416,14 @@ export function PdfReaderView() {
   const showOverlayTranslation = showTranslation && activeLanguage !== 'english' && viewMode === 'overlay' && translatedText.has(translationCacheKey);
 
   if (!pdfDoc) {
+    if (restoringPdf) {
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Restoring your PDF…</p>
+        </div>
+      );
+    }
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8">
         <div className="text-center space-y-3">
