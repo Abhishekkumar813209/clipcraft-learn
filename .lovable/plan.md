@@ -1,31 +1,44 @@
 
 
-## Plan: Persist PDF State Across Tab Changes
+## Plan: Generate Detailed PDF Documentation for PDF Reader Feature
 
-### Problem
-When navigating away from the PDF reader (`/pdf`) to another tab and back, React Router unmounts `PdfReaderView`, destroying all state — the loaded PDF, current page, zoom, translations, etc. The user has to re-upload the PDF every time.
+### What
+Generate a comprehensive, downloadable PDF document covering the entire PDF Reader feature — all components, edge function, state management, architecture, and feature details — so you can replicate it in another project.
 
-### Solution
-Store the PDF file as a base64 data URL in `sessionStorage` along with key state (page number, zoom, filename). On remount, restore the PDF from sessionStorage automatically — no re-upload needed.
+### Document Structure
 
-### Changes
+1. **Architecture Overview** — Component tree, data flow diagram (ASCII), routing
+2. **Component: PdfReaderView** — Full source with annotations covering:
+   - File upload + sessionStorage persistence
+   - PDF rendering via pdfjs-dist (main canvas + thumbnails)
+   - Zoom controls, page navigation (floating nav bar)
+   - Translation system (Hindi/Hinglish/English) with debounce, AbortController, prefetch next 3 pages
+   - Summarize popover (page range selector)
+   - Quiz popover (page range, question count, 5 question types)
+   - Split/Overlay view modes for translations
+   - Auto-play integration
+3. **Component: PdfChatSidebar** — AI chat with streaming SSE, quick actions (Summarize, Explain, Key Points), page-range summarization
+4. **Component: PdfQuizPanel** — 5 question types (MCQ, True/False, Fill Blank, Multiple Correct, Short Answer), answer checking via AI
+5. **Component: PdfAutoPlay** — Interval-based auto page flip, keyboard shortcuts (Space, Arrow keys), custom intervals
+6. **Edge Function: pdf-chat** — All 4 actions documented:
+   - `translate` — Hindi/Hinglish translation
+   - `quiz` — Quiz generation with tool calling
+   - `check-answers` — Answer evaluation
+   - Default (chat) — Streaming SSE chat
+7. **Configuration** — supabase/config.toml entry, environment variables, dependencies (pdfjs-dist, react-markdown)
+8. **State Persistence** — sessionStorage pattern for PDF survival across tab switches
 
-**`src/components/PdfReaderView.tsx`**
+### Approach
 
-1. **On file upload** — after reading the file, also convert it to a base64 data URL and save to `sessionStorage` along with `fileName`, `currentPage`, and `zoom`
-2. **On mount** — check `sessionStorage` for a saved PDF. If found, reload the PDF document from the stored data URL and restore page/zoom state. This skips the upload screen entirely.
-3. **On page/zoom change** — update the stored values in `sessionStorage`
-4. **On explicit close/clear** — remove the sessionStorage entry
+- Use reportlab to generate a clean, structured PDF with code blocks, section headers, and table of contents
+- All source code included verbatim with syntax context
+- Written as a replication guide
 
-This approach:
-- Keeps the zero-storage-cost policy (no server uploads)
-- Survives tab switches within the same session
-- Has a ~50MB practical limit per sessionStorage entry which covers most PDFs
-- Doesn't require changes to routing or parent components
+### Output
 
-### Files
+`/mnt/documents/pdf-reader-documentation.pdf`
 
-| File | Change |
-|------|--------|
-| `src/components/PdfReaderView.tsx` | Add sessionStorage persistence for PDF data URL + restore on mount |
+### Files Read (no project files modified)
+
+All source already loaded — no additional reads needed.
 
