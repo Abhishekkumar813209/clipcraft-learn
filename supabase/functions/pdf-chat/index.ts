@@ -180,7 +180,11 @@ ${pageText || "No text available."}`;
     // --- CHECK-ANSWERS action ---
     if (action === "check-answers") {
       const lang = language === "hindi" ? "Hindi" : "English";
-      const systemPrompt = `You are an expert educator. The student answered quiz questions based on a page. Evaluate each answer, give a score out of the total, and provide brief explanations for wrong answers. Respond in ${lang}.
+      const systemPrompt = `You are an expert educator. The student answered quiz questions based on a page. Evaluate each answer, give a score out of the total, and provide brief explanations for wrong answers.
+
+IMPORTANT: If any answer is "(skipped)" or empty, mark it as a WEAK AREA. At the end of your feedback, add a "Weak Areas" section listing the topics/concepts the student skipped or got wrong — these are areas they need to practice more.
+
+Respond in ${lang}.
 
 Page text for reference:
 ${pageText || "No text available."}
