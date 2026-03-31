@@ -65,6 +65,7 @@ const App = () => (
               <Route path="clips" element={<AddClipsView />} />
               <Route path="player/:videoId" element={<VideoPlayerView />} />
               <Route path="pdf" element={<PdfReaderView />} />
+              <Route path="quizzes" element={<SavedQuizzesView />} />
               <Route path="upsc" element={<UpscMotivation />} />
               <Route path="topic/:topicId" element={<TopicView />} />
             </Route>
