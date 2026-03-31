@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Play, Pause, Square, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,16 +22,16 @@ const INTERVALS = [
 export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPlayProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [intervalSec, setIntervalSec] = useState(10);
-  const [elapsed, setElapsed] = useState(0);
   const [isCustom, setIsCustom] = useState(false);
   const [customValue, setCustomValue] = useState('');
+  const [progress, setProgress] = useState(0);
 
+  const elapsedRef = useRef(0);
   const activeInterval = isCustom ? (Number(customValue) || 10) : intervalSec;
 
   const goNext = useCallback(() => {
     if (currentPage < totalPages) {
       onPageChange(currentPage + 1);
-      setElapsed(0);
     } else {
       setIsPlaying(false);
     }
@@ -40,37 +40,54 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
   const goPrev = useCallback(() => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
-      setElapsed(0);
     }
   }, [currentPage, onPageChange]);
 
+  const goNextRef = useRef(goNext);
+  goNextRef.current = goNext;
+
+  const goPrevRef = useRef(goPrev);
+  goPrevRef.current = goPrev;
+
+  // Reset elapsed when page changes (new page = fresh timer)
+  useEffect(() => {
+    elapsedRef.current = 0;
+    setProgress(0);
+  }, [currentPage]);
+
+  // Stable timer — only depends on isPlaying and activeInterval
   useEffect(() => {
     if (!isPlaying) return;
-    const tick = globalThis.setInterval(() => {
-      setElapsed((prev) => {
-        if (prev + 0.1 >= activeInterval) {
-          goNext();
-          return 0;
-        }
-        return prev + 0.1;
-      });
-    }, 100);
-    return () => globalThis.clearInterval(tick);
-  }, [isPlaying, activeInterval, goNext]);
+    elapsedRef.current = 0;
+    setProgress(0);
 
+    const tick = setInterval(() => {
+      elapsedRef.current += 0.1;
+      const pct = (elapsedRef.current / activeInterval) * 100;
+      setProgress(pct);
+
+      if (elapsedRef.current >= activeInterval) {
+        elapsedRef.current = 0;
+        goNextRef.current();
+      }
+    }, 100);
+
+    return () => clearInterval(tick);
+  }, [isPlaying, activeInterval]);
+
+  // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.code === 'Space') { e.preventDefault(); setIsPlaying((p) => !p); }
-      if (e.code === 'ArrowRight') { e.preventDefault(); goNext(); }
-      if (e.code === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+      if (e.code === 'ArrowRight') { e.preventDefault(); goNextRef.current(); }
+      if (e.code === 'ArrowLeft') { e.preventDefault(); goPrevRef.current(); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [goNext, goPrev]);
+  }, []);
 
-  const stop = () => { setIsPlaying(false); setElapsed(0); };
-  const progress = (elapsed / activeInterval) * 100;
+  const stop = () => { setIsPlaying(false); elapsedRef.current = 0; setProgress(0); };
 
   const handleSelectChange = (v: string) => {
     const num = Number(v);
@@ -89,10 +106,10 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
         Page {currentPage} / {totalPages}
       </span>
 
-      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goPrev} disabled={currentPage <= 1}>
+      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => goPrevRef.current()} disabled={currentPage <= 1}>
         <ChevronLeft className="h-4 w-4" />
       </Button>
-      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goNext} disabled={currentPage >= totalPages}>
+      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => goNextRef.current()} disabled={currentPage >= totalPages}>
         <ChevronRight className="h-4 w-4" />
       </Button>
 
