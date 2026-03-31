@@ -60,12 +60,18 @@ const PDF_SESSION_KEY = 'pdf-reader-state';
 
 export function PdfReaderView() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const onBack = () => navigate('/');
 
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [zoom, setZoom] = useState(1.2);
+  const [zoom, setZoom] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return Math.max(0.5, (window.innerWidth - 32) / 612);
+    }
+    return 1.2;
+  });
   const [fileName, setFileName] = useState('');
   const [restoringPdf, setRestoringPdf] = useState(true);
   const [showChat, setShowChat] = useState(false);
