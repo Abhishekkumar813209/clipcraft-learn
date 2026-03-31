@@ -233,19 +233,12 @@ export function PdfReaderView() {
     setShowTranslation(false);
     setActiveLanguage('english');
 
-    // Save to sessionStorage as dataURL
+    // Save to IndexedDB (no size limit)
     const reader = new FileReader();
     reader.onload = () => {
-      try {
-        sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify({
-          dataUrl: reader.result as string,
-          fileName: file.name,
-          currentPage: 1,
-          zoom,
-        }));
-      } catch (e) {
-        console.warn('PDF too large for sessionStorage', e);
-      }
+      savePdfFile(reader.result as string, file.name, 1, zoom).catch(e =>
+        console.warn('Failed to save PDF to IndexedDB', e)
+      );
     };
     reader.readAsDataURL(file);
 
