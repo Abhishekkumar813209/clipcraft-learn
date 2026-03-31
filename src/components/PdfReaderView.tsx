@@ -8,9 +8,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
 import { PdfQuizPanel } from './PdfQuizPanel';
+import { useIsMobile } from '@/hooks/use-mobile';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -58,12 +60,18 @@ const PDF_SESSION_KEY = 'pdf-reader-state';
 
 export function PdfReaderView() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const onBack = () => navigate('/');
 
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [zoom, setZoom] = useState(1.2);
+  const [zoom, setZoom] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return Math.max(0.5, (window.innerWidth - 32) / 612);
+    }
+    return 1.2;
+  });
   const [fileName, setFileName] = useState('');
   const [restoringPdf, setRestoringPdf] = useState(true);
   const [showChat, setShowChat] = useState(false);
@@ -469,20 +477,21 @@ export function PdfReaderView() {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
       {/* Top bar */}
-      <div className="border-b border-border bg-card px-4 py-2 flex items-center gap-2 flex-wrap">
-        <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back
+      <div className="border-b border-border bg-card px-2 md:px-4 py-2 flex items-center gap-1.5 md:gap-2 overflow-x-auto">
+        <Button variant="ghost" size="sm" onClick={onBack} className="shrink-0">
+          <ArrowLeft className="h-4 w-4" />
+          <span className="hidden md:inline ml-1">Back</span>
         </Button>
-        <span className="text-sm font-medium truncate max-w-[200px]">{fileName}</span>
-        <span className="text-xs text-muted-foreground">
-          Page {currentPage} / {totalPages}
+        <span className="text-sm font-medium truncate max-w-[100px] md:max-w-[200px] hidden md:inline">{fileName}</span>
+        <span className="text-xs text-muted-foreground shrink-0">
+          {currentPage}/{totalPages}
         </span>
 
-        <div className="flex items-center gap-1 ml-auto">
+        <div className="flex items-center gap-1 ml-auto shrink-0">
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom(z => Math.max(0.5, z - 0.2))}>
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-xs w-12 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs w-10 text-center">{Math.round(zoom * 100)}%</span>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom(z => Math.min(3, z + 0.2))}>
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -491,9 +500,9 @@ export function PdfReaderView() {
         {/* Language */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5 h-8">
+            <Button variant="outline" size="sm" className="gap-1 h-8 shrink-0">
               <Languages className="h-3.5 w-3.5" />
-              {LANG_LABELS[activeLanguage]}
+              <span className="hidden md:inline">{LANG_LABELS[activeLanguage]}</span>
               <ChevronDown className="h-3 w-3 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
@@ -507,7 +516,7 @@ export function PdfReaderView() {
         </DropdownMenu>
 
         {showTranslation && activeLanguage !== 'english' && (
-          <div className="flex items-center border rounded-md overflow-hidden h-8">
+          <div className="flex items-center border rounded-md overflow-hidden h-8 shrink-0">
             <Button variant={viewMode === 'split' ? 'default' : 'ghost'} size="sm" className="h-full rounded-none px-2" onClick={() => setViewMode('split')}>
               <Columns2 className="h-3.5 w-3.5" />
             </Button>
@@ -520,9 +529,9 @@ export function PdfReaderView() {
         {/* Summarize popover */}
         <Popover open={summarizeOpen} onOpenChange={setSummarizeOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5 h-8" disabled={isSummarizing}>
+            <Button variant="outline" size="sm" className="gap-1 h-8 shrink-0" disabled={isSummarizing}>
               {isSummarizing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-              Summarize
+              <span className="hidden md:inline">Summarize</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-56" align="end">
@@ -541,9 +550,9 @@ export function PdfReaderView() {
         {/* Quiz popover */}
         <Popover open={quizOpen} onOpenChange={setQuizOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5 h-8" disabled={isLoadingQuiz}>
+            <Button variant="outline" size="sm" className="gap-1 h-8 shrink-0" disabled={isLoadingQuiz}>
               {isLoadingQuiz ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Brain className="h-3.5 w-3.5" />}
-              Quiz
+              <span className="hidden md:inline">Quiz</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-72" align="end">
@@ -584,9 +593,9 @@ export function PdfReaderView() {
 
         <PdfAutoPlay currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
 
-        <Button variant={showChat ? 'default' : 'outline'} size="sm" className="gap-1.5 h-8" onClick={() => setShowChat(!showChat)}>
+        <Button variant={showChat ? 'default' : 'outline'} size="sm" className="gap-1 h-8 shrink-0" onClick={() => setShowChat(!showChat)}>
           <MessageSquare className="h-3.5 w-3.5" />
-          Chat
+          <span className="hidden md:inline">Chat</span>
         </Button>
       </div>
 
@@ -602,9 +611,9 @@ export function PdfReaderView() {
       )}
 
       {/* Main content area */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Thumbnail sidebar */}
-        <ScrollArea className="w-24 border-r border-border bg-card flex-shrink-0">
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Thumbnail sidebar - hidden on mobile */}
+        <ScrollArea className="w-24 border-r border-border bg-card flex-shrink-0 hidden md:block">
           <div className="p-2 space-y-2">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
               <button
@@ -626,10 +635,10 @@ export function PdfReaderView() {
         {/* PDF canvas area */}
         <div className="flex-1 flex overflow-hidden">
           <ScrollArea className={showSplitView ? 'w-1/2' : 'flex-1'}>
-            <div className="p-4 flex justify-center relative">
-              <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg" />
+            <div className="p-2 md:p-4 flex justify-center relative">
+              <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg max-w-full" />
               {showOverlayTranslation && (
-                <div className="absolute inset-4 bg-background/95 backdrop-blur-sm rounded-lg p-6 overflow-auto">
+                <div className="absolute inset-2 md:inset-4 bg-background/95 backdrop-blur-sm rounded-lg p-4 md:p-6 overflow-auto">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-medium text-primary">{LANG_LABELS[activeLanguage]} Translation</span>
                     <Button variant="ghost" size="sm" onClick={() => setShowTranslation(false)}>
@@ -646,7 +655,7 @@ export function PdfReaderView() {
 
           {showSplitView && (
             <ScrollArea className="w-1/2 border-l border-border">
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm font-medium text-primary">{LANG_LABELS[activeLanguage]} Translation</span>
                   <Button variant="ghost" size="sm" onClick={() => setShowTranslation(false)}>
@@ -662,8 +671,11 @@ export function PdfReaderView() {
         </div>
 
         {/* Page navigation */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-card/90 backdrop-blur border border-border rounded-full px-4 py-2 shadow-lg">
-          <Button variant="ghost" size="sm" className="h-7" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1}>Prev</Button>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 md:gap-2 bg-card/90 backdrop-blur border border-border rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-lg z-10">
+          <Button variant="ghost" size="sm" className="h-7 px-2 md:px-3" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1}>
+            <span className="hidden md:inline">Prev</span>
+            <span className="md:hidden text-xs">◀</span>
+          </Button>
           <input
             type="number"
             min={1}
@@ -673,14 +685,17 @@ export function PdfReaderView() {
               const val = parseInt(e.target.value);
               if (!isNaN(val)) handlePageChange(val);
             }}
-            className="w-12 h-7 text-center text-sm bg-background border rounded"
+            className="w-10 md:w-12 h-7 text-center text-sm bg-background border rounded"
           />
           <span className="text-xs text-muted-foreground">/ {totalPages}</span>
-          <Button variant="ghost" size="sm" className="h-7" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Next</Button>
+          <Button variant="ghost" size="sm" className="h-7 px-2 md:px-3" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>
+            <span className="hidden md:inline">Next</span>
+            <span className="md:hidden text-xs">▶</span>
+          </Button>
         </div>
 
-        {/* Chat sidebar */}
-        {showChat && (
+        {/* Chat sidebar - Sheet on mobile, side panel on desktop */}
+        {showChat && !isMobile && (
           <PdfChatSidebar
             pageText={pageText}
             currentPage={currentPage}
@@ -689,24 +704,38 @@ export function PdfReaderView() {
             onClose={() => setShowChat(false)}
           />
         )}
+        {isMobile && (
+          <Sheet open={showChat} onOpenChange={setShowChat}>
+            <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col">
+              <PdfChatSidebar
+                pageText={pageText}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pdfDoc={pdfDoc}
+                onClose={() => setShowChat(false)}
+              />
+            </SheetContent>
+          </Sheet>
+        )}
       </div>
 
-      {/* Quiz panel */}
+      {/* Quiz panel - full overlay on mobile */}
       {showQuiz && (
-        <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
-          setShowQuiz(false);
-          // Clear quiz from sessionStorage
-          try {
-            const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-            if (saved) {
-              const state = JSON.parse(saved);
-              delete state.showQuiz;
-              delete state.quizQuestions;
-              sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-            }
-          } catch {}
-          sessionStorage.removeItem('pdf-quiz-state');
-        }} />
+        <div className={isMobile ? 'fixed inset-0 z-50 bg-background overflow-auto' : ''}>
+          <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
+            setShowQuiz(false);
+            try {
+              const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+              if (saved) {
+                const state = JSON.parse(saved);
+                delete state.showQuiz;
+                delete state.quizQuestions;
+                sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
+              }
+            } catch {}
+            sessionStorage.removeItem('pdf-quiz-state');
+          }} />
+        </div>
       )}
     </div>
   );
