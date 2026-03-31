@@ -1,30 +1,35 @@
 
 
-## Plan: Fix Tab-Switch Reloads + Add Fast Mode Timer
+## Plan: Route All Quiz Results to Dedicated Analysis Page
 
-### Problem 1: App reloads on tab switch
-Two causes:
-1. **React Query** defaults to `refetchOnWindowFocus: true` — every query refetches when you return to the tab, causing loading spinners and data flickering
-2. **Supabase auth** fires `TOKEN_REFRESHED` event on tab return, which updates state in AuthContext and triggers cascading re-renders through `fetchAllData()` in Index.tsx
+### Problem
+When submitting a quiz from `PdfQuizPanel` (the modal), results show as raw markdown in the same modal. The dedicated analysis page (`QuizAnalysis.tsx`) with proper UI (score cards, color-coded options, per-question breakdown) is only reachable from saved quizzes.
 
 ### Fix
-- Configure `QueryClient` with `refetchOnWindowFocus: false` in `App.tsx`
-- In `Index.tsx`, guard `fetchAllData()` so it only runs once (not on every auth state change)
-- In `AuthContext.tsx`, avoid setting state if values haven't actually changed
 
-### Problem 2: Fast Mode for tests
-Add a "Fast Mode" toggle in the QuizTest top bar. When enabled:
-- User picks seconds-per-question (15s, 30s, 45s, 60s)
-- A countdown timer appears per question
-- When time expires, the question is auto-skipped and it moves to the next one
-- Progress bar shows remaining time visually
+**1. Auto-save quiz on submit in `PdfQuizPanel.tsx`**
+- When user clicks "Submit", after getting AI feedback:
+  - Auto-save the quiz to `pdf_saved_quizzes` (with a default name like "PDF - Page X" if not manually saved)
+  - Store `user_answers` and `ai_feedback` in the same row
+  - Navigate to `/quizzes/:quizId/analysis` instead of showing inline feedback
+- Remove the inline feedback rendering entirely from PdfQuizPanel — it becomes a test-taking + save component only
+
+**2. Update `PdfQuizPanel.tsx` submit flow**
+- After `pdf-chat` returns feedback:
+  - Insert/upsert quiz into `pdf_saved_quizzes` with questions, user_answers, ai_feedback
+  - Get the new quiz ID
+  - Call `navigate(/quizzes/${newId}/analysis)`
+  - Close the modal
+
+**3. Keep PdfQuizPanel for test-taking only**
+- Remove the feedback/results section (lines ~380-398)
+- Remove weak areas display from the modal
+- The modal's job: show questions, collect answers, submit, redirect
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `src/App.tsx` | Set `refetchOnWindowFocus: false` on QueryClient defaults |
-| `src/pages/Index.tsx` | Guard `fetchAllData` to run only once per user session |
-| `src/contexts/AuthContext.tsx` | Skip redundant state updates on token refresh |
-| `src/pages/QuizTest.tsx` | Add Fast Mode toggle with configurable per-question countdown timer, auto-advance on timeout |
+| `src/components/PdfQuizPanel.tsx` | On submit: auto-save to DB with answers + feedback, navigate to analysis page, remove inline feedback UI |
+| `src/components/PdfReaderView.tsx` | Minor — ensure `useNavigate` is available to PdfQuizPanel (pass as prop or use directly) |
 
