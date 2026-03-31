@@ -400,20 +400,20 @@ export default function QuizTest() {
           </ScrollArea>
 
           {/* Bottom Controls */}
-          <div className="border-t border-border p-4 flex items-center justify-between bg-card shrink-0">
+          <div className="border-t border-blue-100 dark:border-blue-900/30 p-4 flex items-center justify-between bg-card shrink-0">
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={clearAnswer} className="gap-1">
+              <Button variant="outline" size="sm" onClick={clearAnswer} className="gap-1 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20">
                 <RotateCcw className="h-3.5 w-3.5" /> Clear
               </Button>
-              <Button variant={markedForReview.has(currentQ?.id) ? 'default' : 'outline'} size="sm" onClick={toggleMark} className="gap-1">
+              <Button size="sm" onClick={toggleMark} className={`gap-1 ${markedForReview.has(currentQ?.id) ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800'}`}>
                 <Flag className="h-3.5 w-3.5" /> {markedForReview.has(currentQ?.id) ? 'Unmark' : 'Mark for Review'}
               </Button>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={currentIndex === 0} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1">
+              <Button variant="outline" size="sm" disabled={currentIndex === 0} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1 border-blue-200 dark:border-blue-800">
                 <ChevronLeft className="h-4 w-4" /> Previous
               </Button>
-              <Button variant="outline" size="sm" disabled={currentIndex === questions.length - 1} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1">
+              <Button size="sm" disabled={currentIndex === questions.length - 1} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1 bg-blue-600 text-white hover:bg-blue-700">
                 Next <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -421,9 +421,9 @@ export default function QuizTest() {
         </div>
 
         {/* Question Palette Sidebar */}
-        <div className="w-72 border-l border-border bg-card/50 hidden md:flex flex-col shrink-0">
-          <div className="p-4 border-b border-border">
-            <h3 className="font-semibold text-sm">Question Palette</h3>
+        <div className="w-72 border-l border-blue-100 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-950/20 hidden md:flex flex-col shrink-0">
+          <div className="p-4 border-b border-blue-100 dark:border-blue-900/30">
+            <h3 className="font-semibold text-sm text-blue-800 dark:text-blue-300">Question Palette</h3>
           </div>
           <ScrollArea className="flex-1 p-4">
             <div className="grid grid-cols-5 gap-2">
