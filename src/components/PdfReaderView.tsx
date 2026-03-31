@@ -231,12 +231,8 @@ export function PdfReaderView() {
   // Restore PDF from IndexedDB on mount
   useEffect(() => {
     loadPdfState().then(saved => {
-      if (saved) {
+        if (saved) {
         const { dataUrl, meta } = saved;
-        if (meta.showQuiz && meta.quizQuestions?.length) {
-          setQuizQuestions(meta.quizQuestions);
-          setShowQuiz(true);
-        }
         loadPdfFromDataUrl(dataUrl, meta.fileName || '', meta.currentPage || 1, meta.zoom || 1.2)
           .finally(() => setRestoringPdf(false));
       } else {
