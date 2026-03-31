@@ -641,10 +641,10 @@ export function PdfReaderView() {
         </ScrollArea>
 
         {/* PDF canvas area */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden" {...swipeHandlers}>
           <ScrollArea className={showSplitView ? 'w-1/2' : 'flex-1'}>
             <div className="p-2 md:p-4 flex justify-center relative">
-              <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg max-w-full" />
+              <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg max-w-full" style={pageFoldStyle} />
               {showOverlayTranslation && (
                 <div className="absolute inset-2 md:inset-4 bg-background/95 backdrop-blur-sm rounded-lg p-4 md:p-6 overflow-auto">
                   <div className="flex items-center justify-between mb-4">
