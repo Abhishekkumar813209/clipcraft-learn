@@ -300,30 +300,30 @@ export default function QuizTest() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Top Bar */}
-      <div className="border-b border-border bg-card px-4 py-3 flex items-center justify-between shrink-0">
+      {/* Top Bar - Blue header like exam UI */}
+      <div className="bg-blue-600 dark:bg-blue-700 px-4 py-3 flex items-center justify-between shrink-0 shadow-md">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/pdf')} className="gap-1">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/pdf')} className="gap-1 text-white hover:bg-blue-500/50 hover:text-white">
             <ArrowLeft className="h-4 w-4" /> Back to PDF
           </Button>
-          <div className="hidden sm:block h-5 w-px bg-border" />
+          <div className="hidden sm:block h-5 w-px bg-blue-400/40" />
           <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold truncate max-w-[300px]">{quiz?.name}</h1>
-            {quiz?.pdf_name && <p className="text-xs text-muted-foreground">{quiz.pdf_name} {quiz.page_range && `· Page ${quiz.page_range}`}</p>}
+            <h1 className="text-sm font-semibold truncate max-w-[300px] text-white">{quiz?.name}</h1>
+            {quiz?.pdf_name && <p className="text-xs text-blue-200">{quiz.pdf_name} {quiz.page_range && `· Page ${quiz.page_range}`}</p>}
           </div>
         </div>
         <div className="flex items-center gap-3">
           {/* Fast Mode Toggle */}
           <div className="hidden sm:flex items-center gap-2">
             <Button
-              variant={fastMode ? 'default' : 'outline'}
+              variant="ghost"
               size="sm"
               onClick={() => {
                 const next = !fastMode;
                 setFastMode(next);
                 if (next) setQuestionTimeLeft(fastModeSeconds);
               }}
-              className="gap-1.5"
+              className={`gap-1.5 ${fastMode ? 'bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800' : 'text-white hover:bg-blue-500/50 hover:text-white border border-blue-400/40'}`}
             >
               <Zap className="h-3.5 w-3.5" />
               Fast
@@ -336,7 +336,7 @@ export default function QuizTest() {
                   setFastModeSeconds(v);
                   setQuestionTimeLeft(v);
                 }}
-                className="bg-muted border border-border rounded-md px-2 py-1 text-xs font-medium outline-none"
+                className="bg-blue-500/50 border border-blue-400/40 rounded-md px-2 py-1 text-xs font-medium outline-none text-white"
               >
                 <option value={15}>15s</option>
                 <option value={30}>30s</option>
@@ -345,13 +345,13 @@ export default function QuizTest() {
               </select>
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-md">
+          <div className="flex items-center gap-1.5 text-sm text-white bg-blue-500/50 px-3 py-1.5 rounded-full border border-blue-400/30">
             <Clock className="h-4 w-4" />
-            <span className="font-mono">{formatTime(elapsedSeconds)}</span>
+            <span className="font-mono font-semibold">{formatTime(elapsedSeconds)}</span>
           </div>
-          <Button onClick={() => setShowSubmitDialog(true)} disabled={isSubmitting} className="gap-1.5">
+          <Button onClick={() => setShowSubmitDialog(true)} disabled={isSubmitting} className="gap-1.5 bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-sm">
             {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
-            Submit Test
+            SUBMIT
           </Button>
         </div>
       </div>
