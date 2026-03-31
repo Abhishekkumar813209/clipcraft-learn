@@ -114,7 +114,8 @@ export function PdfReaderView() {
   };
 
   const renderPage = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, pageNum: number, scale: number) => {
-    if (!mainCanvasRef.current || isRendering) return;
+    if (!mainCanvasRef.current || isRenderingRef.current) return;
+    isRenderingRef.current = true;
     setIsRendering(true);
     try {
       const page = await doc.getPage(pageNum);
@@ -130,8 +131,9 @@ export function PdfReaderView() {
     } catch (e) {
       console.error('Error rendering page:', e);
     }
+    isRenderingRef.current = false;
     setIsRendering(false);
-  }, [isRendering]);
+  }, []);
 
   const renderThumbnail = useCallback(async (doc: pdfjsLib.PDFDocumentProxy, pageNum: number) => {
     try {
