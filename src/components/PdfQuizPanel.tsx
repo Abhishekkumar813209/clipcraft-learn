@@ -356,6 +356,47 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
           )}
         </div>
       </div>
+
+      {/* Save Quiz Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{language === 'hindi' ? 'क्विज़ सेव करें' : 'Save Quiz'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="quiz-name">{language === 'hindi' ? 'क्विज़ का नाम' : 'Quiz Name'}</Label>
+              <Input id="quiz-name" value={saveName} onChange={(e) => setSaveName(e.target.value)} placeholder="e.g. Polity Chapter 3 Quiz" />
+            </div>
+            <div className="space-y-2">
+              <Label>{language === 'hindi' ? 'फ़ोल्डर' : 'Folder'}</Label>
+              <Select value={selectedFolderId} onValueChange={setSelectedFolderId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select folder" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">{language === 'hindi' ? 'कोई फ़ोल्डर नहीं' : 'No Folder'}</SelectItem>
+                  {folders.map(f => (
+                    <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
+                  ))}
+                  <SelectItem value="new">
+                    <span className="flex items-center gap-1"><FolderPlus className="h-3 w-3" /> {language === 'hindi' ? 'नया फ़ोल्डर' : 'New Folder'}</span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              {selectedFolderId === 'new' && (
+                <Input placeholder={language === 'hindi' ? 'फ़ोल्डर का नाम' : 'Folder name'} value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)} className="mt-2" />
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSaveDialog(false)}>Cancel</Button>
+            <Button onClick={handleSaveQuiz} disabled={isSaving}>
+              {isSaving ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : <><Save className="h-4 w-4 mr-2" /> Save</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
