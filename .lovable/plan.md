@@ -1,47 +1,36 @@
 
 
-## Plan: Make PDF Reader Mobile-Responsive
+## Plan: Fix PDF State Loss on Mobile
 
 ### Problem
-The PDF reader layout is desktop-only. On mobile:
-- The thumbnail sidebar (fixed `w-24`) eats valuable screen space
-- The top toolbar buttons overflow and get clipped (`flex-wrap` helps but not enough)
-- The page navigation bar (`absolute bottom-4 left-1/2`) may overlap or get hidden
-- The chat sidebar and quiz panel take full width, blocking the PDF
-- Canvas renders at desktop zoom (1.2x) which is too wide for small screens
+When you upload a PDF on mobile and the keyboard/search bar appears, the browser resizes the viewport which can cause the page to reload. The PDF is stored as a base64 data URL in `sessionStorage`, which has a ~5MB limit. Large PDFs silently fail to save (the `catch` at line 255 just warns), so on reload the state is empty and you're back at the upload screen. Desktop doesn't hit this because the component stays mounted.
+
+### Solution
+Replace `sessionStorage` with IndexedDB (via the `localforage` library) for storing the PDF binary. IndexedDB supports hundreds of MB, works reliably on mobile, and survives page reloads.
 
 ### Changes
 
-**File: `src/components/PdfReaderView.tsx`**
+**1. Install `localforage`** (tiny IndexedDB wrapper)
 
-1. **Hide thumbnail sidebar on mobile** — Add `hidden md:block` to the thumbnail `ScrollArea` (line 607). Thumbnails are not usable on small screens.
+**2. Create `src/lib/pdfStorage.ts`** — helper module:
+- `savePdfFile(dataUrl, fileName, page, zoom)` — stores PDF data + metadata in IndexedDB
+- `loadPdfState()` — retrieves stored state
+- `updatePdfMeta(page, zoom, showQuiz, quizQuestions)` — updates metadata without re-saving the PDF blob
+- `clearPdfState()` — removes stored data
 
-2. **Responsive top toolbar** — Shrink/hide labels on mobile. Hide text labels like "Summarize", "Quiz", "Chat" on small screens (keep icons only). Reduce gaps. Make the toolbar horizontally scrollable if needed (`overflow-x-auto`).
-
-3. **Responsive canvas zoom** — Set initial zoom based on screen width. On mobile, default to a zoom that fits the screen width (e.g., `window.innerWidth / 612` where 612 is standard PDF point width). Add a `useEffect` or initial calculation.
-
-4. **Responsive page navigation** — Ensure the bottom nav bar stays visible and doesn't clip on mobile. Add responsive padding/positioning.
-
-5. **Chat sidebar as drawer on mobile** — On mobile, render `PdfChatSidebar` as a full-screen overlay or bottom sheet instead of a side panel that squishes the PDF.
-
-6. **Quiz panel responsive** — Ensure `PdfQuizPanel` is scrollable and usable on mobile (full-width overlay).
-
-7. **Upload screen** — Already uses `flex-col items-center justify-center` so should work, but verify padding.
-
-### Technical Details
-
-| Area | Desktop (md+) | Mobile (<md) |
-|------|--------------|-------------|
-| Thumbnails | 96px sidebar | Hidden |
-| Toolbar | Full labels + icons | Icons only, scrollable |
-| PDF zoom | 1.2x default | Auto-fit to screen width |
-| Chat | Side panel | Full overlay / drawer |
-| Quiz | Side panel | Full-width overlay |
-| Page nav | Centered floating bar | Same, smaller padding |
+**3. Update `src/components/PdfReaderView.tsx`**:
+- Replace all `sessionStorage.getItem/setItem(PDF_SESSION_KEY)` calls with async `localforage` helpers
+- On upload (`handleFileUpload`): call `savePdfFile()` instead of `sessionStorage.setItem`
+- On mount (restore effect): call `loadPdfState()` instead of `sessionStorage.getItem`
+- On page/zoom changes: call `updatePdfMeta()` instead of patching sessionStorage JSON
+- On quiz state changes: include quiz data in `updatePdfMeta()`
+- Keep `sessionStorage` for quiz answer state (`pdf-quiz-state` in PdfQuizPanel) since that's small
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `src/components/PdfReaderView.tsx` | Hide thumbnails on mobile, responsive zoom, toolbar icons-only on mobile, chat/quiz overlay on mobile |
+| `package.json` | Add `localforage` dependency |
+| `src/lib/pdfStorage.ts` | New helper for IndexedDB PDF storage |
+| `src/components/PdfReaderView.tsx` | Replace sessionStorage with localforage calls |
 
