@@ -70,9 +70,10 @@ export default function QuizTest() {
 
   // Elapsed timer
   useEffect(() => {
+    if (paused) return;
     const interval = setInterval(() => setElapsedSeconds(s => s + 1), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [paused]);
 
   // Fast Mode per-question timer
   useEffect(() => {
