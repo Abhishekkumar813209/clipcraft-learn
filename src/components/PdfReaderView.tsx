@@ -122,7 +122,7 @@ export function PdfReaderView() {
     onSwipeLeft: swipeGoNext,
     onSwipeRight: swipeGoPrev,
     threshold: 60,
-    enabled: isMobile && !!pdfDoc && !showChat && !showQuiz,
+    enabled: isMobile && !!pdfDoc && !showChat,
   });
 
   // Page fold transform style
