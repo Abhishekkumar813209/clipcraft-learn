@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, pageText, action, language, answers, numQuestions, questionTypes } = await req.json();
+    const { messages, pageText, action, language, answers, numQuestions, questionTypes, focusTopics } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -85,6 +85,10 @@ ${pageText || "No text available."}`;
       };
       const typeList = types.map((t: string) => typeDescriptions[t] || t).join(', ');
       
+      const focusInstruction = focusTopics?.length
+        ? `\n\nIMPORTANT: The student has weak areas. Focus your questions specifically on these topics/questions the student struggled with:\n${focusTopics.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}\n\nGenerate NEW questions that test the same concepts from different angles.`
+        : '';
+
       const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly ${numQ} questions to test the student's understanding.
 
 Question types to use (distribute evenly among these): ${typeList}
@@ -100,7 +104,7 @@ For true_false: the correctAnswer should be "True" or "False".
 For fill_blank: write the question with ___ where the blank is, correctAnswer is the word(s) that fill the blank.
 For multiple_correct: provide 4 options, correctAnswer should list all correct options separated by commas.
 
-Generate questions in ${lang}.
+Generate questions in ${lang}.${focusInstruction}
 
 Page text:
 ${pageText || "No text available."}`;
@@ -176,7 +180,11 @@ ${pageText || "No text available."}`;
     // --- CHECK-ANSWERS action ---
     if (action === "check-answers") {
       const lang = language === "hindi" ? "Hindi" : "English";
-      const systemPrompt = `You are an expert educator. The student answered quiz questions based on a page. Evaluate each answer, give a score out of the total, and provide brief explanations for wrong answers. Respond in ${lang}.
+      const systemPrompt = `You are an expert educator. The student answered quiz questions based on a page. Evaluate each answer, give a score out of the total, and provide brief explanations for wrong answers.
+
+IMPORTANT: If any answer is "(skipped)" or empty, mark it as a WEAK AREA. At the end of your feedback, add a "Weak Areas" section listing the topics/concepts the student skipped or got wrong — these are areas they need to practice more.
+
+Respond in ${lang}.
 
 Page text for reference:
 ${pageText || "No text available."}

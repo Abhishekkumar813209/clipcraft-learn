@@ -1,15 +1,26 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, CheckCircle, Loader2, Brain, Save, FolderPlus } from 'lucide-react';
+import { X, CheckCircle, Loader2, Brain, Save, FolderPlus, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+
+type QuizType = 'mcq' | 'true_false' | 'fill_blank' | 'multiple_correct' | 'short';
+
+const QUIZ_TYPE_LABELS: Record<QuizType, string> = {
+  mcq: 'MCQ',
+  true_false: 'True / False',
+  fill_blank: 'Fill in the Blanks',
+  multiple_correct: 'Multiple Correct',
+  short: 'Short Answer',
+};
 
 interface QuizQuestion {
   id: number;
@@ -27,6 +38,7 @@ interface PdfQuizPanelProps {
   pageText: string;
   fileName?: string;
   onClose: () => void;
+  onGenerateQuiz?: (opts: { numQuestions: number; questionTypes: QuizType[]; focusTopics: string[] }) => void;
 }
 
 interface QuizFolder {
@@ -65,7 +77,7 @@ function deserializeAnswers(obj: Record<number, string>): Map<number, string> {
   return m;
 }
 
-export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, fileName, onClose }: PdfQuizPanelProps) {
+export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, fileName, onClose, onGenerateQuiz }: PdfQuizPanelProps) {
   const { user } = useAuth();
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveName, setSaveName] = useState('');
@@ -73,6 +85,10 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
   const [newFolderName, setNewFolderName] = useState('');
   const [folders, setFolders] = useState<QuizFolder[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [showWeakAreaDialog, setShowWeakAreaDialog] = useState(false);
+  const [weakQuizCount, setWeakQuizCount] = useState(5);
+  const [customWeakCount, setCustomWeakCount] = useState('');
+  const [weakQuizTypes, setWeakQuizTypes] = useState<Set<QuizType>>(new Set(['mcq', 'true_false', 'fill_blank', 'multiple_correct', 'short']));
 
   const [answers, setAnswers] = useState<Map<number, string>>(() => {
     try {
@@ -146,24 +162,52 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     return answers.get(q.id) || '';
   };
 
-  const isAllAnswered = questions.every(q => {
+  const answeredCount = questions.filter(q => {
     if (q.type === 'multiple_correct') return (multiAnswers.get(q.id)?.size || 0) > 0;
     return !!answers.get(q.id);
-  });
+  }).length;
+
+  const getWeakQuestions = (): QuizQuestion[] => {
+    return questions.filter(q => {
+      const ans = getAnswerForQuestion(q);
+      return !ans || ans === '(skipped)';
+    });
+  };
+
+  const toggleWeakQuizType = (type: QuizType) => {
+    setWeakQuizTypes(prev => {
+      const next = new Set(prev);
+      if (next.has(type)) { if (next.size > 1) next.delete(type); }
+      else next.add(type);
+      return next;
+    });
+  };
+
+  const handlePracticeWeakAreas = () => {
+    if (!onGenerateQuiz) return;
+    const weakQs = getWeakQuestions();
+    const focusTopics = weakQs.map(q => q.question);
+    const finalCount = customWeakCount ? Math.min(Math.max(Number(customWeakCount), 1), 20) : weakQuizCount;
+    setShowWeakAreaDialog(false);
+    onGenerateQuiz({ numQuestions: finalCount, questionTypes: Array.from(weakQuizTypes), focusTopics });
+  };
 
   const submitAnswers = async () => {
-    if (!isAllAnswered) {
-      toast.error(language === 'hindi' ? 'सभी सवालों के जवाब दें' : 'Please answer all questions');
+    if (answeredCount === 0) {
+      toast.error(language === 'hindi' ? 'कम से कम एक सवाल का जवाब दें' : 'Please answer at least one question');
       return;
     }
     setIsChecking(true);
     try {
-      const payload = questions.map(q => ({
-        questionId: q.id,
-        question: q.question,
-        correctAnswer: q.correctAnswer,
-        userAnswer: getAnswerForQuestion(q),
-      }));
+      const payload = questions.map(q => {
+        const ans = getAnswerForQuestion(q);
+        return {
+          questionId: q.id,
+          question: q.question,
+          correctAnswer: q.correctAnswer,
+          userAnswer: ans || '(skipped)',
+        };
+      });
 
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
@@ -339,20 +383,44 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
                 <span className="font-semibold">{language === 'hindi' ? 'परिणाम' : 'Results'}</span>
               </div>
               <ReactMarkdown>{feedback}</ReactMarkdown>
+              {getWeakQuestions().length > 0 && (
+                <div className="mt-4 p-3 rounded-lg bg-muted border border-border">
+                  <p className="text-sm font-medium text-foreground mb-1">
+                    <Target className="h-4 w-4 inline mr-1" />
+                    {language === 'hindi' ? `${getWeakQuestions().length} कमज़ोर क्षेत्र चिह्नित` : `${getWeakQuestions().length} weak area(s) identified (skipped questions)`}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {language === 'hindi' ? 'इन विषयों पर अभ्यास करें' : 'Practice these topics to improve'}
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </ScrollArea>
 
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-2">
           {!feedback ? (
-            <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
-              {isChecking ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {language === 'hindi' ? 'जाँच रहा है...' : 'Checking...'}</> :
-                language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
-            </Button>
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground text-center">
+                {language === 'hindi' ? `${answeredCount}/${questions.length} उत्तर दिए` : `${answeredCount}/${questions.length} answered`}
+              </p>
+              <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
+                {isChecking ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {language === 'hindi' ? 'जाँच रहा है...' : 'Checking...'}</> :
+                  language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
+              </Button>
+            </div>
           ) : (
-            <Button className="w-full" variant="outline" onClick={onClose}>
-              {language === 'hindi' ? 'बंद करें' : 'Close'}
-            </Button>
+            <div className="space-y-2">
+              {getWeakQuestions().length > 0 && onGenerateQuiz && (
+                <Button className="w-full" onClick={() => setShowWeakAreaDialog(true)}>
+                  <Target className="h-4 w-4 mr-2" />
+                  {language === 'hindi' ? 'कमज़ोर क्षेत्रों पर अभ्यास करें' : 'Practice Weak Areas'}
+                </Button>
+              )}
+              <Button className="w-full" variant="outline" onClick={onClose}>
+                {language === 'hindi' ? 'बंद करें' : 'Close'}
+              </Button>
+            </div>
           )}
         </div>
       </div>
@@ -393,6 +461,48 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
             <Button variant="outline" onClick={() => setShowSaveDialog(false)}>Cancel</Button>
             <Button onClick={handleSaveQuiz} disabled={isSaving}>
               {isSaving ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : <><Save className="h-4 w-4 mr-2" /> Save</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Weak Area Practice Dialog */}
+      <Dialog open={showWeakAreaDialog} onOpenChange={setShowWeakAreaDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              {language === 'hindi' ? 'कमज़ोर क्षेत्र अभ्यास' : 'Practice Weak Areas'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>{language === 'hindi' ? 'प्रश्नों की संख्या' : 'Number of Questions'}</Label>
+              <div className="flex gap-2 flex-wrap">
+                {[3, 5, 10].map(n => (
+                  <Button key={n} size="sm" variant={weakQuizCount === n && !customWeakCount ? 'default' : 'outline'} onClick={() => { setWeakQuizCount(n); setCustomWeakCount(''); }}>
+                    {n}
+                  </Button>
+                ))}
+                <Input type="number" placeholder="Custom" value={customWeakCount} onChange={e => setCustomWeakCount(e.target.value)} className="w-20 h-8 text-sm" min={1} max={20} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{language === 'hindi' ? 'प्रश्न प्रकार' : 'Question Types'}</Label>
+              <div className="space-y-2">
+                {(Object.entries(QUIZ_TYPE_LABELS) as [QuizType, string][]).map(([type, label]) => (
+                  <label key={type} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <Checkbox checked={weakQuizTypes.has(type)} onCheckedChange={() => toggleWeakQuizType(type)} />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowWeakAreaDialog(false)}>Cancel</Button>
+            <Button onClick={handlePracticeWeakAreas}>
+              <Brain className="h-4 w-4 mr-2" /> {language === 'hindi' ? 'क्विज़ बनाएँ' : 'Generate Quiz'}
             </Button>
           </DialogFooter>
         </DialogContent>
