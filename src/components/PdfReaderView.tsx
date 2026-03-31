@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify } from 'lucide-react';
+import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
@@ -489,6 +489,10 @@ export function PdfReaderView() {
         <Button variant="ghost" size="sm" onClick={onBack} className="shrink-0">
           <ArrowLeft className="h-4 w-4" />
           <span className="hidden md:inline ml-1">Back</span>
+        </Button>
+        <Button variant="ghost" size="sm" onClick={async () => { await clearPdfState(); setPdfDoc(null); setFileName(''); setTotalPages(0); setCurrentPage(1); setPageText(''); }} className="shrink-0 text-destructive hover:text-destructive" title="Close PDF">
+          <X className="h-4 w-4" />
+          <span className="hidden md:inline ml-1">Close</span>
         </Button>
         <span className="text-sm font-medium truncate max-w-[100px] md:max-w-[200px] hidden md:inline">{fileName}</span>
         <span className="text-xs text-muted-foreground shrink-0">
