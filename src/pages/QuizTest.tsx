@@ -135,11 +135,11 @@ export default function QuizTest() {
   };
 
   const statusColors: Record<QuestionStatus, string> = {
-    'not-visited': 'bg-muted text-muted-foreground border-border',
-    'not-answered': 'bg-destructive/20 text-destructive border-destructive/40',
-    'answered': 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/40',
-    'marked': 'bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/40',
-    'answered-marked': 'bg-teal-500/20 text-teal-700 dark:text-teal-400 border-teal-500/40',
+    'not-visited': 'bg-blue-50 text-blue-400 border-blue-200 dark:bg-blue-950/30 dark:text-blue-500 dark:border-blue-800',
+    'not-answered': 'bg-red-100 text-red-600 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800',
+    'answered': 'bg-green-100 text-green-700 border-green-300 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
+    'marked': 'bg-blue-100 text-blue-600 border-blue-300 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-700',
+    'answered-marked': 'bg-cyan-100 text-cyan-700 border-cyan-300 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800',
   };
 
   const setAnswer = (qId: number, value: string) => {
@@ -278,8 +278,8 @@ export default function QuizTest() {
         return (
           <div className="space-y-3 mt-6">
             {q.options?.map((opt, idx) => (
-              <label key={idx} className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all ${answers.get(q.id) === opt ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50 bg-card'}`}>
-                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 ${answers.get(q.id) === opt ? 'border-primary bg-primary text-primary-foreground' : 'border-border text-muted-foreground'}`}>
+              <label key={idx} onClick={() => setAnswer(q.id, opt)} className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all ${answers.get(q.id) === opt ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:bg-blue-950/30 dark:border-blue-400' : 'border-blue-200 bg-white hover:border-blue-300 hover:bg-blue-50 dark:bg-card dark:border-blue-800 dark:hover:border-blue-600'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 ${answers.get(q.id) === opt ? 'border-blue-500 bg-blue-500 text-white' : 'border-blue-300 text-blue-600 dark:border-blue-700 dark:text-blue-400'}`}>
                   {String.fromCharCode(65 + idx)}
                 </div>
                 <span className="text-sm">{opt}</span>
@@ -433,7 +433,7 @@ export default function QuizTest() {
                   <button
                     key={idx}
                     onClick={() => goToQuestion(idx)}
-                    className={`w-10 h-10 rounded-lg border text-xs font-bold flex items-center justify-center transition-all hover:scale-105 ${statusColors[status]} ${currentIndex === idx ? 'ring-2 ring-primary ring-offset-1 ring-offset-background' : ''}`}
+                    className={`w-10 h-10 rounded-lg border text-xs font-bold flex items-center justify-center transition-all hover:scale-105 ${statusColors[status]} ${currentIndex === idx ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-background' : ''}`}
                   >
                     {idx + 1}
                   </button>
