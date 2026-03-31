@@ -1,44 +1,33 @@
 
 
-## Plan: Generate Detailed PDF Documentation for PDF Reader Feature
+## Plan: Persist Quiz/Test State Across Tab Switches
 
-### What
-Generate a comprehensive, downloadable PDF document covering the entire PDF Reader feature — all components, edge function, state management, architecture, and feature details — so you can replicate it in another project.
+### Problem
+When you navigate away from `/pdf` (e.g., to dashboard) and come back, the component unmounts and all quiz state is lost — generated questions, your answers, checking results, everything resets.
 
-### Document Structure
+### Solution
+Persist quiz-related state in `sessionStorage` alongside the existing PDF state, and restore it on remount.
 
-1. **Architecture Overview** — Component tree, data flow diagram (ASCII), routing
-2. **Component: PdfReaderView** — Full source with annotations covering:
-   - File upload + sessionStorage persistence
-   - PDF rendering via pdfjs-dist (main canvas + thumbnails)
-   - Zoom controls, page navigation (floating nav bar)
-   - Translation system (Hindi/Hinglish/English) with debounce, AbortController, prefetch next 3 pages
-   - Summarize popover (page range selector)
-   - Quiz popover (page range, question count, 5 question types)
-   - Split/Overlay view modes for translations
-   - Auto-play integration
-3. **Component: PdfChatSidebar** — AI chat with streaming SSE, quick actions (Summarize, Explain, Key Points), page-range summarization
-4. **Component: PdfQuizPanel** — 5 question types (MCQ, True/False, Fill Blank, Multiple Correct, Short Answer), answer checking via AI
-5. **Component: PdfAutoPlay** — Interval-based auto page flip, keyboard shortcuts (Space, Arrow keys), custom intervals
-6. **Edge Function: pdf-chat** — All 4 actions documented:
-   - `translate` — Hindi/Hinglish translation
-   - `quiz` — Quiz generation with tool calling
-   - `check-answers` — Answer evaluation
-   - Default (chat) — Streaming SSE chat
-7. **Configuration** — supabase/config.toml entry, environment variables, dependencies (pdfjs-dist, react-markdown)
-8. **State Persistence** — sessionStorage pattern for PDF survival across tab switches
+### Changes
 
-### Approach
+**File: `src/components/PdfReaderView.tsx`**
+- Extend the existing `sessionStorage` persistence (key `pdf-reader-state`) to also save:
+  - `showQuiz` (boolean)
+  - `quizQuestions` (the generated questions array)
+- On mount, restore these values from sessionStorage so the quiz panel reopens with the same questions
 
-- Use reportlab to generate a clean, structured PDF with code blocks, section headers, and table of contents
-- All source code included verbatim with syntax context
-- Written as a replication guide
+**File: `src/components/PdfQuizPanel.tsx`**
+- Persist answer state (`answers`, `multiAnswers`, `results`, `showResults`) to `sessionStorage` under a separate key (e.g., `pdf-quiz-state`)
+- On mount, restore saved answers and results
+- On close (`onClose`), clear the quiz sessionStorage entry
+- Save state on every answer change and when results are checked
 
-### Output
+This way, switching tabs and coming back will restore both the quiz questions AND your in-progress answers exactly where you left off.
 
-`/mnt/documents/pdf-reader-documentation.pdf`
+### Files Modified
 
-### Files Read (no project files modified)
-
-All source already loaded — no additional reads needed.
+| File | Change |
+|------|--------|
+| `src/components/PdfReaderView.tsx` | Save/restore `showQuiz` + `quizQuestions` in sessionStorage |
+| `src/components/PdfQuizPanel.tsx` | Save/restore answers, multiAnswers, results in sessionStorage |
 
