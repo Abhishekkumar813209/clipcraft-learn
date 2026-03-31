@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
 import { PdfQuizPanel } from './PdfQuizPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -109,6 +110,37 @@ export function PdfReaderView() {
   const [sumTo, setSumTo] = useState(1);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const triggerSummarizeRef = useRef<((text: string, prompt: string) => void) | null>(null);
+
+  const swipeGoNext = useCallback(() => {
+    if (currentPage < totalPages) setCurrentPage(p => p + 1);
+  }, [currentPage, totalPages]);
+  const swipeGoPrev = useCallback(() => {
+    if (currentPage > 1) setCurrentPage(p => p - 1);
+  }, [currentPage]);
+
+  const { swipeHandlers, swipeOffset, swipeDirection, isAnimating } = useSwipeNavigation({
+    onSwipeLeft: swipeGoNext,
+    onSwipeRight: swipeGoPrev,
+    threshold: 60,
+    enabled: isMobile && !!pdfDoc && !showChat && !showQuiz,
+  });
+
+  // Page fold transform style
+  const pageFoldStyle = useMemo(() => {
+    if (!swipeDirection && !isAnimating) return {};
+    const progress = Math.min(Math.abs(swipeOffset) / (window.innerWidth * 0.6), 1);
+    const rotateY = swipeDirection === 'left' ? -progress * 25 : progress * 25;
+    const scale = 1 - progress * 0.04;
+    const shadow = progress * 30;
+    return {
+      transform: `perspective(1200px) rotateY(${rotateY}deg) scale(${scale}) translateX(${swipeOffset * 0.15}px)`,
+      transition: isAnimating ? 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+      boxShadow: swipeDirection === 'left'
+        ? `inset ${shadow}px 0 ${shadow * 1.5}px -${shadow * 0.5}px rgba(0,0,0,0.15)`
+        : `inset -${shadow}px 0 ${shadow * 1.5}px -${shadow * 0.5}px rgba(0,0,0,0.15)`,
+      transformOrigin: swipeDirection === 'left' ? 'right center' : 'left center',
+    };
+  }, [swipeOffset, swipeDirection, isAnimating]);
 
   const toggleQuizType = (type: QuizType) => {
     setQuizTypes(prev => {
@@ -609,10 +641,10 @@ export function PdfReaderView() {
         </ScrollArea>
 
         {/* PDF canvas area */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden" {...swipeHandlers}>
           <ScrollArea className={showSplitView ? 'w-1/2' : 'flex-1'}>
             <div className="p-2 md:p-4 flex justify-center relative">
-              <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg max-w-full" />
+              <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg max-w-full" style={pageFoldStyle} />
               {showOverlayTranslation && (
                 <div className="absolute inset-2 md:inset-4 bg-background/95 backdrop-blur-sm rounded-lg p-4 md:p-6 overflow-auto">
                   <div className="flex items-center justify-between mb-4">
