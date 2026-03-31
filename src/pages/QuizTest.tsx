@@ -362,7 +362,16 @@ export default function QuizTest() {
         <div className="flex-1 flex flex-col overflow-hidden">
           <ScrollArea className="flex-1 p-6">
             <div className="max-w-2xl mx-auto">
-              {/* Question Header */}
+              {/* Fast Mode Timer Bar */}
+              {fastMode && (
+                <div className="mb-4 space-y-1">
+                  <div className="flex justify-between items-center text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Fast Mode</span>
+                    <span className="font-mono font-medium">{questionTimeLeft}s</span>
+                  </div>
+                  <Progress value={(questionTimeLeft / fastModeSeconds) * 100} className="h-2" />
+                </div>
+              )}
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="text-xs">
                   Question {currentIndex + 1} of {questions.length}
