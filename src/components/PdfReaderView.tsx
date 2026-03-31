@@ -16,6 +16,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
+import { savePdfFile, loadPdfState, updatePdfMeta, clearPdfState } from '@/lib/pdfStorage';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
