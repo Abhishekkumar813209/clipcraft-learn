@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, CheckCircle, Loader2, Brain, Save, FolderPlus, Target } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, Loader2, Brain, Save, FolderPlus, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -7,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -112,16 +112,6 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     return new Map();
   });
 
-  const [feedback, setFeedback] = useState<string | null>(() => {
-    try {
-      const saved = sessionStorage.getItem(QUIZ_STATE_KEY);
-      if (saved) {
-        const s = JSON.parse(saved);
-        return s.feedback || null;
-      }
-    } catch {}
-    return null;
-  });
 
   const [isChecking, setIsChecking] = useState(false);
 
@@ -131,10 +121,9 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
       sessionStorage.setItem(QUIZ_STATE_KEY, JSON.stringify({
         answers: serializeAnswers(answers),
         multiAnswers: serializeMultiAnswers(multiAnswers),
-        feedback,
       }));
     } catch {}
-  }, [answers, multiAnswers, feedback]);
+  }, [answers, multiAnswers]);
 
   useEffect(() => {
     persistState();
@@ -192,9 +181,15 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     onGenerateQuiz({ numQuestions: finalCount, questionTypes: Array.from(weakQuizTypes), focusTopics });
   };
 
+  const navigate = useNavigate();
+
   const submitAnswers = async () => {
     if (answeredCount === 0) {
       toast.error(language === 'hindi' ? 'कम से कम एक सवाल का जवाब दें' : 'Please answer at least one question');
+      return;
+    }
+    if (!user) {
+      toast.error('Please sign in to submit quizzes');
       return;
     }
     setIsChecking(true);
@@ -226,9 +221,38 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
       }
 
       const data = await resp.json();
-      setFeedback(data.feedback);
-    } catch {
-      toast.error('Failed to check answers');
+      const aiFeedback = data.feedback;
+
+      // Build user_answers array
+      const userAnswersData = questions.map(q => ({
+        questionId: q.id,
+        answer: getAnswerForQuestion(q) || '(skipped)',
+      }));
+
+      // Auto-save to DB
+      const range = pageRange && pageRange.from !== pageRange.to ? `${pageRange.from}-${pageRange.to}` : `${currentPage}`;
+      const autoName = `${fileName || 'PDF'} - Page ${range}`;
+      const { data: savedQuiz, error: saveErr } = await supabase.from('pdf_saved_quizzes').insert({
+        user_id: user.id,
+        name: autoName,
+        pdf_name: fileName || null,
+        page_range: range,
+        questions: questions as any,
+        language,
+        user_answers: userAnswersData as any,
+        ai_feedback: aiFeedback,
+      }).select('id').single();
+
+      if (saveErr) throw saveErr;
+
+      // Clear session state
+      sessionStorage.removeItem(QUIZ_STATE_KEY);
+
+      // Navigate to analysis page
+      onClose();
+      navigate(`/quizzes/${savedQuiz.id}/analysis`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to submit answers');
     }
     setIsChecking(false);
   };
@@ -360,68 +384,33 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
         </div>
 
         <ScrollArea className="flex-1 overflow-y-auto p-4">
-          {!feedback ? (
-            <div className="space-y-5">
-              {questions.map((q) => (
-                <div key={q.id} className="space-y-2">
-                  <p className="font-medium text-sm">
-                    {q.id}. {q.question}
-                    {q.type !== 'mcq' && q.type !== 'short' && (
-                      <span className="ml-2 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                        {q.type === 'true_false' ? 'T/F' : q.type === 'fill_blank' ? 'Fill' : 'Multi'}
-                      </span>
-                    )}
-                  </p>
-                  {renderQuestion(q)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <div className="flex items-center gap-2 mb-3">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-semibold">{language === 'hindi' ? 'परिणाम' : 'Results'}</span>
+          <div className="space-y-5">
+            {questions.map((q) => (
+              <div key={q.id} className="space-y-2">
+                <p className="font-medium text-sm">
+                  {q.id}. {q.question}
+                  {q.type !== 'mcq' && q.type !== 'short' && (
+                    <span className="ml-2 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                      {q.type === 'true_false' ? 'T/F' : q.type === 'fill_blank' ? 'Fill' : 'Multi'}
+                    </span>
+                  )}
+                </p>
+                {renderQuestion(q)}
               </div>
-              <ReactMarkdown>{feedback}</ReactMarkdown>
-              {getWeakQuestions().length > 0 && (
-                <div className="mt-4 p-3 rounded-lg bg-muted border border-border">
-                  <p className="text-sm font-medium text-foreground mb-1">
-                    <Target className="h-4 w-4 inline mr-1" />
-                    {language === 'hindi' ? `${getWeakQuestions().length} कमज़ोर क्षेत्र चिह्नित` : `${getWeakQuestions().length} weak area(s) identified (skipped questions)`}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {language === 'hindi' ? 'इन विषयों पर अभ्यास करें' : 'Practice these topics to improve'}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            ))}
+          </div>
         </ScrollArea>
 
         <div className="p-4 border-t border-border space-y-2">
-          {!feedback ? (
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground text-center">
-                {language === 'hindi' ? `${answeredCount}/${questions.length} उत्तर दिए` : `${answeredCount}/${questions.length} answered`}
-              </p>
-              <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
-                {isChecking ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {language === 'hindi' ? 'जाँच रहा है...' : 'Checking...'}</> :
-                  language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {getWeakQuestions().length > 0 && onGenerateQuiz && (
-                <Button className="w-full" onClick={() => setShowWeakAreaDialog(true)}>
-                  <Target className="h-4 w-4 mr-2" />
-                  {language === 'hindi' ? 'कमज़ोर क्षेत्रों पर अभ्यास करें' : 'Practice Weak Areas'}
-                </Button>
-              )}
-              <Button className="w-full" variant="outline" onClick={onClose}>
-                {language === 'hindi' ? 'बंद करें' : 'Close'}
-              </Button>
-            </div>
-          )}
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground text-center">
+              {language === 'hindi' ? `${answeredCount}/${questions.length} उत्तर दिए` : `${answeredCount}/${questions.length} answered`}
+            </p>
+            <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
+              {isChecking ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {language === 'hindi' ? 'जाँच रहा है...' : 'Submitting...'}</> :
+                language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
+            </Button>
+          </div>
         </div>
       </div>
 
