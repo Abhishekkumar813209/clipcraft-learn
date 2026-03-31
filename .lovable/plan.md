@@ -1,67 +1,64 @@
 
 
-## Plan: Send AI-Generated Quiz to WhatsApp via Twilio
+## Plan: Save PDF Quizzes to Database with Folders for Revision
 
 ### What It Does
-After a quiz is generated in the PDF reader, a "Send to WhatsApp" button appears. User enters their WhatsApp number once (saved for future use), and the quiz questions + correct answers are formatted and sent as a WhatsApp message via Twilio, including the PDF name and page range.
+After a quiz is generated, a "Save Quiz" button lets you name it and pick/create a folder. Saved quizzes are stored in the database and accessible from a new "My Quizzes" section for quick revision.
 
-### Prerequisites
-1. **Connect Twilio** — Link the Twilio connector to this project (provides `TWILIO_API_KEY` and uses `LOVABLE_API_KEY` for gateway auth)
-2. **User provides their Twilio WhatsApp-enabled "From" number** — stored as a secret
+### Database Changes
 
-### Architecture
+**New table: `pdf_quiz_folders`**
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | PK |
+| user_id | uuid | RLS-linked |
+| name | text | e.g. "Polity", "Economics" |
+| created_at | timestamptz | default now() |
 
-```text
-PdfQuizPanel (UI)
-  └─ "Send to WhatsApp" button
-       └─ supabase.functions.invoke('send-quiz-whatsapp', { body })
-            └─ Edge Function
-                 └─ Twilio Gateway (connector-gateway.lovable.dev/twilio)
-                      └─ WhatsApp message delivered
-```
+**New table: `pdf_saved_quizzes`**
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | PK |
+| user_id | uuid | RLS-linked |
+| folder_id | uuid | FK to pdf_quiz_folders, nullable (unfiled) |
+| name | text | Custom quiz name |
+| pdf_name | text | Source PDF file name |
+| page_range | text | e.g. "5-8" or "3" |
+| questions | jsonb | Full quiz data (questions, options, answers) |
+| language | text | hindi/english/hinglish |
+| created_at | timestamptz | default now() |
 
-### Implementation
+RLS: Users can CRUD own rows on both tables.
 
-**1. Edge Function: `supabase/functions/send-quiz-whatsapp/index.ts`**
-- Accepts: `{ phone, pdfName, pageRange, questions }` 
-- Validates input with Zod
-- Formats quiz as a clean WhatsApp message:
-  ```
-  📝 Quiz from "Indian Polity.pdf" (Pages 5-8)
-  
-  Q1. [MCQ] What is Article 21?
-  A) Right to Life ✅
-  B) Right to Vote
-  C) Right to Property
-  D) Right to Education
-  
-  Q2. [True/False] President is elected directly.
-  Answer: False ✅
-  ...
-  ```
-- Sends via Twilio gateway using `application/x-www-form-urlencoded`
-- Uses `whatsapp:+14155238886` (Twilio sandbox) or user's registered number as `From`
+### UI Changes
 
-**2. UI Changes: `src/components/PdfQuizPanel.tsx`**
-- Add `fileName` prop (passed from PdfReaderView)
-- After quiz is generated (questions visible), show a WhatsApp icon button in the header
-- On click: show a small popover/dialog asking for phone number (with country code, e.g. `+919876543210`)
-- Save the number in `localStorage` so they don't re-enter it
-- Call the edge function with quiz data
-- Show toast on success/failure
+**1. PdfQuizPanel — "Save Quiz" button**
+- Appears in the quiz header (next to close button) after questions are generated
+- Opens a small dialog with:
+  - Quiz name input (pre-filled: `"{pdfName} - Page {range}"`)
+  - Folder dropdown (existing folders + "New Folder" option)
+- Saves to `pdf_saved_quizzes` via Supabase client
 
-**3. Pass `fileName` from `PdfReaderView.tsx` to `PdfQuizPanel`**
-- Already have `fileName` state in PdfReaderView — just pass it as a prop
+**2. PdfReaderView — Pass `fileName` to PdfQuizPanel**
+- Add `fileName` prop to PdfQuizPanel
+
+**3. New component: `SavedQuizzesView.tsx`**
+- Accessible from main navigation/sidebar
+- Shows folders as expandable cards
+- Each quiz shows: name, PDF source, page range, date, question count
+- Click to open quiz in revision mode (re-renders PdfQuizPanel with saved data)
+- Delete and rename options
+
+**4. Sidebar — Add "My Quizzes" nav link**
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `supabase/functions/send-quiz-whatsapp/index.ts` | New edge function: format quiz + send via Twilio gateway |
-| `src/components/PdfQuizPanel.tsx` | Add `fileName` prop, WhatsApp send button with phone input |
-| `src/components/PdfReaderView.tsx` | Pass `fileName` to PdfQuizPanel |
-
-### Setup Steps (before implementation)
-1. Connect Twilio connector to the project
-2. Store Twilio WhatsApp "From" number as a secret (`TWILIO_WHATSAPP_FROM`)
+| Migration SQL | Create `pdf_quiz_folders` and `pdf_saved_quizzes` tables with RLS |
+| `src/components/PdfQuizPanel.tsx` | Add `fileName` prop, "Save Quiz" button with name/folder dialog |
+| `src/components/PdfReaderView.tsx` | Pass `fileName` and `pageRange` to PdfQuizPanel |
+| `src/components/SavedQuizzesView.tsx` | New — browse folders, view/revise saved quizzes |
+| `src/components/Sidebar.tsx` | Add "My Quizzes" navigation link |
+| `src/App.tsx` | Add route for saved quizzes page |
 
