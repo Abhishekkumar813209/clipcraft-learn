@@ -443,8 +443,8 @@ export default function QuizTest() {
           </ScrollArea>
 
           {/* Legend */}
-          <div className="p-4 border-t border-border space-y-2">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Legend</p>
+          <div className="p-4 border-t border-blue-100 dark:border-blue-900/30 space-y-2">
+            <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-2">Legend</p>
             <div className="grid grid-cols-1 gap-1.5 text-xs">
               <div className="flex items-center gap-2">
                 <div className={`w-5 h-5 rounded border ${statusColors['answered']}`} />
@@ -467,9 +467,9 @@ export default function QuizTest() {
                 <span>Answered & Marked</span>
               </div>
             </div>
-            <div className="pt-2 border-t border-border mt-2">
+            <div className="pt-2 border-t border-blue-100 dark:border-blue-900/30 mt-2">
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">{answeredCount}</span>/{questions.length} answered
+                <span className="font-medium text-blue-700 dark:text-blue-400">{answeredCount}</span>/{questions.length} answered
               </p>
             </div>
           </div>
