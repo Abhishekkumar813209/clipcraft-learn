@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { X, CheckCircle, Loader2, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -23,12 +23,86 @@ interface PdfQuizPanelProps {
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
+const QUIZ_STATE_KEY = 'pdf-quiz-state';
+
+function serializeMultiAnswers(m: Map<number, Set<string>>): Record<number, string[]> {
+  const obj: Record<number, string[]> = {};
+  m.forEach((set, key) => { obj[key] = Array.from(set); });
+  return obj;
+}
+
+function deserializeMultiAnswers(obj: Record<number, string[]>): Map<number, Set<string>> {
+  const m = new Map<number, Set<string>>();
+  for (const [k, v] of Object.entries(obj)) {
+    m.set(Number(k), new Set(v));
+  }
+  return m;
+}
+
+function serializeAnswers(m: Map<number, string>): Record<number, string> {
+  const obj: Record<number, string> = {};
+  m.forEach((v, k) => { obj[k] = v; });
+  return obj;
+}
+
+function deserializeAnswers(obj: Record<number, string>): Map<number, string> {
+  const m = new Map<number, string>();
+  for (const [k, v] of Object.entries(obj)) {
+    m.set(Number(k), v);
+  }
+  return m;
+}
 
 export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, onClose }: PdfQuizPanelProps) {
-  const [answers, setAnswers] = useState<Map<number, string>>(new Map());
-  const [multiAnswers, setMultiAnswers] = useState<Map<number, Set<string>>>(new Map());
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<Map<number, string>>(() => {
+    try {
+      const saved = sessionStorage.getItem(QUIZ_STATE_KEY);
+      if (saved) {
+        const s = JSON.parse(saved);
+        if (s.answers) return deserializeAnswers(s.answers);
+      }
+    } catch {}
+    return new Map();
+  });
+
+  const [multiAnswers, setMultiAnswers] = useState<Map<number, Set<string>>>(() => {
+    try {
+      const saved = sessionStorage.getItem(QUIZ_STATE_KEY);
+      if (saved) {
+        const s = JSON.parse(saved);
+        if (s.multiAnswers) return deserializeMultiAnswers(s.multiAnswers);
+      }
+    } catch {}
+    return new Map();
+  });
+
+  const [feedback, setFeedback] = useState<string | null>(() => {
+    try {
+      const saved = sessionStorage.getItem(QUIZ_STATE_KEY);
+      if (saved) {
+        const s = JSON.parse(saved);
+        return s.feedback || null;
+      }
+    } catch {}
+    return null;
+  });
+
   const [isChecking, setIsChecking] = useState(false);
+
+  // Persist state to sessionStorage on changes
+  const persistState = useCallback(() => {
+    try {
+      sessionStorage.setItem(QUIZ_STATE_KEY, JSON.stringify({
+        answers: serializeAnswers(answers),
+        multiAnswers: serializeMultiAnswers(multiAnswers),
+        feedback,
+      }));
+    } catch {}
+  }, [answers, multiAnswers, feedback]);
+
+  useEffect(() => {
+    persistState();
+  }, [persistState]);
 
   const setAnswer = (qId: number, value: string) => {
     setAnswers(prev => new Map(prev).set(qId, value));
@@ -102,14 +176,7 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
           <div className="space-y-1.5 pl-4">
             {['True', 'False'].map((opt) => (
               <label key={opt} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
-                <input
-                  type="radio"
-                  name={`q-${q.id}`}
-                  value={opt}
-                  checked={answers.get(q.id) === opt}
-                  onChange={() => setAnswer(q.id, opt)}
-                  className="accent-primary"
-                />
+                <input type="radio" name={`q-${q.id}`} value={opt} checked={answers.get(q.id) === opt} onChange={() => setAnswer(q.id, opt)} className="accent-primary" />
                 {opt}
               </label>
             ))}
@@ -120,13 +187,7 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
         return (
           <div className="pl-4 space-y-1.5">
             <p className="text-xs text-muted-foreground italic">Fill in the blank(s)</p>
-            <input
-              type="text"
-              placeholder={language === 'hindi' ? 'रिक्त स्थान भरें...' : 'Fill in the blank...'}
-              value={answers.get(q.id) || ''}
-              onChange={(e) => setAnswer(q.id, e.target.value)}
-              className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
-            />
+            <input type="text" placeholder={language === 'hindi' ? 'रिक्त स्थान भरें...' : 'Fill in the blank...'} value={answers.get(q.id) || ''} onChange={(e) => setAnswer(q.id, e.target.value)} className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary" />
           </div>
         );
 
@@ -138,12 +199,7 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
               const selected = multiAnswers.get(q.id)?.has(opt) || false;
               return (
                 <label key={idx} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={selected}
-                    onChange={() => toggleMultiAnswer(q.id, opt)}
-                    className="accent-primary"
-                  />
+                  <input type="checkbox" checked={selected} onChange={() => toggleMultiAnswer(q.id, opt)} className="accent-primary" />
                   {opt}
                 </label>
               );
@@ -156,14 +212,7 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
           <div className="space-y-1.5 pl-4">
             {q.options?.map((opt, idx) => (
               <label key={idx} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
-                <input
-                  type="radio"
-                  name={`q-${q.id}`}
-                  value={opt}
-                  checked={answers.get(q.id) === opt}
-                  onChange={() => setAnswer(q.id, opt)}
-                  className="accent-primary"
-                />
+                <input type="radio" name={`q-${q.id}`} value={opt} checked={answers.get(q.id) === opt} onChange={() => setAnswer(q.id, opt)} className="accent-primary" />
                 {opt}
               </label>
             ))}
@@ -173,13 +222,7 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
       case 'short':
       default:
         return (
-          <input
-            type="text"
-            placeholder={language === 'hindi' ? 'अपना उत्तर लिखें...' : 'Type your answer...'}
-            value={answers.get(q.id) || ''}
-            onChange={(e) => setAnswer(q.id, e.target.value)}
-            className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
-          />
+          <input type="text" placeholder={language === 'hindi' ? 'अपना उत्तर लिखें...' : 'Type your answer...'} value={answers.get(q.id) || ''} onChange={(e) => setAnswer(q.id, e.target.value)} className="w-full bg-muted rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary" />
         );
     }
   };

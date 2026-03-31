@@ -693,7 +693,20 @@ export function PdfReaderView() {
 
       {/* Quiz panel */}
       {showQuiz && (
-        <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => setShowQuiz(false)} />
+        <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
+          setShowQuiz(false);
+          // Clear quiz from sessionStorage
+          try {
+            const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+            if (saved) {
+              const state = JSON.parse(saved);
+              delete state.showQuiz;
+              delete state.quizQuestions;
+              sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
+            }
+          } catch {}
+          sessionStorage.removeItem('pdf-quiz-state');
+        }} />
       )}
     </div>
   );
