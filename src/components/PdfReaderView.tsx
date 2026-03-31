@@ -72,6 +72,7 @@ export function PdfReaderView() {
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isRendering, setIsRendering] = useState(false);
+  const isRenderingRef = useRef(false);
 
   const [translatedText, setTranslatedText] = useState<Map<string, string>>(new Map());
   const [showTranslation, setShowTranslation] = useState(false);
