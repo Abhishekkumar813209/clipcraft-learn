@@ -192,7 +192,11 @@ export function PdfReaderView() {
     const saved = sessionStorage.getItem(PDF_SESSION_KEY);
     if (saved) {
       try {
-        const { dataUrl, fileName: fn, currentPage: cp, zoom: z } = JSON.parse(saved);
+        const { dataUrl, fileName: fn, currentPage: cp, zoom: z, showQuiz: sq, quizQuestions: qq } = JSON.parse(saved);
+        if (sq && qq?.length) {
+          setQuizQuestions(qq);
+          setShowQuiz(true);
+        }
         if (dataUrl) {
           loadPdfFromDataUrl(dataUrl, fn || '', cp || 1, z || 1.2).finally(() => setRestoringPdf(false));
           return;
@@ -384,7 +388,20 @@ export function PdfReaderView() {
         toast.error(err.error || 'Quiz generation failed'); setIsLoadingQuiz(false); return;
       }
       const data = await resp.json();
-      if (data.questions?.length) { setQuizQuestions(data.questions); setShowQuiz(true); }
+      if (data.questions?.length) {
+        setQuizQuestions(data.questions);
+        setShowQuiz(true);
+        // Persist quiz state to sessionStorage
+        try {
+          const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+          if (saved) {
+            const state = JSON.parse(saved);
+            state.showQuiz = true;
+            state.quizQuestions = data.questions;
+            sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
+          }
+        } catch {}
+      }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
     setIsLoadingQuiz(false);
@@ -676,7 +693,20 @@ export function PdfReaderView() {
 
       {/* Quiz panel */}
       {showQuiz && (
-        <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => setShowQuiz(false)} />
+        <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
+          setShowQuiz(false);
+          // Clear quiz from sessionStorage
+          try {
+            const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+            if (saved) {
+              const state = JSON.parse(saved);
+              delete state.showQuiz;
+              delete state.quizQuestions;
+              sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
+            }
+          } catch {}
+          sessionStorage.removeItem('pdf-quiz-state');
+        }} />
       )}
     </div>
   );
