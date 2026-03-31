@@ -388,7 +388,20 @@ export function PdfReaderView() {
         toast.error(err.error || 'Quiz generation failed'); setIsLoadingQuiz(false); return;
       }
       const data = await resp.json();
-      if (data.questions?.length) { setQuizQuestions(data.questions); setShowQuiz(true); }
+      if (data.questions?.length) {
+        setQuizQuestions(data.questions);
+        setShowQuiz(true);
+        // Persist quiz state to sessionStorage
+        try {
+          const saved = sessionStorage.getItem(PDF_SESSION_KEY);
+          if (saved) {
+            const state = JSON.parse(saved);
+            state.showQuiz = true;
+            state.quizQuestions = data.questions;
+            sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
+          }
+        } catch {}
+      }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
     setIsLoadingQuiz(false);
