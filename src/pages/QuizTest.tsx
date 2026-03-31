@@ -370,7 +370,18 @@ export default function QuizTest() {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Question Panel */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden relative">
+          {/* Pause Overlay */}
+          {paused && (
+            <div className="absolute inset-0 z-50 backdrop-blur-md bg-background/80 flex flex-col items-center justify-center gap-4">
+              <Pause className="h-12 w-12 text-blue-500" />
+              <h2 className="text-xl font-bold text-foreground">Quiz Paused</h2>
+              <p className="text-sm text-muted-foreground">Timer is stopped. Your progress is saved.</p>
+              <Button onClick={() => setPaused(false)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                <Play className="h-4 w-4" /> Resume Quiz
+              </Button>
+            </div>
+          )}
           <ScrollArea className="flex-1 p-6">
             <div className="max-w-2xl mx-auto">
               {/* Fast Mode Timer Bar */}
