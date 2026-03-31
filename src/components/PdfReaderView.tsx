@@ -16,6 +16,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
+import { savePdfFile, loadPdfState, updatePdfMeta, clearPdfState } from '@/lib/pdfStorage';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
@@ -56,7 +57,7 @@ async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: nu
   return content.items.map((item: any) => item.str).join(' ');
 }
 
-const PDF_SESSION_KEY = 'pdf-reader-state';
+
 
 export function PdfReaderView() {
   const navigate = useNavigate();
@@ -195,37 +196,27 @@ export function PdfReaderView() {
     }
   }, [renderPage, renderThumbnail]);
 
-  // Restore PDF from sessionStorage on mount
+  // Restore PDF from IndexedDB on mount
   useEffect(() => {
-    const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-    if (saved) {
-      try {
-        const { dataUrl, fileName: fn, currentPage: cp, zoom: z, showQuiz: sq, quizQuestions: qq } = JSON.parse(saved);
-        if (sq && qq?.length) {
-          setQuizQuestions(qq);
+    loadPdfState().then(saved => {
+      if (saved) {
+        const { dataUrl, meta } = saved;
+        if (meta.showQuiz && meta.quizQuestions?.length) {
+          setQuizQuestions(meta.quizQuestions);
           setShowQuiz(true);
         }
-        if (dataUrl) {
-          loadPdfFromDataUrl(dataUrl, fn || '', cp || 1, z || 1.2).finally(() => setRestoringPdf(false));
-          return;
-        }
-      } catch {}
-    }
-    setRestoringPdf(false);
+        loadPdfFromDataUrl(dataUrl, meta.fileName || '', meta.currentPage || 1, meta.zoom || 1.2)
+          .finally(() => setRestoringPdf(false));
+      } else {
+        setRestoringPdf(false);
+      }
+    }).catch(() => setRestoringPdf(false));
   }, []);
 
-  // Persist page/zoom changes to sessionStorage
+  // Persist page/zoom changes to IndexedDB
   useEffect(() => {
     if (!pdfDoc) return;
-    const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-    if (saved) {
-      try {
-        const state = JSON.parse(saved);
-        state.currentPage = currentPage;
-        state.zoom = zoom;
-        sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-      } catch {}
-    }
+    updatePdfMeta({ currentPage, zoom });
   }, [currentPage, zoom, pdfDoc]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -242,19 +233,12 @@ export function PdfReaderView() {
     setShowTranslation(false);
     setActiveLanguage('english');
 
-    // Save to sessionStorage as dataURL
+    // Save to IndexedDB (no size limit)
     const reader = new FileReader();
     reader.onload = () => {
-      try {
-        sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify({
-          dataUrl: reader.result as string,
-          fileName: file.name,
-          currentPage: 1,
-          zoom,
-        }));
-      } catch (e) {
-        console.warn('PDF too large for sessionStorage', e);
-      }
+      savePdfFile(reader.result as string, file.name, 1, zoom).catch(e =>
+        console.warn('Failed to save PDF to IndexedDB', e)
+      );
     };
     reader.readAsDataURL(file);
 
@@ -399,16 +383,8 @@ export function PdfReaderView() {
       if (data.questions?.length) {
         setQuizQuestions(data.questions);
         setShowQuiz(true);
-        // Persist quiz state to sessionStorage
-        try {
-          const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-          if (saved) {
-            const state = JSON.parse(saved);
-            state.showQuiz = true;
-            state.quizQuestions = data.questions;
-            sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-          }
-        } catch {}
+        // Persist quiz state to IndexedDB
+        updatePdfMeta({ showQuiz: true, quizQuestions: data.questions });
       }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
@@ -724,15 +700,7 @@ export function PdfReaderView() {
         <div className={isMobile ? 'fixed inset-0 z-50 bg-background overflow-auto' : ''}>
           <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
             setShowQuiz(false);
-            try {
-              const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-              if (saved) {
-                const state = JSON.parse(saved);
-                delete state.showQuiz;
-                delete state.quizQuestions;
-                sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-              }
-            } catch {}
+            updatePdfMeta({ showQuiz: false, quizQuestions: [] });
             sessionStorage.removeItem('pdf-quiz-state');
           }} />
         </div>
