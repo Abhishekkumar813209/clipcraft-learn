@@ -135,11 +135,11 @@ export default function QuizTest() {
   };
 
   const statusColors: Record<QuestionStatus, string> = {
-    'not-visited': 'bg-yellow-50 text-yellow-600 border-yellow-300 dark:bg-yellow-950/30 dark:text-yellow-500 dark:border-yellow-800',
-    'not-answered': 'bg-red-100 text-red-600 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800',
-    'answered': 'bg-green-100 text-green-600 border-green-300 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
-    'marked': 'bg-orange-100 text-orange-600 border-orange-300 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-800',
-    'answered-marked': 'bg-teal-100 text-teal-600 border-teal-300 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-800',
+    'not-visited': 'bg-yellow-200 text-yellow-800 border-yellow-400 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700',
+    'not-answered': 'bg-red-200 text-red-800 border-red-400 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700',
+    'answered': 'bg-green-200 text-green-800 border-green-400 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700',
+    'marked': 'bg-orange-200 text-orange-800 border-orange-400 dark:bg-orange-900/50 dark:text-orange-300 dark:border-orange-700',
+    'answered-marked': 'bg-teal-200 text-teal-800 border-teal-400 dark:bg-teal-900/50 dark:text-teal-300 dark:border-teal-700',
   };
 
   const setAnswer = (qId: number, value: string) => {
