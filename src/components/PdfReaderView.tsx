@@ -64,6 +64,7 @@ async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: nu
 export function PdfReaderView() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { user } = useAuth();
   const onBack = () => navigate('/');
 
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
