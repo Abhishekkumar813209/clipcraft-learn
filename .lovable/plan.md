@@ -1,48 +1,55 @@
 
 
-## Plan: Keep PDF in Memory Across Quiz Navigation
+## Plan: Darker Sidebar Colors + AI-Powered Weak Areas Practice
 
-### Problem
-When navigating to `/quizzes/:id`, the `PdfReaderView` component unmounts, destroying the parsed `PDFDocumentProxy`, canvas renders, and thumbnails. On return, it reads the data URL from IndexedDB, re-parses the entire PDF, re-renders the page, and regenerates all thumbnails — causing the slow "Restoring your PDF…" loading screen.
+### Change 1: Darker Sidebar Question Palette Colors
 
-### Solution
-Create a module-level in-memory cache that survives component unmount/remount (but not full page reload). Store the parsed `PDFDocumentProxy`, thumbnail map, and current data URL. On remount, check this cache first — if it matches, skip the IndexedDB read and PDF parsing entirely, restoring the viewer instantly.
+**File:** `src/pages/QuizTest.tsx` (lines 137-143)
+
+Current colors are too light (e.g. `bg-yellow-50`, `bg-green-100`). Make them more saturated/darker:
+
+| Status | Current | New |
+|--------|---------|-----|
+| Not Visited | `bg-yellow-50` | `bg-yellow-200` with darker text/border |
+| Not Answered | `bg-red-100` | `bg-red-200` with darker text/border |
+| Answered | `bg-green-100` | `bg-green-200` with darker text/border |
+| Marked | `bg-orange-100` | `bg-orange-200` with darker text/border |
+| Answered & Marked | `bg-teal-100` | `bg-teal-200` with darker text/border |
+
+### Change 2: AI-Enhanced "Practice Weak Areas"
+
+**File:** `src/pages/QuizAnalysis.tsx` — `handlePracticeWeakAreas` function
+
+Current behavior: only copies the exact wrong/unattempted questions into a new quiz.
+
+New behavior:
+1. Collect wrong + unattempted questions
+2. Identify the weak topics from those questions (extract from question text patterns)
+3. Call an edge function that uses AI to generate **additional practice questions** on those same topics
+4. Combine: original wrong/unattempted questions + AI-generated new questions on same topics
+5. Save combined set as the practice quiz
+
+**New Edge Function:** `supabase/functions/generate-weak-area-questions/index.ts`
+- Input: list of weak questions (question text + correct answer + type)
+- Uses AI to generate 3-5 additional questions per weak topic area
+- Returns new questions in the same format as the quiz system
+- Model: `google/gemini-2.5-flash` via Lovable AI gateway
+
+**Flow:**
+```text
+User clicks "Practice Weak Areas"
+  → Collect wrong/unattempted questions
+  → Send to edge function with question texts as context
+  → AI generates additional similar questions on same topics
+  → Merge original weak Qs + new AI Qs
+  → Save as new quiz → Navigate to it
+```
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `src/lib/pdfStorage.ts` | Add an in-memory cache object (`pdfMemoryCache`) that holds `PDFDocumentProxy`, `dataUrl`, `thumbnails` Map, and `fileName`. Export get/set/clear helpers. |
-| `src/components/PdfReaderView.tsx` | On mount: check `pdfMemoryCache` first — if populated, use cached `doc` + thumbnails directly (skip IndexedDB + re-parse). On PDF load: populate the cache. On "Close": clear the cache too. |
-
-### How It Works
-
-```text
-First load (upload or IndexedDB restore):
-  → Parse PDF → render → generate thumbnails
-  → Store doc + thumbnails in pdfMemoryCache
-
-Navigate to quiz → PdfReaderView unmounts (cache survives)
-
-Navigate back → PdfReaderView mounts:
-  → Check pdfMemoryCache → found!
-  → Set pdfDoc, thumbnails, page from cache
-  → Render current page canvas (instant, no re-parse)
-  → Skip "Restoring your PDF…" entirely
-
-Full page reload → cache is empty → fall back to IndexedDB restore (existing behavior)
-```
-
-### Memory Cache Shape
-```typescript
-// src/lib/pdfStorage.ts
-let memoryCache: {
-  doc: PDFDocumentProxy;
-  dataUrl: string;
-  fileName: string;
-  thumbnails: Map<number, string>;
-} | null = null;
-```
-
-Single-file cache at module scope — no new dependencies, no Zustand needed. The existing IndexedDB persistence remains as the fallback for hard reloads.
+| `src/pages/QuizTest.tsx` | Darken `statusColors` values (lines 137-143) |
+| `src/pages/QuizAnalysis.tsx` | Update `handlePracticeWeakAreas` to call edge function for AI-generated additional questions |
+| `supabase/functions/generate-weak-area-questions/index.ts` | New edge function: takes weak questions, generates additional practice questions on same topics using AI |
 
