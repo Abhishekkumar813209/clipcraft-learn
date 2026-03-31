@@ -192,7 +192,11 @@ export function PdfReaderView() {
     const saved = sessionStorage.getItem(PDF_SESSION_KEY);
     if (saved) {
       try {
-        const { dataUrl, fileName: fn, currentPage: cp, zoom: z } = JSON.parse(saved);
+        const { dataUrl, fileName: fn, currentPage: cp, zoom: z, showQuiz: sq, quizQuestions: qq } = JSON.parse(saved);
+        if (sq && qq?.length) {
+          setQuizQuestions(qq);
+          setShowQuiz(true);
+        }
         if (dataUrl) {
           loadPdfFromDataUrl(dataUrl, fn || '', cp || 1, z || 1.2).finally(() => setRestoringPdf(false));
           return;
