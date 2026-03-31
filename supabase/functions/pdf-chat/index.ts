@@ -85,6 +85,10 @@ ${pageText || "No text available."}`;
       };
       const typeList = types.map((t: string) => typeDescriptions[t] || t).join(', ');
       
+      const focusInstruction = focusTopics?.length
+        ? `\n\nIMPORTANT: The student has weak areas. Focus your questions specifically on these topics/questions the student struggled with:\n${focusTopics.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}\n\nGenerate NEW questions that test the same concepts from different angles.`
+        : '';
+
       const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly ${numQ} questions to test the student's understanding.
 
 Question types to use (distribute evenly among these): ${typeList}
@@ -100,7 +104,7 @@ For true_false: the correctAnswer should be "True" or "False".
 For fill_blank: write the question with ___ where the blank is, correctAnswer is the word(s) that fill the blank.
 For multiple_correct: provide 4 options, correctAnswer should list all correct options separated by commas.
 
-Generate questions in ${lang}.
+Generate questions in ${lang}.${focusInstruction}
 
 Page text:
 ${pageText || "No text available."}`;
