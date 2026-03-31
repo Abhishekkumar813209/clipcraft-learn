@@ -112,8 +112,35 @@ export default function QuizAnalysis() {
         return;
       }
 
-      // Re-index questions
-      const reIndexed = weakQuestions.map((q, idx) => ({ ...q, id: idx + 1 }));
+      // Call AI to generate additional questions on weak topics
+      let aiQuestions: QuizQuestion[] = [];
+      try {
+        const { data: fnData, error: fnError } = await supabase.functions.invoke('generate-weak-area-questions', {
+          body: {
+            weakQuestions: weakQuestions.map(q => ({
+              question: q.question,
+              type: q.type,
+              correctAnswer: q.correctAnswer,
+              options: q.options,
+            })),
+            language: quiz.language || 'english',
+          },
+        });
+
+        if (fnError) {
+          console.error('AI generation error:', fnError);
+          toast.info('Could not generate AI questions, using original weak questions only');
+        } else if (fnData?.questions && Array.isArray(fnData.questions)) {
+          aiQuestions = fnData.questions;
+        }
+      } catch (aiErr) {
+        console.error('AI call failed:', aiErr);
+        toast.info('AI unavailable, using original weak questions only');
+      }
+
+      // Combine: original weak questions + AI-generated questions
+      const combined = [...weakQuestions, ...aiQuestions];
+      const reIndexed = combined.map((q, idx) => ({ ...q, id: idx + 1 }));
 
       const { data, error } = await supabase
         .from('pdf_saved_quizzes')
@@ -130,7 +157,8 @@ export default function QuizAnalysis() {
         .single();
 
       if (error || !data) throw error;
-      toast.success(`Practice quiz created with ${weakQuestions.length} questions`);
+      const totalAi = aiQuestions.length;
+      toast.success(`Practice quiz created: ${weakQuestions.length} weak + ${totalAi} AI questions`);
       navigate(`/quizzes/${data.id}`);
     } catch {
       toast.error('Failed to create practice quiz');
