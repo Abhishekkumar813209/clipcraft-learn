@@ -1,33 +1,47 @@
 
 
-## Plan: Persist Quiz/Test State Across Tab Switches
+## Plan: Make PDF Reader Mobile-Responsive
 
 ### Problem
-When you navigate away from `/pdf` (e.g., to dashboard) and come back, the component unmounts and all quiz state is lost — generated questions, your answers, checking results, everything resets.
-
-### Solution
-Persist quiz-related state in `sessionStorage` alongside the existing PDF state, and restore it on remount.
+The PDF reader layout is desktop-only. On mobile:
+- The thumbnail sidebar (fixed `w-24`) eats valuable screen space
+- The top toolbar buttons overflow and get clipped (`flex-wrap` helps but not enough)
+- The page navigation bar (`absolute bottom-4 left-1/2`) may overlap or get hidden
+- The chat sidebar and quiz panel take full width, blocking the PDF
+- Canvas renders at desktop zoom (1.2x) which is too wide for small screens
 
 ### Changes
 
 **File: `src/components/PdfReaderView.tsx`**
-- Extend the existing `sessionStorage` persistence (key `pdf-reader-state`) to also save:
-  - `showQuiz` (boolean)
-  - `quizQuestions` (the generated questions array)
-- On mount, restore these values from sessionStorage so the quiz panel reopens with the same questions
 
-**File: `src/components/PdfQuizPanel.tsx`**
-- Persist answer state (`answers`, `multiAnswers`, `results`, `showResults`) to `sessionStorage` under a separate key (e.g., `pdf-quiz-state`)
-- On mount, restore saved answers and results
-- On close (`onClose`), clear the quiz sessionStorage entry
-- Save state on every answer change and when results are checked
+1. **Hide thumbnail sidebar on mobile** — Add `hidden md:block` to the thumbnail `ScrollArea` (line 607). Thumbnails are not usable on small screens.
 
-This way, switching tabs and coming back will restore both the quiz questions AND your in-progress answers exactly where you left off.
+2. **Responsive top toolbar** — Shrink/hide labels on mobile. Hide text labels like "Summarize", "Quiz", "Chat" on small screens (keep icons only). Reduce gaps. Make the toolbar horizontally scrollable if needed (`overflow-x-auto`).
+
+3. **Responsive canvas zoom** — Set initial zoom based on screen width. On mobile, default to a zoom that fits the screen width (e.g., `window.innerWidth / 612` where 612 is standard PDF point width). Add a `useEffect` or initial calculation.
+
+4. **Responsive page navigation** — Ensure the bottom nav bar stays visible and doesn't clip on mobile. Add responsive padding/positioning.
+
+5. **Chat sidebar as drawer on mobile** — On mobile, render `PdfChatSidebar` as a full-screen overlay or bottom sheet instead of a side panel that squishes the PDF.
+
+6. **Quiz panel responsive** — Ensure `PdfQuizPanel` is scrollable and usable on mobile (full-width overlay).
+
+7. **Upload screen** — Already uses `flex-col items-center justify-center` so should work, but verify padding.
+
+### Technical Details
+
+| Area | Desktop (md+) | Mobile (<md) |
+|------|--------------|-------------|
+| Thumbnails | 96px sidebar | Hidden |
+| Toolbar | Full labels + icons | Icons only, scrollable |
+| PDF zoom | 1.2x default | Auto-fit to screen width |
+| Chat | Side panel | Full overlay / drawer |
+| Quiz | Side panel | Full-width overlay |
+| Page nav | Centered floating bar | Same, smaller padding |
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `src/components/PdfReaderView.tsx` | Save/restore `showQuiz` + `quizQuestions` in sessionStorage |
-| `src/components/PdfQuizPanel.tsx` | Save/restore answers, multiAnswers, results in sessionStorage |
+| `src/components/PdfReaderView.tsx` | Hide thumbnails on mobile, responsive zoom, toolbar icons-only on mobile, chat/quiz overlay on mobile |
 
