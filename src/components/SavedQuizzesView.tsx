@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, ChevronDown, ChevronRight, Trash2, FileText, Brain, Loader2, ArrowLeft } from 'lucide-react';
+import { FolderOpen, ChevronDown, ChevronRight, Trash2, FileText, Brain, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
