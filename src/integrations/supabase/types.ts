@@ -234,6 +234,7 @@ export type Database = {
       }
       pdf_saved_quizzes: {
         Row: {
+          ai_feedback: string | null
           created_at: string
           folder_id: string | null
           id: string
@@ -242,9 +243,11 @@ export type Database = {
           page_range: string | null
           pdf_name: string | null
           questions: Json
+          user_answers: Json | null
           user_id: string
         }
         Insert: {
+          ai_feedback?: string | null
           created_at?: string
           folder_id?: string | null
           id?: string
@@ -253,9 +256,11 @@ export type Database = {
           page_range?: string | null
           pdf_name?: string | null
           questions?: Json
+          user_answers?: Json | null
           user_id: string
         }
         Update: {
+          ai_feedback?: string | null
           created_at?: string
           folder_id?: string | null
           id?: string
@@ -264,6 +269,7 @@ export type Database = {
           page_range?: string | null
           pdf_name?: string | null
           questions?: Json
+          user_answers?: Json | null
           user_id?: string
         }
         Relationships: [
