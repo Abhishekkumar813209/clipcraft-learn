@@ -121,10 +121,9 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
       sessionStorage.setItem(QUIZ_STATE_KEY, JSON.stringify({
         answers: serializeAnswers(answers),
         multiAnswers: serializeMultiAnswers(multiAnswers),
-        feedback,
       }));
     } catch {}
-  }, [answers, multiAnswers, feedback]);
+  }, [answers, multiAnswers]);
 
   useEffect(() => {
     persistState();
