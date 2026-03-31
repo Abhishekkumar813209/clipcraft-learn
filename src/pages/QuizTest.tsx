@@ -135,11 +135,11 @@ export default function QuizTest() {
   };
 
   const statusColors: Record<QuestionStatus, string> = {
-    'not-visited': 'bg-blue-50 text-blue-400 border-blue-200 dark:bg-blue-950/30 dark:text-blue-500 dark:border-blue-800',
+    'not-visited': 'bg-yellow-50 text-yellow-600 border-yellow-300 dark:bg-yellow-950/30 dark:text-yellow-500 dark:border-yellow-800',
     'not-answered': 'bg-red-100 text-red-600 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800',
-    'answered': 'bg-green-100 text-green-700 border-green-300 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
-    'marked': 'bg-blue-100 text-blue-600 border-blue-300 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-700',
-    'answered-marked': 'bg-cyan-100 text-cyan-700 border-cyan-300 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800',
+    'answered': 'bg-green-100 text-green-600 border-green-300 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
+    'marked': 'bg-orange-100 text-orange-600 border-orange-300 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-800',
+    'answered-marked': 'bg-teal-100 text-teal-600 border-teal-300 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-800',
   };
 
   const setAnswer = (qId: number, value: string) => {
