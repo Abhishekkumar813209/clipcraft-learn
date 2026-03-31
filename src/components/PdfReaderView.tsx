@@ -142,6 +142,7 @@ export function PdfReaderView() {
     };
   }, [swipeOffset, swipeDirection, isAnimating]);
 
+  const toggleQuizType = (type: QuizType) => {
     setQuizTypes(prev => {
       const next = new Set(prev);
       if (next.has(type)) {
