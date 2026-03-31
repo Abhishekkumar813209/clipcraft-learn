@@ -77,7 +77,7 @@ function deserializeAnswers(obj: Record<number, string>): Map<number, string> {
   return m;
 }
 
-export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, fileName, onClose }: PdfQuizPanelProps) {
+export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, fileName, onClose, onGenerateQuiz }: PdfQuizPanelProps) {
   const { user } = useAuth();
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveName, setSaveName] = useState('');
@@ -85,6 +85,10 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
   const [newFolderName, setNewFolderName] = useState('');
   const [folders, setFolders] = useState<QuizFolder[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [showWeakAreaDialog, setShowWeakAreaDialog] = useState(false);
+  const [weakQuizCount, setWeakQuizCount] = useState(5);
+  const [customWeakCount, setCustomWeakCount] = useState('');
+  const [weakQuizTypes, setWeakQuizTypes] = useState<Set<QuizType>>(new Set(['mcq', 'true_false', 'fill_blank', 'multiple_correct', 'short']));
 
   const [answers, setAnswers] = useState<Map<number, string>>(() => {
     try {
