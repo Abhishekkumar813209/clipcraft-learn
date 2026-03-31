@@ -18,7 +18,7 @@ import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
-import { savePdfFile, loadPdfState, updatePdfMeta, clearPdfState } from '@/lib/pdfStorage';
+import { savePdfFile, loadPdfState, updatePdfMeta, clearPdfState, getPdfMemoryCache, setPdfMemoryCache, clearPdfMemoryCache } from '@/lib/pdfStorage';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
