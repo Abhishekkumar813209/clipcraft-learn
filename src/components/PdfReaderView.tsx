@@ -97,8 +97,6 @@ export function PdfReaderView() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const prefetchAbortRef = useRef<AbortController | null>(null);
 
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
   const [quizFrom, setQuizFrom] = useState(1);
