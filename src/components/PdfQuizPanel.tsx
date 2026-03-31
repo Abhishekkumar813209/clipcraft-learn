@@ -112,16 +112,6 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     return new Map();
   });
 
-  const [feedback, setFeedback] = useState<string | null>(() => {
-    try {
-      const saved = sessionStorage.getItem(QUIZ_STATE_KEY);
-      if (saved) {
-        const s = JSON.parse(saved);
-        return s.feedback || null;
-      }
-    } catch {}
-    return null;
-  });
 
   const [isChecking, setIsChecking] = useState(false);
 
