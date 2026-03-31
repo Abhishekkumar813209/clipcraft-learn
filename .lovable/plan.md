@@ -1,55 +1,40 @@
 
 
-## Plan: Darker Sidebar Colors + AI-Powered Weak Areas Practice
+## Plan: Add Pause/Resume for Quiz Timer
 
-### Change 1: Darker Sidebar Question Palette Colors
+### What Changes
 
-**File:** `src/pages/QuizTest.tsx` (lines 137-143)
+**File:** `src/pages/QuizTest.tsx`
 
-Current colors are too light (e.g. `bg-yellow-50`, `bg-green-100`). Make them more saturated/darker:
+Add a `paused` state. When paused:
+- The elapsed timer stops counting
+- The fast mode per-question timer stops counting (no auto-advance)
+- A semi-transparent overlay covers the question area so the user can't interact with questions
+- A "Paused" indicator + Resume button is shown
 
-| Status | Current | New |
-|--------|---------|-----|
-| Not Visited | `bg-yellow-50` | `bg-yellow-200` with darker text/border |
-| Not Answered | `bg-red-100` | `bg-red-200` with darker text/border |
-| Answered | `bg-green-100` | `bg-green-200` with darker text/border |
-| Marked | `bg-orange-100` | `bg-orange-200` with darker text/border |
-| Answered & Marked | `bg-teal-100` | `bg-teal-200` with darker text/border |
+### Implementation Details
 
-### Change 2: AI-Enhanced "Practice Weak Areas"
+1. **New state:** `const [paused, setPaused] = useState(false);`
 
-**File:** `src/pages/QuizAnalysis.tsx` — `handlePracticeWeakAreas` function
+2. **Elapsed timer** (line 71-74): Add `if (paused) return;` guard so the interval doesn't tick when paused
 
-Current behavior: only copies the exact wrong/unattempted questions into a new quiz.
+3. **Fast mode timer** (line 83-103): Add `paused` to the guard — `if (!fastMode || isSubmitting || paused) return;`
 
-New behavior:
-1. Collect wrong + unattempted questions
-2. Identify the weak topics from those questions (extract from question text patterns)
-3. Call an edge function that uses AI to generate **additional practice questions** on those same topics
-4. Combine: original wrong/unattempted questions + AI-generated new questions on same topics
-5. Save combined set as the practice quiz
+4. **Pause button:** Add a Pause/Play toggle button next to the timer display in the header. When clicked, toggles `paused` state.
 
-**New Edge Function:** `supabase/functions/generate-weak-area-questions/index.ts`
-- Input: list of weak questions (question text + correct answer + type)
-- Uses AI to generate 3-5 additional questions per weak topic area
-- Returns new questions in the same format as the quiz system
-- Model: `google/gemini-2.5-flash` via Lovable AI gateway
+5. **Overlay when paused:** Render a semi-transparent overlay over the question card area with a "Quiz Paused" message and a Resume button. This prevents answering questions or navigating while paused.
 
-**Flow:**
-```text
-User clicks "Practice Weak Areas"
-  → Collect wrong/unattempted questions
-  → Send to edge function with question texts as context
-  → AI generates additional similar questions on same topics
-  → Merge original weak Qs + new AI Qs
-  → Save as new quiz → Navigate to it
-```
+6. **Navigation blocked:** Disable Prev/Next buttons and question palette clicks when `paused` is true.
 
-### Files Modified
+### UI
 
-| File | Change |
-|------|--------|
-| `src/pages/QuizTest.tsx` | Darken `statusColors` values (lines 137-143) |
-| `src/pages/QuizAnalysis.tsx` | Update `handlePracticeWeakAreas` to call edge function for AI-generated additional questions |
-| `supabase/functions/generate-weak-area-questions/index.ts` | New edge function: takes weak questions, generates additional practice questions on same topics using AI |
+| Element | Behavior |
+|---------|----------|
+| Timer display | Shows current time but stops counting when paused |
+| Pause button (⏸/▶) | Toggles pause state, placed next to clock icon |
+| Question area | Covered by blur overlay when paused |
+| Sidebar question buttons | Disabled (no navigation) when paused |
+| Fast mode timer | Frozen when paused |
+
+Single file change, no new dependencies.
 
