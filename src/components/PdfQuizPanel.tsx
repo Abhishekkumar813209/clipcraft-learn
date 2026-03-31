@@ -396,71 +396,33 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
         </div>
 
         <ScrollArea className="flex-1 overflow-y-auto p-4">
-          {!feedback ? (
-            <div className="space-y-5">
-              {questions.map((q) => (
-                <div key={q.id} className="space-y-2">
-                  <p className="font-medium text-sm">
-                    {q.id}. {q.question}
-                    {q.type !== 'mcq' && q.type !== 'short' && (
-                      <span className="ml-2 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                        {q.type === 'true_false' ? 'T/F' : q.type === 'fill_blank' ? 'Fill' : 'Multi'}
-                      </span>
-                    )}
-                  </p>
-                  {renderQuestion(q)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <div className="flex items-center gap-2 mb-3">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-semibold">{language === 'hindi' ? 'परिणाम' : 'Results'}</span>
+          <div className="space-y-5">
+            {questions.map((q) => (
+              <div key={q.id} className="space-y-2">
+                <p className="font-medium text-sm">
+                  {q.id}. {q.question}
+                  {q.type !== 'mcq' && q.type !== 'short' && (
+                    <span className="ml-2 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                      {q.type === 'true_false' ? 'T/F' : q.type === 'fill_blank' ? 'Fill' : 'Multi'}
+                    </span>
+                  )}
+                </p>
+                {renderQuestion(q)}
               </div>
-              <ReactMarkdown>{feedback}</ReactMarkdown>
-              {getWeakQuestions().length > 0 && (
-                <div className="mt-4 p-3 rounded-lg bg-muted border border-border">
-                  <p className="text-sm font-medium text-foreground mb-1">
-                    <Target className="h-4 w-4 inline mr-1" />
-                    {language === 'hindi' ? `${getWeakQuestions().length} कमज़ोर क्षेत्र चिह्नित` : `${getWeakQuestions().length} weak area(s) identified (skipped questions)`}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {language === 'hindi' ? 'इन विषयों पर अभ्यास करें' : 'Practice these topics to improve'}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            ))}
+          </div>
         </ScrollArea>
 
         <div className="p-4 border-t border-border space-y-2">
-          {!feedback ? (
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground text-center">
-                {language === 'hindi' ? `${answeredCount}/${questions.length} उत्तर दिए` : `${answeredCount}/${questions.length} answered`}
-              </p>
-              <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
-                {isChecking ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {language === 'hindi' ? 'जाँच रहा है...' : 'Checking...'}</> :
-                  language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {getWeakQuestions().length > 0 && onGenerateQuiz && (
-                <Button className="w-full" onClick={() => setShowWeakAreaDialog(true)}>
-                  <Target className="h-4 w-4 mr-2" />
-                  {language === 'hindi' ? 'कमज़ोर क्षेत्रों पर अभ्यास करें' : 'Practice Weak Areas'}
-                </Button>
-              )}
-              <Button className="w-full" variant="outline" onClick={onClose}>
-                {language === 'hindi' ? 'बंद करें' : 'Close'}
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground text-center">
+              {language === 'hindi' ? `${answeredCount}/${questions.length} उत्तर दिए` : `${answeredCount}/${questions.length} answered`}
+            </p>
+            <Button className="w-full" onClick={submitAnswers} disabled={isChecking}>
+              {isChecking ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {language === 'hindi' ? 'जाँच रहा है...' : 'Submitting...'}</> :
+                language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
+            </Button>
+          </div>
       {/* Save Quiz Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
         <DialogContent className="sm:max-w-md">
