@@ -383,16 +383,8 @@ export function PdfReaderView() {
       if (data.questions?.length) {
         setQuizQuestions(data.questions);
         setShowQuiz(true);
-        // Persist quiz state to sessionStorage
-        try {
-          const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-          if (saved) {
-            const state = JSON.parse(saved);
-            state.showQuiz = true;
-            state.quizQuestions = data.questions;
-            sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-          }
-        } catch {}
+        // Persist quiz state to IndexedDB
+        updatePdfMeta({ showQuiz: true, quizQuestions: data.questions });
       }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
