@@ -278,8 +278,8 @@ export default function QuizTest() {
         return (
           <div className="space-y-3 mt-6">
             {q.options?.map((opt, idx) => (
-              <label key={idx} className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all ${answers.get(q.id) === opt ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50 bg-card'}`}>
-                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 ${answers.get(q.id) === opt ? 'border-primary bg-primary text-primary-foreground' : 'border-border text-muted-foreground'}`}>
+              <label key={idx} onClick={() => setAnswer(q.id, opt)} className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all ${answers.get(q.id) === opt ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:bg-blue-950/30 dark:border-blue-400' : 'border-blue-200 bg-white hover:border-blue-300 hover:bg-blue-50 dark:bg-card dark:border-blue-800 dark:hover:border-blue-600'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 ${answers.get(q.id) === opt ? 'border-blue-500 bg-blue-500 text-white' : 'border-blue-300 text-blue-600 dark:border-blue-700 dark:text-blue-400'}`}>
                   {String.fromCharCode(65 + idx)}
                 </div>
                 <span className="text-sm">{opt}</span>
