@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { useStudyStore } from '@/stores/studyStore';
@@ -9,6 +9,7 @@ import { PanelLeftClose, PanelLeft, Loader2 } from 'lucide-react';
 const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
+  const hasFetched = useRef(false);
 
   // Auto-collapse sidebar on player routes to maximize video space
   useEffect(() => {
@@ -27,7 +28,8 @@ const Index = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !hasFetched.current) {
+      hasFetched.current = true;
       fetchAllData();
     }
   }, [user, fetchAllData]);
