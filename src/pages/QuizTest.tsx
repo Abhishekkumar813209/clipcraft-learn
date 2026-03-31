@@ -38,6 +38,12 @@ export default function QuizTest() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  
+  // Fast Mode state
+  const [fastMode, setFastMode] = useState(false);
+  const [fastModeSeconds, setFastModeSeconds] = useState(30);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState(0);
+  const fastModeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const fetchQuiz = async () => {
