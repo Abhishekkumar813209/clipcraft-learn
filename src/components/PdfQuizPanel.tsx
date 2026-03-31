@@ -199,12 +199,15 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     }
     setIsChecking(true);
     try {
-      const payload = questions.map(q => ({
-        questionId: q.id,
-        question: q.question,
-        correctAnswer: q.correctAnswer,
-        userAnswer: getAnswerForQuestion(q),
-      }));
+      const payload = questions.map(q => {
+        const ans = getAnswerForQuestion(q);
+        return {
+          questionId: q.id,
+          question: q.question,
+          correctAnswer: q.correctAnswer,
+          userAnswer: ans || '(skipped)',
+        };
+      });
 
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
