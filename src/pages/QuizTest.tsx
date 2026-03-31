@@ -432,10 +432,10 @@ export default function QuizTest() {
               </Button>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={currentIndex === 0} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1 border-blue-200 dark:border-blue-800">
+              <Button variant="outline" size="sm" disabled={currentIndex === 0 || paused} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1 border-blue-200 dark:border-blue-800">
                 <ChevronLeft className="h-4 w-4" /> Previous
               </Button>
-              <Button size="sm" disabled={currentIndex === questions.length - 1} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1 bg-blue-600 text-white hover:bg-blue-700">
+              <Button size="sm" disabled={currentIndex === questions.length - 1 || paused} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1 bg-blue-600 text-white hover:bg-blue-700">
                 Next <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
