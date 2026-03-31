@@ -196,23 +196,21 @@ export function PdfReaderView() {
     }
   }, [renderPage, renderThumbnail]);
 
-  // Restore PDF from sessionStorage on mount
+  // Restore PDF from IndexedDB on mount
   useEffect(() => {
-    const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-    if (saved) {
-      try {
-        const { dataUrl, fileName: fn, currentPage: cp, zoom: z, showQuiz: sq, quizQuestions: qq } = JSON.parse(saved);
-        if (sq && qq?.length) {
-          setQuizQuestions(qq);
+    loadPdfState().then(saved => {
+      if (saved) {
+        const { dataUrl, meta } = saved;
+        if (meta.showQuiz && meta.quizQuestions?.length) {
+          setQuizQuestions(meta.quizQuestions);
           setShowQuiz(true);
         }
-        if (dataUrl) {
-          loadPdfFromDataUrl(dataUrl, fn || '', cp || 1, z || 1.2).finally(() => setRestoringPdf(false));
-          return;
-        }
-      } catch {}
-    }
-    setRestoringPdf(false);
+        loadPdfFromDataUrl(dataUrl, meta.fileName || '', meta.currentPage || 1, meta.zoom || 1.2)
+          .finally(() => setRestoringPdf(false));
+      } else {
+        setRestoringPdf(false);
+      }
+    }).catch(() => setRestoringPdf(false));
   }, []);
 
   // Persist page/zoom changes to sessionStorage
