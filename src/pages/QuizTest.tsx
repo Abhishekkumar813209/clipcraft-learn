@@ -313,6 +313,38 @@ export default function QuizTest() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {/* Fast Mode Toggle */}
+          <div className="hidden sm:flex items-center gap-2">
+            <Button
+              variant={fastMode ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => {
+                const next = !fastMode;
+                setFastMode(next);
+                if (next) setQuestionTimeLeft(fastModeSeconds);
+              }}
+              className="gap-1.5"
+            >
+              <Zap className="h-3.5 w-3.5" />
+              Fast
+            </Button>
+            {fastMode && (
+              <select
+                value={fastModeSeconds}
+                onChange={e => {
+                  const v = Number(e.target.value);
+                  setFastModeSeconds(v);
+                  setQuestionTimeLeft(v);
+                }}
+                className="bg-muted border border-border rounded-md px-2 py-1 text-xs font-medium outline-none"
+              >
+                <option value={15}>15s</option>
+                <option value={30}>30s</option>
+                <option value={45}>45s</option>
+                <option value={60}>60s</option>
+              </select>
+            )}
+          </div>
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-md">
             <Clock className="h-4 w-4" />
             <span className="font-mono">{formatTime(elapsedSeconds)}</span>
