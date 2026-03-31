@@ -81,22 +81,28 @@ export function SavedQuizzesView() {
 
   // Removed inline quiz view — now uses URL routes
 
-  const renderQuizCard = (quiz: SavedQuiz) => (
-    <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group" onClick={() => setActiveQuiz(quiz)}>
-      <Brain className="h-5 w-5 text-primary shrink-0" />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{quiz.name}</p>
-        <p className="text-xs text-muted-foreground">
-          {quiz.pdf_name && `${quiz.pdf_name} · `}
-          {quiz.page_range && `Page ${quiz.page_range} · `}
-          {quiz.questions.length} Q · {new Date(quiz.created_at).toLocaleDateString()}
-        </p>
+  const renderQuizCard = (quiz: SavedQuiz) => {
+    const hasResults = !!(quiz as any).ai_feedback;
+    return (
+      <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group" onClick={() => navigate(hasResults ? `/quizzes/${quiz.id}/analysis` : `/quizzes/${quiz.id}`)}>
+        <Brain className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium truncate">{quiz.name}</p>
+            {hasResults && <span className="text-[10px] bg-green-500/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded font-medium">Results</span>}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {quiz.pdf_name && `${quiz.pdf_name} · `}
+            {quiz.page_range && `Page ${quiz.page_range} · `}
+            {quiz.questions.length} Q · {new Date(quiz.created_at).toLocaleDateString()}
+          </p>
+        </div>
+        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive" onClick={(e) => { e.stopPropagation(); setDeletingQuiz(quiz); }}>
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
       </div>
-      <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive" onClick={(e) => { e.stopPropagation(); setDeletingQuiz(quiz); }}>
-        <Trash2 className="h-3.5 w-3.5" />
-      </Button>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="h-full flex flex-col">
