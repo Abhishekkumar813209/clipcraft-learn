@@ -228,8 +228,24 @@ export function PdfReaderView() {
     }
   }, [renderPage, renderThumbnail]);
 
-  // Restore PDF from IndexedDB on mount
+  // Restore PDF: check in-memory cache first, then fall back to IndexedDB
   useEffect(() => {
+    const cached = getPdfMemoryCache();
+    if (cached) {
+      // Instant restore from memory — no re-parse needed
+      setPdfDoc(cached.doc);
+      setTotalPages(cached.doc.numPages);
+      setFileName(cached.fileName);
+      setCurrentPage(cached.currentPage);
+      setZoom(cached.zoom);
+      setThumbnails(new Map(cached.thumbnails));
+      setTranslatedText(new Map());
+      setShowTranslation(false);
+      setActiveLanguage('english');
+      renderPage(cached.doc, cached.currentPage, cached.zoom);
+      setRestoringPdf(false);
+      return;
+    }
     loadPdfState().then(saved => {
         if (saved) {
         const { dataUrl, meta } = saved;
