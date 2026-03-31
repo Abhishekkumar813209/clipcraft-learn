@@ -300,30 +300,30 @@ export default function QuizTest() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Top Bar */}
-      <div className="border-b border-border bg-card px-4 py-3 flex items-center justify-between shrink-0">
+      {/* Top Bar - Blue header like exam UI */}
+      <div className="bg-blue-600 dark:bg-blue-700 px-4 py-3 flex items-center justify-between shrink-0 shadow-md">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/pdf')} className="gap-1">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/pdf')} className="gap-1 text-white hover:bg-blue-500/50 hover:text-white">
             <ArrowLeft className="h-4 w-4" /> Back to PDF
           </Button>
-          <div className="hidden sm:block h-5 w-px bg-border" />
+          <div className="hidden sm:block h-5 w-px bg-blue-400/40" />
           <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold truncate max-w-[300px]">{quiz?.name}</h1>
-            {quiz?.pdf_name && <p className="text-xs text-muted-foreground">{quiz.pdf_name} {quiz.page_range && `· Page ${quiz.page_range}`}</p>}
+            <h1 className="text-sm font-semibold truncate max-w-[300px] text-white">{quiz?.name}</h1>
+            {quiz?.pdf_name && <p className="text-xs text-blue-200">{quiz.pdf_name} {quiz.page_range && `· Page ${quiz.page_range}`}</p>}
           </div>
         </div>
         <div className="flex items-center gap-3">
           {/* Fast Mode Toggle */}
           <div className="hidden sm:flex items-center gap-2">
             <Button
-              variant={fastMode ? 'default' : 'outline'}
+              variant="ghost"
               size="sm"
               onClick={() => {
                 const next = !fastMode;
                 setFastMode(next);
                 if (next) setQuestionTimeLeft(fastModeSeconds);
               }}
-              className="gap-1.5"
+              className={`gap-1.5 ${fastMode ? 'bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800' : 'text-white hover:bg-blue-500/50 hover:text-white border border-blue-400/40'}`}
             >
               <Zap className="h-3.5 w-3.5" />
               Fast
@@ -336,7 +336,7 @@ export default function QuizTest() {
                   setFastModeSeconds(v);
                   setQuestionTimeLeft(v);
                 }}
-                className="bg-muted border border-border rounded-md px-2 py-1 text-xs font-medium outline-none"
+                className="bg-blue-500/50 border border-blue-400/40 rounded-md px-2 py-1 text-xs font-medium outline-none text-white"
               >
                 <option value={15}>15s</option>
                 <option value={30}>30s</option>
@@ -345,13 +345,13 @@ export default function QuizTest() {
               </select>
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-md">
+          <div className="flex items-center gap-1.5 text-sm text-white bg-blue-500/50 px-3 py-1.5 rounded-full border border-blue-400/30">
             <Clock className="h-4 w-4" />
-            <span className="font-mono">{formatTime(elapsedSeconds)}</span>
+            <span className="font-mono font-semibold">{formatTime(elapsedSeconds)}</span>
           </div>
-          <Button onClick={() => setShowSubmitDialog(true)} disabled={isSubmitting} className="gap-1.5">
+          <Button onClick={() => setShowSubmitDialog(true)} disabled={isSubmitting} className="gap-1.5 bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-sm">
             {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
-            Submit Test
+            SUBMIT
           </Button>
         </div>
       </div>
@@ -372,11 +372,16 @@ export default function QuizTest() {
                   <Progress value={(questionTimeLeft / fastModeSeconds) * 100} className="h-2" />
                 </div>
               )}
+              {/* Question Header - Blue banner */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg px-5 py-3 mb-4">
+                <h3 className="text-white font-bold text-lg">Q.{currentIndex + 1}</h3>
+              </div>
+
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:text-blue-400">
                   Question {currentIndex + 1} of {questions.length}
                 </Badge>
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border-0">
                   {currentQ?.type === 'mcq' ? 'MCQ' : currentQ?.type === 'true_false' ? 'True/False' : currentQ?.type === 'fill_blank' ? 'Fill Blank' : currentQ?.type === 'multiple_correct' ? 'Multi-Select' : 'Short Answer'}
                 </Badge>
                 {markedForReview.has(currentQ?.id) && (
@@ -395,20 +400,20 @@ export default function QuizTest() {
           </ScrollArea>
 
           {/* Bottom Controls */}
-          <div className="border-t border-border p-4 flex items-center justify-between bg-card shrink-0">
+          <div className="border-t border-blue-100 dark:border-blue-900/30 p-4 flex items-center justify-between bg-card shrink-0">
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={clearAnswer} className="gap-1">
+              <Button variant="outline" size="sm" onClick={clearAnswer} className="gap-1 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20">
                 <RotateCcw className="h-3.5 w-3.5" /> Clear
               </Button>
-              <Button variant={markedForReview.has(currentQ?.id) ? 'default' : 'outline'} size="sm" onClick={toggleMark} className="gap-1">
+              <Button size="sm" onClick={toggleMark} className={`gap-1 ${markedForReview.has(currentQ?.id) ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800'}`}>
                 <Flag className="h-3.5 w-3.5" /> {markedForReview.has(currentQ?.id) ? 'Unmark' : 'Mark for Review'}
               </Button>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={currentIndex === 0} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1">
+              <Button variant="outline" size="sm" disabled={currentIndex === 0} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1 border-blue-200 dark:border-blue-800">
                 <ChevronLeft className="h-4 w-4" /> Previous
               </Button>
-              <Button variant="outline" size="sm" disabled={currentIndex === questions.length - 1} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1">
+              <Button size="sm" disabled={currentIndex === questions.length - 1} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1 bg-blue-600 text-white hover:bg-blue-700">
                 Next <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -416,9 +421,9 @@ export default function QuizTest() {
         </div>
 
         {/* Question Palette Sidebar */}
-        <div className="w-72 border-l border-border bg-card/50 hidden md:flex flex-col shrink-0">
-          <div className="p-4 border-b border-border">
-            <h3 className="font-semibold text-sm">Question Palette</h3>
+        <div className="w-72 border-l border-blue-100 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-950/20 hidden md:flex flex-col shrink-0">
+          <div className="p-4 border-b border-blue-100 dark:border-blue-900/30">
+            <h3 className="font-semibold text-sm text-blue-800 dark:text-blue-300">Question Palette</h3>
           </div>
           <ScrollArea className="flex-1 p-4">
             <div className="grid grid-cols-5 gap-2">
@@ -438,8 +443,8 @@ export default function QuizTest() {
           </ScrollArea>
 
           {/* Legend */}
-          <div className="p-4 border-t border-border space-y-2">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Legend</p>
+          <div className="p-4 border-t border-blue-100 dark:border-blue-900/30 space-y-2">
+            <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-2">Legend</p>
             <div className="grid grid-cols-1 gap-1.5 text-xs">
               <div className="flex items-center gap-2">
                 <div className={`w-5 h-5 rounded border ${statusColors['answered']}`} />
@@ -462,9 +467,9 @@ export default function QuizTest() {
                 <span>Answered & Marked</span>
               </div>
             </div>
-            <div className="pt-2 border-t border-border mt-2">
+            <div className="pt-2 border-t border-blue-100 dark:border-blue-900/30 mt-2">
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">{answeredCount}</span>/{questions.length} answered
+                <span className="font-medium text-blue-700 dark:text-blue-400">{answeredCount}</span>/{questions.length} answered
               </p>
             </div>
           </div>
