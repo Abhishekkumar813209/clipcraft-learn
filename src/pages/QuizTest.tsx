@@ -347,7 +347,16 @@ export default function QuizTest() {
               </select>
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-white bg-blue-500/50 px-3 py-1.5 rounded-full border border-blue-400/30">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setPaused(p => !p)}
+            className="text-white hover:bg-blue-500/50 hover:text-white"
+            title={paused ? 'Resume' : 'Pause'}
+          >
+            {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+          </Button>
+          <div className={`flex items-center gap-1.5 text-sm text-white bg-blue-500/50 px-3 py-1.5 rounded-full border border-blue-400/30 ${paused ? 'animate-pulse' : ''}`}>
             <Clock className="h-4 w-4" />
             <span className="font-mono font-semibold">{formatTime(elapsedSeconds)}</span>
           </div>
