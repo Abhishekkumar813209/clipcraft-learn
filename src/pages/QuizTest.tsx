@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Flag, ChevronLeft, ChevronRight, Loader2, CheckCircle, FileText, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Clock, Flag, ChevronLeft, ChevronRight, Loader2, CheckCircle, FileText, RotateCcw, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -37,6 +38,12 @@ export default function QuizTest() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  
+  // Fast Mode state
+  const [fastMode, setFastMode] = useState(false);
+  const [fastModeSeconds, setFastModeSeconds] = useState(30);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState(0);
+  const fastModeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -60,11 +67,40 @@ export default function QuizTest() {
     fetchQuiz();
   }, [quizId, user]);
 
-  // Timer
+  // Elapsed timer
   useEffect(() => {
     const interval = setInterval(() => setElapsedSeconds(s => s + 1), 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Fast Mode per-question timer
+  useEffect(() => {
+    if (fastMode) {
+      setQuestionTimeLeft(fastModeSeconds);
+    }
+  }, [currentIndex, fastMode, fastModeSeconds]);
+
+  useEffect(() => {
+    if (!fastMode || isSubmitting) return;
+    if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current);
+    fastModeTimerRef.current = setInterval(() => {
+      setQuestionTimeLeft(prev => {
+        if (prev <= 1) {
+          // Auto-advance
+          if (currentIndex < questions.length - 1) {
+            setCurrentIndex(ci => {
+              const next = ci + 1;
+              setVisitedQuestions(v => new Set(v).add(next));
+              return next;
+            });
+          }
+          return fastModeSeconds;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => { if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current); };
+  }, [fastMode, currentIndex, fastModeSeconds, questions.length, isSubmitting]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -277,6 +313,38 @@ export default function QuizTest() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {/* Fast Mode Toggle */}
+          <div className="hidden sm:flex items-center gap-2">
+            <Button
+              variant={fastMode ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => {
+                const next = !fastMode;
+                setFastMode(next);
+                if (next) setQuestionTimeLeft(fastModeSeconds);
+              }}
+              className="gap-1.5"
+            >
+              <Zap className="h-3.5 w-3.5" />
+              Fast
+            </Button>
+            {fastMode && (
+              <select
+                value={fastModeSeconds}
+                onChange={e => {
+                  const v = Number(e.target.value);
+                  setFastModeSeconds(v);
+                  setQuestionTimeLeft(v);
+                }}
+                className="bg-muted border border-border rounded-md px-2 py-1 text-xs font-medium outline-none"
+              >
+                <option value={15}>15s</option>
+                <option value={30}>30s</option>
+                <option value={45}>45s</option>
+                <option value={60}>60s</option>
+              </select>
+            )}
+          </div>
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-md">
             <Clock className="h-4 w-4" />
             <span className="font-mono">{formatTime(elapsedSeconds)}</span>
@@ -294,7 +362,16 @@ export default function QuizTest() {
         <div className="flex-1 flex flex-col overflow-hidden">
           <ScrollArea className="flex-1 p-6">
             <div className="max-w-2xl mx-auto">
-              {/* Question Header */}
+              {/* Fast Mode Timer Bar */}
+              {fastMode && (
+                <div className="mb-4 space-y-1">
+                  <div className="flex justify-between items-center text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Fast Mode</span>
+                    <span className="font-mono font-medium">{questionTimeLeft}s</span>
+                  </div>
+                  <Progress value={(questionTimeLeft / fastModeSeconds) * 100} className="h-2" />
+                </div>
+              )}
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="text-xs">
                   Question {currentIndex + 1} of {questions.length}

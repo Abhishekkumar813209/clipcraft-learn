@@ -25,9 +25,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(prev => prev?.access_token === newSession?.access_token ? prev : newSession);
+      setUser(prev => prev?.id === newSession?.user?.id ? prev : newSession?.user ?? null);
       setLoading(false);
     });
 
