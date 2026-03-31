@@ -213,18 +213,10 @@ export function PdfReaderView() {
     }).catch(() => setRestoringPdf(false));
   }, []);
 
-  // Persist page/zoom changes to sessionStorage
+  // Persist page/zoom changes to IndexedDB
   useEffect(() => {
     if (!pdfDoc) return;
-    const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-    if (saved) {
-      try {
-        const state = JSON.parse(saved);
-        state.currentPage = currentPage;
-        state.zoom = zoom;
-        sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-      } catch {}
-    }
+    updatePdfMeta({ currentPage, zoom });
   }, [currentPage, zoom, pdfDoc]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
