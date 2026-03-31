@@ -69,6 +69,9 @@ const App = () => (
               <Route path="pdf" element={<PdfReaderView />} />
               <Route path="quizzes" element={<SavedQuizzesView />} />
               <Route path="upsc" element={<UpscMotivation />} />
+            </Route>
+            <Route path="/quizzes/:quizId" element={<QuizTest />} />
+            <Route path="/quizzes/:quizId/analysis" element={<QuizAnalysis />} />
               <Route path="topic/:topicId" element={<TopicView />} />
             </Route>
             <Route path="/ssc" element={<SscLayout />}>
