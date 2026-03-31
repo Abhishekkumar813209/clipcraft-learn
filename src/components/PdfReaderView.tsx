@@ -111,7 +111,37 @@ export function PdfReaderView() {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const triggerSummarizeRef = useRef<((text: string, prompt: string) => void) | null>(null);
 
-  const toggleQuizType = (type: QuizType) => {
+  const swipeGoNext = useCallback(() => {
+    if (currentPage < totalPages) setCurrentPage(p => p + 1);
+  }, [currentPage, totalPages]);
+  const swipeGoPrev = useCallback(() => {
+    if (currentPage > 1) setCurrentPage(p => p - 1);
+  }, [currentPage]);
+
+  const { swipeHandlers, swipeOffset, swipeDirection, isAnimating } = useSwipeNavigation({
+    onSwipeLeft: swipeGoNext,
+    onSwipeRight: swipeGoPrev,
+    threshold: 60,
+    enabled: isMobile && !!pdfDoc && !showChat && !showQuiz,
+  });
+
+  // Page fold transform style
+  const pageFoldStyle = useMemo(() => {
+    if (!swipeDirection && !isAnimating) return {};
+    const progress = Math.min(Math.abs(swipeOffset) / (window.innerWidth * 0.6), 1);
+    const rotateY = swipeDirection === 'left' ? -progress * 25 : progress * 25;
+    const scale = 1 - progress * 0.04;
+    const shadow = progress * 30;
+    return {
+      transform: `perspective(1200px) rotateY(${rotateY}deg) scale(${scale}) translateX(${swipeOffset * 0.15}px)`,
+      transition: isAnimating ? 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+      boxShadow: swipeDirection === 'left'
+        ? `inset ${shadow}px 0 ${shadow * 1.5}px -${shadow * 0.5}px rgba(0,0,0,0.15)`
+        : `inset -${shadow}px 0 ${shadow * 1.5}px -${shadow * 0.5}px rgba(0,0,0,0.15)`,
+      transformOrigin: swipeDirection === 'left' ? 'right center' : 'left center',
+    };
+  }, [swipeOffset, swipeDirection, isAnimating]);
+
     setQuizTypes(prev => {
       const next = new Set(prev);
       if (next.has(type)) {
