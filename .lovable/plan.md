@@ -1,64 +1,38 @@
 
 
-## Plan: Save PDF Quizzes to Database with Folders for Revision
+## Plan: Partial Submit + Weak Area Quiz Generator
 
-### What It Does
-After a quiz is generated, a "Save Quiz" button lets you name it and pick/create a folder. Saved quizzes are stored in the database and accessible from a new "My Quizzes" section for quick revision.
+### What Changes
 
-### Database Changes
+**1. Allow partial submission (`PdfQuizPanel.tsx`)**
+- Remove the `isAllAnswered` gate — submit button always enabled
+- Unanswered questions are sent with `userAnswer: ""` (or `"(skipped)"`)
+- Update the prompt to the AI checker to explicitly identify skipped/unanswered questions as **weak areas** in the feedback
 
-**New table: `pdf_quiz_folders`**
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | PK |
-| user_id | uuid | RLS-linked |
-| name | text | e.g. "Polity", "Economics" |
-| created_at | timestamptz | default now() |
+**2. Show "Practice Weak Areas" button after results (`PdfQuizPanel.tsx`)**
+- After feedback is shown, parse which questions were skipped or wrong
+- Display a "Practice Weak Areas" button below feedback
+- On click, open a config dialog (reusing existing quiz popover pattern) with:
+  - Number of questions (3 / 5 / 10 / custom)
+  - Question types (MCQ, T/F, Fill, Multi, Short — checkboxes)
+- On generate, call the **same** `pdf-chat` edge function with `action: 'quiz'` but pass the weak question texts as extra context so the AI generates new questions on those specific topics
 
-**New table: `pdf_saved_quizzes`**
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | PK |
-| user_id | uuid | RLS-linked |
-| folder_id | uuid | FK to pdf_quiz_folders, nullable (unfiled) |
-| name | text | Custom quiz name |
-| pdf_name | text | Source PDF file name |
-| page_range | text | e.g. "5-8" or "3" |
-| questions | jsonb | Full quiz data (questions, options, answers) |
-| language | text | hindi/english/hinglish |
-| created_at | timestamptz | default now() |
+**3. Wire up the weak-area quiz generation**
+- New prop `onGenerateQuiz` passed from `PdfReaderView` → `PdfQuizPanel`
+- This callback accepts `{ pageText, language, numQuestions, questionTypes, weakTopics }` and calls the existing `handleQuiz`-style fetch
+- The generated questions replace the current quiz (same `setQuizQuestions` + `setShowQuiz` flow)
+- Reset answers/feedback state when new quiz loads
 
-RLS: Users can CRUD own rows on both tables.
-
-### UI Changes
-
-**1. PdfQuizPanel — "Save Quiz" button**
-- Appears in the quiz header (next to close button) after questions are generated
-- Opens a small dialog with:
-  - Quiz name input (pre-filled: `"{pdfName} - Page {range}"`)
-  - Folder dropdown (existing folders + "New Folder" option)
-- Saves to `pdf_saved_quizzes` via Supabase client
-
-**2. PdfReaderView — Pass `fileName` to PdfQuizPanel**
-- Add `fileName` prop to PdfQuizPanel
-
-**3. New component: `SavedQuizzesView.tsx`**
-- Accessible from main navigation/sidebar
-- Shows folders as expandable cards
-- Each quiz shows: name, PDF source, page range, date, question count
-- Click to open quiz in revision mode (re-renders PdfQuizPanel with saved data)
-- Delete and rename options
-
-**4. Sidebar — Add "My Quizzes" nav link**
+**4. Minor edge function tweak (`pdf-chat/index.ts`)**
+- For `action: 'quiz'`, accept an optional `focusTopics` string array
+- If provided, add to the prompt: "Focus questions on these weak areas: ..."
+- No new function needed — reuses existing endpoint
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| Migration SQL | Create `pdf_quiz_folders` and `pdf_saved_quizzes` tables with RLS |
-| `src/components/PdfQuizPanel.tsx` | Add `fileName` prop, "Save Quiz" button with name/folder dialog |
-| `src/components/PdfReaderView.tsx` | Pass `fileName` and `pageRange` to PdfQuizPanel |
-| `src/components/SavedQuizzesView.tsx` | New — browse folders, view/revise saved quizzes |
-| `src/components/Sidebar.tsx` | Add "My Quizzes" navigation link |
-| `src/App.tsx` | Add route for saved quizzes page |
+| `src/components/PdfQuizPanel.tsx` | Remove all-answered gate, mark skipped as weak, add "Practice Weak Areas" button with config dialog, call parent to generate new quiz |
+| `src/components/PdfReaderView.tsx` | Pass `onGenerateQuiz` callback to PdfQuizPanel that calls `pdf-chat` with optional `focusTopics` |
+| `supabase/functions/pdf-chat/index.ts` | Accept optional `focusTopics` in quiz action prompt |
 
