@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, ChevronDown, ChevronRight, Trash2, FileText, Brain, Loader2, ArrowLeft } from 'lucide-react';
+import { FolderOpen, ChevronDown, ChevronRight, Trash2, FileText, Brain, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { PdfQuizPanel } from './PdfQuizPanel';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -32,7 +31,6 @@ export function SavedQuizzesView() {
   const [quizzes, setQuizzes] = useState<SavedQuiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['unfiled']));
-  const [activeQuiz, setActiveQuiz] = useState<SavedQuiz | null>(null);
   const [deletingQuiz, setDeletingQuiz] = useState<SavedQuiz | null>(null);
   const [deletingFolder, setDeletingFolder] = useState<QuizFolder | null>(null);
 
@@ -79,50 +77,30 @@ export function SavedQuizzesView() {
   const unfiledQuizzes = quizzes.filter(q => !q.folder_id);
   const getQuizzesForFolder = (folderId: string) => quizzes.filter(q => q.folder_id === folderId);
 
-  if (activeQuiz) {
+  // Removed inline quiz view — now uses URL routes
+
+  const renderQuizCard = (quiz: SavedQuiz) => {
+    const hasResults = !!(quiz as any).ai_feedback;
     return (
-      <div className="h-full flex flex-col">
-        <div className="p-4 border-b border-border flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => setActiveQuiz(null)}>
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back
-          </Button>
-          <span className="font-semibold truncate">{activeQuiz.name}</span>
-          {activeQuiz.pdf_name && <span className="text-xs text-muted-foreground">from {activeQuiz.pdf_name}</span>}
+      <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group" onClick={() => navigate(hasResults ? `/quizzes/${quiz.id}/analysis` : `/quizzes/${quiz.id}`)}>
+        <Brain className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium truncate">{quiz.name}</p>
+            {hasResults && <span className="text-[10px] bg-green-500/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded font-medium">Results</span>}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {quiz.pdf_name && `${quiz.pdf_name} · `}
+            {quiz.page_range && `Page ${quiz.page_range} · `}
+            {quiz.questions.length} Q · {new Date(quiz.created_at).toLocaleDateString()}
+          </p>
         </div>
-        <div className="flex-1 overflow-auto p-4">
-          <PdfQuizPanel
-            questions={activeQuiz.questions}
-            currentPage={1}
-            language={activeQuiz.language as any}
-            pageText=""
-            fileName={activeQuiz.pdf_name || ''}
-            pageRange={activeQuiz.page_range ? (() => {
-              const parts = activeQuiz.page_range!.split('-');
-              return { from: Number(parts[0]), to: Number(parts[1] || parts[0]) };
-            })() : undefined}
-            onClose={() => setActiveQuiz(null)}
-          />
-        </div>
+        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive" onClick={(e) => { e.stopPropagation(); setDeletingQuiz(quiz); }}>
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
       </div>
     );
-  }
-
-  const renderQuizCard = (quiz: SavedQuiz) => (
-    <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group" onClick={() => setActiveQuiz(quiz)}>
-      <Brain className="h-5 w-5 text-primary shrink-0" />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{quiz.name}</p>
-        <p className="text-xs text-muted-foreground">
-          {quiz.pdf_name && `${quiz.pdf_name} · `}
-          {quiz.page_range && `Page ${quiz.page_range} · `}
-          {quiz.questions.length} Q · {new Date(quiz.created_at).toLocaleDateString()}
-        </p>
-      </div>
-      <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive" onClick={(e) => { e.stopPropagation(); setDeletingQuiz(quiz); }}>
-        <Trash2 className="h-3.5 w-3.5" />
-      </Button>
-    </div>
-  );
+  };
 
   return (
     <div className="h-full flex flex-col">

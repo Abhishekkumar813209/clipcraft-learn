@@ -16,6 +16,8 @@ import { PlaylistBrowserView } from "./components/PlaylistBrowserView";
 import { VideoPlayerView } from "./components/VideoPlayerView";
 import { PdfReaderView } from "./components/PdfReaderView";
 import { SavedQuizzesView } from "./components/SavedQuizzesView";
+import QuizTest from "./pages/QuizTest";
+import QuizAnalysis from "./pages/QuizAnalysis";
 import UpscMotivation from "./pages/UpscMotivation";
 import SscLayout from "./pages/SscLayout";
 import SscDashboard from "./pages/SscDashboard";
@@ -69,6 +71,8 @@ const App = () => (
               <Route path="upsc" element={<UpscMotivation />} />
               <Route path="topic/:topicId" element={<TopicView />} />
             </Route>
+            <Route path="/quizzes/:quizId" element={<QuizTest />} />
+            <Route path="/quizzes/:quizId/analysis" element={<QuizAnalysis />} />
             <Route path="/ssc" element={<SscLayout />}>
               <Route index element={<SscDashboard />} />
               <Route path="practice" element={<SscPractice />} />
