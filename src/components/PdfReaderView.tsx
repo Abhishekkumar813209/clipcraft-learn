@@ -263,10 +263,12 @@ export function PdfReaderView() {
     }).catch(() => setRestoringPdf(false));
   }, []);
 
-  // Persist page/zoom changes to IndexedDB
+  // Persist page/zoom changes to IndexedDB and memory cache
   useEffect(() => {
     if (!pdfDoc) return;
     updatePdfMeta({ currentPage, zoom });
+    const cache = getPdfMemoryCache();
+    if (cache) setPdfMemoryCache({ ...cache, currentPage, zoom });
   }, [currentPage, zoom, pdfDoc]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
