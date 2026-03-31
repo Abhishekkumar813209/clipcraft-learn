@@ -1,48 +1,22 @@
 
 
-## Plan: Fix AutoPlay Timer in PDF Reader
+## Plan: Add "Close PDF" Button to Upload a New One
 
 ### Problem
-The AutoPlay timer has two bugs:
-1. **Side effect in state updater** — `goNext()` is called inside `setElapsed`'s updater function. React state updaters should be pure; calling side effects (like `onPageChange`) from within them is unreliable, especially in StrictMode where updaters run twice.
-2. **Interval recreation** — `goNext` is a `useCallback` that depends on `currentPage`, so it changes every page. Since it's a dependency of the timer `useEffect`, the interval is destroyed and recreated on every page change, resetting timing.
+Once a PDF is loaded, there's no way to close it and return to the upload screen. The `clearPdfState()` function exists but is never called. Since IndexedDB now persists the PDF, even navigating away and back restores the old PDF — you're stuck with it.
 
 ### Fix
 
-**File: `src/components/PdfAutoPlay.tsx`**
+**File: `src/components/PdfReaderView.tsx`**
 
-Refactor the timer to use a `useRef` for elapsed tracking and separate the "advance page" logic from the tick:
-
-```typescript
-const elapsedRef = useRef(0);
-const [progress, setProgress] = useState(0);
-
-useEffect(() => {
-  if (!isPlaying) return;
-  elapsedRef.current = 0;
-  setProgress(0);
-  
-  const tick = setInterval(() => {
-    elapsedRef.current += 0.1;
-    const pct = (elapsedRef.current / activeInterval) * 100;
-    setProgress(pct);
-    
-    if (elapsedRef.current >= activeInterval) {
-      elapsedRef.current = 0;
-      // Use functional ref to avoid stale closure on currentPage
-      goNextRef.current();
-    }
-  }, 100);
-  
-  return () => clearInterval(tick);
-}, [isPlaying, activeInterval]);
-```
-
-Use a ref (`goNextRef`) to always point to the latest `goNext` function, so the interval doesn't need to depend on `currentPage`.
+1. Add a "Close" / "Remove PDF" button in the top toolbar (next to the Back button) that:
+   - Calls `clearPdfState()` to wipe IndexedDB
+   - Resets component state (`pdfDoc`, `fileName`, `totalPages`, etc.) back to initial values so the upload screen shows again
+2. This lets users close the current PDF and upload a new one without leaving the page.
 
 ### Files Modified
 
 | File | Change |
 |------|--------|
-| `src/components/PdfAutoPlay.tsx` | Fix timer: use ref for elapsed + stable goNext ref to avoid interval recreation |
+| `src/components/PdfReaderView.tsx` | Add a close/remove button that calls `clearPdfState()` and resets all PDF state to show the upload screen |
 
