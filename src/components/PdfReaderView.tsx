@@ -57,7 +57,7 @@ async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: nu
   return content.items.map((item: any) => item.str).join(' ');
 }
 
-const PDF_SESSION_KEY = 'pdf-reader-state';
+
 
 export function PdfReaderView() {
   const navigate = useNavigate();
