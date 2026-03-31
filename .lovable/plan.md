@@ -1,30 +1,28 @@
 
 
-## Plan: Remove Quiz Modal, Use Dedicated Test Page Only
+## Plan: Fix Option Selection + Blue Sidebar Theme
 
-### What Changes
+### Problem 1: MCQ options don't respond to clicks
+The MCQ `<label>` elements (lines 280-288) contain no `<input type="radio">` and no `onClick` handler. Clicking does nothing because there's no event wired to `setAnswer()`.
 
-When a quiz is generated from the PDF reader, instead of opening the inline `PdfQuizPanel` modal, the app will:
-1. Auto-save the generated quiz to `pdf_saved_quizzes` in the database
-2. Navigate to `/quizzes/:quizId` (the dedicated exam-style test page with question palette, timer, mark-for-review — the UI you already approved)
+**Fix:** Add `onClick={() => setAnswer(q.id, opt)}` to each MCQ label element.
 
-### Files Modified
+### Problem 2: Sidebar question numbers still gray
+`statusColors['not-visited']` uses `bg-muted text-muted-foreground` (gray). The current question ring also uses generic `ring-primary`.
+
+**Fix:** Update `statusColors` to use blue tones for all states, and use `ring-blue-500` for the active question.
+
+### File Modified
 
 | File | Change |
 |------|--------|
-| `src/components/PdfReaderView.tsx` | In `handleQuiz()` and the weak-area regeneration callback: after generating questions, insert them into `pdf_saved_quizzes`, then `navigate(/quizzes/${id})` instead of setting `showQuiz=true`. Remove the `PdfQuizPanel` rendering block (lines 734-771), remove the `showQuiz`/`quizQuestions` state, remove the `PdfQuizPanel` import. |
-| `src/components/PdfQuizPanel.tsx` | Delete this file entirely — no longer needed. |
+| `src/pages/QuizTest.tsx` | Add `onClick` to MCQ labels; update `statusColors` to blue-based palette; update active question ring to `ring-blue-500` |
 
-### Flow After Change
-
-```text
-PDF Reader → Click "Generate Quiz" → API returns questions
-  → Auto-save to pdf_saved_quizzes (name: "Filename - Page X")
-  → navigate("/quizzes/{newId}")
-  → Dedicated exam page (QuizTest.tsx) with full UI
-  → Submit → navigate("/quizzes/{id}/analysis")
-  → "Back to PDF" → returns to same page
-```
-
-No new components or routes needed — just wiring the PDF reader directly to the existing dedicated pages.
+### Updated Status Colors
+- **Not visited:** `bg-gray-200 text-gray-500 border-gray-300` (neutral but distinct)
+- **Not answered:** `bg-red-100 text-red-600 border-red-300`
+- **Answered:** `bg-green-100 text-green-700 border-green-300`
+- **Marked:** `bg-blue-100 text-blue-600 border-blue-300`
+- **Answered & Marked:** `bg-teal-100 text-teal-700 border-teal-300`
+- **Active ring:** `ring-blue-500`
 
