@@ -16,6 +16,8 @@ import { PlaylistBrowserView } from "./components/PlaylistBrowserView";
 import { VideoPlayerView } from "./components/VideoPlayerView";
 import { PdfReaderView } from "./components/PdfReaderView";
 import { SavedQuizzesView } from "./components/SavedQuizzesView";
+import QuizTest from "./pages/QuizTest";
+import QuizAnalysis from "./pages/QuizAnalysis";
 import UpscMotivation from "./pages/UpscMotivation";
 import SscLayout from "./pages/SscLayout";
 import SscDashboard from "./pages/SscDashboard";
