@@ -454,8 +454,9 @@ export default function QuizTest() {
                 return (
                   <button
                     key={idx}
-                    onClick={() => goToQuestion(idx)}
-                    className={`w-10 h-10 rounded-lg border text-xs font-bold flex items-center justify-center transition-all hover:scale-105 ${statusColors[status]} ${currentIndex === idx ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-background' : ''}`}
+                    onClick={() => !paused && goToQuestion(idx)}
+                    disabled={paused}
+                    className={`w-10 h-10 rounded-lg border text-xs font-bold flex items-center justify-center transition-all hover:scale-105 ${statusColors[status]} ${currentIndex === idx ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-background' : ''} ${paused ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     {idx + 1}
                   </button>
