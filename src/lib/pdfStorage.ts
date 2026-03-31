@@ -1,6 +1,29 @@
 import localforage from 'localforage';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 
 const PDF_STORE = localforage.createInstance({ name: 'pdf-reader' });
+
+// In-memory cache that survives component unmount but not full page reload
+let memoryCache: {
+  doc: PDFDocumentProxy;
+  dataUrl: string;
+  fileName: string;
+  thumbnails: Map<number, string>;
+  currentPage: number;
+  zoom: number;
+} | null = null;
+
+export function getPdfMemoryCache() {
+  return memoryCache;
+}
+
+export function setPdfMemoryCache(cache: typeof memoryCache) {
+  memoryCache = cache;
+}
+
+export function clearPdfMemoryCache() {
+  memoryCache = null;
+}
 
 interface PdfMeta {
   fileName: string;

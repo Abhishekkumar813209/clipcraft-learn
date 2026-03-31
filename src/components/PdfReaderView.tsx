@@ -18,7 +18,7 @@ import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
-import { savePdfFile, loadPdfState, updatePdfMeta, clearPdfState } from '@/lib/pdfStorage';
+import { savePdfFile, loadPdfState, updatePdfMeta, clearPdfState, getPdfMemoryCache, setPdfMemoryCache, clearPdfMemoryCache } from '@/lib/pdfStorage';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
@@ -216,6 +216,9 @@ export function PdfReaderView() {
     }
     setThumbnails(new Map(thumbMap));
 
+    // Populate in-memory cache
+    setPdfMemoryCache({ doc, dataUrl, fileName: name, thumbnails: new Map(thumbMap), currentPage: page, zoom: z });
+
     if (doc.numPages > batch) {
       (async () => {
         for (let i = batch + 1; i <= doc.numPages; i++) {
@@ -224,12 +227,31 @@ export function PdfReaderView() {
           if (i % 10 === 0) setThumbnails(new Map(thumbMap));
         }
         setThumbnails(new Map(thumbMap));
+        // Update cache with all thumbnails
+        const cache = getPdfMemoryCache();
+        if (cache) setPdfMemoryCache({ ...cache, thumbnails: new Map(thumbMap) });
       })();
     }
   }, [renderPage, renderThumbnail]);
 
-  // Restore PDF from IndexedDB on mount
+  // Restore PDF: check in-memory cache first, then fall back to IndexedDB
   useEffect(() => {
+    const cached = getPdfMemoryCache();
+    if (cached) {
+      // Instant restore from memory — no re-parse needed
+      setPdfDoc(cached.doc);
+      setTotalPages(cached.doc.numPages);
+      setFileName(cached.fileName);
+      setCurrentPage(cached.currentPage);
+      setZoom(cached.zoom);
+      setThumbnails(new Map(cached.thumbnails));
+      setTranslatedText(new Map());
+      setShowTranslation(false);
+      setActiveLanguage('english');
+      renderPage(cached.doc, cached.currentPage, cached.zoom);
+      setRestoringPdf(false);
+      return;
+    }
     loadPdfState().then(saved => {
         if (saved) {
         const { dataUrl, meta } = saved;
@@ -241,10 +263,12 @@ export function PdfReaderView() {
     }).catch(() => setRestoringPdf(false));
   }, []);
 
-  // Persist page/zoom changes to IndexedDB
+  // Persist page/zoom changes to IndexedDB and memory cache
   useEffect(() => {
     if (!pdfDoc) return;
     updatePdfMeta({ currentPage, zoom });
+    const cache = getPdfMemoryCache();
+    if (cache) setPdfMemoryCache({ ...cache, currentPage, zoom });
   }, [currentPage, zoom, pdfDoc]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -281,6 +305,14 @@ export function PdfReaderView() {
     }
     setThumbnails(new Map(thumbMap));
 
+    // Populate in-memory cache for instant restore after navigation
+    const dataUrlForCache = await new Promise<string>((resolve) => {
+      const r2 = new FileReader();
+      r2.onload = () => resolve(r2.result as string);
+      r2.readAsDataURL(file);
+    });
+    setPdfMemoryCache({ doc, dataUrl: dataUrlForCache, fileName: file.name, thumbnails: new Map(thumbMap), currentPage: 1, zoom });
+
     if (doc.numPages > batch) {
       (async () => {
         for (let i = batch + 1; i <= doc.numPages; i++) {
@@ -289,6 +321,8 @@ export function PdfReaderView() {
           if (i % 10 === 0) setThumbnails(new Map(thumbMap));
         }
         setThumbnails(new Map(thumbMap));
+        const cache = getPdfMemoryCache();
+        if (cache) setPdfMemoryCache({ ...cache, thumbnails: new Map(thumbMap) });
       })();
     }
   };
@@ -494,7 +528,7 @@ export function PdfReaderView() {
           <ArrowLeft className="h-4 w-4" />
           <span className="hidden md:inline ml-1">Back</span>
         </Button>
-        <Button variant="ghost" size="sm" onClick={async () => { await clearPdfState(); setPdfDoc(null); setFileName(''); setTotalPages(0); setCurrentPage(1); setPageText(''); }} className="shrink-0 text-destructive hover:text-destructive" title="Close PDF">
+        <Button variant="ghost" size="sm" onClick={async () => { clearPdfMemoryCache(); await clearPdfState(); setPdfDoc(null); setFileName(''); setTotalPages(0); setCurrentPage(1); setPageText(''); }} className="shrink-0 text-destructive hover:text-destructive" title="Close PDF">
           <X className="h-4 w-4" />
           <span className="hidden md:inline ml-1">Close</span>
         </Button>
