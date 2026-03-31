@@ -31,7 +31,6 @@ export function SavedQuizzesView() {
   const [quizzes, setQuizzes] = useState<SavedQuiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['unfiled']));
-  const [activeQuiz, setActiveQuiz] = useState<SavedQuiz | null>(null);
   const [deletingQuiz, setDeletingQuiz] = useState<SavedQuiz | null>(null);
   const [deletingFolder, setDeletingFolder] = useState<QuizFolder | null>(null);
 
