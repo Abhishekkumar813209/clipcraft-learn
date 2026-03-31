@@ -67,11 +67,40 @@ export default function QuizTest() {
     fetchQuiz();
   }, [quizId, user]);
 
-  // Timer
+  // Elapsed timer
   useEffect(() => {
     const interval = setInterval(() => setElapsedSeconds(s => s + 1), 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Fast Mode per-question timer
+  useEffect(() => {
+    if (fastMode) {
+      setQuestionTimeLeft(fastModeSeconds);
+    }
+  }, [currentIndex, fastMode, fastModeSeconds]);
+
+  useEffect(() => {
+    if (!fastMode || isSubmitting) return;
+    if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current);
+    fastModeTimerRef.current = setInterval(() => {
+      setQuestionTimeLeft(prev => {
+        if (prev <= 1) {
+          // Auto-advance
+          if (currentIndex < questions.length - 1) {
+            setCurrentIndex(ci => {
+              const next = ci + 1;
+              setVisitedQuestions(v => new Set(v).add(next));
+              return next;
+            });
+          }
+          return fastModeSeconds;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => { if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current); };
+  }, [fastMode, currentIndex, fastModeSeconds, questions.length, isSubmitting]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
