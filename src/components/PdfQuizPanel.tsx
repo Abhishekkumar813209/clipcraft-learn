@@ -465,6 +465,48 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Weak Area Practice Dialog */}
+      <Dialog open={showWeakAreaDialog} onOpenChange={setShowWeakAreaDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              {language === 'hindi' ? 'कमज़ोर क्षेत्र अभ्यास' : 'Practice Weak Areas'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>{language === 'hindi' ? 'प्रश्नों की संख्या' : 'Number of Questions'}</Label>
+              <div className="flex gap-2 flex-wrap">
+                {[3, 5, 10].map(n => (
+                  <Button key={n} size="sm" variant={weakQuizCount === n && !customWeakCount ? 'default' : 'outline'} onClick={() => { setWeakQuizCount(n); setCustomWeakCount(''); }}>
+                    {n}
+                  </Button>
+                ))}
+                <Input type="number" placeholder="Custom" value={customWeakCount} onChange={e => setCustomWeakCount(e.target.value)} className="w-20 h-8 text-sm" min={1} max={20} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{language === 'hindi' ? 'प्रश्न प्रकार' : 'Question Types'}</Label>
+              <div className="space-y-2">
+                {(Object.entries(QUIZ_TYPE_LABELS) as [QuizType, string][]).map(([type, label]) => (
+                  <label key={type} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <Checkbox checked={weakQuizTypes.has(type)} onCheckedChange={() => toggleWeakQuizType(type)} />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowWeakAreaDialog(false)}>Cancel</Button>
+            <Button onClick={handlePracticeWeakAreas}>
+              <Brain className="h-4 w-4 mr-2" /> {language === 'hindi' ? 'क्विज़ बनाएँ' : 'Generate Quiz'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
