@@ -38,6 +38,7 @@ interface PdfQuizPanelProps {
   pageText: string;
   fileName?: string;
   onClose: () => void;
+  onGenerateQuiz?: (opts: { numQuestions: number; questionTypes: QuizType[]; focusTopics: string[] }) => void;
 }
 
 interface QuizFolder {
