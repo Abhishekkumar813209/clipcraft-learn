@@ -700,15 +700,7 @@ export function PdfReaderView() {
         <div className={isMobile ? 'fixed inset-0 z-50 bg-background overflow-auto' : ''}>
           <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
             setShowQuiz(false);
-            try {
-              const saved = sessionStorage.getItem(PDF_SESSION_KEY);
-              if (saved) {
-                const state = JSON.parse(saved);
-                delete state.showQuiz;
-                delete state.quizQuestions;
-                sessionStorage.setItem(PDF_SESSION_KEY, JSON.stringify(state));
-              }
-            } catch {}
+            updatePdfMeta({ showQuiz: false, quizQuestions: [] });
             sessionStorage.removeItem('pdf-quiz-state');
           }} />
         </div>
