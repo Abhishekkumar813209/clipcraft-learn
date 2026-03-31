@@ -211,6 +211,71 @@ export type Database = {
         }
         Relationships: []
       }
+      pdf_quiz_folders: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pdf_saved_quizzes: {
+        Row: {
+          created_at: string
+          folder_id: string | null
+          id: string
+          language: string
+          name: string
+          page_range: string | null
+          pdf_name: string | null
+          questions: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          folder_id?: string | null
+          id?: string
+          language?: string
+          name: string
+          page_range?: string | null
+          pdf_name?: string | null
+          questions?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          folder_id?: string | null
+          id?: string
+          language?: string
+          name?: string
+          page_range?: string | null
+          pdf_name?: string | null
+          questions?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pdf_saved_quizzes_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "pdf_quiz_folders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string | null

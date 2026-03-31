@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, CheckCircle, Loader2, Brain } from 'lucide-react';
+import { X, CheckCircle, Loader2, Brain, Save, FolderPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface QuizQuestion {
   id: number;
@@ -19,7 +25,13 @@ interface PdfQuizPanelProps {
   pageRange?: { from: number; to: number };
   language: 'hindi' | 'english' | 'hinglish';
   pageText: string;
+  fileName?: string;
   onClose: () => void;
+}
+
+interface QuizFolder {
+  id: string;
+  name: string;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;
@@ -53,7 +65,15 @@ function deserializeAnswers(obj: Record<number, string>): Map<number, string> {
   return m;
 }
 
-export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, onClose }: PdfQuizPanelProps) {
+export function PdfQuizPanel({ questions, currentPage, pageRange, language, pageText, fileName, onClose }: PdfQuizPanelProps) {
+  const { user } = useAuth();
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveName, setSaveName] = useState('');
+  const [selectedFolderId, setSelectedFolderId] = useState<string>('none');
+  const [newFolderName, setNewFolderName] = useState('');
+  const [folders, setFolders] = useState<QuizFolder[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+
   const [answers, setAnswers] = useState<Map<number, string>>(() => {
     try {
       const saved = sessionStorage.getItem(QUIZ_STATE_KEY);
@@ -169,6 +189,54 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     setIsChecking(false);
   };
 
+  const loadFolders = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('pdf_quiz_folders').select('id, name').eq('user_id', user.id).order('name');
+    if (data) setFolders(data);
+  };
+
+  const openSaveDialog = () => {
+    const range = pageRange && pageRange.from !== pageRange.to ? `${pageRange.from}-${pageRange.to}` : `${currentPage}`;
+    setSaveName(`${fileName || 'PDF'} - Page ${range}`);
+    setSelectedFolderId('none');
+    setNewFolderName('');
+    loadFolders();
+    setShowSaveDialog(true);
+  };
+
+  const handleSaveQuiz = async () => {
+    if (!user) { toast.error('Please sign in to save quizzes'); return; }
+    if (!saveName.trim()) { toast.error('Please enter a quiz name'); return; }
+    setIsSaving(true);
+    try {
+      let folderId: string | null = null;
+      if (selectedFolderId === 'new' && newFolderName.trim()) {
+        const { data: newFolder, error: folderErr } = await supabase.from('pdf_quiz_folders').insert({ user_id: user.id, name: newFolderName.trim() }).select('id').single();
+        if (folderErr) throw folderErr;
+        folderId = newFolder.id;
+      } else if (selectedFolderId !== 'none') {
+        folderId = selectedFolderId;
+      }
+
+      const range = pageRange && pageRange.from !== pageRange.to ? `${pageRange.from}-${pageRange.to}` : `${currentPage}`;
+      const { error } = await supabase.from('pdf_saved_quizzes').insert({
+        user_id: user.id,
+        folder_id: folderId,
+        name: saveName.trim(),
+        pdf_name: fileName || null,
+        page_range: range,
+        questions: questions as any,
+        language,
+      });
+      if (error) throw error;
+      toast.success(language === 'hindi' ? 'क्विज़ सेव हो गया!' : 'Quiz saved!');
+      setShowSaveDialog(false);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save quiz');
+    }
+    setIsSaving(false);
+  };
+
   const renderQuestion = (q: QuizQuestion) => {
     switch (q.type) {
       case 'true_false':
@@ -237,9 +305,14 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
               {language === 'hindi' ? 'प्रश्नोत्तरी' : 'Quiz'}: {pageRange && pageRange.from !== pageRange.to ? `Pages ${pageRange.from}-${pageRange.to}` : `Page ${currentPage}`}
             </h2>
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={openSaveDialog} title="Save Quiz">
+              <Save className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         <ScrollArea className="flex-1 overflow-y-auto p-4">
@@ -283,6 +356,47 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
           )}
         </div>
       </div>
+
+      {/* Save Quiz Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{language === 'hindi' ? 'क्विज़ सेव करें' : 'Save Quiz'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="quiz-name">{language === 'hindi' ? 'क्विज़ का नाम' : 'Quiz Name'}</Label>
+              <Input id="quiz-name" value={saveName} onChange={(e) => setSaveName(e.target.value)} placeholder="e.g. Polity Chapter 3 Quiz" />
+            </div>
+            <div className="space-y-2">
+              <Label>{language === 'hindi' ? 'फ़ोल्डर' : 'Folder'}</Label>
+              <Select value={selectedFolderId} onValueChange={setSelectedFolderId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select folder" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">{language === 'hindi' ? 'कोई फ़ोल्डर नहीं' : 'No Folder'}</SelectItem>
+                  {folders.map(f => (
+                    <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
+                  ))}
+                  <SelectItem value="new">
+                    <span className="flex items-center gap-1"><FolderPlus className="h-3 w-3" /> {language === 'hindi' ? 'नया फ़ोल्डर' : 'New Folder'}</span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              {selectedFolderId === 'new' && (
+                <Input placeholder={language === 'hindi' ? 'फ़ोल्डर का नाम' : 'Folder name'} value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)} className="mt-2" />
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSaveDialog(false)}>Cancel</Button>
+            <Button onClick={handleSaveQuiz} disabled={isSaving}>
+              {isSaving ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : <><Save className="h-4 w-4 mr-2" /> Save</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

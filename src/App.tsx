@@ -15,6 +15,7 @@ import { TopicView } from "./components/TopicView";
 import { PlaylistBrowserView } from "./components/PlaylistBrowserView";
 import { VideoPlayerView } from "./components/VideoPlayerView";
 import { PdfReaderView } from "./components/PdfReaderView";
+import { SavedQuizzesView } from "./components/SavedQuizzesView";
 import UpscMotivation from "./pages/UpscMotivation";
 import SscLayout from "./pages/SscLayout";
 import SscDashboard from "./pages/SscDashboard";
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="clips" element={<AddClipsView />} />
               <Route path="player/:videoId" element={<VideoPlayerView />} />
               <Route path="pdf" element={<PdfReaderView />} />
+              <Route path="quizzes" element={<SavedQuizzesView />} />
               <Route path="upsc" element={<UpscMotivation />} />
               <Route path="topic/:topicId" element={<TopicView />} />
             </Route>
