@@ -372,11 +372,16 @@ export default function QuizTest() {
                   <Progress value={(questionTimeLeft / fastModeSeconds) * 100} className="h-2" />
                 </div>
               )}
+              {/* Question Header - Blue banner */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg px-5 py-3 mb-4">
+                <h3 className="text-white font-bold text-lg">Q.{currentIndex + 1}</h3>
+              </div>
+
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:text-blue-400">
                   Question {currentIndex + 1} of {questions.length}
                 </Badge>
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border-0">
                   {currentQ?.type === 'mcq' ? 'MCQ' : currentQ?.type === 'true_false' ? 'True/False' : currentQ?.type === 'fill_blank' ? 'Fill Blank' : currentQ?.type === 'multiple_correct' ? 'Multi-Select' : 'Short Answer'}
                 </Badge>
                 {markedForReview.has(currentQ?.id) && (
