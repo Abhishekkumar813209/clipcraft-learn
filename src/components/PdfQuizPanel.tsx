@@ -162,14 +162,39 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     return answers.get(q.id) || '';
   };
 
-  const isAllAnswered = questions.every(q => {
+  const answeredCount = questions.filter(q => {
     if (q.type === 'multiple_correct') return (multiAnswers.get(q.id)?.size || 0) > 0;
     return !!answers.get(q.id);
-  });
+  }).length;
+
+  const getWeakQuestions = (): QuizQuestion[] => {
+    return questions.filter(q => {
+      const ans = getAnswerForQuestion(q);
+      return !ans || ans === '(skipped)';
+    });
+  };
+
+  const toggleWeakQuizType = (type: QuizType) => {
+    setWeakQuizTypes(prev => {
+      const next = new Set(prev);
+      if (next.has(type)) { if (next.size > 1) next.delete(type); }
+      else next.add(type);
+      return next;
+    });
+  };
+
+  const handlePracticeWeakAreas = () => {
+    if (!onGenerateQuiz) return;
+    const weakQs = getWeakQuestions();
+    const focusTopics = weakQs.map(q => q.question);
+    const finalCount = customWeakCount ? Math.min(Math.max(Number(customWeakCount), 1), 20) : weakQuizCount;
+    setShowWeakAreaDialog(false);
+    onGenerateQuiz({ numQuestions: finalCount, questionTypes: Array.from(weakQuizTypes), focusTopics });
+  };
 
   const submitAnswers = async () => {
-    if (!isAllAnswered) {
-      toast.error(language === 'hindi' ? 'सभी सवालों के जवाब दें' : 'Please answer all questions');
+    if (answeredCount === 0) {
+      toast.error(language === 'hindi' ? 'कम से कम एक सवाल का जवाब दें' : 'Please answer at least one question');
       return;
     }
     setIsChecking(true);
