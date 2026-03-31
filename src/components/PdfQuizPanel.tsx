@@ -189,6 +189,54 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     setIsChecking(false);
   };
 
+  const loadFolders = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('pdf_quiz_folders').select('id, name').eq('user_id', user.id).order('name');
+    if (data) setFolders(data);
+  };
+
+  const openSaveDialog = () => {
+    const range = pageRange && pageRange.from !== pageRange.to ? `${pageRange.from}-${pageRange.to}` : `${currentPage}`;
+    setSaveName(`${fileName || 'PDF'} - Page ${range}`);
+    setSelectedFolderId('none');
+    setNewFolderName('');
+    loadFolders();
+    setShowSaveDialog(true);
+  };
+
+  const handleSaveQuiz = async () => {
+    if (!user) { toast.error('Please sign in to save quizzes'); return; }
+    if (!saveName.trim()) { toast.error('Please enter a quiz name'); return; }
+    setIsSaving(true);
+    try {
+      let folderId: string | null = null;
+      if (selectedFolderId === 'new' && newFolderName.trim()) {
+        const { data: newFolder, error: folderErr } = await supabase.from('pdf_quiz_folders').insert({ user_id: user.id, name: newFolderName.trim() }).select('id').single();
+        if (folderErr) throw folderErr;
+        folderId = newFolder.id;
+      } else if (selectedFolderId !== 'none') {
+        folderId = selectedFolderId;
+      }
+
+      const range = pageRange && pageRange.from !== pageRange.to ? `${pageRange.from}-${pageRange.to}` : `${currentPage}`;
+      const { error } = await supabase.from('pdf_saved_quizzes').insert({
+        user_id: user.id,
+        folder_id: folderId,
+        name: saveName.trim(),
+        pdf_name: fileName || null,
+        page_range: range,
+        questions: questions as any,
+        language,
+      });
+      if (error) throw error;
+      toast.success(language === 'hindi' ? 'क्विज़ सेव हो गया!' : 'Quiz saved!');
+      setShowSaveDialog(false);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save quiz');
+    }
+    setIsSaving(false);
+  };
+
   const renderQuestion = (q: QuizQuestion) => {
     switch (q.type) {
       case 'true_false':
