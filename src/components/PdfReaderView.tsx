@@ -13,6 +13,7 @@ import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
 import { PdfQuizPanel } from './PdfQuizPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import * as pdfjsLib from 'pdfjs-dist';
