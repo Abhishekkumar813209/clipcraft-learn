@@ -83,7 +83,7 @@ export default function QuizTest() {
   }, [currentIndex, fastMode, fastModeSeconds]);
 
   useEffect(() => {
-    if (!fastMode || isSubmitting) return;
+    if (!fastMode || isSubmitting || paused) return;
     if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current);
     fastModeTimerRef.current = setInterval(() => {
       setQuestionTimeLeft(prev => {
