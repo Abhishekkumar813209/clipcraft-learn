@@ -305,6 +305,14 @@ export function PdfReaderView() {
     }
     setThumbnails(new Map(thumbMap));
 
+    // Populate in-memory cache for instant restore after navigation
+    const dataUrlForCache = await new Promise<string>((resolve) => {
+      const r2 = new FileReader();
+      r2.onload = () => resolve(r2.result as string);
+      r2.readAsDataURL(file);
+    });
+    setPdfMemoryCache({ doc, dataUrl: dataUrlForCache, fileName: file.name, thumbnails: new Map(thumbMap), currentPage: 1, zoom });
+
     if (doc.numPages > batch) {
       (async () => {
         for (let i = batch + 1; i <= doc.numPages; i++) {
@@ -313,6 +321,8 @@ export function PdfReaderView() {
           if (i % 10 === 0) setThumbnails(new Map(thumbMap));
         }
         setThumbnails(new Map(thumbMap));
+        const cache = getPdfMemoryCache();
+        if (cache) setPdfMemoryCache({ ...cache, thumbnails: new Map(thumbMap) });
       })();
     }
   };
