@@ -490,6 +490,10 @@ export function PdfReaderView() {
           <ArrowLeft className="h-4 w-4" />
           <span className="hidden md:inline ml-1">Back</span>
         </Button>
+        <Button variant="ghost" size="sm" onClick={async () => { await clearPdfState(); setPdfDoc(null); setFileName(''); setTotalPages(0); setCurrentPage(1); setPageText(''); }} className="shrink-0 text-destructive hover:text-destructive" title="Close PDF">
+          <X className="h-4 w-4" />
+          <span className="hidden md:inline ml-1">Close</span>
+        </Button>
         <span className="text-sm font-medium truncate max-w-[100px] md:max-w-[200px] hidden md:inline">{fileName}</span>
         <span className="text-xs text-muted-foreground shrink-0">
           {currentPage}/{totalPages}
