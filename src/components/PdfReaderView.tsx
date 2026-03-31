@@ -11,7 +11,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { PdfAutoPlay } from './PdfAutoPlay';
 import { PdfChatSidebar } from './PdfChatSidebar';
-import { PdfQuizPanel } from './PdfQuizPanel';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import ReactMarkdown from 'react-markdown';
@@ -63,6 +64,7 @@ async function extractSinglePageText(doc: pdfjsLib.PDFDocumentProxy, pageNum: nu
 export function PdfReaderView() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { user } = useAuth();
   const onBack = () => navigate('/');
 
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
@@ -95,8 +97,6 @@ export function PdfReaderView() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const prefetchAbortRef = useRef<AbortController | null>(null);
 
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
   const [quizFrom, setQuizFrom] = useState(1);
@@ -122,7 +122,7 @@ export function PdfReaderView() {
     onSwipeLeft: swipeGoNext,
     onSwipeRight: swipeGoPrev,
     threshold: 60,
-    enabled: isMobile && !!pdfDoc && !showChat && !showQuiz,
+    enabled: isMobile && !!pdfDoc && !showChat,
   });
 
   // Page fold transform style
@@ -231,12 +231,8 @@ export function PdfReaderView() {
   // Restore PDF from IndexedDB on mount
   useEffect(() => {
     loadPdfState().then(saved => {
-      if (saved) {
+        if (saved) {
         const { dataUrl, meta } = saved;
-        if (meta.showQuiz && meta.quizQuestions?.length) {
-          setQuizQuestions(meta.quizQuestions);
-          setShowQuiz(true);
-        }
         loadPdfFromDataUrl(dataUrl, meta.fileName || '', meta.currentPage || 1, meta.zoom || 1.2)
           .finally(() => setRestoringPdf(false));
       } else {
@@ -413,10 +409,18 @@ export function PdfReaderView() {
       }
       const data = await resp.json();
       if (data.questions?.length) {
-        setQuizQuestions(data.questions);
-        setShowQuiz(true);
-        // Persist quiz state to IndexedDB
-        updatePdfMeta({ showQuiz: true, quizQuestions: data.questions });
+        if (!user) { toast.error('Please sign in to take quizzes'); setIsLoadingQuiz(false); return; }
+        const autoName = `${fileName || 'PDF'} - Page ${quizFrom}${quizTo !== quizFrom ? `-${quizTo}` : ''}`;
+        const { data: savedQuiz, error: saveError } = await supabase.from('pdf_saved_quizzes').insert({
+          user_id: user.id,
+          name: autoName,
+          questions: data.questions,
+          language: activeLanguage,
+          pdf_name: fileName || null,
+          page_range: quizFrom === quizTo ? `${quizFrom}` : `${quizFrom}-${quizTo}`,
+        }).select('id').single();
+        if (saveError || !savedQuiz) { toast.error('Failed to save quiz'); setIsLoadingQuiz(false); return; }
+        navigate(`/quizzes/${savedQuiz.id}`);
       }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
@@ -731,44 +735,6 @@ export function PdfReaderView() {
         )}
       </div>
 
-      {/* Quiz panel - full overlay on mobile */}
-      {showQuiz && (
-        <div className={isMobile ? 'fixed inset-0 z-50 bg-background overflow-auto' : ''}>
-          <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} fileName={fileName} pageRange={{ from: quizFrom, to: quizTo }} onClose={() => {
-            setShowQuiz(false);
-            updatePdfMeta({ showQuiz: false, quizQuestions: [] });
-            sessionStorage.removeItem('pdf-quiz-state');
-          }} onGenerateQuiz={async ({ numQuestions: nq, questionTypes: qt, focusTopics }) => {
-            if (!pdfDoc) return;
-            setShowQuiz(false);
-            sessionStorage.removeItem('pdf-quiz-state');
-            setIsLoadingQuiz(true);
-            try {
-              const from = Math.max(1, Math.min(quizFrom, totalPages));
-              const to = Math.max(from, Math.min(quizTo, totalPages));
-              const combinedText = await extractTextFromPages(pdfDoc, from, to);
-              const resp = await fetch(CHAT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-                body: JSON.stringify({ action: 'quiz', pageText: combinedText, language: activeLanguage, numQuestions: nq, questionTypes: qt, focusTopics }),
-              });
-              if (!resp.ok) {
-                const err = await resp.json().catch(() => ({ error: 'Quiz generation failed' }));
-                toast.error(err.error || 'Quiz generation failed');
-                setIsLoadingQuiz(false);
-                return;
-              }
-              const data = await resp.json();
-              if (data.questions?.length) {
-                setQuizQuestions(data.questions);
-                setShowQuiz(true);
-                updatePdfMeta({ showQuiz: true, quizQuestions: data.questions });
-              } else toast.error('No questions generated');
-            } catch { toast.error('Quiz generation failed'); }
-            setIsLoadingQuiz(false);
-          }} />
-        </div>
-      )}
     </div>
   );
 }
