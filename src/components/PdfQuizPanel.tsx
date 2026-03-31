@@ -25,7 +25,13 @@ interface PdfQuizPanelProps {
   pageRange?: { from: number; to: number };
   language: 'hindi' | 'english' | 'hinglish';
   pageText: string;
+  fileName?: string;
   onClose: () => void;
+}
+
+interface QuizFolder {
+  id: string;
+  name: string;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pdf-chat`;

@@ -734,7 +734,7 @@ export function PdfReaderView() {
       {/* Quiz panel - full overlay on mobile */}
       {showQuiz && (
         <div className={isMobile ? 'fixed inset-0 z-50 bg-background overflow-auto' : ''}>
-          <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} onClose={() => {
+          <PdfQuizPanel questions={quizQuestions} currentPage={currentPage} language={activeLanguage} pageText={pageText} fileName={fileName} pageRange={{ from: quizFrom, to: quizTo }} onClose={() => {
             setShowQuiz(false);
             updatePdfMeta({ showQuiz: false, quizQuestions: [] });
             sessionStorage.removeItem('pdf-quiz-state');
