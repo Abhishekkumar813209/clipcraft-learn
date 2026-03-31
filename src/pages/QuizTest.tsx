@@ -38,6 +38,7 @@ export default function QuizTest() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [paused, setPaused] = useState(false);
   
   // Fast Mode state
   const [fastMode, setFastMode] = useState(false);
