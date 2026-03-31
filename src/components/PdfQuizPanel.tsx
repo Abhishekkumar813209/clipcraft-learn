@@ -423,6 +423,9 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
                 language === 'hindi' ? 'उत्तर जमा करें' : 'Submit Answers'}
             </Button>
           </div>
+        </div>
+      </div>
+
       {/* Save Quiz Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
         <DialogContent className="sm:max-w-md">
