@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Flag, ChevronLeft, ChevronRight, Loader2, CheckCircle, FileText, RotateCcw, Zap } from 'lucide-react';
+import { ArrowLeft, Clock, Flag, ChevronLeft, ChevronRight, Loader2, CheckCircle, FileText, RotateCcw, Zap, Pause, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -38,6 +38,7 @@ export default function QuizTest() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [paused, setPaused] = useState(false);
   
   // Fast Mode state
   const [fastMode, setFastMode] = useState(false);
@@ -69,9 +70,10 @@ export default function QuizTest() {
 
   // Elapsed timer
   useEffect(() => {
+    if (paused) return;
     const interval = setInterval(() => setElapsedSeconds(s => s + 1), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [paused]);
 
   // Fast Mode per-question timer
   useEffect(() => {
@@ -81,7 +83,7 @@ export default function QuizTest() {
   }, [currentIndex, fastMode, fastModeSeconds]);
 
   useEffect(() => {
-    if (!fastMode || isSubmitting) return;
+    if (!fastMode || isSubmitting || paused) return;
     if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current);
     fastModeTimerRef.current = setInterval(() => {
       setQuestionTimeLeft(prev => {
@@ -100,7 +102,7 @@ export default function QuizTest() {
       });
     }, 1000);
     return () => { if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current); };
-  }, [fastMode, currentIndex, fastModeSeconds, questions.length, isSubmitting]);
+  }, [fastMode, currentIndex, fastModeSeconds, questions.length, isSubmitting, paused]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -345,7 +347,16 @@ export default function QuizTest() {
               </select>
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-white bg-blue-500/50 px-3 py-1.5 rounded-full border border-blue-400/30">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setPaused(p => !p)}
+            className="text-white hover:bg-blue-500/50 hover:text-white"
+            title={paused ? 'Resume' : 'Pause'}
+          >
+            {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+          </Button>
+          <div className={`flex items-center gap-1.5 text-sm text-white bg-blue-500/50 px-3 py-1.5 rounded-full border border-blue-400/30 ${paused ? 'animate-pulse' : ''}`}>
             <Clock className="h-4 w-4" />
             <span className="font-mono font-semibold">{formatTime(elapsedSeconds)}</span>
           </div>
@@ -359,7 +370,18 @@ export default function QuizTest() {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Question Panel */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden relative">
+          {/* Pause Overlay */}
+          {paused && (
+            <div className="absolute inset-0 z-50 backdrop-blur-md bg-background/80 flex flex-col items-center justify-center gap-4">
+              <Pause className="h-12 w-12 text-blue-500" />
+              <h2 className="text-xl font-bold text-foreground">Quiz Paused</h2>
+              <p className="text-sm text-muted-foreground">Timer is stopped. Your progress is saved.</p>
+              <Button onClick={() => setPaused(false)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                <Play className="h-4 w-4" /> Resume Quiz
+              </Button>
+            </div>
+          )}
           <ScrollArea className="flex-1 p-6">
             <div className="max-w-2xl mx-auto">
               {/* Fast Mode Timer Bar */}
@@ -410,10 +432,10 @@ export default function QuizTest() {
               </Button>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={currentIndex === 0} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1 border-blue-200 dark:border-blue-800">
+              <Button variant="outline" size="sm" disabled={currentIndex === 0 || paused} onClick={() => goToQuestion(currentIndex - 1)} className="gap-1 border-blue-200 dark:border-blue-800">
                 <ChevronLeft className="h-4 w-4" /> Previous
               </Button>
-              <Button size="sm" disabled={currentIndex === questions.length - 1} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1 bg-blue-600 text-white hover:bg-blue-700">
+              <Button size="sm" disabled={currentIndex === questions.length - 1 || paused} onClick={() => goToQuestion(currentIndex + 1)} className="gap-1 bg-blue-600 text-white hover:bg-blue-700">
                 Next <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -432,8 +454,9 @@ export default function QuizTest() {
                 return (
                   <button
                     key={idx}
-                    onClick={() => goToQuestion(idx)}
-                    className={`w-10 h-10 rounded-lg border text-xs font-bold flex items-center justify-center transition-all hover:scale-105 ${statusColors[status]} ${currentIndex === idx ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-background' : ''}`}
+                    onClick={() => !paused && goToQuestion(idx)}
+                    disabled={paused}
+                    className={`w-10 h-10 rounded-lg border text-xs font-bold flex items-center justify-center transition-all hover:scale-105 ${statusColors[status]} ${currentIndex === idx ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-background' : ''} ${paused ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     {idx + 1}
                   </button>
