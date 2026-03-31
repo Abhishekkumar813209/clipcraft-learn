@@ -102,7 +102,7 @@ export default function QuizTest() {
       });
     }, 1000);
     return () => { if (fastModeTimerRef.current) clearInterval(fastModeTimerRef.current); };
-  }, [fastMode, currentIndex, fastModeSeconds, questions.length, isSubmitting]);
+  }, [fastMode, currentIndex, fastModeSeconds, questions.length, isSubmitting, paused]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
