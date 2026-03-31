@@ -413,10 +413,18 @@ export function PdfReaderView() {
       }
       const data = await resp.json();
       if (data.questions?.length) {
-        setQuizQuestions(data.questions);
-        setShowQuiz(true);
-        // Persist quiz state to IndexedDB
-        updatePdfMeta({ showQuiz: true, quizQuestions: data.questions });
+        if (!user) { toast.error('Please sign in to take quizzes'); setIsLoadingQuiz(false); return; }
+        const autoName = `${fileName || 'PDF'} - Page ${quizFrom}${quizTo !== quizFrom ? `-${quizTo}` : ''}`;
+        const { data: savedQuiz, error: saveError } = await supabase.from('pdf_saved_quizzes').insert({
+          user_id: user.id,
+          name: autoName,
+          questions: data.questions,
+          language: activeLanguage,
+          pdf_name: fileName || null,
+          page_range: quizFrom === quizTo ? `${quizFrom}` : `${quizFrom}-${quizTo}`,
+        }).select('id').single();
+        if (saveError || !savedQuiz) { toast.error('Failed to save quiz'); setIsLoadingQuiz(false); return; }
+        navigate(`/quizzes/${savedQuiz.id}`);
       }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
