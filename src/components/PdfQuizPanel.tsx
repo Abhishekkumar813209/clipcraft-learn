@@ -193,9 +193,15 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
     onGenerateQuiz({ numQuestions: finalCount, questionTypes: Array.from(weakQuizTypes), focusTopics });
   };
 
+  const navigate = useNavigate();
+
   const submitAnswers = async () => {
     if (answeredCount === 0) {
       toast.error(language === 'hindi' ? 'कम से कम एक सवाल का जवाब दें' : 'Please answer at least one question');
+      return;
+    }
+    if (!user) {
+      toast.error('Please sign in to submit quizzes');
       return;
     }
     setIsChecking(true);
@@ -227,9 +233,38 @@ export function PdfQuizPanel({ questions, currentPage, pageRange, language, page
       }
 
       const data = await resp.json();
-      setFeedback(data.feedback);
-    } catch {
-      toast.error('Failed to check answers');
+      const aiFeedback = data.feedback;
+
+      // Build user_answers array
+      const userAnswersData = questions.map(q => ({
+        questionId: q.id,
+        answer: getAnswerForQuestion(q) || '(skipped)',
+      }));
+
+      // Auto-save to DB
+      const range = pageRange && pageRange.from !== pageRange.to ? `${pageRange.from}-${pageRange.to}` : `${currentPage}`;
+      const autoName = `${fileName || 'PDF'} - Page ${range}`;
+      const { data: savedQuiz, error: saveErr } = await supabase.from('pdf_saved_quizzes').insert({
+        user_id: user.id,
+        name: autoName,
+        pdf_name: fileName || null,
+        page_range: range,
+        questions: questions as any,
+        language,
+        user_answers: userAnswersData as any,
+        ai_feedback: aiFeedback,
+      }).select('id').single();
+
+      if (saveErr) throw saveErr;
+
+      // Clear session state
+      sessionStorage.removeItem(QUIZ_STATE_KEY);
+
+      // Navigate to analysis page
+      onClose();
+      navigate(`/quizzes/${savedQuiz.id}/analysis`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to submit answers');
     }
     setIsChecking(false);
   };
