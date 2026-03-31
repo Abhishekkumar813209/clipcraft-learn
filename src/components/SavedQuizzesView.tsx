@@ -79,33 +79,7 @@ export function SavedQuizzesView() {
   const unfiledQuizzes = quizzes.filter(q => !q.folder_id);
   const getQuizzesForFolder = (folderId: string) => quizzes.filter(q => q.folder_id === folderId);
 
-  if (activeQuiz) {
-    return (
-      <div className="h-full flex flex-col">
-        <div className="p-4 border-b border-border flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => setActiveQuiz(null)}>
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back
-          </Button>
-          <span className="font-semibold truncate">{activeQuiz.name}</span>
-          {activeQuiz.pdf_name && <span className="text-xs text-muted-foreground">from {activeQuiz.pdf_name}</span>}
-        </div>
-        <div className="flex-1 overflow-auto p-4">
-          <PdfQuizPanel
-            questions={activeQuiz.questions}
-            currentPage={1}
-            language={activeQuiz.language as any}
-            pageText=""
-            fileName={activeQuiz.pdf_name || ''}
-            pageRange={activeQuiz.page_range ? (() => {
-              const parts = activeQuiz.page_range!.split('-');
-              return { from: Number(parts[0]), to: Number(parts[1] || parts[0]) };
-            })() : undefined}
-            onClose={() => setActiveQuiz(null)}
-          />
-        </div>
-      </div>
-    );
-  }
+  // Removed inline quiz view — now uses URL routes
 
   const renderQuizCard = (quiz: SavedQuiz) => (
     <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group" onClick={() => setActiveQuiz(quiz)}>
