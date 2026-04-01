@@ -1,36 +1,44 @@
 
 
-## Plan: Enhance Humor Coach with Home Button + 50 Template Conversations
+## Plan: Improve Humor Coach UI + Add 50 Snapchat Conversation Templates
 
-### Changes
+### 1. Redesign Response UI — Trainer/Coach Style
 
-**1. Add Home button in header (`src/pages/HumorCoach.tsx`)**
-- Add a "← Home" button next to the title that navigates back to `/`
+Instead of raw markdown dump, parse and render the response into structured coach-style cards:
 
-**2. Add 50 pre-built Indian/Hinglish template conversations**
-- Create a scrollable grid of template cards below the textarea
-- Each card shows a short title + category badge (e.g., "Office", "Family", "Cricket", "College", "Rickshaw", "Shaadi", "Desi Parents", "IPL", "Flatmates", "Train Journey")
-- Clicking a template auto-fills the textarea with that conversation
-- Templates are realistic Hinglish conversations covering situations like:
-  - Desi parents vs career choices
-  - IPL match watch party arguments
-  - Bargaining with auto/rickshaw wala
-  - Office Zoom call disasters
-  - College group project WhatsApp chats
-  - Shaadi function relatives interrogation
-  - Flatmate food theft confrontation
-  - Indian railway journey encounters
-  - Sharma ji ka beta comparisons
-  - Festival planning chaos
-  - And 40 more similar Indian context scenarios
+- **Coach avatar/header** at the top with a "🎤 Your Coach Says..." banner
+- **Conversation lines** highlighted with colored left-border (like chat bubbles)
+- **"Comedy Goldmine"** sections rendered as gradient-bordered tip cards with a lightbulb/fire icon
+- **Opportunity Rate** badges rendered as colored pills (🟢 Easy = green, 🟡 Medium = yellow, 🔴 Advanced = red)
+- **Punchline suggestions** rendered as numbered cards with distinct backgrounds per type (Safe/Clean, Edgy/Roast, Absurdist)
+- **Technique** tags rendered as small badges
+- Keep markdown as fallback — parse known patterns from the AI response (e.g., "Comedy Goldmine:", "Punchline 1", "Technique:", "Opportunity Rate:") into styled components
+- Streaming cursor stays at bottom
 
-**3. UI layout**
-- Templates section appears between the input area and response area
-- Collapsible section with "Browse Templates (50)" header
-- 2-column grid on mobile, 3-column on desktop
-- Each card: title, category badge, first line preview
-- Click → fills textarea, scrolls to top, ready to analyze
+### 2. Add 50 Snapchat/DM Conversation Templates
+
+New category: **"Snapchat"** — 50 templates focused on:
+- Opening conversations with girls after hi/hello
+- Finding humor in mundane DM exchanges
+- Turning awkward silences into comedy
+- Replying to stories with wit
+- Handling "seen" and late replies with humor
+- Flirty-but-funny openers
+- Group snap chaos
+- Streak conversations gone wrong
+
+All in Hinglish, Indian context, realistic scenarios.
+
+### 3. Template Category Tabs
+
+Add horizontal scrollable category filter tabs above the template grid so user can filter by: All, Family, Street, Cricket, Office, College, Snapchat, etc.
 
 ### Files Modified
-- `src/pages/HumorCoach.tsx` — add home button + templates section with 50 conversations
+- **`src/data/humorTemplates.ts`** — Add 50 Snapchat templates (IDs 51-100)
+- **`src/pages/HumorCoach.tsx`** — Redesign response section with coach-style UI, add category filter tabs
+
+### Technical Details
+- Response parsing: Use regex to detect patterns like `Comedy Goldmine:`, `Punchline \d`, `Opportunity Rate:`, `Technique:` and render them as styled components
+- Fallback: If parsing fails, show raw markdown as before
+- Category filter: Simple state-based filter on template grid, no new dependencies
 
