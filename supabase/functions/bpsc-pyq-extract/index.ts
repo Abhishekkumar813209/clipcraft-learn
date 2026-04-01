@@ -1,12 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 const BPSC_TOPICS = [
   "indian_history", "bihar_history", "indian_polity", "indian_economy",
@@ -15,14 +14,10 @@ const BPSC_TOPICS = [
 ];
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { pageText, year } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     if (!pageText || typeof pageText !== "string" || pageText.trim().length < 20) {
       return new Response(
@@ -49,51 +44,44 @@ Rules:
 - Keep the original language of the question (Hindi or English)
 - If you cannot determine the correct answer, set correct_option to 0 and note it in the explanation`;
 
-    const response = await fetch(AI_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Extract all MCQ questions from this BPSC ${year || ""} exam paper text:\n\n${pageText}` },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "extract_questions",
-            description: "Extract structured MCQ questions from exam paper text",
-            parameters: {
-              type: "object",
-              properties: {
-                questions: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      question_text: { type: "string", description: "The full question text" },
-                      options: { type: "array", items: { type: "string" }, description: "Exactly 4 options" },
-                      correct_option: { type: "number", description: "0-indexed correct option (0=A, 1=B, 2=C, 3=D)" },
-                      topic: { type: "string", enum: BPSC_TOPICS, description: "BPSC topic classification" },
-                      difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
-                      explanation: { type: "string", description: "Brief explanation for the correct answer" },
-                    },
-                    required: ["question_text", "options", "correct_option", "topic", "difficulty", "explanation"],
-                    additionalProperties: false,
+    const response = await callGemini({
+      model: "gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Extract all MCQ questions from this BPSC ${year || ""} exam paper text:\n\n${pageText}` },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "extract_questions",
+          description: "Extract structured MCQ questions from exam paper text",
+          parameters: {
+            type: "object",
+            properties: {
+              questions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    question_text: { type: "string", description: "The full question text" },
+                    options: { type: "array", items: { type: "string" }, description: "Exactly 4 options" },
+                    correct_option: { type: "number", description: "0-indexed correct option (0=A, 1=B, 2=C, 3=D)" },
+                    topic: { type: "string", enum: BPSC_TOPICS, description: "BPSC topic classification" },
+                    difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
+                    explanation: { type: "string", description: "Brief explanation for the correct answer" },
                   },
+                  required: ["question_text", "options", "correct_option", "topic", "difficulty", "explanation"],
+                  additionalProperties: false,
                 },
               },
-              required: ["questions"],
-              additionalProperties: false,
             },
+            required: ["questions"],
+            additionalProperties: false,
           },
-        }],
-        tool_choice: { type: "function", function: { name: "extract_questions" } },
-        stream: false,
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "extract_questions" } },
+      stream: false,
     });
 
     if (!response.ok) {
@@ -109,7 +97,6 @@ Rules:
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
     if (toolCall?.function?.arguments) {
       const parsed = JSON.parse(toolCall.function.arguments);
-      // Filter out questions with != 4 options
       const valid = (parsed.questions || []).filter((q: any) => Array.isArray(q.options) && q.options.length === 4);
       return new Response(JSON.stringify({ questions: valid }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

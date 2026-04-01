@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,22 +8,16 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { question_text, model_answer, user_answer, marks, word_limit } = await req.json();
 
     if (!question_text || !user_answer) {
       return new Response(JSON.stringify({ error: "question_text and user_answer required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const systemPrompt = `You are a BPSC Mains exam evaluator. Evaluate the candidate's answer for a descriptive question.
 
@@ -46,19 +41,12 @@ ${model_answer ? `MODEL ANSWER: ${model_answer}` : 'No model answer available.'}
 
 CANDIDATE'S ANSWER: ${user_answer}`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-      }),
+    const response = await callGemini({
+      model: "gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
     });
 
     if (!response.ok) {
@@ -80,11 +68,9 @@ CANDIDATE'S ANSWER: ${user_answer}`;
     const aiResult = await response.json();
     const content = aiResult.choices?.[0]?.message?.content || "";
 
-    // Parse score from response
     const scoreMatch = content.match(/SCORE:\s*(\d+)/i);
     const score = scoreMatch ? Math.min(Number(scoreMatch[1]), marks) : null;
 
-    // Parse feedback
     const feedbackMatch = content.match(/FEEDBACK:\s*([\s\S]*)/i);
     const feedback = feedbackMatch ? feedbackMatch[1].trim() : content;
 
@@ -95,8 +81,7 @@ CANDIDATE'S ANSWER: ${user_answer}`;
   } catch (err) {
     console.error("evaluate error:", err);
     return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
