@@ -427,7 +427,7 @@ export function PdfReaderView() {
     const from = Math.max(1, Math.min(quizFrom, totalPages));
     const to = Math.max(from, Math.min(quizTo, totalPages));
     if (to - from > 30) { toast.error('Max 30 pages at once'); return; }
-    const finalCount = customQuizCount ? Math.min(Math.max(Number(customQuizCount), 1), 20) : quizCount;
+    const finalCount = customQuizCount ? Math.min(Math.max(Number(customQuizCount), 1), 40) : quizCount;
     setQuizOpen(false); setIsLoadingQuiz(true);
     try {
       toast.info(`Extracting text from ${to - from + 1} page(s) for quiz...`);
