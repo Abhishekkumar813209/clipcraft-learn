@@ -125,7 +125,7 @@ export function SavedQuizzesView() {
           <FileText className="h-6 w-6 text-primary" />
           My Saved Quizzes
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">Revise your saved PDF quizzes organized by folders</p>
+        <p className="text-sm text-muted-foreground mt-1">Revise your saved PDF quizzes organized by date</p>
       </div>
 
       <ScrollArea className="flex-1">
