@@ -1,37 +1,15 @@
 
 
-## Plan: Group Quizzes by Date Instead of Topics
+## Plan: Increase Max Quiz Questions from 20 to 40
 
-### What Changes
+Three places need the limit changed from 20 to 40:
 
-**File:** `src/components/SavedQuizzesView.tsx`
+### File 1: `src/components/PdfReaderView.tsx`
+- **Line 430**: Change `Math.min(..., 20)` → `Math.min(..., 40)` (the actual cap on question count sent to AI)
+- **Line 625**: Change `max={20}` → `max={40}` (the HTML input max attribute)
 
-Replace the current flat list layout with a **date-grouped accordion**. Quizzes are grouped by their `created_at` date (e.g., "March 31, 2026", "March 30, 2026"). Each date row is collapsible — clicking it expands to show the quizzes from that day with their topic/PDF names.
+### File 2: `supabase/functions/pdf-chat/index.ts`
+- **Line ~77**: Change `Math.min(Math.max(numQuestions || 4, 1), 20)` → `Math.min(Math.max(numQuestions || 4, 1), 40)` (server-side cap)
 
-### How It Works
-
-1. **Group quizzes by date**: After fetching, group all quizzes (both filed and unfiled) by `new Date(created_at).toLocaleDateString()` into a `Map<string, SavedQuiz[]>`
-2. **Render date headers**: Each date becomes a collapsible row with a `Calendar` icon, the formatted date string, and quiz count
-3. **Expand to see quizzes**: Clicking a date toggles open to show the quiz cards underneath (same `renderQuizCard` with topic name, Reattempt/View Results buttons)
-4. **Keep folder grouping optional**: If folders exist, show folders first, then date-grouped unfiled quizzes. If no folders, just show date groups for everything.
-
-### Date Header Layout
-```text
-▶ 📅  March 31, 2026                              4 quizzes
-▼ 📅  March 30, 2026                              2 quizzes
-   🧠 OOPS theory.pdf - Page 6-8  [Results]  [Reattempt] [View Results]
-   🧠 OOPS theory.pdf - Page 4-8             [Start Quiz]
-```
-
-### Implementation Details
-
-- Replace the current folder-based grouping with date-based grouping
-- Add `Calendar` icon import from lucide-react
-- Group logic: `quizzes.reduce()` by date string, sorted newest first
-- `expandedFolders` state reused for date keys (first date auto-expanded)
-- All existing quiz card rendering (buttons, delete, badges) stays the same
-- Subtitle updated: "Revise your saved PDF quizzes organized by date"
-
-### Single file change
-`src/components/SavedQuizzesView.tsx`
+Three lines across two files — no other changes needed.
 
