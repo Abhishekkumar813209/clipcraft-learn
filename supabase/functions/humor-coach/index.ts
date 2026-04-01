@@ -1,4 +1,8 @@
-import { corsHeaders } from "@supabase/supabase-js/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
 import { callGemini } from "../_shared/gemini.ts";
 
 const SYSTEM_PROMPT = `You are an elite standup comedy coach and humor analyst — think of yourself as the love child of Samay Raina's savage wit and a comedy writing professor at Second City.
