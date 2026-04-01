@@ -1041,5 +1041,971 @@ TS: Sir, toh naya laptop lo.
 Me: Iske liye call kiya tha main?
 TS: Sir, call ka charge 200 rupaye. Payment link bhej raha hoon.
 Me: ...`
+  },
+  {
+    id: 51,
+    title: "Story Reply Opener",
+    category: "Snapchat",
+    text: `*She posts a sunset story*
+Me: Nice view 👀
+She: Thanks!
+Me: Main sunset ki baat kar raha tha, tum kya samjhi? 😏
+She: 😂 Shut up
+Me: Arey seriously though, yeh kahan ka hai?
+She: Marine Drive
+Me: Oh nice, main bhi kal wahi tha. Humne ek dusre ko miss kar diya.
+She: Haha sure
+Me: I mean sunset ko miss kiya, tum toh stranger ho abhi
+She: "Abhi" matlab baad mein nahi rahungi?
+Me: Depends, next story kab daal rahi ho?`
+  },
+  {
+    id: 52,
+    title: "Streak Negotiation",
+    category: "Snapchat",
+    text: `Me: Streak?
+She: Haan chalo
+*Day 1-5: Normal snaps*
+*Day 6*
+Me: Yeh streak toh arrange marriage jaisi hai. Roz milna padta hai bina kuch bole.
+She: 😂 Toh baat bhi kar liya karo
+Me: Accha toh batao, aaj kya kiya?
+She: Kuch nahi, bore ho rahi thi
+Me: Same. Isliye streak bheja. Productivity level: Negative.
+She: At least honest ho
+Me: Honesty meri weakness hai. Isliye single hoon.
+She: 💀💀
+Me: Ab has mat, streak bhejo wapas. Timer laga hai.`
+  },
+  {
+    id: 53,
+    title: "Bitmoji Roast",
+    category: "Snapchat",
+    text: `Me: Tera bitmoji tujhse accha dikhta hai
+She: Excuse me?! 😤
+Me: Arey compliment hai! Tera bitmoji cute hai. Very well made.
+She: Toh main cute nahi hoon?
+Me: Maine aisa kab bola? Main bola bitmoji ZYADA cute hai. Tu bhi cute hai, bas thoda kam.
+She: I'm blocking you
+Me: Block karegi toh streak tootega, 45 din ki mehnat 🥲
+She: Tumhe meri ya streak ki zyada chinta hai?
+Me: Honest answer chahiye ya diplomatic?
+She: Honest
+Me: ...streak.
+She: 😂 BYE`
+  },
+  {
+    id: 54,
+    title: "Late Reply Drama",
+    category: "Snapchat",
+    text: `*Sent message at 2 PM*
+*She replies at 11 PM*
+She: Hii sorry late reply, phone nahi tha paas mein
+Me: Koi baat nahi, main bhi abhi 9 ghante baad padh raha hoon tumhara message
+She: 😂 Itna sarcasm
+Me: Sarcasm nahi, patience hai. Monks bhi itna wait nahi karte.
+She: Busy thi yaar
+Me: Main bhi busy tha. Teri reply ka wait karne mein.
+She: Aww 🥺
+Me: Aww mat bol, next time 8 ghante mein reply kar dena. Baby steps.
+She: Deal 😂
+Me: Screenshot le raha hoon, evidence ke liye.`
+  },
+  {
+    id: 55,
+    title: "Snap Map Stalking",
+    category: "Snapchat",
+    text: `Me: CP mein ho?
+She: Tumhe kaise pata? 😳
+Me: Snap Map
+She: You check my location?! 👀
+Me: Accidentally dikha. Main apni location dekh raha tha aur tumhara bitmoji naach raha tha CP pe.
+She: Bitmoji naachta nahi hai 😂
+Me: Mujhe laga party chal rahi hai.
+She: Tum bhi aa jao phir
+Me: Abhi? Bhai main pajama mein hoon.
+She: Toh kapde pehen lo
+Me: Instructions unclear. Kaunse kapde? Date wale ya "just a friend" wale?
+She: 🤦‍♀️ Just come
+Me: Omw. Pajama mein.`
+  },
+  {
+    id: 56,
+    title: "Gym Selfie Comment",
+    category: "Snapchat",
+    text: `*She posts gym story*
+Me: Yeh toh bahut heavy workout lag raha hai
+She: Haan! 1 hour cardio kiya
+Me: Main toh sirf story dekhke thak gaya
+She: 😂 Tum gym nahi jaate?
+Me: Jaata hoon. Mentally. Roz visualize karta hoon.
+She: Visualization se muscles nahi bante
+Me: But confidence banta hai. Aur confidence > muscles
+She: Cope 😂
+Me: Arey genuine question - tum log gym jaake selfie pehle lete ho ya workout?
+She: Dono saath mein
+Me: Multi-tasking queen 👑
+She: Tum bhi try karo gym
+Me: Theek hai, pehle selfie lena seekhta hoon.`
+  },
+  {
+    id: 57,
+    title: "Food Story React",
+    category: "Snapchat",
+    text: `*She posts pizza story*
+Me: Cheese burst?
+She: Haan! 🍕
+Me: Akele kha rahi ho? That's illegal in India. Sharing is mandatory.
+She: Doston ke saath hoon
+Me: Oh toh main dost nahi hoon? Noted. 📝
+She: Abhi abhi toh baat shuru hui hai 😂
+Me: Pizza ke liye main 5 minute mein dost ban sakta hoon
+She: Sirf pizza ke liye?
+Me: Pizza + garlic bread ke liye best friend bhi ban jaunga
+She: 😂😂 Next time bulaungi
+Me: Screenshot le raha hoon. Yeh promise hai.
+She: 🤣 Done deal`
+  },
+  {
+    id: 58,
+    title: "Dog Filter Roast",
+    category: "Snapchat",
+    text: `*She sends snap with dog filter*
+Me: Yeh filter tumpe suit karta hai
+She: Kyun? 🐶
+Me: Loyal dikhti ho 😂
+She: Yeh compliment hai ya insult?
+Me: Depends on how you take it. Main toh dog lover hoon.
+She: Toh main dog hoon?!
+Me: Nahi nahi, tum dog FILTER mein ho. Bahut farak hai.
+She: Explain karo
+Me: Dog = loyal, cute, everyone loves them. So basically compliment hi hai.
+She: Nice save 😂
+Me: Main cricketer nahi hoon par catch acche pakadta hoon. Especially apni galtiyon ke.
+She: 💀`
+  },
+  {
+    id: 59,
+    title: "Study Snap Exchange",
+    category: "Snapchat",
+    text: `*She sends snap of books*
+Me: Padhai? Real padhai ya snap ke liye books khol ke rakhi hain?
+She: Real padhai! Exams hain 😤
+Me: Hmm, par notification toh 2 second mein read kar liya tumne
+She: Woh break tha 😂
+Me: Break ke 15 minute ho gaye, snap bhi bhej diya. Very productive break.
+She: Tum bhi toh reply kar rahe ho, tum kya kar rahe ho?
+Me: Main procrastination mein PhD kar raha hoon. Expert level.
+She: Saath mein padhe? Virtual study buddy?
+Me: Sure, par warning - main 10 minute padhunga, 50 minute memes bhejoonga.
+She: Better than nothing 😂
+Me: That's the lowest bar ever and I'm still proud.`
+  },
+  {
+    id: 60,
+    title: "Aesthetic Story Mockery",
+    category: "Snapchat",
+    text: `*She posts aesthetic coffee story with fairy lights*
+Me: Waah, Pinterest aa gaya Snapchat pe
+She: Jealous? ☕✨
+Me: Haan. Mere ghar pe fairy lights nahi hain, sirf bijli ke bill hain.
+She: 😂 Invest karo ambiance mein
+Me: Bhai Nescafe Classic ko ambiance se match nahi kar sakta
+She: Cafe chale jao
+Me: 300 ka coffee? Itne mein mummy 1 hafte ka grocery le aati hain.
+She: Tum bahut desi ho 😂
+Me: Desi hona pride hai. Hum log 10 rupaye ki chai pe deep talks karte hain.
+She: That's actually sweet
+Me: Sweet? Chai mein cheeni daali thi.
+She: 🤦‍♀️😂`
+  },
+  {
+    id: 61,
+    title: "Seen Zone Recovery",
+    category: "Snapchat",
+    text: `*She leaves me on seen*
+*Next day*
+Me: Main obituary likhne wala tha apni conversation ki
+She: 😂😂 Sorry yaar, bhool gayi reply karna
+Me: Bhool gayi? Main itna forgettable hoon?
+She: Nahi yaar, busy thi
+Me: Itna busy ki ek emoji bhi nahi? "👍" bhi chalti.
+She: Accha sorry, ab baat karte hain
+Me: Pehle terms & conditions. Reply time max 2 hours.
+She: Done ✅
+Me: Violation pe penalty = ek meme bhejna compulsory
+She: Kaunsi court mein file karega yeh? 😂
+Me: Snapchat Supreme Court. Main Chief Justice hoon.`
+  },
+  {
+    id: 62,
+    title: "Random Snap at 3 AM",
+    category: "Snapchat",
+    text: `*3 AM*
+Me: *sends ceiling snap* "Neend nahi aa rahi"
+She: Same 🥲
+Me: Ceiling counting kar raha hoon. 47 tiles hain mere kamre mein.
+She: Tumne count kiya?! 😂
+Me: Aur kya karun? Productive insomnia.
+She: Sheep count karo
+Me: Sheep count ki. 234 pe sheep ne bola "bhai tu so ja"
+She: 💀💀💀
+Me: Tum kyun jaag rahi ho?
+She: Overthinking
+Me: Kya soch rahi ho?
+She: Yahi ki 3 baje ceiling ke tiles kyun count ho rahe hain
+Me: Tumhe meri care hai? 🥹
+She: Tiles ki care hai 😂`
+  },
+  {
+    id: 63,
+    title: "Half Face Snap Game",
+    category: "Snapchat",
+    text: `*She sends half face snap*
+Me: Baki aadha face DLC mein aayega?
+She: 😂 What?
+Me: Half face dikhaya, like a free trial. Full face ke liye premium subscription lena padega?
+She: Haha nahi, angle accha tha
+Me: Angle? Bhai trigonometry mein bhi itna angle nahi hota
+She: Tum maths jokes maar rahe ho Snapchat pe?
+Me: Maths joke maarne se nerdy lagta hoon na? 
+She: Thoda 😂
+Me: Good. Nerdy is the new sexy. Maine internet pe padha.
+She: Kahan padha?
+Me: Reddit. Most reliable source.
+She: 🤦‍♀️ Tum hopeless ho`
+  },
+  {
+    id: 64,
+    title: "OOTD Story Reaction",
+    category: "Snapchat",
+    text: `*She posts OOTD mirror selfie*
+Me: Dress code kya hai? Main bhi ready ho jata hoon
+She: Kahi nahi ja rahi, bas OOTD hai
+Me: Matlab... kapde pehen ke... ghar pe baith rahi ho?
+She: Haan 😂 Photo ke liye
+Me: Respect. Itni mehnat sirf photo ke liye. Dedication hai.
+She: Accha laga nahi?
+Me: Laga toh. But honest feedback chahiye ya Snapchat feedback?
+She: Honest
+Me: Color combination accha hai. 8/10.
+She: Sirf 8?!
+Me: 2 marks isliye kaate kyunki mirror dirty hai background mein 😂
+She: OMG 💀 I hate you`
+  },
+  {
+    id: 65,
+    title: "Voice Note Awkwardness",
+    category: "Snapchat",
+    text: `She: *sends voice note*
+Me: *listens 5 times to understand*
+Me: Haan bilkul, agreed
+She: Kya agreed? Maine plan cancel ki baat ki
+Me: Oh... toh main kya agree kar raha tha? Teri voice note mein signal issue tha
+She: Signal issue nahi hai, tumne suna nahi 😂
+Me: Maine suna! But tumhari voice mein ek melody hai jo distract karti hai
+She: Yeh flirting hai ya excuse?
+Me: Yes ✅
+She: Dono nahi ho sakte 😂
+Me: Main multi-talented hoon. Flirting + excuse simultaneously.
+She: Wapas sun lo voice note
+Me: 6th time? Main toh tumhara biggest listener hoon. Spotify wrapped mein aaunga.`
+  },
+  {
+    id: 66,
+    title: "Group Snap Chaos",
+    category: "Snapchat",
+    text: `*Group snap with her friends*
+She: Batao kaun kaun hai 👀
+Me: Yeh toh police lineup lag rahi hai
+She: 😂 Rude
+Me: Arey mazak! Btw left se tisri tum ho na?
+She: Nahi! Main right se pehli hoon
+Me: Oh... maine galat insaan ko cute bola kal
+She: KYA?! 😠
+Me: MAZAK MAZAK! Obviously tum pehchaan mein aa gayi
+She: Sure? Ya backtrack kar rahe ho?
+Me: 100% pehchaan liya. Tumhara confidence alag dikhta hai photo mein
+She: Nicee save 😏
+Me: Cricket nahi khelta par diving catches expert hoon.`
+  },
+  {
+    id: 67,
+    title: "Song Recommendation Flirt",
+    category: "Snapchat",
+    text: `*She shares a song on story*
+Me: Yeh gaana sun ke mujhe kisi ki yaad aa gayi
+She: Kaun? 👀
+Me: Meri ex... playlist. Bahut acchi playlist thi. Delete kar di.
+She: 😂😂 Smooth
+Me: But seriously, music taste accha hai tumhara
+She: Thanks! Tumhara fav kaun sa gaana hai?
+Me: "Tum Hi Ho"
+She: Seriously? 😂
+Me: Nahi, ironically. Main toh lo-fi sunta hoon pretending to be deep.
+She: Sab lo-fi wale aise hi hote hain 😂
+Me: Arey genuine recommend karo kuch
+She: *sends a song*
+Me: Done, ab yeh HUMARA gaana hai.
+She: Ek gaana share kiya aur humara ho gaya? 😂`
+  },
+  {
+    id: 68,
+    title: "Travel Story Opener",
+    category: "Snapchat",
+    text: `*She posts Goa story*
+Me: Goa mein ho? Mujhe kyun nahi bataya?
+She: Tumhe kyun bataun? 😂
+Me: Because... sunset photos ko koi validate toh kare
+She: Friends hain mere saath
+Me: Friends sunset validate karte hain? I doubt.
+She: Haha toh tum kya kar rahe ho?
+Me: Ghar pe. Imaginary Goa trip pe hoon. Beach = Bed. Ocean = AC ki hawa.
+She: 😂😂 That's sad
+Me: Sad nahi, budget-friendly hai. Zero carbon footprint.
+She: Next trip pe chalna
+Me: Tum bula rahi ho ya main khud invite kar loon?
+She: Let's see 😏
+Me: "Let's see" = Indian "no" ka polite version. Samajh gaya.
+She: 😂 Nahi yaar seriously!`
+  },
+  {
+    id: 69,
+    title: "Pet Photo Reply",
+    category: "Snapchat",
+    text: `*She sends her cat's photo*
+Me: Cute! Naam kya hai?
+She: Mimi 🐱
+Me: Mimi se meri baat karwao
+She: 😂 Kya bologe?
+Me: Bolunga ki teri owner ko meri chat ka reply karne bol
+She: Main reply karti hoon! 😤
+Me: 3 ghante baad? Mimi bhi faster hogi
+She: Mimi toh phone use nahi karti
+Me: Exactly. Woh bhi reply nahi karti. Tum bhi nahi. Same energy.
+She: 😂😂 That's mean
+Me: Mean nahi, comparative analysis hai. MBA useful hai kuch toh.
+She: Tumne MBA kiya hai?
+Me: Nahi, but ye joke MBA level tha na?
+She: Nahi 😂`
+  },
+  {
+    id: 70,
+    title: "Emoji Only Conversation",
+    category: "Snapchat",
+    text: `Me: 👋
+She: 👋😊
+Me: ☕?
+She: 🤔
+Me: 🍕?
+She: 😍👍
+Me: 📅?
+She: 🤷‍♀️
+Me: Ok ab normal baat karein? Emoji se date fix nahi hoti 😂
+She: 😂😂 Tum date fix kar rahe the?
+Me: PIZZA date. Normal pizza khaane chalein.
+She: "Normal pizza date" 😂 Sure
+Me: Matlab haan?
+She: Emoji mein boloon ya text mein? 😏
+Me: Text mein bol do, emoji se miscommunication hoti hai
+She: Haan chalo 🍕
+Me: Was that a yes-emoji or sarcastic-emoji? Clarity chahiye.
+She: 🤦‍♀️ YES. TEXT MEIN. YES.`
+  },
+  {
+    id: 71,
+    title: "Morning Snap Dilemma",
+    category: "Snapchat",
+    text: `*She sends morning snap, looking perfect*
+Me: Tum subah uthe ho ya photoshoot se aa rahi ho?
+She: 😂 Just woke up
+Me: Just woke up? Mere "just woke up" mein main bhoot dikhta hoon
+She: 😂😂 Itna bura nahi hoga
+Me: Ek baar apna morning face bhejoon?
+She: Bhejo
+Me: *sends disheveled snap*
+She: 😂😂😂 OMG
+Me: Dekha? Yeh hai reality. Tum log filter lagate ho subah bhi
+She: Maine filter nahi lagaya! 😤
+Me: Toh tum naturally pretty ho? Thats unfair for the rest of us.
+She: Aww 🥺
+Me: Compliment le lo jaldi, roz nahi deta. Quota khatam.`
+  },
+  {
+    id: 72,
+    title: "Typing Indicator Anxiety",
+    category: "Snapchat",
+    text: `Me: Maine dekha tum 5 minute se type kar rahi ho
+She: 😂 How do you know?
+Me: "Typing..." indicator. Main stare kar raha tha.
+She: That's creepy
+Me: Creepy nahi, invested hoon. Kya likh rahi thi itni der?
+She: Lamba message tha, phir delete kar diya
+Me: DELETE?! Woh message mera tha! Mera haq tha uspe!
+She: 😂😂 Kuch khaas nahi tha
+Me: 5 minute type kiya aur kuch khaas nahi? Novel likh rahi thi kya?
+She: Overthink mat karo
+Me: Tum type karo, main overthink karun. Perfect team hain hum.
+She: Hum team hain? 👀
+Me: Snapchat team. Streak wali team. 😌`
+  },
+  {
+    id: 73,
+    title: "Birthday Story Reply",
+    category: "Snapchat",
+    text: `*Her birthday story*
+Me: Happy Birthday! 🎂 Gift mein kya chahiye?
+She: Thanks! Surprise me 😊
+Me: Ok toh main kuch nahi de raha. Surprise! 🎉
+She: 😂😂 That's not how it works
+Me: Accha seriously, coffee chalein birthday treat?
+She: Tum treat de rahe ho ya main? It's MY birthday 😂
+Me: Birthday girl ko treat milti hai obviously. Uske baad teri baari next time.
+She: Mere birthday pe plan kar rahe ho next meeting bhi? 😏
+Me: Strategic planning. Long term investment.
+She: Investment mein return kya milega?
+Me: Good company. Meri. Which is priceless.
+She: Priceless ya worthless? 😂
+Me: Oof. Birthday pe roast nahi karte.`
+  },
+  {
+    id: 74,
+    title: "Rain Story Reply",
+    category: "Snapchat",
+    text: `*She posts rain story with "Baarish vibes ☔"*
+Me: Pakode bana rahi ho?
+She: Nahi 😂 Just enjoying the rain
+Me: Rain enjoy karna = khidki ke paas baith ke Instagram story daalna?
+She: 😂 Tum toh sab expose kar dete ho
+Me: Exposure therapy hai. Tum baarish enjoy karo, main reality check dunga.
+She: Tum kya kar rahe ho baarish mein?
+Me: Kapde sukha ke andar le raha tha. Very romantic.
+She: 😂😂 Mummy ne bheja?
+Me: Mummy ka order > baarish ki romantic feelings
+She: Tum bahut ghar wale lagte ho
+Me: "Ghar wale" matlab gharelu? Ya "ghar wale ladke" wale?
+She: Dono 😂
+Me: Main isse compliment maan raha hoon.`
+  },
+  {
+    id: 75,
+    title: "Accidental Snap",
+    category: "Snapchat",
+    text: `Me: *accidentally sends chin snap*
+She: Yeh kya tha? 😂
+Me: Mera jawline reveal. Exclusive content.
+She: Jawline? Bhai double chin dikhi 😂
+Me: Double chin = double personality. Dono interesting hain.
+She: Haha galti se gaya na?
+Me: Nahi nahi, planned tha. Suspense create kar raha tha.
+She: Kaunsa suspense?
+Me: Pehle chin, phir neck, phir face. Trailer release hota hai na slowly?
+She: Tum apne aap ko movie samajhte ho? 😂
+Me: Blockbuster hoon. Bas audience kam hai.
+She: Audience = main akeli?
+Me: Quality > Quantity. Ek dedicated fan enough hai.
+She: Fan ya victim? 😂`
+  },
+  {
+    id: 76,
+    title: "Exam Stress Bonding",
+    category: "Snapchat",
+    text: `She: Kal exam hai aur kuch nahi aata 😭
+Me: Same. Solidarity mein main bhi nahi padh raha.
+She: Tere toh exam bhi nahi hai 😂
+Me: Emotional support de raha hoon. Padhai nahi.
+She: Kuch useful kar, notes bhej
+Me: Mere notes se toh fail ho jaogi confirmed
+She: Itne bure hain?
+Me: Notes nahi hain. Blank pages hain with motivational quotes.
+She: 😂 Hopeless
+Me: Ek kaam karo, important topics batao. Main Google karke bhejta hoon.
+She: Tum Google karoge mere liye? 🥺
+Me: Haan. Mere liye toh koi karta nahi, tere liye kar deta hoon.
+She: Sweetest useless person ever ❤️`
+  },
+  {
+    id: 77,
+    title: "Spotify Wrapped React",
+    category: "Snapchat",
+    text: `*She shares Spotify Wrapped*
+Me: "Top genre: Sad songs" ... sab theek hai na?
+She: 😂 Sad songs acche lagte hain!
+Me: Red flag nahi hai yeh? Asking for a friend.
+She: Kaun friend? 👀
+Me: Main hi hoon friend. No one else here.
+She: 😂 Tum kya sunte ho?
+Me: "Top genre: Bollywood" because desi at heart ❤️
+She: That's cute actually
+Me: Cute? Main aur cute? Yeh naya hai.
+She: Koi nahi bolta tumhe?
+Me: Mummy bolti hai. But woh biased hai.
+She: 😂 Main bhi bol rahi hoon
+Me: Toh tum bhi biased ho? Interesting. 👀
+She: Shut up 😂`
+  },
+  {
+    id: 78,
+    title: "Netflix Recommendation",
+    category: "Snapchat",
+    text: `She: Kuch accha recommend karo Netflix pe
+Me: Genre?
+She: Kuch bhi, bore ho rahi hoon
+Me: "Bore ho rahi hoon" matlab meri chat se bore ho rahi ho?
+She: Nahi! 😂 Show ki baat kar rahi hoon
+Me: Money Heist dekhi?
+She: 2 saal pehle dekhi
+Me: Breaking Bad?
+She: Woh bhi
+Me: Meri life ki documentary dekho. Bahut drama hai.
+She: 😂 Kahan milegi?
+Me: Live stream hai. Roz Snapchat pe dikhta hai.
+She: Boring content hai toh cancel kar dungi 😂
+Me: Arey toh saath mein dekhte hain kuch. Watch party?
+She: Watch party on Snapchat? 😂 Kaise?
+Me: Saamne baith ke. Revolutionary concept called "hanging out."
+She: Smooth 😏`
+  },
+  {
+    id: 79,
+    title: "Mutual Friend Setup",
+    category: "Snapchat",
+    text: `Me: Arey tumhe Priya ne add karwaya na mujhe?
+She: Haan 😂 Usne bola "interesting banda hai"
+Me: Interesting? Priya ne yeh bola? Usse toh main bore lagta hoon
+She: 😂 Toh kya ho tum?
+Me: Depends. Tumhe kaisa chahiye? Funny? Deep? Intellectual?
+She: Sab ek mein milega?
+Me: 3-in-1 Nescafe jaisa. Sab milega par quality mid hogi.
+She: 😂😂 Honest toh ho
+Me: Honesty hi meri sabse badi quality hai. Baaki sab average hai.
+She: Average se kaam chalega
+Me: Toh arrange marriage mein bhi yahi bolte hain aunties 😂
+She: 💀 Stop
+Me: Priya ko bolna review update kare. "Interesting" se upgrade karke "funny" likhe.`
+  },
+  {
+    id: 80,
+    title: "College Event Snap",
+    category: "Snapchat",
+    text: `*She posts college fest story*
+Me: Yeh fest hai ya fashion show?
+She: 😂 Cultural fest hai
+Me: Culture mein yeh outfit aata hai? Mere fest mein toh sab track pants mein the
+She: Which college? 😂
+Me: Woh chhodo. Tum enjoy karo. Main virtually attend kar raha hoon.
+She: Chalo na! Open fest hai
+Me: Bhai mujhe koi nahi jaanta wahan
+She: Main jaanti hoon
+Me: 1 person. Nice. Awkwardly tumhare peeche ghoomunga pura time.
+She: 😂 Nahi yaar, mere friends se mila dungi
+Me: "Meet my Snapchat friend" - kya introduction hoga 😂
+She: Better than "meet my streak partner" 🤣`
+  },
+  {
+    id: 81,
+    title: "Photo Editing Request",
+    category: "Snapchat",
+    text: `She: Yeh photo acchi hai? Post karun?
+Me: *zooms in* Peeche Sharma uncle khade hain towel mein
+She: OMG 😂😂 Nahi dekha tha
+Me: Sharma uncle ka photo toh viral hoga
+She: Crop kar dungi
+Me: Crop karegi toh aadhi tum bhi kat jaogi
+She: Toh edit karo na please 🥺
+Me: Meri fees hai
+She: Kitni? 😂
+Me: Ek coffee ☕
+She: Done! Edit karo
+Me: *edits and puts sunglasses on Sharma uncle*
+She: 😂😂😂 Aise nahi!
+Me: Ab Sharma uncle cool lag rahe hain. Thank me later.
+She: Properly edit karo 😂
+Me: Fees double. Coffee + samosa.`
+  },
+  {
+    id: 82,
+    title: "Snap Score Competition",
+    category: "Snapchat",
+    text: `Me: Tera snap score 5 lakh hai?! Tune life mein aur kuch kiya hai?
+She: 😂 Shut up, tumhara kitna hai?
+Me: 12 hazaar. Kyunki main productive insaan hoon.
+She: Productive? Tum toh din bhar memes dekhte ho
+Me: Memes dekhna research hai. Snap score badhaana addiction hai.
+She: Toh mujhse baat karna band karo, score badh jayega 😂
+Me: Nahi, tumse baat karna investment hai. Score nahi, quality badhti hai.
+She: Aww 🥺 Nicest thing anyone said about my snap score
+Me: Score ki baat nahi ki, tumhari baat ki
+She: Wahh, poet bhi ho?
+Me: Haan. "Gulaab ka phool, snap ki dhool, tere bina conversation bekaar" 🌹
+She: 💀💀 Please stop`
+  },
+  {
+    id: 83,
+    title: "Skincare Routine Story",
+    category: "Snapchat",
+    text: `*She posts 10-step skincare routine*
+Me: 10 steps? Mere liye toh Lifebuoy se kaam chal jaata hai
+She: Lifebuoy?! 😂 That's soap not skincare
+Me: Soap se chehra dhona skincare nahi hai?
+She: NO 😭 Cleanser, toner, serum, moisturizer...
+Me: Yeh sab lagane ke baad tum kab soti ho? Raat khatam ho jaati hogi
+She: 20 minute lagta hai bas
+Me: 20 minute! Main 20 minute mein so jaata hoon, sapna bhi dekh leta hoon
+She: Isliye tumhara skin aisa hai 😂
+Me: Aisa kya? Rugged? Manly?
+She: Dry. 😂
+Me: Dry skin, dry humor. At least consistent hoon.
+She: 😂😂 Ek moisturizer recommend karungi`
+  },
+  {
+    id: 84,
+    title: "Concert Story Reply",
+    category: "Snapchat",
+    text: `*She posts Arijit Singh concert story*
+Me: Arijit live?! Jealous level: Max
+She: Amazing tha! 😍🎵
+Me: "Tum Hi Ho" pe roya?
+She: Nahi! 😂
+Me: Jhooth. Arijit ke concert mein rona compulsory hai.
+She: Ok thoda emotional hua 🥲
+Me: "Thoda" = full on crying, haan samajh gaya
+She: Tum hote toh?
+Me: Main hota toh popcorn kha raha hota aur tujhe tissue de raha hota
+She: That's actually sweet 🥺
+Me: Next concert saath chalein?
+She: Tickets bahut expensive hain
+Me: Toh parking mein khade hokar sunenge. Awaaz toh aayegi.
+She: 😂 Most desi date ever`
+  },
+  {
+    id: 85,
+    title: "Late Night Overthinking",
+    category: "Snapchat",
+    text: `*1 AM*
+She: Soye nahi?
+Me: Haan soya tha, par tere message ki notification ne jagaya
+She: Sorry! 🥲
+Me: Mazak hai 😂 Main bhi jaag raha hoon
+She: Kya soch rahe ho?
+Me: Ki agar pizza round hai, box square hai, aur slice triangle hai, toh pizza ne saare shapes cover kar liye
+She: 😂😂😂 YEH sochte ho 1 baje?
+Me: Haan. Deep thoughts.
+She: Deep? Yeh toh geometry hai
+Me: Geometry of pizza. Most important branch of mathematics.
+She: Tumhare thoughts pe research paper likhna chahiye
+Me: Likhenge saath mein? Co-authors. 
+She: Topic: "Late night thoughts of two insomniacs" 😂`
+  },
+  {
+    id: 86,
+    title: "Meme War Challenge",
+    category: "Snapchat",
+    text: `Me: Meme bhejo. Best meme wins.
+She: Wins kya? 🤔
+Me: Winner ko loser treat deta hai
+She: *sends cat meme*
+Me: 6/10. Basic.
+She: Basic?! 😤
+Me: *sends extremely niche meme*
+She: 😂😂 Yeh kahan se laate ho?
+Me: Trade secret. Rate karo.
+She: 9/10 😂
+Me: Toh main jeeta. Coffee treat.
+She: Ek meme se haar nahi manti! Best of 5.
+Me: Best of 5? Tum meme war mein rules laga rahi ho?
+She: Haan! Democratic meme war.
+Me: Fine. Par agar main jeeta toh treat + ek compliment.
+She: Deal. Agar main jeeti toh?
+Me: Toh... main phir bhi treat dunga. Rigged hai yeh game. 😂`
+  },
+  {
+    id: 87,
+    title: "Auto-Reply Prank",
+    category: "Snapchat",
+    text: `Me: Hi! This is an automated message. I am currently unavailable. Press 1 for jokes, 2 for compliments, 3 for deep talks.
+She: 😂 What? 2
+Me: "You have beautiful eyes." This was an automated compliment. For personalized version, please wait for human to return.
+She: 😂😂😂 Kab aayega human?
+Me: Human is currently watching your story for the 3rd time. Please hold.
+She: 3rd time?! 👀
+Me: *system error* That information was confidential. Human will be fired.
+She: 😂😂 I'm dying
+Me: RIP. Should I send automated condolences?
+She: Stop! 😂 Normal baat karo
+Me: *Normal mode activated* Hi, how are you?
+She: 😂 Boring. Automated wala better tha.
+Me: Can't win with you. Literally.`
+  },
+  {
+    id: 88,
+    title: "Weekend Plan Fishing",
+    category: "Snapchat",
+    text: `Me: Weekend plans?
+She: Kuch nahi, ghar pe
+Me: Perfect. Main bhi. Dono ghar pe. Alag alag. Kitna sad hai yeh.
+She: 😂 Toh kya karein?
+Me: Suggestions: 1) Coffee 2) Walk 3) Museum 4) Ghar pe boring
+She: Tum bahut prepared aaye ho 😂
+Me: Haan, yeh message 3 din se draft mein tha
+She: 3 DIN?! 😂
+Me: Anxiety hai bhai. "Should I ask? Should I not?" — 72 hours of deliberation.
+She: That's adorable actually
+Me: Adorable = friendzone word. I'm scared now.
+She: 😂 Nahi! Chalte hain coffee pe
+Me: Seriously?! *pretends to be cool* Haan sure, I'm free.
+She: 3 din draft kiya aur ab "I'm free" 😂`
+  },
+  {
+    id: 89,
+    title: "Filter Swap Game",
+    category: "Snapchat",
+    text: `Me: Let's play a game. Most embarrassing filter, go.
+She: *sends baby face filter*
+Me: Cute. Par embarrassing nahi hai. Cheat.
+She: Ok wait *sends old age filter*
+Me: HAHAHA yeh toh meri future wife dikhegi
+She: WIFE?! 😳
+Me: Matlab... general... kisi ki bhi... 
+She: Backtrack speedrun record tod diya tumne 😂
+Me: Main bolta hoon na, honesty meri weakness hai
+She: Woh strength thi na? 😂
+Me: Convenience ke hisaab se switch hoti hai
+She: 😂😂 Ab tumhari baari, embarrassing filter
+Me: *sends crying filter* Yeh meri tere message ka wait karte hue face hai
+She: Aww 🥹
+Me: Aww nahi, reply jaldi kara karo 😤😂`
+  },
+  {
+    id: 90,
+    title: "Food Debate Spark",
+    category: "Snapchat",
+    text: `Me: Hot take: Maggi > Pasta
+She: WHAT?! No way 😤
+Me: Maggi: 2 minute, 12 rupaye, desi. Pasta: 30 minute, 200 rupaye, pretentious.
+She: Pasta is art!
+Me: Maggi bhi art hai. Abstract art. Sab mixed up.
+She: 😂 Tum Maggi ko art bol rahe ho?
+Me: Warhol ne soup can paint kiya. Main Maggi ka NFT bana sakta hoon.
+She: 😂😂 Tumse nahi jeet sakti
+Me: Maggi debate mein koi nahi jeet sakta. It's the ultimate truth.
+She: Accha ek baar mere haath ki pasta khaao, opinion change ho jayega
+Me: "Mere haath ki" — yeh toh invitation hai. When and where?
+She: Nice try 😂
+Me: Pasta ke liye kuch bhi karunga. Even lose this debate.`
+  },
+  {
+    id: 91,
+    title: "Compliment Sandwich",
+    category: "Snapchat",
+    text: `Me: Ek game khelein? Compliment sandwich.
+She: Kya hai yeh? 😂
+Me: Compliment, roast, compliment. I go first.
+She: Ok 😂
+Me: Tumhara sense of humor amazing hai... par tumhare memes basic hain... but tumse baat karna din ka best part hai.
+She: 🥺😂🥺 Meri baari?
+Me: Jao
+She: Tum funny ho... par tumhare puns terrible hain... but tum sabse acche late night conversation partner ho
+Me: "Terrible puns"?! Those are PREMIUM puns!
+She: Premium? Free mein bhi nahi chahiye 😂
+Me: Ouch. That wasn't a sandwich, that was a full on roast buffet.
+She: 😂 Tumne start kiya!
+Me: Next round: only compliments? My ego needs recovery.`
+  },
+  {
+    id: 92,
+    title: "Crush Confession Panic",
+    category: "Snapchat",
+    text: `Me: Hypothetically speaking...
+She: Uh oh 😂
+Me: IF someone hypothetically liked talking to you a lot...
+She: Haan...? 👀
+Me: And hypothetically that person was on this chat...
+She: Continue... 😏
+Me: Would you hypothetically find that... nice?
+She: Hypothetically... haan 😊
+Me: Cool cool cool. Asking for a friend.
+She: FRIEND?! 😂😂
+Me: Haan, his name is... *checks notes* ...also me.
+She: 😂😂😂 Tumhe seedha bolne mein kya problem hai?
+Me: Rejection ka darr. Plus dramatic buildup better hai.
+She: Rejection nahi milega 😊
+Me: Yeh hypothetical answer hai ya real?
+She: Real 🙈
+Me: *screenshots* Evidence. Can't take it back now.`
+  },
+  {
+    id: 93,
+    title: "Cooking Disaster Share",
+    category: "Snapchat",
+    text: `*Sends snap of burnt roti*
+Me: Masterchef audition tape ready hai
+She: 😂😂 Kya bana rahe the?
+Me: Roti. But abstract art ban gayi.
+She: Yeh roti hai?! Charcoal dikhti hai 😂
+Me: Activated charcoal roti. Detox hoga khaane se.
+She: Tumhe cooking aati hai?
+Me: Define "cooking." If boiling water counts, then yes, I'm a chef.
+She: 😂 Main sikha dungi
+Me: Private cooking class? 👀
+She: Snapchat pe recipe bhejungi 😂
+Me: Snapchat pe roti nahi banti. In-person demo chahiye.
+She: Nice try 😏
+Me: Try nahi, necessity hai. Meri roti ko dekha na? Life threatening situation hai.
+She: 😂 Fine, weekend pe sikhati hoon`
+  },
+  {
+    id: 94,
+    title: "Playlist Exchange",
+    category: "Snapchat",
+    text: `Me: Tumhari playlist share karo. Judge karunga.
+She: Judge?! 😂 No way
+Me: Promise no judgment. *crosses fingers behind phone*
+She: *shares playlist* "Sad Girl Hours"
+Me: Playlist name hi judgment hai 😂
+She: Tumhara kya hai?
+Me: "Songs to pretend you're in a movie" 
+She: 😂😂 THAT'S your playlist?
+Me: Haan. Main road pe walk karte hue background music lagata hoon. Main character energy.
+She: Main bhi karti hoon! 😂
+Me: Matlab hum dono delusional hain. Perfect match.
+She: Match? 👀
+Me: Music match. Spotify Duo chalayenge. Sasta padega.
+She: 😂 Most practical flirting ever
+Me: Budget-friendly romance. Gen Z special.`
+  },
+  {
+    id: 95,
+    title: "Throwback Photo React",
+    category: "Snapchat",
+    text: `*She posts throwback childhood photo*
+Me: Yeh kaun hai? Bahut cute!
+She: Main hoon! 😂 5 saal ki thi
+Me: Kya hua phir? 👀
+She: MATLAB?! 😤
+Me: Mazak! Ab bhi cute ho, bas thodi badi ho gayi
+She: "Thodi badi" 😂 Thanks I guess
+Me: Mere childhood photo dekhogi?
+She: Haan!
+Me: *sends photo where I'm crying*
+She: 😂😂 Ro kyun rahe the?
+Me: Probably future dekh liya tha. Ki ek din Snapchat pe ladkiyon se baat karunga.
+She: That's dark 😂
+Me: Dark humor. On brand hai mera.
+She: Cute the though 🥺
+Me: "The" past tense?! Ab nahi hoon?!
+She: 😂 Ab bhi ho. Bas alag cute.`
+  },
+  {
+    id: 96,
+    title: "Random Would You Rather",
+    category: "Snapchat",
+    text: `Me: Would you rather: never use Snapchat again OR never eat pizza again?
+She: That's EVIL 😂
+Me: Choose.
+She: ...Snapchat chhod dungi 🍕
+Me: Toh phir mujhse baat kaise karogi? 😢
+She: Instagram hai, WhatsApp hai
+Me: Woh sab formal hai. Snapchat pe real bonding hoti hai.
+She: "Real bonding" on disappearing messages? 😂
+Me: Exactly! No evidence. Pure trust.
+She: 😂 Deep philosophy of Snapchat
+Me: My turn: WYR lose all your photos or all your contacts?
+She: Photos! Contacts mein tum ho 👀
+Me: ...
+She: Zyada khush mat ho, 500 aur log bhi hain 😂
+Me: Par pehle mera naam liya. I'll take the W.`
+  },
+  {
+    id: 97,
+    title: "Autocorrect Chaos",
+    category: "Snapchat",
+    text: `Me: Tumse milke accha laga
+*autocorrects to*
+Me: Tumse milke ACHAR laga
+She: ACHAR?! 😂😂😂
+Me: NAHI!! Autocorrect!! Accha laga!!!
+She: Too late. Main ab achar hoon tumhare liye 😂
+Me: Mango achar ya mixed?
+She: 😂 Stop making it worse
+Me: Arey yaar, genuine moment tha aur phone ne barbaad kar diya
+She: It's ok, achar bhi accha hota hai 😂
+Me: Tumse baat karke dil khush hota hai
+*autocorrects to*
+Me: Tumse baat karke DHAL khush hota hai
+She: DHAL?! 😂😂😂
+Me: I give up. Phone mere against hai.
+She: Yeh conversation screenshot ho rahi hai 📸
+Me: Please no 🥲`
+  },
+  {
+    id: 98,
+    title: "Dare Game Escalation",
+    category: "Snapchat",
+    text: `She: Truth or dare?
+Me: Dare
+She: Post a story saying "I love Snapchat more than food"
+Me: Easy. Done. ✅ Your turn - truth or dare?
+She: Truth
+Me: Boring choice but ok. Last person you stalked on Snap?
+She: ...pass 😂
+Me: PASS?! Truth mein pass nahi hota!
+She: Fine... tumhari profile 🙈
+Me: MERI?! Kya dekha?
+She: Snap score check kiya. Bitmoji dekha. Best friends list dekhi.
+She: 😂 Thorough investigation
+Me: FBI ko hire kar lo tumhe. Full surveillance.
+She: Your turn. Truth.
+Me: Meri best friends list mein tum top pe ho.
+She: Really? 🥺
+Me: Haan. Because you're the only one I snap. 😂
+She: 💀 Wholesome yet sad`
+  },
+  {
+    id: 99,
+    title: "Future Plans Chat",
+    category: "Snapchat",
+    text: `She: 10 saal baad kya kar rahe hoge?
+Me: Hopefully tujhse abhi bhi baat kar raha hounga. Par reply time better hoga.
+She: 😂😂 Reply time pe obsessed ho
+Me: Trauma hai. 6 ghante wait karna padta hai.
+She: Accha serious answer do
+Me: Serious: apna startup. Comedy + Tech. App banaunga.
+She: Kaisi app?
+Me: Jisme AI tumhare jokes rate kare. "Your joke was 3/10. Please try another career."
+She: 😂 Yeh toh demotivation app hai
+Me: Realistic motivation. Indian parents style.
+She: Mujhe bhi include karo startup mein
+Me: Role kya chahiye? Co-founder ya official meme curator?
+She: Dono 😂
+Me: Deal. Snapchat pe startup discussion. Most Gen Z thing ever.`
+  },
+  {
+    id: 100,
+    title: "Goodbye Snap Drag",
+    category: "Snapchat",
+    text: `Me: Chal, sona hai. Good night!
+She: Good night! 😴
+Me: ...
+She: ...
+Me: Ek aur baat
+She: 😂 Bolo
+Me: Kuch nahi, bas bye bolna tha properly
+She: Bol diya toh jao 😂
+Me: Haan ja raha hoon...
+*5 minutes later*
+Me: Actually ek meme bhejta hoon last
+She: 😂 "Last"
+Me: Haan pakka last. *sends meme*
+She: 😂😂 Accha wala tha
+Me: Thanks. Ok NOW good night.
+She: Good night!
+Me: Kal same time? 👀
+She: Same time ✅
+Me: Ok bye... for real this time.
+She: Bye 😊
+Me: ...
+She: Mat bolo kuch ab 😂
+Me: 😂 Ok. Bye. Final. Done. Over. Khatam. The End.`
   }
 ];
