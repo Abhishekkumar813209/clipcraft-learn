@@ -622,7 +622,7 @@ export function PdfReaderView() {
                       {n}
                     </Button>
                   ))}
-                  <input type="number" min={1} max={20} placeholder="#" value={customQuizCount} onChange={e => setCustomQuizCount(e.target.value)} className="w-12 h-7 rounded border bg-background text-center text-xs" />
+                  <input type="number" min={1} max={40} placeholder="#" value={customQuizCount} onChange={e => setCustomQuizCount(e.target.value)} className="w-12 h-7 rounded border bg-background text-center text-xs" />
                 </div>
               </div>
               <div className="space-y-1.5">
