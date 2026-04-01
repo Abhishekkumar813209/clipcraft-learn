@@ -1,40 +1,40 @@
 
 
-## Plan: Add Pause/Resume for Quiz Timer
+## Plan: Redesign Saved Quizzes UI + Add Reattempt/Results Buttons
 
-### What Changes
+### Changes
 
-**File:** `src/pages/QuizTest.tsx`
+**1. Remove gray/muted styling, use premium card design**
+- Quiz cards: replace `bg-muted/50` with white/dark cards with subtle blue-tinted left border and slight shadow
+- Folder headers: replace `bg-muted/30` with cleaner styling using blue accent
+- Overall background: clean white, no gray tones
 
-Add a `paused` state. When paused:
-- The elapsed timer stops counting
-- The fast mode per-question timer stops counting (no auto-advance)
-- A semi-transparent overlay covers the question area so the user can't interact with questions
-- A "Paused" indicator + Resume button is shown
+**2. Two action buttons per quiz card (when results exist)**
+- **Reattempt** button (blue outline) — navigates to `/quizzes/:id` to retake the quiz fresh
+- **View Results** button (green filled) — navigates to `/quizzes/:id/analysis`
+- For quizzes without results: single "Start Quiz" button
+- Remove the current single-click-on-card navigation behavior; clicks on the card body still work but buttons are explicit
 
-### Implementation Details
+**3. Better visual hierarchy**
+- Quiz name larger/bolder
+- Metadata (PDF name, page range, question count, date) as a secondary line
+- "Results" badge stays but more integrated
+- Delete button stays on hover
 
-1. **New state:** `const [paused, setPaused] = useState(false);`
+### Quiz Card Layout
+```text
+┌─ blue border ──────────────────────────────────────────┐
+│ 🧠  OOPS theory.pdf - Page 6-8        [Results badge]  │
+│     OOPS theory.pdf · Page 6-8 · 20 Q · 3/31/2026     │
+│                          [Reattempt]  [View Results] 🗑 │
+└────────────────────────────────────────────────────────┘
+```
 
-2. **Elapsed timer** (line 71-74): Add `if (paused) return;` guard so the interval doesn't tick when paused
+### File Modified
 
-3. **Fast mode timer** (line 83-103): Add `paused` to the guard — `if (!fastMode || isSubmitting || paused) return;`
+| File | Change |
+|------|--------|
+| `src/components/SavedQuizzesView.tsx` | Restyle quiz cards (remove gray, add border-l-4 border-blue-500, white bg, shadow-sm). Add two buttons for quizzes with results. Update folder header styling. |
 
-4. **Pause button:** Add a Pause/Play toggle button next to the timer display in the header. When clicked, toggles `paused` state.
-
-5. **Overlay when paused:** Render a semi-transparent overlay over the question card area with a "Quiz Paused" message and a Resume button. This prevents answering questions or navigating while paused.
-
-6. **Navigation blocked:** Disable Prev/Next buttons and question palette clicks when `paused` is true.
-
-### UI
-
-| Element | Behavior |
-|---------|----------|
-| Timer display | Shows current time but stops counting when paused |
-| Pause button (⏸/▶) | Toggles pause state, placed next to clock icon |
-| Question area | Covered by blur overlay when paused |
-| Sidebar question buttons | Disabled (no navigation) when paused |
-| Fast mode timer | Frozen when paused |
-
-Single file change, no new dependencies.
+Single file, no logic or data changes.
 
