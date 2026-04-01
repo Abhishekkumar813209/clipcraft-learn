@@ -82,8 +82,8 @@ export function SavedQuizzesView() {
   const renderQuizCard = (quiz: SavedQuiz) => {
     const hasResults = !!(quiz as any).ai_feedback;
     return (
-      <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group" onClick={() => navigate(hasResults ? `/quizzes/${quiz.id}/analysis` : `/quizzes/${quiz.id}`)}>
-        <Brain className="h-5 w-5 text-primary shrink-0" />
+      <div key={quiz.id} className="flex items-center gap-3 p-3 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 transition-colors group">
+        <Brain className="h-5 w-5 text-blue-400 shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium truncate">{quiz.name}</p>
@@ -95,9 +95,19 @@ export function SavedQuizzesView() {
             {quiz.questions.length} Q · {new Date(quiz.created_at).toLocaleDateString()}
           </p>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive" onClick={(e) => { e.stopPropagation(); setDeletingQuiz(quiz); }}>
-          <Trash2 className="h-3.5 w-3.5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {hasResults ? (
+            <>
+              <Button variant="outline" size="sm" className="h-7 text-xs border-blue-500/50 text-blue-400 hover:bg-blue-500/20" onClick={() => navigate(`/quizzes/${quiz.id}`)}>Reattempt</Button>
+              <Button size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700 text-white" onClick={() => navigate(`/quizzes/${quiz.id}/analysis`)}>View Results</Button>
+            </>
+          ) : (
+            <Button size="sm" className="h-7 text-xs" onClick={() => navigate(`/quizzes/${quiz.id}`)}>Start Quiz</Button>
+          )}
+          <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive" onClick={(e) => { e.stopPropagation(); setDeletingQuiz(quiz); }}>
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
     );
   };
