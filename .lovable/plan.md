@@ -1,40 +1,24 @@
 
 
-## Plan: Redesign Saved Quizzes UI + Add Reattempt/Results Buttons
+## Plan: Bluish Accent Colors for Saved Quizzes
 
-### Changes
+Keep the current layout as-is. Replace all gray/muted backgrounds with blue-tinted accents to match the app's design system.
 
-**1. Remove gray/muted styling, use premium card design**
-- Quiz cards: replace `bg-muted/50` with white/dark cards with subtle blue-tinted left border and slight shadow
-- Folder headers: replace `bg-muted/30` with cleaner styling using blue accent
-- Overall background: clean white, no gray tones
+### Color Changes in `src/components/SavedQuizzesView.tsx`
 
-**2. Two action buttons per quiz card (when results exist)**
-- **Reattempt** button (blue outline) — navigates to `/quizzes/:id` to retake the quiz fresh
-- **View Results** button (green filled) — navigates to `/quizzes/:id/analysis`
-- For quizzes without results: single "Start Quiz" button
-- Remove the current single-click-on-card navigation behavior; clicks on the card body still work but buttons are explicit
+| Element | Current | New |
+|---------|---------|-----|
+| Quiz card row (line 85) | `bg-muted/50 hover:bg-muted` | `bg-blue-500/10 hover:bg-blue-500/20` |
+| Folder header (line 135) | `bg-muted/30 hover:bg-muted/50` | `bg-blue-600/10 hover:bg-blue-600/20` |
+| Unfiled header (line 158) | `bg-muted/30 hover:bg-muted/50` | `bg-blue-600/10 hover:bg-blue-600/20` |
+| Folder border (lines 134, 157) | `border-border` | `border-blue-500/20` |
+| Brain icon (line 86) | `text-primary` | `text-blue-400` |
+| Results badge (line 90) | `bg-green-500/20 text-green-700` | Keep as-is (green for results makes sense) |
 
-**3. Better visual hierarchy**
-- Quiz name larger/bolder
-- Metadata (PDF name, page range, question count, date) as a secondary line
-- "Results" badge stays but more integrated
-- Delete button stays on hover
+Also add the two action buttons (Reattempt + View Results) per the approved plan:
+- For quizzes **with results**: two buttons — "Reattempt" (blue outline) and "View Results" (green)
+- For quizzes **without results**: single "Start Quiz" button
 
-### Quiz Card Layout
-```text
-┌─ blue border ──────────────────────────────────────────┐
-│ 🧠  OOPS theory.pdf - Page 6-8        [Results badge]  │
-│     OOPS theory.pdf · Page 6-8 · 20 Q · 3/31/2026     │
-│                          [Reattempt]  [View Results] 🗑 │
-└────────────────────────────────────────────────────────┘
-```
-
-### File Modified
-
-| File | Change |
-|------|--------|
-| `src/components/SavedQuizzesView.tsx` | Restyle quiz cards (remove gray, add border-l-4 border-blue-500, white bg, shadow-sm). Add two buttons for quizzes with results. Update folder header styling. |
-
-Single file, no logic or data changes.
+### Single file change
+`src/components/SavedQuizzesView.tsx` — color class updates + add action buttons in `renderQuizCard`
 
