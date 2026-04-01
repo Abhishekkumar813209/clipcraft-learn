@@ -164,8 +164,8 @@ export function SavedQuizzesView() {
 
             {/* Unfiled quizzes */}
             {unfiledQuizzes.length > 0 && (
-              <div className="border border-border rounded-lg overflow-hidden">
-                <div className="flex items-center gap-2 p-3 bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => toggleFolder('unfiled')}>
+              <div className="border border-blue-500/20 rounded-lg overflow-hidden">
+                <div className="flex items-center gap-2 p-3 bg-blue-600/10 cursor-pointer hover:bg-blue-600/20 transition-colors" onClick={() => toggleFolder('unfiled')}>
                   {expandedFolders.has('unfiled') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-sm flex-1">Unfiled</span>
