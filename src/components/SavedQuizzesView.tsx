@@ -141,8 +141,8 @@ export function SavedQuizzesView() {
               const folderQuizzes = getQuizzesForFolder(folder.id);
               const isExpanded = expandedFolders.has(folder.id);
               return (
-                <div key={folder.id} className="border border-border rounded-lg overflow-hidden">
-                  <div className="flex items-center gap-2 p-3 bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => toggleFolder(folder.id)}>
+                <div key={folder.id} className="border border-blue-500/20 rounded-lg overflow-hidden">
+                  <div className="flex items-center gap-2 p-3 bg-blue-600/10 cursor-pointer hover:bg-blue-600/20 transition-colors" onClick={() => toggleFolder(folder.id)}>
                     {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     <FolderOpen className="h-4 w-4 text-primary" />
                     <span className="font-medium text-sm flex-1">{folder.name}</span>
