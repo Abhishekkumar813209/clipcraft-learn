@@ -83,10 +83,7 @@ export function SavedQuizzesView() {
     fetchData();
   };
 
-  const unfiledQuizzes = quizzes.filter(q => !q.folder_id);
-  const getQuizzesForFolder = (folderId: string) => quizzes.filter(q => q.folder_id === folderId);
-
-  // Removed inline quiz view — now uses URL routes
+  const dateGroups = groupByDate(quizzes);
 
   const renderQuizCard = (quiz: SavedQuiz) => {
     const hasResults = !!(quiz as any).ai_feedback;
