@@ -115,6 +115,7 @@ const App = () => (
               <Route path="pyq/analysis" element={<RbiPyqAnalysis />} />
               <Route path="pyq/practice" element={<RbiPyqSession />} />
             </Route>
+            <Route path="/humor" element={<HumorCoach />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
