@@ -1,24 +1,37 @@
 
 
-## Plan: Bluish Accent Colors for Saved Quizzes
+## Plan: Group Quizzes by Date Instead of Topics
 
-Keep the current layout as-is. Replace all gray/muted backgrounds with blue-tinted accents to match the app's design system.
+### What Changes
 
-### Color Changes in `src/components/SavedQuizzesView.tsx`
+**File:** `src/components/SavedQuizzesView.tsx`
 
-| Element | Current | New |
-|---------|---------|-----|
-| Quiz card row (line 85) | `bg-muted/50 hover:bg-muted` | `bg-blue-500/10 hover:bg-blue-500/20` |
-| Folder header (line 135) | `bg-muted/30 hover:bg-muted/50` | `bg-blue-600/10 hover:bg-blue-600/20` |
-| Unfiled header (line 158) | `bg-muted/30 hover:bg-muted/50` | `bg-blue-600/10 hover:bg-blue-600/20` |
-| Folder border (lines 134, 157) | `border-border` | `border-blue-500/20` |
-| Brain icon (line 86) | `text-primary` | `text-blue-400` |
-| Results badge (line 90) | `bg-green-500/20 text-green-700` | Keep as-is (green for results makes sense) |
+Replace the current flat list layout with a **date-grouped accordion**. Quizzes are grouped by their `created_at` date (e.g., "March 31, 2026", "March 30, 2026"). Each date row is collapsible — clicking it expands to show the quizzes from that day with their topic/PDF names.
 
-Also add the two action buttons (Reattempt + View Results) per the approved plan:
-- For quizzes **with results**: two buttons — "Reattempt" (blue outline) and "View Results" (green)
-- For quizzes **without results**: single "Start Quiz" button
+### How It Works
+
+1. **Group quizzes by date**: After fetching, group all quizzes (both filed and unfiled) by `new Date(created_at).toLocaleDateString()` into a `Map<string, SavedQuiz[]>`
+2. **Render date headers**: Each date becomes a collapsible row with a `Calendar` icon, the formatted date string, and quiz count
+3. **Expand to see quizzes**: Clicking a date toggles open to show the quiz cards underneath (same `renderQuizCard` with topic name, Reattempt/View Results buttons)
+4. **Keep folder grouping optional**: If folders exist, show folders first, then date-grouped unfiled quizzes. If no folders, just show date groups for everything.
+
+### Date Header Layout
+```text
+▶ 📅  March 31, 2026                              4 quizzes
+▼ 📅  March 30, 2026                              2 quizzes
+   🧠 OOPS theory.pdf - Page 6-8  [Results]  [Reattempt] [View Results]
+   🧠 OOPS theory.pdf - Page 4-8             [Start Quiz]
+```
+
+### Implementation Details
+
+- Replace the current folder-based grouping with date-based grouping
+- Add `Calendar` icon import from lucide-react
+- Group logic: `quizzes.reduce()` by date string, sorted newest first
+- `expandedFolders` state reused for date keys (first date auto-expanded)
+- All existing quiz card rendering (buttons, delete, badges) stays the same
+- Subtitle updated: "Revise your saved PDF quizzes organized by date"
 
 ### Single file change
-`src/components/SavedQuizzesView.tsx` — color class updates + add action buttons in `renderQuizCard`
+`src/components/SavedQuizzesView.tsx`
 
