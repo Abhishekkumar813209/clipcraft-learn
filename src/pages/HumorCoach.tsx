@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Mic, Trash2, ChevronDown, ChevronUp, Send, Sparkles } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Loader2, Trash2, ChevronDown, ChevronUp, Send, Sparkles, ArrowLeft, LayoutGrid, Mic } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { humorTemplates } from '@/data/humorTemplates';
 
 interface HistoryEntry {
   id: string;
@@ -21,6 +24,7 @@ const HumorCoach = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [expandedHistory, setExpandedHistory] = useState<string | null>(null);
+  const [templatesOpen, setTemplatesOpen] = useState(true);
   const responseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -80,7 +84,6 @@ const HumorCoach = () => {
         }
       }
 
-      // Save to history
       setHistory(prev => [{
         id: crypto.randomUUID(),
         transcript: transcript.trim(),
@@ -88,11 +91,17 @@ const HumorCoach = () => {
         timestamp: new Date(),
       }, ...prev].slice(0, 20));
 
-    } catch (err) {
+    } catch {
       setResponse('❌ Network error. Please try again.');
     } finally {
       setIsStreaming(false);
     }
+  };
+
+  const selectTemplate = (text: string) => {
+    setTranscript(text);
+    setTemplatesOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -116,6 +125,9 @@ const HumorCoach = () => {
       {/* Header */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="shrink-0">
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
           <Mic className="w-6 h-6 text-primary" />
           <div>
             <h1 className="text-xl font-bold tracking-tight">Humor Coach 🎤</h1>
@@ -128,7 +140,7 @@ const HumorCoach = () => {
         {/* Input Section */}
         <div className="space-y-3">
           <Textarea
-            placeholder="Paste a conversation, YouTube comment thread, WhatsApp chat, or any transcript here... The funnier the source material, the better the analysis! 🎭"
+            placeholder="Paste a conversation, YouTube comment thread, WhatsApp chat, or any transcript here... ya neeche se template chuno! 🎭"
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
             className="min-h-[180px] text-sm bg-card border-border resize-y"
@@ -140,19 +152,11 @@ const HumorCoach = () => {
             </span>
             <div className="flex gap-2">
               {transcript && !isStreaming && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setTranscript('')}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setTranscript('')}>
                   <Trash2 className="w-4 h-4 mr-1" /> Clear
                 </Button>
               )}
-              <Button
-                onClick={analyzeHumor}
-                disabled={!transcript.trim() || isStreaming}
-                className="gap-2"
-              >
+              <Button onClick={analyzeHumor} disabled={!transcript.trim() || isStreaming} className="gap-2">
                 {isStreaming ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</>
                 ) : (
@@ -176,6 +180,39 @@ const HumorCoach = () => {
           </div>
         )}
 
+        {/* Templates Section */}
+        <Collapsible open={templatesOpen} onOpenChange={setTemplatesOpen}>
+          <CollapsibleTrigger asChild>
+            <Button variant="outline" className="w-full justify-between gap-2">
+              <span className="flex items-center gap-2">
+                <LayoutGrid className="w-4 h-4" />
+                Browse Templates ({humorTemplates.length}) — Hinglish Conversations
+              </span>
+              {templatesOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+              {humorTemplates.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => selectTemplate(t.text)}
+                  className="text-left border border-border rounded-lg p-3 bg-card/50 hover:bg-accent/50 transition-colors"
+                  disabled={isStreaming}
+                >
+                  <div className="flex items-start justify-between gap-1 mb-1.5">
+                    <span className="text-sm font-medium leading-tight">{t.title}</span>
+                  </div>
+                  <Badge variant="secondary" className="text-[10px] mb-2">{t.category}</Badge>
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    {t.text.split('\n')[0]}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* History Section */}
         {history.length > 0 && (
           <div className="space-y-3">
@@ -186,17 +223,11 @@ const HumorCoach = () => {
               <div key={entry.id} className="border border-border rounded-lg bg-card/50">
                 <button
                   className="w-full px-4 py-3 flex items-center justify-between text-left"
-                  onClick={() => setExpandedHistory(
-                    expandedHistory === entry.id ? null : entry.id
-                  )}
+                  onClick={() => setExpandedHistory(expandedHistory === entry.id ? null : entry.id)}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm truncate">
-                      {entry.transcript.slice(0, 80)}...
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {entry.timestamp.toLocaleTimeString()}
-                    </p>
+                    <p className="text-sm truncate">{entry.transcript.slice(0, 80)}...</p>
+                    <p className="text-xs text-muted-foreground">{entry.timestamp.toLocaleTimeString()}</p>
                   </div>
                   {expandedHistory === entry.id ? (
                     <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
