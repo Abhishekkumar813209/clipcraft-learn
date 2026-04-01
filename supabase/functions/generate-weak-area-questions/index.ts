@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,13 +14,9 @@ serve(async (req) => {
 
     if (!weakQuestions || !Array.isArray(weakQuestions) || weakQuestions.length === 0) {
       return new Response(JSON.stringify({ error: "weakQuestions array is required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const lang = language || "english";
     const questionsContext = weakQuestions.map((q: any, i: number) =>
@@ -46,19 +43,12 @@ You MUST respond with a valid JSON array of question objects. Each object must h
 
 Return ONLY the JSON array, no other text.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Here are the questions the student struggled with:\n\n${questionsContext}\n\nGenerate additional practice questions on the same topics. Return a JSON array only.` },
-        ],
-      }),
+    const response = await callGemini({
+      model: "gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Here are the questions the student struggled with:\n\n${questionsContext}\n\nGenerate additional practice questions on the same topics. Return a JSON array only.` },
+      ],
     });
 
     if (!response.ok) {
@@ -73,14 +63,13 @@ Return ONLY the JSON array, no other text.`;
         });
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
-      throw new Error("AI gateway error");
+      console.error("AI error:", response.status, t);
+      throw new Error("AI error");
     }
 
     const result = await response.json();
     const content = result.choices?.[0]?.message?.content || "";
 
-    // Parse JSON from the response (handle markdown code blocks)
     let parsed;
     try {
       const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);

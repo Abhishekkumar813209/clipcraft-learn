@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,17 +7,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { pageText, year, exam, topics, answerKeyText } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     if (!pageText || typeof pageText !== "string" || pageText.trim().length < 20) {
       return new Response(
@@ -54,51 +49,44 @@ Rules:
       ? { type: "string", enum: topicList, description: `${examName} topic classification` }
       : { type: "string", description: "Topic classification" };
 
-    const response = await fetch(AI_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Extract all MCQ questions from this ${examName} ${year || ""} exam paper text:\n\n${pageText}${answerKeyText ? `\n\n--- ANSWER KEY ---\n${answerKeyText}` : ''}` },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "extract_questions",
-            description: "Extract structured MCQ questions from exam paper text",
-            parameters: {
-              type: "object",
-              properties: {
-                questions: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      question_text: { type: "string", description: "The full question text" },
-                      options: { type: "array", items: { type: "string" }, description: "Exactly 4 options" },
-                      correct_option: { type: "number", description: "0-indexed correct option (0=A, 1=B, 2=C, 3=D)" },
-                      topic: topicSchema,
-                      difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
-                      explanation: { type: "string", description: "Brief explanation for the correct answer" },
-                    },
-                    required: ["question_text", "options", "correct_option", "topic", "difficulty", "explanation"],
-                    additionalProperties: false,
+    const response = await callGemini({
+      model: "gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Extract all MCQ questions from this ${examName} ${year || ""} exam paper text:\n\n${pageText}${answerKeyText ? `\n\n--- ANSWER KEY ---\n${answerKeyText}` : ''}` },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "extract_questions",
+          description: "Extract structured MCQ questions from exam paper text",
+          parameters: {
+            type: "object",
+            properties: {
+              questions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    question_text: { type: "string", description: "The full question text" },
+                    options: { type: "array", items: { type: "string" }, description: "Exactly 4 options" },
+                    correct_option: { type: "number", description: "0-indexed correct option (0=A, 1=B, 2=C, 3=D)" },
+                    topic: topicSchema,
+                    difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
+                    explanation: { type: "string", description: "Brief explanation for the correct answer" },
                   },
+                  required: ["question_text", "options", "correct_option", "topic", "difficulty", "explanation"],
+                  additionalProperties: false,
                 },
               },
-              required: ["questions"],
-              additionalProperties: false,
             },
+            required: ["questions"],
+            additionalProperties: false,
           },
-        }],
-        tool_choice: { type: "function", function: { name: "extract_questions" } },
-        stream: false,
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "extract_questions" } },
+      stream: false,
     });
 
     if (!response.ok) {

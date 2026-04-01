@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,22 +7,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { root, root_meaning, word, meaning } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     if (!word) {
       return new Response(JSON.stringify({ error: "No word provided" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -56,141 +50,134 @@ Root Meaning: ${root_meaning || "N/A"}
 Word: ${word}
 Definition: ${meaning || "no definition"}`;
 
-    const response = await fetch(AI_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userContent },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "generate_word_module",
-            description: "Generate a vocabulary learning module for a single word",
-            parameters: {
-              type: "object",
-              properties: {
-                word_module: {
-                  type: "object",
-                  properties: {
-                    word: { type: "string" },
-                    meaning: { type: "string", description: "Hinglish explanation" },
-                    synonyms: { type: "array", items: { type: "string" } },
-                    antonyms: { type: "array", items: { type: "string" } },
-                    one_word_substitution: { type: "string" },
-                    sentences: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          sentence: { type: "string" },
-                          hindi: { type: "string" },
-                          grammar: { type: "string" },
-                        },
-                        required: ["sentence", "hindi", "grammar"],
-                        additionalProperties: false,
+    const response = await callGemini({
+      model: "gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userContent },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "generate_word_module",
+          description: "Generate a vocabulary learning module for a single word",
+          parameters: {
+            type: "object",
+            properties: {
+              word_module: {
+                type: "object",
+                properties: {
+                  word: { type: "string" },
+                  meaning: { type: "string", description: "Hinglish explanation" },
+                  synonyms: { type: "array", items: { type: "string" } },
+                  antonyms: { type: "array", items: { type: "string" } },
+                  one_word_substitution: { type: "string" },
+                  sentences: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        sentence: { type: "string" },
+                        hindi: { type: "string" },
+                        grammar: { type: "string" },
                       },
+                      required: ["sentence", "hindi", "grammar"],
+                      additionalProperties: false,
                     },
-                    mcqs: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          question: { type: "string" },
-                          options: {
-                            type: "array",
-                            items: {
-                              type: "object",
-                              properties: {
-                                english: { type: "string" },
-                                hindi: { type: "string" },
-                              },
-                              required: ["english", "hindi"],
-                              additionalProperties: false,
+                  },
+                  mcqs: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        question: { type: "string" },
+                        options: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              english: { type: "string" },
+                              hindi: { type: "string" },
                             },
+                            required: ["english", "hindi"],
+                            additionalProperties: false,
                           },
-                          answer: { type: "string", description: "The correct english option text" },
                         },
-                        required: ["question", "options", "answer"],
-                        additionalProperties: false,
+                        answer: { type: "string", description: "The correct english option text" },
                       },
+                      required: ["question", "options", "answer"],
+                      additionalProperties: false,
                     },
                   },
-                  required: ["word", "meaning", "synonyms", "antonyms", "one_word_substitution", "sentences", "mcqs"],
-                  additionalProperties: false,
                 },
-                exercises: {
-                  type: "object",
-                  properties: {
-                    fill_blanks: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          question: { type: "string" },
-                          answer: { type: "string" },
-                          hindi: { type: "string", description: "Hindi meaning of the sentence" },
-                        },
-                        required: ["question", "answer", "hindi"],
-                        additionalProperties: false,
-                      },
-                    },
-                    translation: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          hindi: { type: "string" },
-                          english: { type: "string" },
-                          explanation: { type: "string", description: "Grammar structure explanation in English" },
-                          explanation_hindi: { type: "string", description: "Grammar structure explanation in Hindi" },
-                        },
-                        required: ["hindi", "english", "explanation", "explanation_hindi"],
-                        additionalProperties: false,
-                      },
-                    },
-                    error_correction: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          sentence: { type: "string" },
-                          corrected: { type: "string" },
-                          explanation: { type: "string", description: "Why the error exists and the correct grammar rule in English" },
-                          explanation_hindi: { type: "string", description: "Why the error exists and the correct grammar rule in Hindi" },
-                        },
-                        required: ["sentence", "corrected", "explanation", "explanation_hindi"],
-                        additionalProperties: false,
-                      },
-                    },
-                    one_word_substitution: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: { description: { type: "string" }, answer: { type: "string" } },
-                        required: ["description", "answer"],
-                        additionalProperties: false,
-                      },
-                    },
-                  },
-                  required: ["fill_blanks", "translation", "error_correction", "one_word_substitution"],
-                  additionalProperties: false,
-                },
+                required: ["word", "meaning", "synonyms", "antonyms", "one_word_substitution", "sentences", "mcqs"],
+                additionalProperties: false,
               },
-              required: ["word_module", "exercises"],
-              additionalProperties: false,
+              exercises: {
+                type: "object",
+                properties: {
+                  fill_blanks: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        question: { type: "string" },
+                        answer: { type: "string" },
+                        hindi: { type: "string", description: "Hindi meaning of the sentence" },
+                      },
+                      required: ["question", "answer", "hindi"],
+                      additionalProperties: false,
+                    },
+                  },
+                  translation: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        hindi: { type: "string" },
+                        english: { type: "string" },
+                        explanation: { type: "string", description: "Grammar structure explanation in English" },
+                        explanation_hindi: { type: "string", description: "Grammar structure explanation in Hindi" },
+                      },
+                      required: ["hindi", "english", "explanation", "explanation_hindi"],
+                      additionalProperties: false,
+                    },
+                  },
+                  error_correction: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        sentence: { type: "string" },
+                        corrected: { type: "string" },
+                        explanation: { type: "string", description: "Why the error exists and the correct grammar rule in English" },
+                        explanation_hindi: { type: "string", description: "Why the error exists and the correct grammar rule in Hindi" },
+                      },
+                      required: ["sentence", "corrected", "explanation", "explanation_hindi"],
+                      additionalProperties: false,
+                    },
+                  },
+                  one_word_substitution: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: { description: { type: "string" }, answer: { type: "string" } },
+                      required: ["description", "answer"],
+                      additionalProperties: false,
+                    },
+                  },
+                },
+                required: ["fill_blanks", "translation", "error_correction", "one_word_substitution"],
+                additionalProperties: false,
+              },
             },
+            required: ["word_module", "exercises"],
+            additionalProperties: false,
           },
-        }],
-        tool_choice: { type: "function", function: { name: "generate_word_module" } },
-        stream: false,
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "generate_word_module" } },
+      stream: false,
     });
 
     if (!response.ok) {
@@ -212,8 +199,7 @@ Definition: ${meaning || "no definition"}`;
     }
 
     return new Response(JSON.stringify({ error: "No structured response from AI" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("ssc-vocab-learn error:", e);

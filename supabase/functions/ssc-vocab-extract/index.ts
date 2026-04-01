@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,17 +7,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { pageText } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     if (!pageText || typeof pageText !== "string" || pageText.trim().length < 20) {
       return new Response(
@@ -74,60 +69,53 @@ DEFINITION RULES:
 - The definition should be concise and clear (e.g., "to give up a position", "extremely careful and precise")
 - If unsure of the exact meaning, provide the most common usage`;
 
-    const response = await fetch(AI_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-pro",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Extract all vocabulary words from this text:\n\n${pageText}` },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "extract_vocabulary",
-            description: "Extract structured vocabulary entries with roots and words from text",
-            parameters: {
-              type: "object",
-              properties: {
-                entries: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      root: { type: "string", description: "The root word (lowercase, 2-5 chars), or null if none" },
-                      root_meaning: { type: "string", description: "Meaning of the root word, or null" },
-                      words: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            word: { type: "string", description: "The English word, lowercase" },
-                            meaning: { type: "string", description: "Brief 3-8 word English definition" },
-                          },
-                          required: ["word", "meaning"],
-                          additionalProperties: false,
+    const response = await callGemini({
+      model: "gemini-2.5-pro",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Extract all vocabulary words from this text:\n\n${pageText}` },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "extract_vocabulary",
+          description: "Extract structured vocabulary entries with roots and words from text",
+          parameters: {
+            type: "object",
+            properties: {
+              entries: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    root: { type: "string", description: "The root word (lowercase, 2-5 chars), or null if none" },
+                    root_meaning: { type: "string", description: "Meaning of the root word, or null" },
+                    words: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          word: { type: "string", description: "The English word, lowercase" },
+                          meaning: { type: "string", description: "Brief 3-8 word English definition" },
                         },
-                        description: "List of valid English words with meanings associated with this root, sorted alphabetically by word",
+                        required: ["word", "meaning"],
+                        additionalProperties: false,
                       },
+                      description: "List of valid English words with meanings associated with this root, sorted alphabetically by word",
                     },
-                    required: ["words"],
-                    additionalProperties: false,
                   },
+                  required: ["words"],
+                  additionalProperties: false,
                 },
               },
-              required: ["entries"],
-              additionalProperties: false,
             },
+            required: ["entries"],
+            additionalProperties: false,
           },
-        }],
-        tool_choice: { type: "function", function: { name: "extract_vocabulary" } },
-        stream: false,
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "extract_vocabulary" } },
+      stream: false,
     });
 
     if (!response.ok) {

@@ -1,12 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callGemini } from "../_shared/gemini.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -15,8 +14,6 @@ serve(async (req) => {
 
   try {
     const { messages, pageText, action, language, answers, numQuestions, questionTypes, focusTopics } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     // --- TRANSLATE action ---
     if (action === "translate") {
@@ -39,20 +36,13 @@ ${pageText || "No text available."}`;
         ? "Convert this page into Hinglish." 
         : "Translate this page into Hindi.";
 
-      const response = await fetch(AI_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          stream: false,
-        }),
+      const response = await callGemini({
+        model: "gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        stream: false,
       });
 
       if (!response.ok) {
@@ -74,7 +64,6 @@ ${pageText || "No text available."}`;
       const lang = language === "hindi" ? "Hindi" : language === "hinglish" ? "Hinglish (Hindi in Roman script mixed with English)" : "English";
       const numQ = Math.min(Math.max(numQuestions || 4, 1), 40);
       
-      // Build question type instructions
       const types: string[] = questionTypes && questionTypes.length > 0 ? questionTypes : ['mcq', 'short'];
       const typeDescriptions: Record<string, string> = {
         mcq: 'MCQ (multiple choice with 4 options, one correct)',
@@ -111,50 +100,43 @@ ${pageText || "No text available."}`;
 
       const validTypes = ["mcq", "short", "true_false", "fill_blank", "multiple_correct"];
 
-      const response = await fetch(AI_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: `Generate ${numQ} quiz questions in ${lang} based on this page. Use these question types: ${types.join(', ')}.` },
-          ],
-          tools: [{
-            type: "function",
-            function: {
-              name: "generate_quiz",
-              description: "Generate quiz questions based on page content",
-              parameters: {
-                type: "object",
-                properties: {
-                  questions: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        id: { type: "number" },
-                        question: { type: "string" },
-                        type: { type: "string", enum: validTypes },
-                        options: { type: "array", items: { type: "string" }, description: "For MCQ/multiple_correct: 4 options. For true_false/fill_blank/short: omit or empty." },
-                        correctAnswer: { type: "string" },
-                      },
-                      required: ["id", "question", "type", "correctAnswer"],
-                      additionalProperties: false,
+      const response = await callGemini({
+        model: "gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Generate ${numQ} quiz questions in ${lang} based on this page. Use these question types: ${types.join(', ')}.` },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "generate_quiz",
+            description: "Generate quiz questions based on page content",
+            parameters: {
+              type: "object",
+              properties: {
+                questions: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "number" },
+                      question: { type: "string" },
+                      type: { type: "string", enum: validTypes },
+                      options: { type: "array", items: { type: "string" }, description: "For MCQ/multiple_correct: 4 options. For true_false/fill_blank/short: omit or empty." },
+                      correctAnswer: { type: "string" },
                     },
+                    required: ["id", "question", "type", "correctAnswer"],
+                    additionalProperties: false,
                   },
                 },
-                required: ["questions"],
-                additionalProperties: false,
               },
+              required: ["questions"],
+              additionalProperties: false,
             },
-          }],
-          tool_choice: { type: "function", function: { name: "generate_quiz" } },
-          stream: false,
-        }),
+          },
+        }],
+        tool_choice: { type: "function", function: { name: "generate_quiz" } },
+        stream: false,
       });
 
       if (!response.ok) {
@@ -192,20 +174,13 @@ ${pageText || "No text available."}
 Student's answers:
 ${JSON.stringify(answers || [])}`;
 
-      const response = await fetch(AI_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: "Please check my answers and give feedback." },
-          ],
-          stream: false,
-        }),
+      const response = await callGemini({
+        model: "gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: "Please check my answers and give feedback." },
+        ],
+        stream: false,
       });
 
       if (!response.ok) {
@@ -237,20 +212,13 @@ When given page text from a PDF, you should:
 Current page text:
 ${pageText || "No page text available."}`;
 
-    const response = await fetch(AI_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
-        stream: true,
-      }),
+    const response = await callGemini({
+      model: "gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages,
+      ],
+      stream: true,
     });
 
     if (!response.ok) {
@@ -267,7 +235,7 @@ ${pageText || "No page text available."}`;
         );
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
+      console.error("AI error:", response.status, t);
       return new Response(
         JSON.stringify({ error: "AI service error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
