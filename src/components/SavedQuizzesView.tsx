@@ -24,6 +24,15 @@ interface QuizFolder {
   name: string;
 }
 
+const groupByDate = (quizzes: SavedQuiz[]): [string, SavedQuiz[]][] => {
+  const map: Record<string, SavedQuiz[]> = {};
+  for (const q of quizzes) {
+    const key = new Date(q.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    (map[key] ||= []).push(q);
+  }
+  return Object.entries(map);
+};
+
 export function SavedQuizzesView() {
   const { user } = useAuth();
   const navigate = useNavigate();
