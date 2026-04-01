@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,8 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Loader2, Trash2, ChevronDown, ChevronUp, Send, Sparkles, ArrowLeft, LayoutGrid, Mic } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 import { humorTemplates } from '@/data/humorTemplates';
+import CoachResponse from '@/components/CoachResponse';
 
 interface HistoryEntry {
   id: string;
@@ -25,7 +25,18 @@ const HumorCoach = () => {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [expandedHistory, setExpandedHistory] = useState<string | null>(null);
   const [templatesOpen, setTemplatesOpen] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const responseRef = useRef<HTMLDivElement>(null);
+
+  const categories = useMemo(() => {
+    const cats = new Set(humorTemplates.map(t => t.category));
+    return ['All', ...Array.from(cats).sort()];
+  }, []);
+
+  const filteredTemplates = useMemo(() => {
+    if (selectedCategory === 'All') return humorTemplates;
+    return humorTemplates.filter(t => t.category === selectedCategory);
+  }, [selectedCategory]);
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/auth');
@@ -104,12 +115,6 @@ const HumorCoach = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    if (responseRef.current && isStreaming) {
-      responseRef.current.scrollTop = responseRef.current.scrollHeight;
-    }
-  }, [response, isStreaming]);
-
   if (authLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
@@ -167,18 +172,8 @@ const HumorCoach = () => {
           </div>
         </div>
 
-        {/* Response Section */}
-        {response && (
-          <div
-            ref={responseRef}
-            className="bg-card border border-border rounded-lg p-6 max-h-[60vh] overflow-y-auto prose prose-sm dark:prose-invert max-w-none"
-          >
-            <ReactMarkdown>{response}</ReactMarkdown>
-            {isStreaming && (
-              <span className="inline-block w-2 h-4 bg-primary animate-pulse ml-1" />
-            )}
-          </div>
-        )}
+        {/* Coach Response */}
+        <CoachResponse response={response} isStreaming={isStreaming} responseRef={responseRef} />
 
         {/* Templates Section */}
         <Collapsible open={templatesOpen} onOpenChange={setTemplatesOpen}>
@@ -191,9 +186,27 @@ const HumorCoach = () => {
               {templatesOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </Button>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-3">
+          <CollapsibleContent className="mt-3 space-y-3">
+            {/* Category Tabs */}
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-colors ${
+                    selectedCategory === cat
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'bg-card border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
+                  }`}
+                >
+                  {cat} {cat === 'All' ? `(${humorTemplates.length})` : `(${humorTemplates.filter(t => t.category === cat).length})`}
+                </button>
+              ))}
+            </div>
+
+            {/* Template Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto pr-1">
-              {humorTemplates.map((t) => (
+              {filteredTemplates.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => selectTemplate(t.text)}
@@ -237,9 +250,7 @@ const HumorCoach = () => {
                 </button>
                 {expandedHistory === entry.id && (
                   <div className="px-4 pb-4 border-t border-border pt-3">
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                      <ReactMarkdown>{entry.response}</ReactMarkdown>
-                    </div>
+                    <CoachResponse response={entry.response} isStreaming={false} responseRef={{ current: null }} />
                     <Button
                       variant="ghost"
                       size="sm"
