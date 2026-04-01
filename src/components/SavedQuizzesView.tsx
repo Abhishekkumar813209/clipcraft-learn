@@ -142,48 +142,24 @@ export function SavedQuizzesView() {
           </div>
         ) : (
           <div className="p-4 space-y-3">
-            {/* Folders */}
-            {folders.map(folder => {
-              const folderQuizzes = getQuizzesForFolder(folder.id);
-              const isExpanded = expandedFolders.has(folder.id);
+            {dateGroups.map(([dateKey, dateQuizzes], idx) => {
+              const isExpanded = expandedFolders.has(dateKey) || (idx === 0 && !expandedFolders.has('__initialized'));
               return (
-                <div key={folder.id} className="border border-blue-500/20 rounded-lg overflow-hidden">
-                  <div className="flex items-center gap-2 p-3 bg-blue-600/10 cursor-pointer hover:bg-blue-600/20 transition-colors" onClick={() => toggleFolder(folder.id)}>
+                <div key={dateKey} className="border border-blue-500/20 rounded-lg overflow-hidden">
+                  <div className="flex items-center gap-2 p-3 bg-blue-600/10 cursor-pointer hover:bg-blue-600/20 transition-colors" onClick={() => toggleFolder(dateKey)}>
                     {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                    <FolderOpen className="h-4 w-4 text-primary" />
-                    <span className="font-medium text-sm flex-1">{folder.name}</span>
-                    <span className="text-xs text-muted-foreground">{folderQuizzes.length} quizzes</span>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setDeletingFolder(folder); }}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
+                    <Calendar className="h-4 w-4 text-blue-400" />
+                    <span className="font-medium text-sm flex-1">{dateKey}</span>
+                    <span className="text-xs text-muted-foreground">{dateQuizzes.length} {dateQuizzes.length === 1 ? 'quiz' : 'quizzes'}</span>
                   </div>
                   {isExpanded && (
                     <div className="p-2 space-y-2">
-                      {folderQuizzes.length === 0 ? (
-                        <p className="text-xs text-muted-foreground text-center py-3">No quizzes in this folder</p>
-                      ) : folderQuizzes.map(renderQuizCard)}
+                      {dateQuizzes.map(renderQuizCard)}
                     </div>
                   )}
                 </div>
               );
             })}
-
-            {/* Unfiled quizzes */}
-            {unfiledQuizzes.length > 0 && (
-              <div className="border border-blue-500/20 rounded-lg overflow-hidden">
-                <div className="flex items-center gap-2 p-3 bg-blue-600/10 cursor-pointer hover:bg-blue-600/20 transition-colors" onClick={() => toggleFolder('unfiled')}>
-                  {expandedFolders.has('unfiled') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium text-sm flex-1">Unfiled</span>
-                  <span className="text-xs text-muted-foreground">{unfiledQuizzes.length} quizzes</span>
-                </div>
-                {expandedFolders.has('unfiled') && (
-                  <div className="p-2 space-y-2">
-                    {unfiledQuizzes.map(renderQuizCard)}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         )}
       </ScrollArea>
