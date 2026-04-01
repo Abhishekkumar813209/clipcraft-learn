@@ -427,7 +427,7 @@ export function PdfReaderView() {
     const from = Math.max(1, Math.min(quizFrom, totalPages));
     const to = Math.max(from, Math.min(quizTo, totalPages));
     if (to - from > 30) { toast.error('Max 30 pages at once'); return; }
-    const finalCount = customQuizCount ? Math.min(Math.max(Number(customQuizCount), 1), 20) : quizCount;
+    const finalCount = customQuizCount ? Math.min(Math.max(Number(customQuizCount), 1), 40) : quizCount;
     setQuizOpen(false); setIsLoadingQuiz(true);
     try {
       toast.info(`Extracting text from ${to - from + 1} page(s) for quiz...`);
@@ -622,7 +622,7 @@ export function PdfReaderView() {
                       {n}
                     </Button>
                   ))}
-                  <input type="number" min={1} max={20} placeholder="#" value={customQuizCount} onChange={e => setCustomQuizCount(e.target.value)} className="w-12 h-7 rounded border bg-background text-center text-xs" />
+                  <input type="number" min={1} max={40} placeholder="#" value={customQuizCount} onChange={e => setCustomQuizCount(e.target.value)} className="w-12 h-7 rounded border bg-background text-center text-xs" />
                 </div>
               </div>
               <div className="space-y-1.5">

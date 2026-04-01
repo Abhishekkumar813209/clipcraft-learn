@@ -72,7 +72,7 @@ ${pageText || "No text available."}`;
     // --- QUIZ action ---
     if (action === "quiz") {
       const lang = language === "hindi" ? "Hindi" : language === "hinglish" ? "Hinglish (Hindi in Roman script mixed with English)" : "English";
-      const numQ = Math.min(Math.max(numQuestions || 4, 1), 20);
+      const numQ = Math.min(Math.max(numQuestions || 4, 1), 40);
       
       // Build question type instructions
       const types: string[] = questionTypes && questionTypes.length > 0 ? questionTypes : ['mcq', 'short'];
