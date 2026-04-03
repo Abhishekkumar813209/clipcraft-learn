@@ -2007,5 +2007,2747 @@ She: Bye 😊
 Me: ...
 She: Mat bolo kuch ab 😂
 Me: 😂 Ok. Bye. Final. Done. Over. Khatam. The End.`
+  },
+  // ===== APPROACH TEMPLATES (101-200) =====
+  // Street/Park/Jogging (101-120)
+  {
+    id: 101,
+    title: "Park Jogging Track",
+    category: "Approach",
+    text: `*Context: She's jogging in the park, you're barely surviving your first round*
+
+Me: *panting heavily* Excuse me, aap kitne rounds lagate ho?
+She: *removes earphone* Huh? 4-5 rounds.
+Me: 4-5?! Main toh pehle round mein hi apni will likhne laga tha.
+She: *laughs* Itna bhi hard nahi hai.
+Me: Aapke liye nahi hoga, aap toh pro lag rahi ho. Main toh yahan sirf isliye aaya kyunki doctor ne bola "walk karo" — running kisne bola tha, woh aaj tak samajh nahi aaya.
+She: Haha, doctor ne bola toh aana padega na.
+Me: Actually doctor ne yeh bhi bola tha ki "motivating company dhoondho" — toh kya main aapke saath jog kar sakta hoon? Promise, main sirf peeche peeche haafunga.
+She: 😂 Sure, but main rukne wali nahi hoon.
+Me: Bilkul, aap bhaago, main peeche se commentary dunga — "Aur woh final lap mein hai, crowd goes wild!"
+She: *laughing* You're funny.
+Me: Thanks, yeh talent sirf tab aata hai jab oxygen kam hoti hai. Waise aap roz aati ho?
+She: Haan mostly subah 6 baje.
+Me: 6 baje?! Main toh 6 baje sirf sapne mein jogging karta hoon. Par ab reason mil gaya early morning ka.
+She: 😂 Accha? Kya reason?
+Me: Free coaching mil rahi hai na! Aur coach bhi itni strict hai ki ruknne nahi degi.
+She: Haha deal. Kal se 6 baje. Late aaye toh penalty.
+Me: Penalty kya hogi?
+She: 10 extra rounds.
+Me: 😱 Thik hai, alarm 5 pe lagata hoon. Waise I'm [name], apna naam toh bata do taaki kal "excuse me" na bolna pade.
+She: 😊 I'm [her name]. See you tomorrow then!`
+  },
+  {
+    id: 102,
+    title: "Traffic Signal Wait",
+    category: "Approach",
+    text: `*Context: Both waiting at a long red signal, she's on a scooty, you're on a bike*
+
+Me: *looks at signal* Yeh red light hai ya meditation session?
+She: *smiles slightly*
+Me: Seriously, itni lambi red light — main toh yahan pe ek chhota sa business start kar sakta hoon.
+She: *laughs* Haan, chai ka stall laga lo.
+Me: Idea toh accha hai! Aap first customer banogi? Signal green hone tak 2 cup ho jayenge.
+She: 😂 Itna time toh lagta hai yahan.
+Me: Roz isi time aati ho? Kyunki main bhi roz yahan phase hota hoon, socha partner in suffering mil jaaye.
+She: Haha haan, office jaana padta hai na.
+Me: Same! Mera office bhi uss taraf hai. Race lagayen? Loser chai pilayega.
+She: Race? Scooty se bike se?
+Me: Exactly, meri bike ko toh start hone mein hi 30 seconds lagte hain. Aapko head start mil jayegi.
+She: 😂 That's not fair for you.
+Me: Life fair kab thi? Sharma ji ka beta Harvard gaya, main yahan signal pe stand-up kar raha hoon.
+She: *laughing* You're too much!
+Me: Waise green hone wali hai — kal same time, same signal, same suffering?
+She: Sure 😊
+Me: Aur agar main late hua toh signal ka blame, deal?
+She: 😂 Deal.`
+  },
+  {
+    id: 103,
+    title: "Dog Walking in Park",
+    category: "Approach",
+    text: `*Context: She's walking a cute dog, you're walking past*
+
+Me: *stops* Oh wow, yeh toh celebrity lag raha hai! *pointing at dog*
+She: 😂 Celebrity?
+Me: Haan, itna handsome toh Bollywood mein bhi koi nahi hai. Kya naam hai inka?
+She: Bruno.
+Me: Bruno! Bhai Bruno, autograph dega? *extends hand to dog*
+She: *laughing* Woh haath chaatega, autograph nahi dega.
+Me: Chalega, Bruno ka chaatna bhi blessing hai. Waise Bruno ka Instagram hai?
+She: Nahi 😂 
+Me: Kya?! Iss level ki cuteness aur no Instagram? Yeh toh crime hai. Main manager ban jaata hoon Bruno ka.
+She: Aur fees?
+Me: Fees nahi, sirf roz Bruno se milne ka access chahiye. Aur uski owner se thodi chai.
+She: 😂 Smooth.
+Me: Bruno, tera vibe check pass ho gaya mera? *dog wags tail*
+Me: Dekha! Bruno approved. Ab owner ka approval baaki hai.
+She: 😂 Bruno ki recommendation pe chal lete hain.
+Me: Perfect. Toh kal same time walk? Bruno ke liye puch raha hoon obviously.
+She: Obviously 😂 Kal 6 baje.
+Me: Done. Main treats leke aaunga — Bruno ke liye. Aapke liye coffee.
+She: That's sweet. See you!
+Me: Bruno, good boy. Tu wingman hai mera ab.`
+  },
+  {
+    id: 104,
+    title: "Waiting for Uber/Ola",
+    category: "Approach",
+    text: `*Context: Both standing at the same spot, clearly waiting for cabs*
+
+Me: Aap bhi "driver 2 min mein aa raha hai" wali game khel rahi ho?
+She: *laughs* Haan, 10 minute se 2 min bol raha hai.
+Me: Mera toh cancel bhi ho gaya. Ab main yahan monument ban gaya hoon.
+She: Same, yeh doosra driver hai mera.
+Me: Ek kaam karte hain — dono same cab book karte hain, 50-50 split. Economy aur company dono.
+She: 😂 Pool ka asli meaning.
+Me: Exactly! Aur agar driver na aaye toh hum dono yahan se ek chhoti si protest rally nikal denge — "Uber walo, humein ghar jaana hai!"
+She: *laughing* Main toh ready hoon.
+Me: Waise aap kahan ja rahi ho?
+She: Koramangala.
+Me: Oh nice, main bhi uss taraf. Yeh toh destiny hai — cab nahi aayi taaki hum dono mil sakein.
+She: 😂 Philosophy mat jhaado, cab bulao.
+Me: Ek second — *books cab* — Lo 3 min. Agar yeh bhi na aaya toh main auto se lamba speech deke convince karunga.
+She: Auto wala toh aur zyada drama karega.
+Me: Haan par main auto walon se bargain mein gold medalist hoon.
+She: 😂 Accha theek hai, mere saath share kar lo cab aayi toh.
+Me: Done! Waise I'm [name], cab partner ka naam toh pata hona chahiye.
+She: 😊 [Her name]. Nice meeting you in this suffering.`
+  },
+  {
+    id: 105,
+    title: "Juice Stall Morning",
+    category: "Approach",
+    text: `*Context: Both at a juice stall in the morning*
+
+Me: *to juice wala bhaiya* Bhaiya, ek glass mein health, happiness aur six-pack abs daal do.
+She: *laughs from next spot*
+Me: *turns to her* Aap kya le rahi ho? Let me guess — something healthy like lauki juice?
+She: Eww no! Orange juice.
+Me: Oh thank god, lauki juice peene waalon se main darr jaata hoon. Unke andar ek alag level ka pain tolerance hai.
+She: 😂 Exactly! Meri mummy peeti hai, main smell se bhaag jaati hoon.
+Me: Meri mummy bhi! Aur phir bolti hai "isse pi, face glow karega." Mera face glow nahi, green ho jaata hai.
+She: *laughing* Same same!
+Me: Waise aap roz yahan aati ho? Kyunki juice stall buddy hona chahiye.
+She: Haan mostly gym ke baad.
+Me: Gym?! Main toh yahan juice peeke khud ko healthy feel karta hoon bina gym jaaye. Smart work over hard work.
+She: 😂 That's cheating.
+Me: Cheating nahi, efficiency. Waise kaunsa gym? Maybe I should actually join.
+She: [Gym name], it's nearby.
+Me: Hmm... agar wahan bhi juice stall hai toh sochta hoon.
+She: 😂 Gym mein juice stall nahi hota!
+Me: Toh main apna leke aaunga. Portable juice corner.
+She: You're hilarious. I'm [her name].
+Me: [Name] here. Kal same time, same juice? Main treat karunga.
+She: Sure 😊`
+  },
+  {
+    id: 106,
+    title: "Morning Walk — Aunties' Zone",
+    category: "Approach",
+    text: `*Context: Morning walk area dominated by aunties, she's the only young person besides you*
+
+Me: *walking next to her* Finally, koi apni age ka mil gaya. Main toh aunties ke beech mein lost feel kar raha tha.
+She: *laughs* Same! Sab log mujhe beti bula rahe hain.
+Me: Mujhe toh ek aunty ne rishta dene ki offer di — "Meri bhatiji hai, doctor hai." Main bhaag ke yahan aaya.
+She: 😂 Aunties ka network Tinder se fast hai.
+Me: 100%! Unka algorithm better hai — "Beta, kahin job hai? Ghar hai? Chal rishta pakka."
+She: *laughing hard* Sahi mein!
+Me: Waise aap bhi mummy ne bheja hai morning walk pe?
+She: Haan 😅 "Subah uth, walk kar, healthy reh."
+Me: Same script! "Phone rakh, bahar ja, vitamin D le." Vitamin D ka itna promotion karte hain jaise share market mein invest kara rahe ho.
+She: 😂 Bilkul!
+Me: Chalo at least company mil gayi. Akele walk karna toh punishment jaisa lagta hai.
+She: True, with someone it's fun.
+Me: Toh kal se fixed? Same time, same track, same aunty-avoidance route?
+She: 😂 Done!
+Me: Aur agar koi aunty rishta offer kare toh bolenge "already committed hai morning walk partner ke saath."
+She: 😂😂 Perfect excuse. I'm [her name].
+Me: [Name]. See you tomorrow, walk buddy!`
+  },
+  {
+    id: 107,
+    title: "Cycling Track Encounter",
+    category: "Approach",
+    text: `*Context: Cycling track, she overtakes you on her cycle*
+
+Me: *pedaling hard* Excuse me! Yeh cycling track hai ya F1 circuit?
+She: *slows down, laughs* Sorry, speed aa gayi.
+Me: Speed? Aap toh Verstappen lag rahi thi! Main yahan apni nani ki speed se chal raha hoon.
+She: 😂 Practice karo, ho jayega.
+Me: Practice?! Main toh pehle 500 meter mein hi surrender flag lagane wala tha.
+She: Kab se cycling kar rahe ho?
+Me: Aaj pehla din hai. Meri body abhi protest rally nikal rahi hai.
+She: *laughing* Pehle din mein itna enough hai. Dheere dheere badhao.
+Me: Aap coach ban jaogi toh motivation bhi rahega. Akele main Netflix dekhne chala jaunga.
+She: 😂 Coaching fees lagegi.
+Me: Fees? Chai chalegi? Saamne wali tapri ki chai worth it hai trust me.
+She: Hmm chai toh chalegi.
+Me: Done! Ek round aur maarte hain, phir chai break. Main peeche peeche aaunga, aap slow chalana please.
+She: Okay deal 😊
+Me: Waise I'm [name], coach ka naam toh pata hona chahiye student ko.
+She: [Her name]. Ab chalo, bahut rest ho gaya!`
+  },
+  {
+    id: 108,
+    title: "Garden Selfie Spot",
+    category: "Approach",
+    text: `*Context: She's trying to take a selfie at a garden but struggling with the angle*
+
+Me: 5 attempts ho gaye, kya main help kar doon? Main accha photographer hoon — atleast meri mummy toh bolti hai.
+She: *laughs* Haan please, angle nahi aa raha.
+Me: *takes phone* Okay, thoda left... aur thoda smile — nahi nahi, natural smile, passport photo wali nahi.
+She: 😂 *laughs naturally*
+Me: *clicks* Perfect! See? Yeh wala toh Instagram story material hai.
+She: *sees photo* Oh wow, actually accha aaya!
+Me: Told you. Meri fees hai ek follow aur ek coffee ☕
+She: 😂 Pehle se decide karke aaye ho kya?
+Me: Nahi nahi, yeh on-the-spot quotation hai. GST extra.
+She: *laughing* GST bhi?!
+Me: Haan, "Good Selfie Tax." Naya rule hai garden mein.
+She: You're too much 😂
+Me: Waise aur photos chahiye? Main is garden ka har angle jaanta hoon. Full photoshoot ho jayega.
+She: Actually haan, woh fountain ke paas leni hai ek.
+Me: Chaliye madam, aapka personal photographer ready hai. Tip optional hai par appreciated.
+She: 😂 Chal.
+Me: *after clicking more* Yeh sab bhejne ke liye number toh chahiye...
+She: 😏 Smart. [Gives number]
+Me: Professional photographer always delivers. WhatsApp pe bhej dunga.`
+  },
+  {
+    id: 109,
+    title: "Park Bench Reader",
+    category: "Approach",
+    text: `*Context: She's reading a book on a park bench*
+
+Me: *sits nearby, glances* Excuse me, woh book acchi hai kya? Cover se toh interesting lag rahi hai.
+She: *looks up* Haan, it's really good actually. [Book name].
+Me: Oh nice! Main bhi padhne ka sochta hoon... par phir Instagram khul jaata hai.
+She: 😂 Relatable.
+Me: Seriously, mera Goodreads "want to read" list mein 200 books hain. "Read" mein 3.
+She: *laughing* Same energy.
+Me: Aap toh dedicated reader lag rahi ho. Park mein book — yeh toh movie scene hai.
+She: 😂 Bas peaceful lagta hai yahan.
+Me: Sahi hai. Main toh park mein sirf bench pe baithke existential crisis karta hoon. Aap toh productive ho.
+She: Haha, reading is my escape.
+Me: Mera escape toh yeh hai — random logon se baat karna jo books padh rahe hain.
+She: 😂 Effective escape hai.
+Me: Waise koi recommendation? Agar aap bol rahi ho toh pakka padhke aauga — phir discuss karenge.
+She: Hmm... try [book name]. Bahut acchi hai.
+Me: Done! Par condition — jab main padh lu, toh review session hoga yahan same bench pe?
+She: 😂 Sure, book club of two.
+Me: Best club ever. I'm [name], co-founder of this bench book club.
+She: [Her name]. Happy reading!
+Me: Ek week do, main padhke aaunga. Tab tak bench reserve rakhna!`
+  },
+  {
+    id: 110,
+    title: "Street Food Stall — Golgappe",
+    category: "Approach",
+    text: `*Context: Both at a golgappe stall*
+
+Me: *to bhaiya* Bhaiya teekha wala. *turns to her* Aap?
+She: Sweet wala.
+Me: Sweet golgappe?! Yeh toh crime against humanity hai!
+She: 😂 Sweet best hai!
+Me: Nahi nahi, teekha golgappe khao — life ke struggles face karne ki training ho jaati hai.
+She: Teekha khaake toh meri aankh se paani aa jaata hai.
+Me: Exactly! Free emotional release. Therapist ki zaroorat nahi.
+She: 😂😂
+Me: Ek kaam karo — ek mera teekha try karo, ek main tumhara sweet. Fair trade.
+She: Hmm okay deal.
+Me: *gives one* Lo, brave bano.
+She: *eats* OH GOD 🔥 *coughing*
+Me: *eating her sweet one* Yeh toh meethi aunty ke ghar ka khana lag raha hai.
+She: 😂😂 *still coughing* How do you eat this?!
+Me: Practice. Roz ek plate — ab toh mirchi bhi mujhse darr jaati hai.
+She: You're crazy!
+Me: Crazy nahi, spice connoisseur. Waise aur plate?
+She: Haan but sweet!
+Me: Okay compromise — medium spice? Diplomatic golgappe?
+She: 😂 Okay fine, medium.
+Me: Dekha? Already compromise ho raha hai. Yeh toh relationship ki nishani hai.
+She: 😂😂 Shut up! *laughing*
+Me: I'm [name], golgappe debate champion.
+She: [Her name]. Rematch next week?
+Me: Same stall, same fight, done!`
+  },
+  {
+    id: 111,
+    title: "Bus Stop Wait",
+    category: "Approach",
+    text: `*Context: Waiting at a bus stop, bus is late as usual*
+
+Me: Aapko bhi lagta hai ki yeh bus aaj aayegi ya kal?
+She: *laughs* 20 minute se wait kar rahi hoon.
+Me: Main toh 30 minute se hoon. Mujhe toh lagta hai bus wala bhi apna Tinder check kar raha hoga kahin pe.
+She: 😂 Ho sakta hai.
+Me: Waise yeh bus stop pe itna wait karna — yeh toh government-sponsored patience training hai.
+She: Bilkul! Free mein sikhate hain.
+Me: Aur resume mein likh sakte hain — "Can wait for anything. Trained by DTC buses."
+She: 😂😂 Yeh toh add karna chahiye.
+Me: Interview mein poochenge "What's your greatest strength?" — "Sir, main DTC bus ka wait karta hoon. Mujhse zyada patient koi nahi."
+She: *laughing hard*
+Me: Chalo since bus nahi aa rahi, introduction toh ho jaaye. I'm [name].
+She: [Her name].
+Me: Nice. Ab kam se kam akela boring wait toh nahi lagega.
+She: True, company acchi hai.
+Me: Roz same time? Same bus? Same suffering but together?
+She: 😂 Roz same time.
+Me: Aur agar bus aa gayi toh — same seat ke paas baithenge, deal?
+She: Deal 😊`
+  },
+  {
+    id: 112,
+    title: "Metro Station Platform",
+    category: "Approach",
+    text: `*Context: Crowded metro platform, both looking at the indicator board*
+
+Me: "Next train in 4 minutes" — yeh 4 minute hain ya 4 saal?
+She: *smiles* Metro time alag chalta hai.
+Me: Haan, Einstein ne relativity yahan pe discover ki thi actually.
+She: 😂 Lag toh raha hai.
+Me: Aap bhi daily commuter ho? Kyunki yeh exhausted-but-still-going expression sirf regulars ka hota hai.
+She: *laughs* Haan, roz ki kahani.
+Me: Same. Mera toh metro mein hi sab hota hai — breakfast, nap, existential crisis, sab.
+She: Main toh metro mein podcast sunti hoon.
+Me: Oh nice! Kaunsa podcast? Main toh sirf uncles ki conversations sun-ta hoon — "Aaj toh market girega."
+She: 😂 Haan uncles ka analysis toh free hai.
+Me: Best financial advisors hain metro uncles. Unki tips follow karo toh guaranteed loss.
+She: *laughing* So true.
+Me: Chalo metro aa rahi hai — standing mein competition kaun jeetega, bet lagayen?
+She: 😂 Kaise competition?
+Me: Jo pehle seat dhundh le uski jeet. Loser ko next station ki coffee.
+She: Done! Main fast hoon.
+Me: Dekhte hain!
+*both rush in, she finds seat*
+She: HAH! Coffee de do!
+Me: Fair hai, next station pe. I'm [name], aur main haarne mein expert hoon.
+She: 😂 [Her name]. Coffee yaad rakhna!`
+  },
+  {
+    id: 113,
+    title: "Parking Lot Confusion",
+    category: "Approach",
+    text: `*Context: Both looking for their cars/bikes in a confusing parking lot*
+
+Me: Excuse me, aapne bhi apni gaadi kho di hai ya sirf main hoon?
+She: *laughs* Haan, 5 minute se dhoondh rahi hoon!
+Me: Thank god, mujhe laga mujhe Alzheimer's ho gaya 22 saal ki umar mein.
+She: 😂 Yeh parking lot maze jaisa hai.
+Me: Haan, level 3, zone B, row 7 — yeh parking hai ya escape room?
+She: Exactly! Koi map dena chahiye entry pe.
+Me: Aur GPS — "Apni gaadi tak navigate kar rahe hain, left lein, phir seedha, phir pray karein."
+She: 😂😂
+Me: Chalo saath mein dhoondhte hain — meri help karo, main tumhari. Team work.
+She: Okay sure, meri silver Swift hai.
+Me: Meri blue bike. Pehle jo dhoondh le woh winner.
+She: Har cheez mein competition?
+Me: Life boring hai bina competition ke!
+She: 😂 True. Chalo start.
+*5 minutes later, find both*
+Me: YES! Meri bike pehle mili! Main jeetaaaa!
+She: Sirf isliye kyunki bike chhoti hai aur dikhti hai!
+Me: Excuses! Haarna seekho gracefully.
+She: 😂 Next time mall ke parking mein rematch.
+Me: Done. I'm [name].
+She: [Her name]. Bye parking buddy!`
+  },
+  {
+    id: 114,
+    title: "ATM Queue",
+    category: "Approach",
+    text: `*Context: Long ATM queue, both frustrated*
+
+Me: *sighs* Yeh ATM queue hai ya Tirupati darshan ki line?
+She: *laughs* Seriously! 15 minute ho gaye.
+Me: Andar wala banda pura bank loan le raha hai kya ATM se?
+She: 😂 Lagta toh aisa hi hai.
+Me: Main toh soch raha hoon yahan pe ek chhota café khol doon — "ATM Queue Café — wait karo, sip karo."
+She: Bahut customers aayenge 😂
+Me: Shark Tank pe pitch karunga — "Sir, ATM queues kabhi khatam nahi hongi, aur na mera business."
+She: 😂😂 Aman Gupta: "Yeh toh lakhon ka idea hai!"
+Me: Exactly! Aap co-founder banogi? 50-50?
+She: 50-50? ATM se kitna nikal rahi hoon pehle woh toh dekh loon 😂
+Me: Fair point. Waise aap UPI kyun nahi use karti?
+She: Cash chahiye tha, doodh wala UPI nahi leta.
+Me: Doodh wala UPI nahi leta?! 2025 mein?! Usse toh pehle digitize karna chahiye.
+She: 😂 Aap jaake bolo usse.
+Me: Main bolunga, par pehle yeh line toh aage badhe.
+She: Haan, next hamara number hai finally.
+Me: Thank god. Main [name], ATM survivor.
+She: [Her name], fellow survivor 😊`
+  },
+  {
+    id: 115,
+    title: "Street Market Shopping",
+    category: "Approach",
+    text: `*Context: Both browsing same stall at a street market*
+
+Me: *picking up same item she's looking at* Oh sorry! Aap pehle dekh rahi thi.
+She: No no, it's fine, aap dekho.
+Me: Nahi nahi, aap dekho. Main gentleman hoon... jab tak bargaining shuru na ho.
+She: 😂 Bargaining mein gentleman nahi chalte?
+Me: Bargaining mein toh main warrior hoon. 500 ka cheez 150 mein leke jaata hoon.
+She: Wow, pro ho!
+Me: Pro? Black belt hoon. Yeh stall wale mujhe dekhte hain toh darr jaate hain.
+She: 😂 Teach me then!
+Me: Lesson 1: Pehle cheez dekho, phir mooh banao jaise bahut ganda hai, phir bolo "bhaiya yeh toh bahut mehenga hai."
+She: Aur kaam karta hai?
+Me: 90% success rate. Baaqi 10% mein bhaiya gussa ho jaata hai toh dusre stall pe jaao.
+She: 😂😂 Expert!
+Me: Chalo, practice karte hain. Woh stall pe chalte hain, main demonstrate karta hoon.
+She: Okay let's go!
+*after bargaining*
+Me: Dekha? 400 ka 200 mein! *proud face*
+She: 😂 Impressive! Mera bhi karao na.
+Me: Abhi se? Fees lagegi — ek chai aur apna number.
+She: 😂 Smooth operator. Fine, chai toh deserve karte ho.
+Me: I'm [name], bargain coach.
+She: [Her name]. Best shopping experience ever!`
+  },
+  {
+    id: 116,
+    title: "Roadside Chai Stall",
+    category: "Approach",
+    text: `*Context: Both at a roadside chai stall*
+
+Me: *sipping chai* Bhaiya ki chai peeke toh lagta hai sab kuch theek ho jayega.
+She: *smiles* Best chai hai yahan ki.
+Me: Aap bhi regular ho? Matlab humne kitne din waste kiye alag alag time pe aake?
+She: 😂 Haan roz aati hoon 5 baje.
+Me: 5 baje?! Main bhi around that time! How did we never meet? Yeh toh cosmic delay tha.
+She: Haha maybe.
+Me: Waise cutting ya full?
+She: Cutting.
+Me: Ah, a woman of culture! Cutting chai > everything.
+She: Obviously! Full chai toh tourist peete hain.
+Me: 😂 Exactly! Cutting mein concentration hota hai chai ka — pure, undiluted happiness.
+She: Poetic ho chai ke baare mein.
+Me: Chai mere liye religion hai. Main toh sochta hoon resume mein hobby section mein likhu — "Chai tasting and philosophical discussions at tapris."
+She: 😂 Interviewer confused ho jayega.
+Me: Par impressed bhi! "This man has priorities."
+She: *laughing* True.
+Me: Kal chai pe bet? Main ek nayi tapri dhundh ke lata hoon — taste test karenge.
+She: Oh like a chai crawl?
+Me: Exactly! "Delhi Chai Crawl" — 5 tapris, 5 cups, 1 winner.
+She: I'm in! 😊
+Me: Done! I'm [name], Chief Chai Officer.
+She: [Her name], ready for the crawl!`
+  },
+  {
+    id: 117,
+    title: "Evening Walk with Earphones",
+    category: "Approach",
+    text: `*Context: She's on her evening walk with earphones, humming a song*
+
+Me: *walking alongside* Woh gaana jo aap guna rahi ho — Arijit Singh?
+She: *surprised, removes earphone* Oh! Haan, how did you know?
+Me: Kyunki evening walk pe sirf do cheezein chalti hain — Arijit Singh ya existential crisis playlist.
+She: 😂 Accurate.
+Me: Main toh dono saath mein sun-ta hoon. Multitasking.
+She: Haha sad boy vibes?
+Me: Full time. Mera Spotify Wrapped toh therapist ko forward karna chahiye.
+She: 😂😂 Same actually.
+Me: "Your top genre was Sad Hindi — you listened to 47 hours of heartbreak. Are you okay?"
+She: *laughing* Spotify be judging us.
+Me: Seriously! Aur phir recommend karta hai "Happy Bollywood" — bro, meri life mein itna plot twist nahi hai.
+She: 😂 You're hilarious.
+Me: Thanks, yeh talent loneliness se aata hai. Waise kya sun rahi ho abhi exactly?
+She: [Song name].
+Me: Oh nice! Main bhi sunta hoon. Chalo playlist exchange karte hain?
+She: Sure! You have good taste?
+Me: Mera taste toh questionable hai life mein but music mein solid hai.
+She: 😂 Fair enough. Share karo.
+Me: Spotify ya Apple Music?
+She: Spotify.
+Me: Same! ID do, follow karta hoon. Collaborative playlist bhi bana sakte hain — "Evening Walk Vibes."
+She: Cute idea! [Shares ID]
+Me: Done! Kal walk pe new playlist test karenge.`
+  },
+  {
+    id: 118,
+    title: "Skateboard Park Newbie",
+    category: "Approach",
+    text: `*Context: She's skateboarding, you're watching from the side*
+
+Me: *clapping* Woh trick toh Olympic level tha!
+She: *laughs* Sirf balance rakh paayi, trick kahan!
+Me: Balance rakhna bhi trick hai! Main toh skateboard pe khade hote hi girr jaata hoon.
+She: Seriously? Try karo na!
+Me: Last time try kiya tha — 3 seconds khada raha, phir dharti maata ne gale lagaya.
+She: 😂 Everyone falls initially.
+Me: Mera "initially" 6 months chal raha hai.
+She: 😂😂 Thoda aur practice chahiye bas.
+Me: Yaa... ek acchi teacher chahiye. *looks at her*
+She: Oh subtle 😂
+Me: Subtle? Main toh billboard lagane wala tha — "Skateboard teacher wanted. Payment: chai + compliments."
+She: 😂 Chai toh milni chahiye.
+Me: Bhaiya! Do chai! *calls chai wala*
+She: Wait abhi class toh shuru nahi hui!
+Me: Pre-class chai. Motivation ke liye zaroori hai.
+She: *laughing* Okay fine, after chai lesson 1.
+Me: Deal. Main ready hoon girne ke liye — physically aur emotionally.
+She: 😂 You're fun. I'm [her name].
+Me: [Name]. Aaj se aap meri guru ho. Guru dakshina mein chai milegi roz.`
+  },
+  {
+    id: 119,
+    title: "Lake Side / Ghat Walk",
+    category: "Approach",
+    text: `*Context: Both sitting at a lake/ghat watching sunset*
+
+Me: Yeh sunset dekhke aapko bhi lagta hai ki life mein sab theek ho jayega, ya sirf mujhe?
+She: *laughs softly* Haan, peaceful hai.
+Me: Main toh yahan roz aata hoon — free therapy session. Isse accha toh koi psychologist nahi.
+She: True, nature is the best healer.
+Me: Aur sasta bhi! Therapy ke 2000 per session, yahan free mein sunset mil raha hai.
+She: 😂 Budget therapy.
+Me: Exactly! "Dr. Sunset — no appointment needed, side effects include peace and Instagram stories."
+She: 😂😂 Clinic khol do.
+Me: Aap receptionist banogi? "Please wait, Dr. Sunset will see you at 6:30 PM sharp."
+She: 😂 Patients ko kya bolenge?
+Me: "Ek plate moongfali khao aur chup-chaap sunset dekho. Yeh hai aapki medicine."
+She: *laughing* Best prescription ever.
+Me: Waise I'm [name], regular patient of Dr. Sunset.
+She: [Her name], new patient.
+Me: Welcome! First session free hai. Second ke liye chai laani padegi.
+She: 😂 Fair deal. Kal?
+Me: Kal same time. Main moongfali lata hoon.
+She: Done 😊`
+  },
+  {
+    id: 120,
+    title: "Flower Market",
+    category: "Approach",
+    text: `*Context: Both at a flower market, she's selecting flowers*
+
+Me: *picking up roses* Bhaiya, yeh phool kitne fresh hain? Kal ke toh nahi?
+Bhaiya: Sahab, aaj subah ke hain!
+Me: *to her* Aap kya le rahi ho? Pooja ke liye?
+She: Haan, ghar pe pooja hai.
+Me: Same! Mummy ne bheja hai — "Genda phool leke aa, aur marigold bhi." Maine bola "Mummy woh same hai." Bolti hai "Tu bas le aaja."
+She: 😂 Mummy se argue mat karo, always wrong hote ho.
+Me: Yeh universal truth hai! Mummy ke against argument ka success rate 0.001% hai.
+She: Exactly! Main toh try bhi nahi karti ab.
+Me: Smart. Main abhi bhi try karta hoon — daily L leta hoon.
+She: 😂 Seekho mere se.
+Me: Seekh raha hoon! Waise yeh mogra accha lag raha hai, pooja ke liye logi?
+She: Haan, mogra toh chahiye.
+Me: *picks the best bunch* Yeh lo, maine smell karke check kiya — 10/10.
+She: Thank you! Accha taste hai.
+Me: Phoolon mein taste hai mera, baaki life mein debatable hai.
+She: 😂
+Me: Waise I'm [name], mummy ke flower delivery boy.
+She: [Her name], same job profile 😂
+Me: Kal phir aana hai, mummy ke orders kabhi khatam nahi hote. Same time milte hain?
+She: Sure 😊`
+  },
+  // Mandir/Religious (121-135)
+  {
+    id: 121,
+    title: "Mandir — Family Photo Chaos",
+    category: "Approach",
+    text: `*Context: She's trying to click a family photo at a mandir, everyone's not cooperating*
+
+Me: *watching the chaos* Aunty ko bolo thoda left, uncle ka haath hata do, aur chhote ko chocolate ka lalach do — perfect photo aa jayegi.
+She: *laughs* You've been watching?
+Me: 5 minute se dekh raha hoon, yeh mere family jaisa hi scene hai. Professional experience hai mujhe.
+She: 😂 Help karo na please!
+Me: Sure! *takes charge* Uncle ji, thoda smile dijiye — nahi, natural wali, passport wali nahi. Aunty ji, perfect hai. Chhotu, yahan dekh — *makes funny face* 
+*clicks multiple photos*
+She: *checks* Oh wow, actually acche aaye!
+Her Mom: Beta, bahut acche photos liye! Kya karte ho?
+Me: Aunty ji, main toh bas yahan darshan karne aaya tha, par talent ko rok nahi paaya.
+Her Mom: 😂 Bahut funny hai yeh ladka!
+Me: Aunty ji, aapke saath bhi ek photo? Family ka official photographer bana diya toh service free rahegi.
+Her Dad: *laughing* Haan haan, le lo photo!
+Me: *takes family photos, then whispers to her* Dekha? Parents approved pehle, ab toh baat karni padegi.
+She: 😂😂 You're something else.
+Me: Photos bhejne ke liye number chahiye... family ke liye puch raha hoon obviously.
+She: Obviously 😂 [gives number]
+Her Mom: Beta, naam kya hai tumhara?
+Me: [Name], aunty ji. Aur next pooja pe bulana, main photographer ready rahunga!`
+  },
+  {
+    id: 122,
+    title: "Mandir — Prasad Line",
+    category: "Approach",
+    text: `*Context: Both in the prasad distribution line at a mandir*
+
+Me: *whispering* Pehle se pata hota laddu milega ya pedha, toh anticipation toh kam hoti.
+She: *giggles* Haan, suspense hi toh hai.
+Me: Yeh prasad line hai ya Kaun Banega Crorepati — "Aapka prasad hai... *dramatic pause* ...LADDU!"
+She: 😂 Audience poll use karna chahiye.
+Me: "50-50 karo Amitabh ji — laddu ya pedha?"
+She: 😂😂 Stop!
+Me: Waise aap regularly aati ho yahan?
+She: Haan, har Tuesday.
+Me: Oh Tuesday! Hanuman ji ka din. Main bhi aata hoon mostly.
+She: Accha? Kabhi dikhe nahi.
+Me: Kyunki main late aata hoon. Subah uthna aur devotion — dono ek saath mushkil hai.
+She: 😂 Relate karta hoon.
+Me: Aaj toh jaldi aa gaya — aur result bhi accha hai, interesting company mil gayi.
+She: 😂 Smooth.
+Me: Bhagwan ji ne sun li meri. Maine bola tha "Kuch accha karo aaj" — unhone deliver kiya.
+She: 😂😂 Bhagwan ko credit de rahe ho?
+Me: Full credit! Unka setup hai, main toh sirf dialogue bol raha hoon.
+She: You're hilarious. I'm [her name].
+Me: [Name]. Next Tuesday same time?
+She: Same time ✨`
+  },
+  {
+    id: 123,
+    title: "Mandir — Aarti Time",
+    category: "Approach",
+    text: `*Context: During aarti, both standing in the crowd, bell ringing loudly*
+
+Me: *after aarti, rubbing ears* Woh bell itni loud thi ki mujhe laga Bhagwan ji khud bol rahe hain "SUNAI DE RAHA HAI?!"
+She: 😂 Haan, kaan band karne pade.
+Me: Main toh soch raha tha ki aarti ke baad hearing test free mein ho jaaye toh accha hai.
+She: 😂 ENT doctor bhi bahar stall lagaye toh kaafi customers milenge.
+Me: 😂 Business idea! Mandir ke bahar ENT clinic — "Aarti ke baad check-up, darshan ke baad diagnosis."
+She: *laughing hard* You're terrible!
+Me: Terrible nahi, practical! Waise aapko aarti ka woh specific moment pasand hai jab sab log ek saath haath hilate hain aur koi rhythm nahi hota?
+She: 😂 Haan! Random hi hota hai.
+Me: Main toh choreographer hire karna chahta hoon mandir ke liye. Synchronized aarti — flash mob style.
+She: 😂😂 Pandit ji allow nahi karenge.
+Me: Pandit ji ko lead dancer bana denge, they'll love it!
+She: Pagal ho tum!
+Me: Thank you, yeh compliment hai mere liye 😂 I'm [name].
+She: [Her name]. Tumse milke aarti aur entertaining ho gayi!
+Me: Next time saath mein khade hone ka — bell ki complaints ek doosre se karenge.
+She: 😂 Done!`
+  },
+  {
+    id: 124,
+    title: "Navratri Garba Night",
+    category: "Approach",
+    text: `*Context: Garba night, you have zero garba skills*
+
+Me: *doing random steps badly near her*
+She: *notices, laughs* Woh garba nahi hai, woh toh cardio lag raha hai.
+Me: Cardio bhi nahi hai, yeh toh survival hai. Main toh steps dekh ke follow kar raha hoon par brain sync nahi ho raha.
+She: 😂 Want me to teach you?
+Me: Please! Meri reputation iss dandiya se zyada tooti hui hai.
+She: *laughing, shows basic steps* Dekho — ek do teen, ek do teen.
+Me: Ek do teen... *trips* ...char paanch bhi ho gaye.
+She: 😂😂 Dheere karo.
+Me: Main Hrithik ban-na chahta tha, Govinda ban gaya.
+She: Govinda bhi accha dancer hai!
+Me: Accha hai par uski wali style mein toh aur log gir jayenge.
+She: 😂 Okay phir se try karo. Mere saath.
+Me: *tries again, slightly better* Hey! Kuch kuch ho raha hai!
+She: 😂 "Kuch Kuch Hota Hai" ka reference garba mein? Nice.
+Me: Unplanned tha par accha fit ho gaya. Waise aap pro ho — kitne saal se kar rahi ho?
+She: Bachpan se! Gujarati hoon.
+Me: Oh toh toh genes mein hai! Mujhe toh acquired skill banana padega.
+She: Private classes de dungi 😂
+Me: Fees?
+She: Garba ke baad chai.
+Me: DONE. Best deal ever. I'm [name], garba ka zero to hero.
+She: [Her name]. Class starts now, focus!`
+  },
+  {
+    id: 125,
+    title: "Temple Stairs Climb",
+    category: "Approach",
+    text: `*Context: Long temple staircase, both climbing, both tired*
+
+Me: *panting on step 150* Excuse me, yeh mandir hai ya Everest Base Camp?
+She: *also tired, laughs* Seriously! Kitne aur hain?
+Me: Maine Google kiya tha — 300 steps. Hum abhi half-way pe hain. Congratulations, aur half baaki.
+She: 😭 Khatam nahi hoga yeh.
+Me: Bhagwan ji ne test rakha hai — "Kitna chahte ho darshan?" Answer: Bahut chahte hain, par knees bhi chahte hain.
+She: 😂 Knees ne toh strike de di hai.
+Me: Same! Meri legs keh rahi hain "Bhagwan online bhi milte hain, Zoom call kar le."
+She: 😂😂 Digital darshan!
+Me: Ek kaam karte hain — har 50 steps pe break lenge. Deal?
+She: Deal! Thank god, companion mil gaya.
+Me: Haan akele chadh-na toh punishment hai. Ab kam se kam dukh share ho jayega.
+She: *laughing* Dukh sharing partner.
+Me: Best kind of partner! Chalo, next 50 mein koi ek interesting fact bolega — time pass bhi ho jayega.
+She: Okay! Did you know this temple is 800 years old?
+Me: 800 saal! Tab toh lifts nahi thi... excuse valid hai unka. Ab kya excuse hai?!
+She: 😂 Budget nahi hai shayad.
+Me: GST laga do steps pe — "Step tax: Rs 1 per step. Lift chahiye toh Rs 500."
+She: You're crazy. I'm [her name].
+Me: [Name]. Chalo partner, 150 aur!`
+  },
+  {
+    id: 126,
+    title: "Mandir — Pooja Thali Drop",
+    category: "Approach",
+    text: `*Context: She accidentally drops her pooja thali items*
+
+Me: *quickly helps pick up* Yeh lo, sab kuch mil gaya — phool, agarbatti, aur... yeh sindoor hai ya kumkum?
+She: Oh thank you so much! Kumkum hai.
+Me: Phew! Safe hai sab. Bhagwan ji samajhte hain, unke ghar mein accidents allowed hain.
+She: 😂 I hope so, bohot embarrassing tha.
+Me: Embarrassing? Nahi nahi, yeh toh Bhagwan ji ka sign hai — "Beta, dhyan se chal, life mein bhi aur mandir mein bhi."
+She: *laughing* Deep meaning nikal liya.
+Me: Main har situation mein philosophy dhundh leta hoon. Talent hai.
+She: Philosopher ya comedian?
+Me: Dono ka mixture. Philoso-comedian. New genre hai, patent pending.
+She: 😂 First of its kind.
+Me: Waise aap akeli aayi ho ya family?
+She: Family hai, woh andar hain.
+Me: Nice! Main bhi akela — mummy ne list di hai: "Pooja kar, prasad la, aur haan — ache se maatha tek."
+She: 😂 Mummy ki orders.
+Me: Haan, Zomato jaisi tracking bhi karti hain — "Pahunch gaya? Photo bhej."
+She: 😂😂 Same!
+Me: Chalo saath mein chalte hain andar? Pooja thali guard karunga iss baar.
+She: 😂 Bodyguard for thali. Sure!
+Me: I'm [name], professional thali protector.
+She: [Her name]. Thank you thali-guard!`
+  },
+  {
+    id: 127,
+    title: "Darshan Queue — Hours Long",
+    category: "Approach",
+    text: `*Context: Both stuck in an extremely long darshan queue*
+
+Me: Aapko pata hai iss queue mein itna time lagta hai ki mere baad wale bande ne toh tent laga liya hai.
+She: 😂 Main toh tiffin laayi hoon.
+Me: Tiffin?! Pro player ho tum toh. Main toh khaali haath aaya — rookie mistake.
+She: Pehli baar aaye ho?
+Me: Is particular queue mein haan. Pehle choti line wale mandirs mein jaata tha — express darshan.
+She: 😂 Express darshan! Drive-through mandir chahiye.
+Me: Billion dollar idea! "McMandir — Darshan in 2 minutes or prasad free."
+She: 😂😂 Shark Tank pe jaao!
+Me: Ashneer bolega "Yeh sab doglapan hai, bhagwan toh free mein milte hain!"
+She: *laughing hard* PERFECT impression.
+Me: Waise tiffin mein kya hai? Main hungry ho raha hoon aur mandir ka line mujhe emotional bana rahi hai.
+She: Paratha hai. Ek khaoge?
+Me: Seriously?! You're an angel in a darshan queue.
+She: 😂 *gives paratha*
+Me: *eating* Yeh toh mummy ke haath jaisa hai! Kaun banaata hai?
+She: Maine banaya.
+Me: ... Main toh pehle se impress tha, ab toh aur ho gaya. I'm [name].
+She: [Her name] 😊 Queue toh lambi hai, time pass ho jayega!`
+  },
+  {
+    id: 128,
+    title: "Mandir ka Langar/Bhandara",
+    category: "Approach",
+    text: `*Context: Sitting together at a mandir langar/bhandara*
+
+Me: Yeh mandir ka khana kyun ghar se zyada tasty hota hai? Secret ingredient kya hai?
+She: 😂 Devotion?
+Me: Devotion! Haan matlab mummy bhi devotion se banaye toh ghar ka khana bhi hit ho jayega.
+She: 😂 Mummy ko mat bolna yeh.
+Me: Nahi nahi, mummy ko toh bolunga "Best hai!" — survival instinct hai.
+She: Smart boy.
+Me: Waise aap roz aati ho langar mein?
+She: Nahi, special occasion hai aaj.
+Me: Oh, kya occasion?
+She: Birthday hai mera 🎂
+Me: BIRTHDAY?! Aur aap mandir mein?! Yeh toh most wholesome birthday celebration hai. Happy Birthday!
+She: Thank you! 😊
+Me: Main toh birthday pe pizza order karta hoon — aap yahan Bhagwan se blessings le rahi ho. Levels different hain.
+She: 😂 Pizza bhi khaaungi baad mein.
+Me: Toh phir cake cutting kab hai? Main toh invited hoon na? Langar saath khaya hai — basically family hain hum ab.
+She: 😂😂 Family? 10 minute pehle mile hain!
+Me: Langar ki speed alag hoti hai — bonding fast hota hai yahan.
+She: 😂 You're crazy. Fine, evening mein friends ke saath celebration hai.
+Me: Location bhejo, main cake leke aaunga! I'm [name].
+She: 😂 [Her name]. Dekhte hain!`
+  },
+  {
+    id: 129,
+    title: "Diwali Pooja at Society Temple",
+    category: "Approach",
+    text: `*Context: Society Diwali pooja, both from same apartment complex*
+
+Me: Aap bhi iss society mein rehti ho? Maine toh kabhi dekha nahi.
+She: Haan, 3rd floor, B wing.
+Me: B wing! Main A wing, 4th floor. Practically neighbors hain hum — just didn't know.
+She: 😂 Society mein toh koi kisiko nahi jaanta.
+Me: Exactly! Lift mein milte hain, awkward smile dete hain, aur seedha ghar.
+She: 100% accurate 😂
+Me: Aaj toh Diwali pooja hai toh at least introduction ho gayi. Warna aise hi retirement tak strangers rehte.
+She: Haha true. I'm [her name].
+Me: [Name]. Nice! Ab toh lift mein naam se bula sakta hoon instead of "uh... hi."
+She: 😂 Big upgrade.
+Me: Waise aapki Diwali prep kaisi chal rahi hai? Mummy ne mujhe 47 items ki list di hai — "Yeh la, woh la, safai kar."
+She: Same! Mummy ka Diwali matlab deep cleaning drive.
+Me: Deep cleaning plus decoration plus sweet distribution plus relatives ko jhel-na — Olympic event hona chahiye yeh.
+She: 😂 Gold medal milni chahiye.
+Me: Chalo iss Diwali ek deal karte hain — agar relatives ka drama zyada ho toh terrace pe escape plan. Same building hai toh easy.
+She: 😂😂 Done! Terrace escape partner!
+Me: Happy Diwali, neighbor!`
+  },
+  {
+    id: 130,
+    title: "Holi — Color Attack Zone",
+    category: "Approach",
+    text: `*Context: Holi celebration, she's trying to avoid too much color*
+
+Me: *already fully colored* Aap abhi tak clean kaise ho?! Yeh Holi hai ya dry run?
+She: 😂 Main expert hoon bachne mein.
+Me: Bachne mein expert? Yeh toh Holi ka against the spirit hai!
+She: Nahi, smart playing hai. Sabko color lagao, khud pe mat lagwao.
+Me: Strategy! Respect. Par unfortunately... *shows colored hands*
+She: Don't you dare! 😂
+Me: Dare? Main toh sirf haath dikha raha tha. Innocent hoon.
+She: Innocent?! Tumhari shakal pe guilt likhi hai!
+Me: 😂 Okay okay, peace treaty. Holi mein bhi diplomacy chalti hai kya?
+She: Mere saath chalti hai.
+Me: Fine. Toh chai peete hain — yeh colored haathon se chai peena ek experience hai.
+She: Eww 😂
+Me: Trust me, Holi ki chai + thandai = amrit.
+She: Thandai hai?
+Me: Bhaiya ke stall pe — special wali. Chalo?
+She: Chalo, par haath mere se door rakhna.
+Me: Promise! *crosses colored fingers behind back*
+She: 😂 I saw that!
+Me: Oops. I'm [name], Holi ka sabse untrustworthy insaan.
+She: [Her name]. Aur main sabse alert insaan. Let's go!`
+  },
+  {
+    id: 131,
+    title: "Durga Puja Pandal Hopping",
+    category: "Approach",
+    text: `*Context: Both pandal hopping during Durga Puja*
+
+Me: Yeh 5th pandal hai mera aaj. Main ab pandal reviewer ban sakta hoon — "3.5 stars, good idol but bhog line too long."
+She: 😂 Pandal reviewer! New career option.
+Me: "Pandal #3 had best dhak sound but worst parking. Would not visit again in car."
+She: 😂😂 You rate bhog too?
+Me: Obviously! "Bhog quality: 4/5. Khichdi was excellent but luchi needed more frying."
+She: You take this seriously!
+Me: Durga Puja is serious business! Waise aap kitne cover kiye?
+She: 3 abhi tak. Best wala abhi dekhna hai.
+Me: Kaunsa?
+She: [Pandal name].
+Me: Oh I was going there next! Saath chalein? Two reviewers better than one.
+She: Sure! Par main rating zyada strict hoon.
+Me: Good! "Harsh but fair" — best reviewer type.
+She: 😂 Let's go.
+*at the pandal*
+Me: Okay so — theme: 9/10, lighting: 8/10, selfie spot: 10/10 *stands next to her*
+She: 😂 Selfie spot rate karna zaroori tha?
+Me: Most important criteria! Google review pe photo toh daalni hai.
+She: True 😂 Okay one selfie.
+Me: *clicks* Perfect! I'm [name], senior pandal critic.
+She: [Her name], junior critic. Next pandal?
+Me: Let's go! Bhog ke liye bhi time nikalna hai!`
+  },
+  {
+    id: 132,
+    title: "Ganpati Visarjan Procession",
+    category: "Approach",
+    text: `*Context: Ganpati visarjan, festive chaos, loud music*
+
+Me: *dancing next to her group* GANPATI BAPPA...
+She: MORYA! 😂 Full energy!
+Me: Bappa ke aage toh full dena padta hai! Waise aap kis mandal se ho?
+She: [Mandal name]. Aap?
+Me: Main freelance devotee hoon — kisi bhi mandal mein ghus jaata hoon.
+She: 😂 Freelance devotee! First time suna.
+Me: Haan, benefits hain — har mandal ka prasad milta hai, kisi ki politics mein nahi padna hota.
+She: Smart system 😂
+Me: Plus dancing rights everywhere. Main toh wandering dancer hoon.
+She: Dancer toh lag rahe ho 😂 *watching his moves*
+Me: Yeh sirf basic hai. Modak khaake energy aaye toh advanced steps dikhaunga.
+She: 😂 Modak se energy aati hai?
+Me: Modak is fuel! Bappa bhi modak khaake itne powerful hain.
+She: 😂😂 Logic toh hai.
+Me: Chalo ek round saath mein naacho — phir modak break.
+She: Let's go! 🎉
+*after dancing*
+Me: *panting* That was fun! I'm [name].
+She: [Her name]! Best visarjan ever!
+Me: Next year same mandal mein milte hain — main permanent member ban jaunga tumhare mandal ka!
+She: 😂 Welcome to the mandal!`
+  },
+  {
+    id: 133,
+    title: "Gurudwara Langar Seva",
+    category: "Approach",
+    text: `*Context: Both doing langar seva (serving food) at a Gurudwara*
+
+Me: *serving daal* Aunty ji aur lenge? Special batch hai yeh, extra pyaar se bana hai.
+She: *serving next to him, laughs* Pyaar se bana hai? Tumne banaya hai?
+Me: Nahi, par serve toh main kar raha hoon — toh marketing ka haq toh hai na.
+She: 😂 Marketing in langar!
+Me: "Langar by [name] — served with love and slightly shaky hands."
+She: Shaky hands? Nervous ho?
+Me: Nervous nahi, 200 logon ko serve karna cardio hai. Arms thak gaye.
+She: 😂 Gym jaane ki zaroorat nahi, langar seva karo.
+Me: Exactly! "Langar Seva Fitness Program — lose weight, gain blessings."
+She: 😂😂 Patent karo!
+Me: Aap co-patent holder banogi? 50-50 in blessings.
+She: Blessings mein 50-50? Sure 😂
+Me: Done! Waheguru ji approve karenge humara partnership.
+She: *laughing* You're something else.
+Me: Seva ke baad chai? Langar ki chai is next level.
+She: Haan langar ki chai toh best hai.
+Me: I'm [name], full-time seva volunteer, part-time comedian.
+She: [Her name], full-time amused by you.
+Me: Best review mili aaj 😊`
+  },
+  {
+    id: 134,
+    title: "Festival Mela — Giant Wheel",
+    category: "Approach",
+    text: `*Context: Both in queue for giant wheel at a temple mela*
+
+Me: Aap bhi giant wheel ke liye ho? Mujhe toh oopar jaake darr lagta hai par ego nahi maanne deta.
+She: 😂 Same! Par friends ke saamne toh brave banna padta hai.
+Me: Friends?
+She: Woh saamne hain *points*
+Me: Oh! Main toh akela hoon. Solo rider. Sad boy on a giant wheel.
+She: 😂 Sad boy vibes!
+Me: Haan, ek hero song play ho jayega background mein — "Tanha dil, tanha safar..."
+She: 😂😂 Drama!
+Me: Waise agar single seat mil jaaye toh partner chahiye — kya aap accompany karengi? Purely for safety reasons.
+She: Safety reasons? 😂
+Me: Haan! Agar main darrke chillaya toh koi haath pakadne wala toh chahiye.
+She: 😂 Fine, since you're alone.
+*on the giant wheel*
+Me: *at the top* OH GOD.
+She: 😂 You're actually scared!
+Me: SCARED NAHI HOON, YAHI MERA BRAVE FACE HAI!
+She: *laughing while he grips the bar*
+Me: Dekho at least view accha hai. Woh neeche se sab chhote lag rahe hain — literally aur metaphorically.
+She: 😂 Philosopher on a giant wheel.
+Me: Heights pe philosophy aati hai automatically. I'm [name].
+She: [Her name]. Best giant wheel ride ever!
+Me: Chalo neeche jaake chaat khayein. Solid ground pe wapas aake celebrate karna chahiye!
+She: 😂 Chalo!`
+  },
+  {
+    id: 135,
+    title: "Temple Photography Enthusiast",
+    category: "Approach",
+    text: `*Context: Both taking photos of temple architecture*
+
+Me: *looking at her camera* Wow, DSLR! Aap professional photographer ho ya temple bahut photogenic hai?
+She: 😂 Both actually. Architecture photography hobby hai.
+Me: Oh nice! Main toh phone se hi shoot karta hoon — "Portrait mode on, talent off."
+She: 😂 Phone cameras bhi acche hain aaj kal.
+Me: Haan par DSLR wali photos alag level ki hoti hain. Woh blur, woh bokeh — *chef's kiss*
+She: Bokeh pata hai aapko?
+Me: Itna pata hai — background blur karo, subject sharp, photo professional lage. Baaki sab Google se seekha.
+She: 😂 Honest answer!
+Me: Waise woh corner wali carving dekhi? Amazing light aa rahi hai uspe.
+She: Oh haan! *rushes to click*
+Me: *follows* See? Main spotter hoon accha — photographer nahi par location scout zaroor.
+She: Actually this is a great angle! Thanks!
+Me: Location scout ka role confirm hua. Ab shoots pe bula lena — free mein kaam karunga.
+She: 😂 Fees nahi?
+Me: Fees: Final photos mujhe bhi bhejo aur chai milni chahiye.
+She: Cheapest crew member ever 😂
+Me: Budget-friendly talent hoon main. I'm [name].
+She: [Her name]. I actually do weekend photo walks — join karo na?
+Me: YES! Main ready hoon. Location scouting plus chai — perfect Sunday.
+She: 😂 I'll add you to the group. Number do.
+Me: *gives number* Best temple visit ever!`
+  },
+  // Cafe/Restaurant (136-150)
+  {
+    id: 136,
+    title: "Cafe — Same Table Area",
+    category: "Approach",
+    text: `*Context: Crowded cafe, only shared table available, she's already sitting there*
+
+Me: Hi, kya main yahan baith sakta hoon? Baaki sab tables pe couples baithe hain aur woh mujhe dekh ke judge kar rahe hain.
+She: 😂 Sure, sit!
+Me: Thanks. Main yahan akele aake "deep thinker" vibes deta hoon — actually main menu decide nahi kar paata.
+She: 😂 Menu decision is hard.
+Me: 15 minute lag jaate hain. Phir bhi waiter aata hai toh main panic mein "ek coffee" bol deta hoon.
+She: Same! Main bhi safe option choose karti hoon.
+Me: Kya order kiya aapne?
+She: Cold coffee.
+Me: See! Safe option! Main bhi wohi lunga. We're the same person basically.
+She: 😂 Separated at birth.
+Me: Exactly! Long lost sibling... wait, woh toh awkward hoga. Long lost... coffee buddy.
+She: 😂😂 Coffee buddy works.
+Me: Waise aap yahan kaam karti ho ya time pass?
+She: Work from cafe. WFH boring ho gaya.
+Me: WFC — Work From Cafe! Productivity plus ambiance plus overpriced coffee = perfect.
+She: The overpriced part is real 😂
+Me: 300 ki coffee mein se 200 rent hai is seat ka basically.
+She: TRUE! 😂
+Me: Chalo, since hum dono regulars ban rahe hain yahan — I'm [name].
+She: [Her name]. See you here tomorrow?
+Me: Same table, same overpriced coffee, same existential crisis. Done!`
+  },
+  {
+    id: 137,
+    title: "Cafe — WiFi Password Drama",
+    category: "Approach",
+    text: `*Context: You ask her for the WiFi password at a cafe*
+
+Me: Excuse me, WiFi password pata hai? Counter pe itni lambi line hai ki mujhe lagta hai password lene mein pura din nikal jayega.
+She: 😂 Haan, it's "coffee123".
+Me: "coffee123"?! Itna simple? Mujhe laga koi Da Vinci Code type password hoga.
+She: 😂 Haan, very creative naming.
+Me: Chalo at least kaam chal gaya. Thank you, aapne meri productivity bacha li.
+She: Kya kaam kar rahe ho?
+Me: "Kaam" loosely use kar raha hoon — actually Netflix bhi kaam hi hai technically.
+She: 😂 WFH?
+Me: WFC — Work From Cafe. Ghar pe toh bed bula leta hai.
+She: Same! Yahan at least guilt feel hota hai toh kuch kaam ho jaata hai.
+Me: Guilt-driven productivity! Best motivation.
+She: 😂 Exactly.
+Me: Waise aap bhi kya kaam karti ho — Netflix ya actual kaam?
+She: Actual kaam 😂 [tells her work]
+Me: Oh impressive! Main toh [your work], basically professional procrastinator with a fancy title.
+She: 😂 Everyone is.
+Me: True. Chalo, ek deal — jab bhi yahan milein, ek dusre ko motivate karenge. "Phone rakh! Kaam kar!"
+She: 😂 Accountability partner!
+Me: Exactly! I'm [name], your new productivity buddy.
+She: [Her name]. Deal!`
+  },
+  {
+    id: 138,
+    title: "Cafe — She's Reading a Book",
+    category: "Approach",
+    text: `*Context: She's reading a book at a cafe, you notice the cover*
+
+Me: Sorry to interrupt, but woh [book name] hai? I just finished it!
+She: *looks up* Oh really? Kaisi lagi?
+Me: Mind. Blown. Chapter 7 ke baad toh maine book rakh ke ceiling ko 10 minute ghura tha.
+She: 😂 Main chapter 5 pe hoon, no spoilers!
+Me: Lips sealed! Par ek hint — tissues ready rakh lena.
+She: Oh no 😂 Emotional hai?
+Me: Emotional? Main toh ro diya tha. Aur main woh type hoon jo "men don't cry" follow karta hai.
+She: 😂 Book ne tod diya woh rule?
+Me: Completely shattered. Meri masculinity woh book padhke questionable ho gayi.
+She: 😂😂 Now I'm scared to continue.
+Me: Don't be! It's beautiful. Woh ending tho... *bites lip*
+She: STOP! No spoilers! 😂
+Me: Okay okay! But when you finish — mujhe batana. I need someone to discuss it with. Mere friends toh books padhte nahi.
+She: 😂 Same, mere friends bhi nahi.
+Me: Toh done — book club of two. You finish it, we discuss over coffee?
+She: That sounds perfect actually.
+Me: I'm [name]. Aur main tab tak next book start karta hoon taaki discussion material ready rahe.
+She: [Her name]. Deal! Probably finish this week.
+Me: Week?! Speed reader! Mujhe toh month laga tha. Respect!`
+  },
+  {
+    id: 139,
+    title: "Restaurant Waiting Area",
+    category: "Approach",
+    text: `*Context: Both waiting for a table at a popular restaurant*
+
+Me: 45 minute wait?! Yeh restaurant hai ya government office?
+She: *laughs* Seriously! Khaana accha hoga toh worth it.
+Me: Agar 45 minute baad khaana average nikla toh main Google review mein essay likh dunga.
+She: 😂 1-star with a 500-word rant.
+Me: "Dear Manager, mera poora youth waiting area mein beet gaya. Khaana meh tha. 1 star for the AC though."
+She: 😂😂 Fair review.
+Me: Waise aapne try kiya hai pehle yahan?
+She: Haan, food is actually amazing. Worth the wait.
+Me: Oh accha! Toh recommendation kya hai? Kya order karun?
+She: Butter chicken is a must. Aur garlic naan.
+Me: Butter chicken! A person of culture. Main toh wahi khaane aaya hoon.
+She: Then you'll love it.
+Me: Aapki recommendation pe trust kar raha hoon — agar accha nahi nikla toh complaint aapke paas aayegi.
+She: 😂 Main guarantee deti hoon.
+Me: Written guarantee? Notarized? 😂
+She: Verbal hai, take it or leave it.
+Me: Chal, verbal chalegi. Waise since 40 minute aur hain — I'm [name].
+She: [Her name].
+Me: [Her name], agar table saath mein mil jaaye toh butter chicken ki taarif saath mein karenge?
+She: 😂 Bold. But sure, why not.
+Me: Best! Hunger brings people together — yeh toh proven fact hai.`
+  },
+  {
+    id: 140,
+    title: "Ice Cream Parlor — Flavor Confusion",
+    category: "Approach",
+    text: `*Context: Both staring at 50+ flavors at an ice cream parlor*
+
+Me: *staring at menu* Yeh ice cream shop hai ya life ka sabse bada decision-making test?
+She: 😂 Right?! Kitne flavors hain!
+Me: Main 10 minute se khada hoon. Staff soch rahi hai mujhe koi mental issue hai.
+She: Main bhi 5 minute se decide nahi kar paayi.
+Me: Chalo ek system banate hain — aap ek flavor choose karo, main ek, phir taste share karenge.
+She: Oh nice idea!
+Me: See? Crisis mein main genius ban jaata hoon.
+She: 😂 Okay I'll go with... Belgian Chocolate.
+Me: Belgian Chocolate — classic! Main Salted Caramel lunga.
+She: Salted Caramel! Good choice.
+Me: *orders* Cheers! *taps cones together*
+She: 😂 Ice cream cheers?
+Me: First time?
+She: Yes 😂
+Me: Main ice cream mein innovative hoon. Taste karo mera?
+She: Mmm this is good! Try mine.
+Me: *tries* Oh wow, accha hai par Salted Caramel still wins.
+She: No way! Chocolate is superior!
+Me: Yeh toh debate hai! Ice cream supremacy war.
+She: 😂 Fight!
+Me: Settle karte hain — next week, new flavors, round 2?
+She: 😂 Deal! I'm [her name].
+Me: [Name]. Ice cream rivalry starts now!`
+  },
+  {
+    id: 141,
+    title: "Street Momos Stall",
+    category: "Approach",
+    text: `*Context: Both at a famous street momos stall, waiting for order*
+
+Me: Bhaiya kitna time aur? Mera toh momos ka sapna aane laga hai wait karke.
+She: *laughs* 10 minute bol rahe the, 20 ho gaye.
+Me: Momos ke liye wait karna — yeh sabr ki pariksha hai. Bhagwan test le rahe hain.
+She: 😂 Tough test hai.
+Me: Steam ya fried?
+She: Steam.
+Me: STEAM?! Aap healthy type ho? Fried momos nahi khaate?
+She: Fried bhi khati hoon par steam better hai.
+Me: "Better" hai par "tastier" nahi. Fried momos ke saamne steam wale toh interns lag-te hain.
+She: 😂 Interns! Mean!
+Me: Sorry steam momos, par truth is truth.
+She: Ek try karo mera steam wala with red chutney — opinion badal jayega.
+Me: Challenge accepted! Agar opinion badal gaya toh main publicly apologize karunga steam momos se.
+She: 😂 And if not?
+Me: Toh aap fried try karogi. Fair?
+She: Deal!
+*food arrives, they exchange*
+Me: *eats steam momo with chutney* ... Okay this is... actually... good.
+She: HA! 😂
+Me: Main apologize nahi karunga publicly but privately... haan, accha hai.
+She: 😂 I'll take that. I'm [her name].
+Me: [Name]. Momos debate partner for life!`
+  },
+  {
+    id: 142,
+    title: "Chai Tapri — Evening",
+    category: "Approach",
+    text: `*Context: Evening chai at a small tapri, both standing and sipping*
+
+Me: *sipping* Kuch logon ke liye therapy 2000 ki hai. Mere liye 10 ki chai hai.
+She: *laughs* So true.
+Me: Ek sip mein saare problems solve ho jaate hain... 5 minute ke liye.
+She: 😂 Temporary fix.
+Me: Haan par affordable hai! Therapist se sasta toh hai.
+She: Budget mental health 😂
+Me: "Dr. Chai Wala — 10 rupees, all problems solved. Side effects: addiction."
+She: 😂😂 Accha tagline hai.
+Me: Roz aati ho yahan?
+She: Haan, office ke baad ritual hai mera.
+Me: Same! Yeh tapri wala bhaiya meri life ka constant hai — girlfriend nahi hai, job change ho jaati hai, par bhaiya ki chai wahin hai.
+She: 😂 Emotional attachment with chai wala.
+Me: Deep connection hai. Woh mera order yaad rakhta hai bina bole — relationship goals.
+She: 😂 Mere saath bhi same — "didi, cutting?"
+Me: See! Bhaiya knows us better than most humans.
+She: True story 😂
+Me: Chalo toh — chai buddies? Roz same time, same tapri?
+She: Why not 😊 I'm [her name].
+Me: [Name]. Kal se cutting double order!`
+  },
+  {
+    id: 143,
+    title: "Dhaba — Highway Stop",
+    category: "Approach",
+    text: `*Context: Both stopped at a highway dhaba during a road trip*
+
+Me: *looking at menu board* "Special thali" — bhaiya, special kya hai isme? Extra pyaaz?
+She: *at next table, laughs*
+Me: Oh sorry, loud tha? Main dhaba pe volume control kho deta hoon.
+She: 😂 Nahi, actually accha question tha.
+Me: Road trip pe ho?
+She: Haan, friends ke saath. Woh washroom gaye.
+Me: Same, par main akela hoon. Solo trip.
+She: Solo trip! Brave!
+Me: Brave nahi, broke. Friends ka schedule match nahi karta toh akele nikal gaya. Ab khana bhi akele kha raha hoon — sad movie scene.
+She: 😂 Itna sad mat bolo, yahan baith jaao.
+Me: Seriously? Thanks! *sits* Main toh sad story isliye bola tha taaki invite mile.
+She: 😂 Manipulative!
+Me: Strategic. Dhaba pe akele khaana is against my values.
+She: 😂 Kahan ja rahe ho?
+Me: [Place]. You?
+She: Oh same direction! Hum [nearby place].
+Me: Destiny! Highway pe milna — yeh toh Bollywood material hai.
+She: 😂 Film ka naam kya hoga?
+Me: "Dhaba Pe Dil" — coming soon.
+She: 😂😂 Blockbuster.
+Me: I'm [name], solo traveler with too many jokes.
+She: [Her name]. Safe travels aur funny raho!`
+  },
+  {
+    id: 144,
+    title: "Bakery Queue — Morning",
+    category: "Approach",
+    text: `*Context: Both in a bakery queue for fresh bread/cake*
+
+Me: *smelling deeply* Bakery ki smell ko bottle mein bhar ke bech dein toh crorepati ban jayenge.
+She: 😂 True, instant mood fix.
+Me: Main toh ek bar bakery ke andar so gaya tha in my dreams — best dream ever.
+She: 😂 Dream bakery!
+Me: Alarm bajne pe toh laga jaise paradise se nikaal diya.
+She: Relatable dreams 😂 Kya le rahe ho?
+Me: Bread toh chahiye, par woh chocolate pastry mujhe bula rahi hai.
+She: Same dilemma! Healthy choice ya tasty choice?
+Me: Yeh jo healthy vs tasty debate hai na — main always tasty ke saath hoon. Life mein bahut kuch healthy nahi hai, at least khaana toh tasty ho.
+She: 😂 Philosophy in a bakery queue.
+Me: Bakery mein sab philosopher ban jaate hain. Kuch sweet dekhte hain toh life sweet lagti hai.
+She: Deep! 😂
+Me: Chalo, dono chocolate pastry lete hain. No judgement zone.
+She: No judgement! 😂 Let's do it.
+Me: *orders two* Cheers! *holds up pastry*
+She: 😂 Pastry cheers!
+Me: I'm [name], bakery philosopher.
+She: [Her name]. Best bakery visit ever!`
+  },
+  {
+    id: 145,
+    title: "Food Court — Only Seat Near Her",
+    category: "Approach",
+    text: `*Context: Mall food court, only open seat is across from her*
+
+Me: Hi, yeh seat khaali hai? Poora food court full hai, main 3 rounds laga chuka hoon tray leke.
+She: 😂 Haan please, sit!
+Me: Thank god! 3 rounds mein mera khaana thanda ho raha tha aur meri izzat bhi.
+She: 😂 Izzat?
+Me: Haan, logo ne dekha hoga — "Yeh banda tray leke ghoom raha hai, koi seat nahi de raha. Bechara."
+She: *laughing* Itna bhi nahi hoga.
+Me: You don't know food court politics! Seat mafia hai yahan. Log ek chai ke saath 2 ghante baithe rehte hain.
+She: 😂 True! Woh corner wala banda toh subah se hai lagta hai.
+Me: Uska toh ghar shift ho gaya hai yahan. Kal mattress laayega.
+She: 😂😂
+Me: Waise kya kha rahi ho?
+She: Pasta. You?
+Me: Biryani. The eternal debate — Italian vs Indian.
+She: No debate. Both are great.
+Me: Diplomatic answer! Par agar ek hi choose karna ho?
+She: Biryani 😂
+Me: YES! My kind of person! I'm [name].
+She: [Her name]. Enjoy your biryani, seat partner!`
+  },
+  // Gym/Sports (146-160)
+  {
+    id: 146,
+    title: "Gym — Water Cooler Break",
+    category: "Approach",
+    text: `*Context: Both at the gym water cooler, catching breath*
+
+Me: *drinking water like I just crossed a desert* Main toh sochta tha gym mein body banti hai. Body toh toot rahi hai.
+She: 😂 First month?
+Me: Does it show?
+She: Thoda 😂
+Me: Meri body ka Google review abhi "1 star — not as advertised" hai.
+She: 😂 It gets better, trust me.
+Me: Kitne time se aa rahi ho?
+She: 2 years.
+Me: 2 YEARS?! Respect! Main toh 2 weeks mein hi retirement plan bana raha hoon.
+She: 😂 Don't give up!
+Me: Give up nahi karunga par trainer se zaroor ladai hogi. Usne aaj 50 squats karwaye — meri legs ne resignation letter likhi hai.
+She: 😂 Squats are the worst!
+Me: "The worst" is generous. Squats are torture designed by someone who hates happiness.
+She: 😂😂 Par results acche aate hain.
+Me: Results ke liye aaya hoon, par process mein meri aatma nikal rahi hai.
+She: Hang in there! Main bhi pehle aise hi thi.
+Me: Really? Toh aap meri gym mentor banogi? Guidance chahiye ek senior se.
+She: 😂 Senior bol diya?
+Me: Experience ke hisaab se! Respectfully!
+She: Fine, mentor ban jaati hoon. I'm [her name].
+Me: [Name]. Kal leg day pe bachana mujhe!
+She: 😂 No promises on leg day!`
+  },
+  {
+    id: 147,
+    title: "Badminton Court Partner Hunt",
+    category: "Approach",
+    text: `*Context: Badminton court, she's practicing alone, you need a partner*
+
+Me: Excuse me, aapka partner nahi aaya?
+She: Nahi, cancel kar diya last minute.
+Me: Same! Mera bhi. Yeh partners nahi milte — yeh toh relationship issues hain sports mein.
+She: 😂 Commitment issues.
+Me: "Bro kal pakka" — biggest lie after "5 minute mein aata hoon."
+She: 😂 SO TRUE.
+Me: Toh kya hum dono abandoned souls ek saath khelen?
+She: Sure! Par main acchi hoon, warning de rahi hoon.
+Me: Oh? Main bhi accha hoon... apni imagination mein.
+She: 😂 Let's see then.
+*they play, she's clearly better*
+Me: *missing another shot* Yeh shuttle mujhse personal problem rakh rahi hai.
+She: 😂 Shuttle nahi, tumhari timing off hai.
+Me: Timing toh life mein bhi off hai meri, badminton kya cheez hai.
+She: 😂 Ek tip — wrist use karo, arm nahi.
+Me: *tries, slightly better* Oh! Kuch kuch hua!
+She: See! Coachable ho tum.
+Me: Best compliment ever. Coach bani rehna please.
+She: 😂 Fees lagegi.
+Me: Cold coffee?
+She: Done!
+Me: I'm [name], world's most enthusiastic beginner.
+She: [Her name]. Same time tomorrow?
+Me: Same time, aur main practice karke aaunga. YouTube tutorial dekhunga raat ko.
+She: 😂 YouTube coach + me = pro ban jaoge!`
+  },
+  {
+    id: 148,
+    title: "Yoga Class — Inflexible Guy",
+    category: "Approach",
+    text: `*Context: Yoga class, you clearly cannot do most poses*
+
+Me: *struggling in a pose* Mujhe lagta hai meri body mein joints nahi, cement hai.
+She: *next mat, laughing* Dheere dheere hoga.
+Me: Instructor bol rahi hai "relax" — bro, main is position mein relax kaise karoon? Yeh toh interrogation pose hai.
+She: 😂 Which pose?
+Me: Jo bhi hai — mujhe toh sab "near-death experience" lag rahi hain.
+She: 😂😂 First class?
+Me: Haan, aur possibly last.
+She: Noo! Don't quit. Pehle din tough hota hai.
+Me: Tough? Mere haathon ne toh already union form kar liya hai — "We demand better working conditions."
+She: 😂 Just breathe through it.
+Me: Breathe bhi toh instructor bataye — "inhale... exhale... now pretend you're a tree." TREE?! Main hardly human ban paa raha hoon!
+She: *laughing so hard she falls out of pose*
+Me: Hey! Meri wajah se aapka pose toot gaya! Sorry!
+She: 😂 It's fine, this is more fun than actual yoga.
+Me: Entertainment value high hai mera. I'm [name].
+She: [Her name]. Kal bhi aana, mujhe comic relief chahiye class mein.
+Me: Done! Main aaunga, suffer karunga, aur aapko hasaunga. Win-win!`
+  },
+  {
+    id: 149,
+    title: "Cricket Match — Stadium Audience",
+    category: "Approach",
+    text: `*Context: Cricket stadium, sitting next to each other*
+
+Me: *team gets a wicket* YESSS! *accidentally high-fives her*
+She: 😂 Oh! High five?
+Me: Sorry, excitement mein! Aap bhi [team name] support karti ho?
+She: HAR DIN! Die-hard fan!
+Me: Oh my god, FINALLY koi mila! Mere friends sab [rival team] support karte hain. Main akela warrior hoon.
+She: Same! Lone fighter in friend group!
+Me: Yeh toh bhai-behen ka rishta hai... wait, woh nahi. Yeh toh... team-mates ka rishta hai!
+She: 😂 Team-mates!
+Me: Chalo next boundary pe proper celebration karenge. Ready?
+She: Ready! 🏏
+*boundary happens*
+Both: YAAAAAS! *high five*
+Me: See? Chemistry hai humari — celebration mein at least!
+She: 😂 On-field chemistry!
+Me: Waise snacks khaoge? Main chole lene ja raha hoon.
+She: Chole! Yeh bhi common hai?!
+Me: 😂 Stadium chole > everything. Main le aata hoon.
+*comes back with two plates*
+Me: Chole for the champion fan!
+She: Thank you! I'm [her name].
+Me: [Name]. Next match bhi saath dekhenge?
+She: Only if humari team khel rahi hai!
+Me: Obviously! I'll book tickets side by side. Official match buddies!
+She: 🏏 Done!`
+  },
+  {
+    id: 150,
+    title: "Marathon Registration Counter",
+    category: "Approach",
+    text: `*Context: Both registering for a marathon, she's in running gear*
+
+Me: *looking at form* "10K, 21K, or Full Marathon" — yeh running hai ya choose your suffering level?
+She: 😂 Kaun sa le rahe ho?
+Me: 10K. Kyunki main apni limitations jaanta hoon. 21K mein mujhe ambulance bhi book karni padegi.
+She: 😂 I'm doing 21K!
+Me: 21?! Respect! Aap toh warrior ho. Main 10K mein bhi last aaunga probably.
+She: Last aane mein bhi pride hai — at least finish toh kiya!
+Me: "At least finish toh kiya" — yeh mera life motto hai.
+She: 😂 Good motto!
+Me: Waise training kaise kar rahi ho?
+She: Roz 7-8 km running. 3 months se prep hai.
+Me: 3 months?! Main kal register kiya aur marathon parson hai basically.
+She: 😂 Kal register kiya?!
+Me: Haan, impulse decision. 3 am ko Instagram pe "You can do anything" wali reel dekhi, aur sign up kar diya.
+She: 😂😂 Motivation at 3 am is dangerous!
+Me: Very dangerous. Ab regret at 3 pm ho raha hai.
+She: Koi nahi, I'll give you some tips. Basics se kaam chal jayega.
+Me: Tips?! You'd do that?! Aap angel ho literally!
+She: 😂 Angel nahi, fellow runner.
+Me: I'm [name], accidental marathon participant.
+She: [Her name]. Training start karte hain kal se!
+Me: Kal se?! Okay... kal se... *gulps*`
+  },
+  // College/Library/Bookstore (151-165)
+  {
+    id: 151,
+    title: "Bookstore — Same Section",
+    category: "Approach",
+    text: `*Context: Both in the fiction section of a bookstore, reaching for the same book*
+
+Me: *hand touches hers on the book* Oh sorry! Aap pehle.
+She: No you take it!
+Me: Nahi nahi, ladies first. Main gentleman mode mein hoon.
+She: 😂 Sure?
+Me: Bilkul. Par ek condition — review dena padhke. Main toh iske reviews pe hi jee raha hoon.
+She: 😂 Deal. Waise tum bhi [author] padhte ho?
+Me: PADHTA hoon?! Fan hoon! Matlab shrine banana baaki hai ghar pe.
+She: 😂 Same level!
+Me: Finally koi mila jo samajhta hai! Mere friends ko bol-ta hoon "yeh book padho" — woh bolte hain "summary bhej de."
+She: 😂 SAME! Meri friend ne bola "audio book sun lena."
+Me: Audio book?! Blasphemy! Book ka smell, pages, bookmark — yeh sab experience hai!
+She: EXACTLY! Kindred spirit ho tum.
+Me: Kindred spirit — bookstore mein mila. Yeh toh novel ka plot hai.
+She: 😂 Chapter 1: The Bookstore.
+Me: Chapter 2: Coffee ke saath book discussion.
+She: Bold! 😂 Accha, recommend karo kuch.
+Me: [Book name] — life changing hai. Agar nahi roya toh I'll refund the recommendation.
+She: 😂 Money-back guarantee on book recs! I'm [her name].
+Me: [Name]. Coffee chapter kab likhein?
+She: Finish kar lein yeh dono books, phir discuss!
+Me: Done! Reading speed badhata hoon!`
+  },
+  {
+    id: 152,
+    title: "Library — Adjacent Seat",
+    category: "Approach",
+    text: `*Context: Library, you sit next to her, both studying*
+
+Me: *whispers* Excuse me, yeh pen chal rahi hai check karna tha. *scribbles on paper* Haan chal rahi hai. Thanks for witnessing.
+She: *confused laugh-whisper* Kya?
+Me: Sorry, 3 ghante se padh raha hoon, brain ne comedy mode on kar diya hai.
+She: 😂 *whispering* Kya padh rahe ho?
+Me: [Subject]. Aap?
+She: Same exam!
+Me: Oh! Competitor hai toh. *pretends to cover notes*
+She: 😂 *whispering* Notes nahi chaahiye tumhare, meri apni strategy hai.
+Me: Strategy? Meri strategy hai — "Padh lo jo bhi ho, paper mein adjust kar lenge."
+She: 😂 Bold strategy.
+Me: "Fortune favors the unprepared" — Maine bola, kisi philosopher ne nahi.
+She: 😂 *librarian looks at them*
+Me: *silent for 2 min, then slides a note* "Chai break? 15 min?"
+She: *writes back* "10 min. Downstairs canteen."
+*at canteen*
+Me: Freedom! Library mein itna time = jail sentence.
+She: Seriously! Par results chahiye toh karna padta hai.
+Me: True. Waise notes share karein? Main [topic] mein weak hoon.
+She: Main [other topic] mein. Exchange?
+Me: Study partner mil gaya! Exam ke baad celebration plan bhi karna hai.
+She: Pehle pass toh ho jayein 😂
+Me: Positive thinking! I'm [name].
+She: [Her name]. Back to jail now?
+Me: Chalo, 2 aur ghante. Then another chai break!`
+  },
+  {
+    id: 153,
+    title: "College Fest — Lost in Crowd",
+    category: "Approach",
+    text: `*Context: College cultural fest, loud music, she's looking around lost*
+
+Me: *shouting over music* Aap bhi kisi ko dhoondh rahi ho ya existentially lost ho?
+She: *laughs* Friends ko dhoondh rahi hoon! Network nahi aa raha!
+Me: Same problem! Mera phone bhi signal dhoondh raha hai jaise main friends dhoondh raha hoon — desperately.
+She: 😂 Fest mein signal = impossible.
+Me: Ek solution hai — hum dono temporarily friends ban jaate hain jab tak real friends milte nahi.
+She: 😂 Temporary friends!
+Me: Trial period with option to extend!
+She: Okay deal! Kya karna hai fest mein?
+Me: Sab kuch! Pehle woh band sun-te hain, phir food stalls, phir comedy show.
+She: Plan toh accha hai!
+Me: Kyunki main "plan banana par follow na karna" mein expert hoon. Aaj follow bhi karunga.
+She: 😂 I'll hold you accountable.
+Me: Accountability partner + temporary friend = basically best friend already.
+She: 😂 Fast friendship!
+Me: College fest mein sab fast hota hai — fast food, fast music, fast friendships.
+She: True 😂 Let's go!
+*after the fest*
+Me: Best fest ever! Temporary se permanent friend upgrade?
+She: Upgraded! 😊 I'm [her name].
+Me: [Name]. Instagram exchange? Taaki next fest mein "friends dhoondh-na" na pade.
+She: Smart! *exchanges*`
+  },
+  {
+    id: 154,
+    title: "Coaching Class — Break Time",
+    category: "Approach",
+    text: `*Context: Coaching class break, both at the water cooler/snack area*
+
+Me: Bhai woh teacher ne jo formula bataya na — usne mera brain format kar diya.
+She: 😂 Kaunsa?
+Me: Jo bhi tha — main toh "hmm hmm" karte reh gaya, samjha kuch nahi.
+She: 😂 Main notes de dungi.
+Me: Seriously?! Tum angel ho! Meri notes mein sirf doodles hain aur "HELP" likha hua hai.
+She: 😂 HELP?
+Me: Haan, emergency signal for future me who reads these notes.
+She: Future you will be confused 😂
+Me: Future me is always confused. Present me bhi confused hai. Past me ne coaching join karke confusion start kiya.
+She: 😂 Itna confused aur still coming to class?
+Me: Attendance marks, dost. 75% chahiye!
+She: Same same 😂
+Me: Waise kya plan hai? IIT? NEET?
+She: [Exam].
+Me: Same! Toh competition hai technically — par main itna behind hoon ki competition nahi, participation hai.
+She: 😂 Participation trophy!
+Me: Mujhe woh bhi de dein toh grateful rahunga. I'm [name].
+She: [Her name]. Kal woh formula samjha dungi.
+Me: Teacher nahi samjha paayi, tum samjha dogi?
+She: 😂 Better teacher hoon.
+Me: Already!`
+  },
+  {
+    id: 155,
+    title: "Co-Working Space — Printer Queue",
+    category: "Approach",
+    text: `*Context: Both waiting for the shared printer at a co-working space*
+
+Me: Yeh printer 1999 ka hai ya mujhe aisa lag raha hai?
+She: 😂 It does print like it's from another era.
+Me: "Printing page 1 of 10" — bro, meri retirement tak ho jayega toh bata.
+She: Main bhi 20 minutes se wait kar rahi hoon!
+Me: 20 minutes! Iss time mein toh haath se likh dete.
+She: 😂 Haath se likhna faster hoga actually.
+Me: "Co-working space — modern amenities including a printer from the Jurassic era."
+She: Google review mein daal do 😂
+Me: 1 star — "WiFi fast, printer slow, coffee mid, people interesting." *looks at her*
+She: 😂 Smooth!
+Me: Waise kya print kar rahi ho? Agar personal nahi hai toh.
+She: Client presentation.
+Me: Client presentation on THIS printer? Brave.
+She: Options nahi hain 😂
+Me: Koi nahi, main moral support dunga. Har page pe clap karunga.
+She: 😂 Please do.
+*printer finally works*
+Me: *claps* PAGE 1! LADIES AND GENTLEMEN, PAGE 1!
+She: 😂😂 Stop!
+Me: I'm [name], printer hype man.
+She: [Her name]. Best print experience ever somehow!`
+  },
+  {
+    id: 156,
+    title: "Art Exhibition Opening",
+    category: "Approach",
+    text: `*Context: Art exhibition, both staring at an abstract painting*
+
+Me: *staring* Mujhe isme ek confused parrot dikh raha hai. Aapko?
+She: *laughs* Mujhe toh sunset lag raha tha.
+Me: Sunset?! Kahan?! Main toh parrot dhundh raha hoon ab isme.
+She: 😂 Abstract art hai, jo dikhe woh sahi.
+Me: Toh agar mujhe pizza dikhe toh?
+She: 😂 Toh tumhe bhookh lagi hai, art nahi samajh aa rahi.
+Me: Accurate diagnosis! Main actually hungry hoon. Par art ke baare mein intelligent sound karna hai toh "hmm, interesting use of negative space" bolna padta hai.
+She: 😂 Pro tip: "The juxtaposition is fascinating" bol do.
+Me: "The juxtaposition is FASCINATING" — wow, I sound like a critic already!
+She: 😂 Art gallery ready ho tum.
+Me: Aap regularly aati ho exhibitions mein?
+She: Haan, art lover hoon.
+Me: Oh nice! Main newbie hoon — first exhibition. Guide ban jaogi?
+She: Sure! Woh installation dekhni hai? Bahut acchi hai.
+Me: Lead the way, art guru! Main peeche peeche "hmm interesting" bolta rahunga.
+She: 😂 Please do. I'm [her name].
+Me: [Name]. After this, coffee pe art discussion? I need to sound cultured.
+She: 😂 Coffee pe beginner's class duungi.
+Me: Enrollment confirmed!`
+  },
+  {
+    id: 157,
+    title: "Hackathon — Team Formation",
+    category: "Approach",
+    text: `*Context: Hackathon event, she's looking for team members*
+
+Me: *holding laptop awkwardly* Aap bhi "team nahi mili" gang mein ho?
+She: 😂 Haan, meri team cancel kar gayi.
+Me: Same story! "Bro kal nahi aa payunga" — 12 ghante pehle bola.
+She: Worst feeling!
+Me: Chalo, abandoned souls ek team banate hain? Hum dono plus koi aur mil jayega.
+She: Okay! Kya stack use karte ho?
+Me: React, Node. You?
+She: Python, ML.
+Me: Oh perfect! Frontend + ML = OP team! Bas ek designer chahiye.
+She: Woh random guy dekho — woh bhi akela lag raha hai.
+Me: *calls him* Bhai, designer ho?
+Guy: Haan!
+Me: TEAM COMPLETE! Avengers assemble moment hai yeh.
+She: 😂 Avengers!
+Me: Main Iron Man, tum Scarlett Johansson... matlab Black Widow.
+She: 😂 Nice try!
+Me: Okay team name — suggestions?
+She: "Last Minute Legends"?
+Me: GENIUS! Because that's exactly what we are.
+She: 😂 Let's win this!
+Me: Even if we don't win, yeh origin story toh mast hai. I'm [name].
+She: [Her name]. Let's code!
+Me: After chai. No coding without chai — that's our team rule #1.`
+  },
+  {
+    id: 158,
+    title: "Canteen Queue — College",
+    category: "Approach",
+    text: `*Context: College canteen, long queue, both hungry*
+
+Me: Is queue mein itna time lag raha hai ki jab tak khaana milega, lunch ka time nikal jayega aur dinner shuru ho jayega.
+She: 😂 Haan, roz ka hai yeh.
+Me: Canteen wale bhaiya ka speed — buffering jaisa. 
+She: 😂 Buffering!
+Me: "Your samosa is loading... 45%... please wait."
+She: 😂😂 Kya loge?
+Me: Samosa aur chai — India ka national lunch.
+She: Same!
+Me: See, great minds think alike. Or broke minds — depends on perspective.
+She: Both 😂
+Me: Fair. Waise kaunsa department?
+She: [Department].
+Me: Oh! Toh tum woh building mein ho jahan WiFi best aata hai!
+She: 😂 WiFi ke basis pe department rate kar rahe ho?
+Me: Priority hai bhai. Padhai toh hogi nahi, at least memes toh load hone chahiye.
+She: 😂 Logical.
+Me: Waise canteen ke samosa ke alawa life mein aur kya plan hai?
+She: MBA soch rahi hoon.
+Me: MBA! "Master of Being Awesome" — already qualified ho.
+She: 😂 Cheesy! Par thanks.
+Me: I'm [name], Chief Canteen Officer of this college.
+She: [Her name]. CCO se milke accha laga!`
+  },
+  {
+    id: 159,
+    title: "Cultural Event — Dance Performance",
+    category: "Approach",
+    text: `*Context: After her dance performance at a cultural event*
+
+Me: *walks up after performance* Woh last step mein aapne jo spin kiya na — mujhe chakkar aa gaya dekhke.
+She: 😂 Thank you!
+Me: Seriously, amazing tha! Kitne time se dance kar rahi ho?
+She: 10 years now.
+Me: 10 years! Main 10 minute dance karu toh mera body "unsubscribe" kar deta hai.
+She: 😂 Everyone can dance!
+Me: Nahi, main "everyone" mein nahi aata. Maine ek baar wedding mein dance kiya tha — mere mama ne bola "beta, tu DJ ke paas khada reh bas."
+She: 😂😂 Harsh!
+Me: Harsh but fair. Waise kaunsa dance form?
+She: [Dance form].
+Me: Oh wow! Main toh naam bhi sahi se pronounce nahi kar paunga but I respect the art deeply.
+She: 😂 It's fine. Kya pronunciation karte ho?
+Me: *tries, butchers it*
+She: 😂😂 Close enough!
+Me: See? Dedicated student hoon. Agar class mein ek beginner spot hai toh mujhe le lo — entertainment guarantee.
+She: 😂 Beginners batch hai actually.
+Me: Wait really?! Main seriously interested hoon. Two left feet hai par enthusiasm infinite hai.
+She: 😂 Join karo! I'll help.
+Me: Done! I'm [name], soon-to-be worst dancer in your batch.
+She: [Her name]. Par worst se best bante hain!
+Me: Yeh toh motivational poster material hai. Chalo start karte hain!`
+  },
+  {
+    id: 160,
+    title: "Farewell Party — Photo Booth",
+    category: "Approach",
+    text: `*Context: College farewell, photo booth area*
+
+Me: *picking up funny props* Yeh toh "adult at a kid's party" wali feeling hai.
+She: 😂 Props choose karo na! Funny waale lo.
+Me: *picks oversized sunglasses and mustache* How do I look?
+She: 😂 Like someone's drunk uncle at a wedding.
+Me: PERFECT! That's the aesthetic I was going for.
+She: 😂 Main yeh tiara le rahi hoon.
+Me: Tiara + mustache — humari photo historic hogi.
+She: 😂 Click karo!
+Me: *selfie together* Masterpiece! Yeh toh farewell ka best photo hai.
+She: Send karo mujhe!
+Me: Instagram pe tag karun ya WhatsApp?
+She: Both 😂
+Me: Greedy! 😂 But okay. Waise farewell emotional lag rahi hai?
+She: Thoda haan. 4 saal nikal gaye.
+Me: Same feeling. Par ek cheez acchi hui — last din pe nayi dosti ho gayi.
+She: 😂 Better late than never?
+Me: Exactly! 4 saal late hoon but quality time matters, not quantity.
+She: Deep for a guy wearing a fake mustache 😂
+Me: Mustache adds wisdom. It's science.
+She: 😂 I'm [her name].
+Me: [Name]. Stay in touch? Monthly meetup — same props, different venue.
+She: 😂 Done! Monthly mustache-tiara meetup!`
+  },
+  // Events/Social (161-170)
+  {
+    id: 161,
+    title: "Wedding Function — Buffet Line",
+    category: "Approach",
+    text: `*Context: Indian wedding, both at the buffet line*
+
+Me: *loading plate* Shaadi ka khaana itna accha kyun hota hai? Rishta kisi aur ka, celebration meri.
+She: 😂 Best part of any wedding.
+Me: Main toh sirf khaane aata hoon. Dulha-dulhan ka naam bhi yaad nahi sometimes.
+She: 😂 Aaj kiska hai?
+Me: Mera cousin ka... I think. Family tree complicated hai.
+She: 😂 Mera friend ka hai.
+Me: Oh nice! Bride side ya groom side?
+She: Bride side.
+Me: Main groom side. Technically hum toh rivals hain — par buffet mein ceasefire.
+She: 😂 Buffet pe sab ek hain.
+Me: Democracy at its finest — plate mein sab equal. Waise paneer recommend karungi? Main confuse hoon paneer ya chicken.
+She: Both lo! Shaadi hai, diet baad mein.
+Me: "Diet baad mein" — yeh mera life philosophy hai!
+She: 😂 Same!
+Me: Chalo saath mein baithe hain? Woh corner table pe jagah hai.
+She: Sure! Wahan AC bhi accha chal raha hai.
+Me: AC + food + good company = perfect wedding formula.
+She: 😂 Agreed.
+Me: I'm [name], professional wedding guest.
+She: [Her name], fellow professional!
+Me: Dance floor pe milte hain baad mein? DJ ne "London Thumakda" baja di toh toh jaana padega.
+She: 😂 Mandatory hai woh toh!`
+  },
+  {
+    id: 162,
+    title: "House Party — Balcony Escape",
+    category: "Approach",
+    text: `*Context: Loud house party, both escape to balcony for fresh air*
+
+Me: Balcony pe bhi aa gayi? Andar ka scene zyada ho gaya?
+She: *laughs* Haan, DJ ne volume itna loud kar diya ki mere thoughts bhi sun nahi paa rahi thi.
+Me: Same! Main andar apna naam bhi bhool gaya tha kuch der ke liye.
+She: 😂 Name identity crisis at a party.
+Me: Haan, koi bola "Hey!" Main sochta raha — "Yeh mujhe bol raha hai ya music?"
+She: 😂 Relatable.
+Me: Waise tum host ki friend ho?
+She: Haan, college se. You?
+Me: Office se. Basically main "plus one of a plus one" hoon. Nobody really knows me here.
+She: 😂 Anonymous party guest!
+Me: Haan, mysterious stranger vibes. Spy movie jaisa.
+She: James Bond of house parties 😂
+Me: Bond ko toh martini milti thi, mujhe sirf Sprite mila hai.
+She: 😂 Budget Bond.
+Me: Local Bond. 007 ka 007% budget.
+She: *laughing hard*
+Me: Chalo, since dono yahan hain — introductions properly? I'm [name].
+She: [Her name].
+Me: Nice! Ab hum officially "know each other at this party" hai. Andar ja ke kisi ne poocha "tum kisko jaante ho?" toh ek dusre ka naam le lenge.
+She: 😂 Mutual alibi!
+Me: Exactly! Partners in party crime!`
+  },
+  {
+    id: 163,
+    title: "Comedy Show — Audience",
+    category: "Approach",
+    text: `*Context: At a standup comedy show, sitting next to her*
+
+Me: *comedian says a joke, both laugh at the same time*
+Me: Same timing pe hasi aayi — comedic compatibility confirmed!
+She: 😂 That's a thing?
+Me: Bilkul! "Couples who laugh together, last together" — Maine abhi banaya yeh quote.
+She: 😂 Original quote hai?
+Me: Patent pending. Waise aap kiska fan ho comedy mein?
+She: Zakir Khan!
+Me: ZAKIR! "Sakht launda" — legend! Main toh Biswa aur Abhishek Upmanyu bhi sun-ta hoon.
+She: Upmanyu best hai!
+Me: "Mummy" waala set — masterpiece. 15 baar dekha.
+She: SAME! "Shaadi mein khaana" wala part 😂
+Me: "Aunty, paneer kahan hai?!" 😂 ICONIC!
+She: We have the same taste!
+Me: Clearly! Toh next show saath mein? Main tickets book karta hoon — solo jaana toh boring hai.
+She: Hmm saath mein more fun hoga 😂
+Me: That's a yes! I'm [name].
+She: [Her name]. Next kiska show hai?
+Me: Check karta hoon — whoever it is, we're going. Deal?
+She: Deal! 😊`
+  },
+  {
+    id: 164,
+    title: "Train Journey — Side Berth",
+    category: "Approach",
+    text: `*Context: Train journey, she's on the side lower berth, you're on upper*
+
+Me: *peeking down* Excuse me, aapke paas charging point hai? Mera phone dying hai — like literally last 2%.
+She: *laughs* Haan, yeh lo. *offers charger*
+Me: Thank you! Aapne meri digital life bacha li. Bina phone ke train journey = 1800s.
+She: 😂 True, what would you even do?
+Me: Window se bahar dekhna... 5 minute ke baad boring. Sone ka try... train ki rhythm sync nahi hoti. So basically — suffer.
+She: 😂 Kitni door jaana hai?
+Me: [City]. 14 ghante ka journey.
+She: Oh same train toh hai, main [nearby city].
+Me: Nice! Toh 12 ghante saath hain. Kuch toh karna padega.
+She: Cards hai?
+Me: Cards nahi par main stories suna sakta hoon — mostly made up par entertaining.
+She: 😂 Made up stories?
+Me: Haan — "Ek baar main train mein tha, aur ek alien aaya..." type.
+She: 😂 I'll listen. Boring toh nahi hoga at least.
+Me: Guarantee! Aur agar boring laga toh you can throw me off the train at next station.
+She: 😂 Fair deal. I'm [her name].
+Me: [Name]. Ab phone charge ho raha hai toh memes bhi dikha sakta hoon.
+She: Memes > stories!
+Me: Valid! Meme marathon it is!`
+  },
+  {
+    id: 165,
+    title: "Elevator — Office Building",
+    category: "Approach",
+    text: `*Context: Stuck in a slow elevator together in an office building*
+
+Me: Yeh elevator hai ya time machine? — 1st floor se 10th tak jaane mein itna time lagta hai ki meri next birthday aa jayegi.
+She: 😂 Seriously, slowest elevator ever.
+Me: Main stairs se jaata hoon usually — par aaj laziness jeet gayi.
+She: Same! Regret ho raha hai ab.
+Me: Regret toh hota hai par stairs se paseena aata hai, aur phir office mein "yeh gym se aa raha hai kya" wali looks milti hain.
+She: 😂 Accurate!
+Me: Kaunsi floor?
+She: 8th.
+Me: Main 10th. Toh 2 floors aur suffer karunga aapke baad.
+She: 😂 Sorry for your extended suffering.
+Me: It's okay, main toh aadat se majboor hoon. Waise kya kaam karti ho?
+She: [Company/Role].
+Me: Oh nice! Main [your role] — basically same building mein kaam karte hain aur pehli baar baat ho rahi hai.
+She: Elevator icebreaker 😂
+Me: Best kind! No awkward "let me introduce myself" — direct suffering bond.
+She: 😂 Trauma bonding lite.
+Me: Exactly! Chalo, since hum building-mates hain — lunch kabhi saath mein?
+She: Sure! 12th floor cafeteria?
+Me: 12th floor?! Uske liye toh definitely elevator chahiye.
+She: 😂 I'm [her name].
+Me: [Name]. See you at lunch!`
+  },
+  // Shopping/Mall (166-175)
+  {
+    id: 166,
+    title: "Mall — Shoe Section",
+    category: "Approach",
+    text: `*Context: Both in the shoe section, trying on shoes*
+
+Me: *trying on shoes* Yeh 10th pair hai aur koi bhi comfortable nahi lag raha. Mera pair hi defective hai lagta hai.
+She: *laughs* Same! Sab tight hai ya bahut loose.
+Me: Shoe shopping is the WORST. Dikhte hain acche, pehan-te hain toh lagta hai Cinderella ka opposite ho gaya.
+She: 😂 Cinderella ka opposite!
+Me: "Uglyella" — jisko koi shoe fit nahi hota.
+She: 😂😂 That's me right now.
+Me: Chalo dono "Uglyella" hain — support group bana lete hain.
+She: "Uglyella Support Group — shoes that don't fit since 1999" 😂
+Me: Waise yeh wali try ki? *picks a pair* Meri friend ne boli thi yeh brand comfortable hai.
+She: Oh which one? *looks*
+Me: *shows*
+She: Hmm, try karti hoon.
+Me: Agar fit aa gaya toh mujhe consultant fees milni chahiye.
+She: 😂 Kya fees?
+Me: Ek ice cream. Food court mein.
+She: *tries shoes* Oh! Yeh toh accha hai!
+Me: SEE! Main shoe consultant hoon — undiscovered talent!
+She: 😂 Ice cream earned!
+Me: I'm [name], shoe whisperer.
+She: [Her name]. Food court chalo, consultant!`
+  },
+  {
+    id: 167,
+    title: "Supermarket Aisle — Same Item",
+    category: "Approach",
+    text: `*Context: Both reaching for the last packet of something on the shelf*
+
+Me: *hand reaches same pack* Oh! Aap lelo, main kuch aur dhundh lunga... *checks shelf* ...jo exist nahi karta kyunki yeh last packet hai.
+She: 😂 No no, aap le lo!
+Me: Nahi seriously, aap pehle the. Main toh yehi tha par "excuse me" bolne ki himmat nahi thi.
+She: 😂 Shy shopper?
+Me: Extremely. Supermarket mein main introvert ban jaata hoon.
+She: 😂 How?
+Me: Staff se kuch puchna hai toh 5 minute sochta hoon "bolu ya na bolu." Phir Google karta hoon.
+She: 😂😂 Overthinking in a supermarket!
+Me: Haan! "Which aisle is pasta?" — yeh Google pe search karna easier hai than asking someone.
+She: You need help 😂
+Me: I know! Waise aap pro shopper lag rahi ho — trolley mein system hai. Mere trolley mein toh random cheezein hain.
+She: 😂 Organized shopping is important!
+Me: Teach me! I'm a shopping disaster.
+She: List banao pehle.
+Me: List?! Woh kya hota hai? Main toh "jaao aur jo dikhe le aao" gang mein hoon.
+She: 😂 Toh phir bill shock bhi lagta hoga?
+Me: HAR BAAR! "6000?! Maine toh sirf bread lene aaya tha!"
+She: 😂😂 Classic!
+Me: I'm [name], professional impulse buyer.
+She: [Her name], professional list-maker. I'll reform you!`
+  },
+  {
+    id: 168,
+    title: "Electronics Store — Confused Buyer",
+    category: "Approach",
+    text: `*Context: Both looking at phones/laptops at an electronics store*
+
+Me: *staring at specs* Yeh sab processors ka naam aise hain jaise aliens ne rakha hai.
+She: *laughs* Snapdragon, Dimensity — sounds like Pokemon.
+Me: EXACTLY! "Main choose karta hoon... SNAPDRAGON 8 GEN 3!" *throws imaginary pokeball*
+She: 😂 Pikachu would be confused.
+Me: Pikachu bhi confused hoga — "Bro, main ek simple mouse hoon, yeh kya processors hain?"
+She: 😂 Kya lene aaye ho?
+Me: Phone. Budget [amount]. Recommendation?
+She: Tech person hoon — I can help! Kya use karte ho mainly?
+Me: Camera, social media, aur overthinking apps... matlab notes app.
+She: 😂 Overthinking apps!
+Me: Haan, Notes app mein deep thoughts likhta hoon raat ko. Subah padhta hoon toh lagta hai "yeh kisne likha?"
+She: 😂 Relatable!
+Me: Toh kya lun guru ji?
+She: *suggests phone with reasoning*
+Me: Wow, salesman se better explanation! Aapko yahan kaam karna chahiye.
+She: 😂 Free mein consulting de rahi hoon.
+Me: Free? Atleast chai toh lene do baad mein. Expert advice ka payment.
+She: Chai chalegi 😊
+Me: Done! I'm [name], tech-illiterate with a new phone thanks to you.
+She: [Her name]. Chai ke liye ready after shopping!`
+  },
+  {
+    id: 169,
+    title: "Furniture Store — Sofa Testing",
+    category: "Approach",
+    text: `*Context: Both testing sofas at a furniture store*
+
+Me: *flopping on a sofa* Yeh sofa mein se mujhe uthne ka mann nahi kar raha. Main yahan reh sakta hoon forever.
+She: *on next sofa, laughs* Main toh 3rd sofa test kar rahi hoon. Sab comfortable hain!
+Me: Testing toh full dedication se karna chahiye. *lies down fully* Haan, yeh ek 9/10 hai.
+She: 😂 Rating de rahe ho?
+Me: Professional sofa tester hoon. Resume mein likha hai — "Tested 200+ sofas. Expert in comfort analysis."
+She: 😂 Dream job!
+Me: Haan, par salary nahi milti. Bas free naps milti hain showroom mein.
+She: 😂 Kya le rahe ho for your place?
+Me: Kuch samajh nahi aa raha. Itne options hain ki brain freeze ho gaya.
+She: Same problem! L-shaped ya straight?
+Me: L-shaped fancy lagta hai par mere room mein toh I-shaped bhi mushkil se fit hoga.
+She: 😂 Small room?
+Me: "Cozy" bolta hoon main. Real estate walon se seekha hai — small = cozy, tiny = intimate, no parking = eco-friendly.
+She: 😂😂 Marketing genius!
+Me: Chalo, ek kaam karte hain — dono saath mein decide karte hain. Two confused minds = one good decision hopefully.
+She: Sure! Par meri budget limited hai.
+Me: Same! "Limited budget, unlimited taste" — hamari tagline.
+She: 😂 I'm [her name].
+Me: [Name]. Sofa shopping partnership begins!`
+  },
+  {
+    id: 170,
+    title: "Pet Shop — Puppy Section",
+    category: "Approach",
+    text: `*Context: Both looking at puppies in a pet shop*
+
+Me: *melting* Oh my goddd, yeh golden retriever puppy mujhe ghar le jaana hai. Life complete ho jayegi.
+She: *also melting* I KNOW! Kitna cute hai!
+Me: Isko dekh ke mujhe apni saari problems bhool gayi. Yeh hai asli therapy.
+She: 😂 Puppy therapy is real.
+Me: "Doctor, mujhe anxiety hai." "Here's a puppy. That'll be 0 rupees." CURED!
+She: 😂 Best doctor ever.
+Me: Aap bhi lene aayi ho ya sirf heartbreak lene — dekhne aur le nahi paane ka?
+She: Dekhne aayi hoon 😅 Flat mein pets allowed nahi hai.
+Me: SAME TRAGEDY! Mera landlord bolte hain "no pets" — bro, main bhi ek tarah ka stray hoon, mujhe rakh liya!
+She: 😂😂 Stray tenant!
+Me: Haan! "Feeds himself, mostly quiet, occasionally barks at neighbors" — basically a dog.
+She: You ARE a puppy 😂
+Me: Thank you? I think? Chalo, since dono le nahi sakte — weekly pet shop visit? For emotional support?
+She: YES! Sunday pet shop day!
+Me: Done! Aur jab dono ka flat change hoga — pehle puppy, phir furniture.
+She: Priorities! 😂 I'm [her name].
+Me: [Name]. See you Sunday, fellow petless soul!`
+  },
+  // Additional Approach templates (171-200)
+  {
+    id: 171,
+    title: "Movie Theatre — Same Snack Counter",
+    category: "Approach",
+    text: `*Context: Both at the snack counter before a movie*
+
+Me: *looking at prices* 500 ka popcorn?! Yeh popcorn hai ya gold-plated?
+She: *laughs* Seriously! Bahar 50 ka milta hai.
+Me: Main toh ghar se Maggi bana ke laata tha pehle. Ab security check mein pakad lete hain.
+She: 😂 Maggi smuggling!
+Me: "Sir, yeh kya hai bag mein?" "Yeh... protein supplement hai." "Sir yeh Maggi hai." "Masala flavor toh protein hai!"
+She: 😂😂
+Me: Kya movie dekh rahi ho?
+She: [Movie name].
+Me: SAME! Toh toh baat banti hai. Combo share karein? 500 ka popcorn 250-250 mein split.
+She: Smart! 😂 Done!
+Me: See? Main financially intelligent decisions leta hoon — mostly snack-related.
+She: 😂 Financial advisor for snacks.
+Me: "Invest in shared popcorn — 50% savings, 100% company."
+She: Best investment tip ever 😂
+Me: Chalo andar chalte hain. Interval mein review discuss karenge.
+She: Deal!
+*after movie*
+Me: 10/10 ya kuch aur?
+She: 8/10.
+Me: 8?! Kaunsa 2 missing?!
+She: Climax predictable tha.
+Me: Valid. Par overall solid. I'm [name].
+She: [Her name]. Next movie bhi saath mein?
+Me: Popcorn split partner for life! 🍿`
+  },
+  {
+    id: 172,
+    title: "Concert — Lost in Crowd",
+    category: "Approach",
+    text: `*Context: Concert, she's trying to see the stage but too short*
+
+Me: *noticing her jumping* Aap kursi chahiye? Main piggyback ride bhi de sakta hoon.
+She: 😂 Kuch toh dikhna chahiye! Itne paise diye hain.
+Me: Ticket ke paise + dikhta kuch nahi = India's Got Scammed.
+She: 😂 True!
+Me: Chalo thoda aage chalte hain — main crowd navigate karta hoon, aap peeche aao.
+She: Really? Thanks!
+Me: *navigates through* Excuse me... sorry... birthday hai uska... emergency... *reaches front area*
+She: 😂 Birthday?! Kiska?
+Me: Kisi ka nahi par log raasta de dete hain. Pro tip.
+She: 😂 Life hack!
+Me: Ab dekho — stage right there!
+She: YES! Thank you!
+*concert continues, both vibing*
+Me: *during favorite song* THIS ONE! 🎵
+She: SAME! *both singing along*
+Me: Humari music taste match ho gayi toh ab toh permanent concert buddy banana padega!
+She: 😂 Next concert kab hai?
+Me: Check karta hoon — whoever it is, we're going. Front row strategy already ready hai.
+She: 😂 Birthday excuse?
+Me: OBVIOUSLY! I'm [name], professional crowd navigator.
+She: [Her name]. Best concert ever!`
+  },
+  {
+    id: 173,
+    title: "Exhibition — Science/Tech Fair",
+    category: "Approach",
+    text: `*Context: Both at a tech/science exhibition, looking at a robot*
+
+Me: *to robot* Bro, mera homework kar dega?
+She: *laughs* Robot ko homework de rahe ho?
+Me: Agar robot itna smart hai toh kaam toh karna chahiye. Warna "artificial intelligence" ka matlab kya?
+She: 😂 Fair point.
+Me: Main AI se itna kaam karwaata hoon ki mujhe darr hai mera replacement na ban jaaye.
+She: 😂 AI will take our jobs wali fear?
+Me: Fear nahi, acceptance. "Welcome AI overlords. Please be gentle."
+She: 😂😂 Kya karti ho for work?
+Me: [Work]. You?
+She: [Her work].
+Me: Oh nice! Toh aap bhi tech mein ho. Hum dono ka replacement ek hi robot karega.
+She: 😂 Efficient replacement!
+Me: "Two for one deal. Robot does both jobs. Humans: go home."
+She: Dystopian but funny 😂
+Me: Chalo next exhibit dekhte hain — woh VR wala try karna hai.
+She: Oh haan! VR try karte hain!
+Me: *after VR* That was insane! I'm [name].
+She: [Her name]. Next tech event saath mein?
+Me: Done! Robot army se ladenge saath mein!`
+  },
+  {
+    id: 174,
+    title: "Flight — Co-Passenger",
+    category: "Approach",
+    text: `*Context: Airplane, she's in the window seat, you're in the middle*
+
+Me: Hi, middle seat mila hai mujhe — basically aviation ka punishment.
+She: 😂 Window is the best, sorry!
+Me: Koi nahi, middle seat wale ko ek hi right milta hai — dono armrests.
+She: Dono?! 😂
+Me: Haan, unwritten rule hai. Window waale ko view milta hai, aisle waale ko leg space, middle waale ko armrests. Fair distribution.
+She: 😂 Maine toh kabhi nahi suna yeh rule.
+Me: Kyunki yeh Middle Seat Survivors Association ka internal rule hai. Main president hoon.
+She: 😂 President!
+Me: Haan, founding member bhi. Akela member bhi.
+She: 😂 Lonely association.
+Me: Recruitment open hai — par koi join nahi karta. Koi middle seat nahi chahta.
+She: 😂 Logical.
+Me: Kahan ja rahi ho?
+She: [City]. You?
+Me: Same! Work or personal?
+She: Vacation 😊
+Me: Oh nice! Main bhi. Solo trip?
+She: Friends ke saath.
+Me: Accha! Main solo. Recommendations chahiye — kya dekhun wahan?
+She: Oh I know great spots! *shares recommendations*
+Me: You're a lifesaver! I'm [name].
+She: [Her name]. If you need a local guide for a day, DM karna!
+Me: Pakka! *mentally celebrates*`
+  },
+  {
+    id: 175,
+    title: "Society Event — Diwali Mela",
+    category: "Approach",
+    text: `*Context: Apartment society's Diwali mela/fair*
+
+Me: *at game stall* Bhaiya ek aur try! *misses all targets*
+She: *watching, laughing*
+Me: Aap has rahi ho?! Yeh rigged hai! Targets hil rahe hain!
+She: 😂 Targets nahi hil rahe, tumhara aim hil raha hai.
+Me: Ouch! Par sach hai 😂 Aap try karo — agar aap bhi miss karogi toh prove hoga ki game rigged hai.
+She: Challenge? Let's go! *hits 3 out of 5*
+Me: ... How?!
+She: Skill 😎
+Me: "Skill" — right. Main toh Google karunga "how to aim at mela stalls."
+She: 😂 Google se nahi hoga, practice chahiye.
+Me: Practice kahan? Ghar mein targets lagaaun?
+She: 😂 Imaginary targets se karo — like throwing socks in laundry basket.
+Me: OH! Woh toh main daily karta hoon! Par miss bhi daily karta hoon.
+She: 😂😂 Toh isliye aim weak hai — laundry practice se kuch nahi hoga!
+Me: Brutal but accurate. Waise prize jeet liya toh kya logi?
+She: Woh teddy bear chahiye 🧸
+Me: *to bhaiya* BHAIYA EK AUR TRY! 
+*misses again*
+Me: Teddy bear ke liye phir aaunga. I'm [name], your terrible-aim neighbor.
+She: [Her name] 😂 Kal phir try karna!`
+  },
+  {
+    id: 176,
+    title: "Swimming Pool — Beginner Lane",
+    category: "Approach",
+    text: `*Context: Swimming pool, both in the beginner section*
+
+Me: *holding pool edge, scared* Main toh sirf ek baat confirm karna chahta hoon — lifeguard yahan hai na?
+She: *laughs* Haan, woh baitha hai corner mein.
+Me: Thank god! Mera swimming level — "can survive in bathtub."
+She: 😂 Bathtub level?
+Me: Haan, shower mein toh pro hoon. Pool mein newbie.
+She: 😂 You'll be fine! Just float karo pehle.
+Me: Float?! Meri body ka density itna hai ki main seedha doob jaata hoon.
+She: 😂 Everyone can float! Relax karo body ko.
+Me: "Relax" — woh word meri dictionary mein hai par pool mein apply nahi hota.
+She: 😂 Come, I'll help. Hold the edge aur legs kick karo.
+Me: *tries* Yeh theek hai?
+She: Better! See, natural hai.
+Me: Natural?! Main toh dolphin wali feeling aa rahi hai — beached dolphin.
+She: 😂😂 Progress hai! 
+Me: Thanks coach! Bina tumhare main abhi bhi edge pakde hua hota.
+She: 😂 Regular aao, 2 weeks mein swim karoge.
+Me: 2 weeks?! Olympics ka time 4 saal hai, hope hai.
+She: 😂 I'm [her name].
+Me: [Name]. Pool buddy ban gayi tum — kal se daily class?
+She: Daily chai aur daily swim 😊`
+  },
+  {
+    id: 177,
+    title: "Rock Climbing Wall — Indoor",
+    category: "Approach",
+    text: `*Context: Indoor rock climbing gym, both gearing up*
+
+Me: *looking up at the wall* Yeh wall dekh ke mujhe lag raha hai main apni life choices question kar raha hoon.
+She: 😂 First time?
+Me: Haan, aur possibly last — depending on whether I survive.
+She: It's fun! Aur safe hai — harness hai.
+Me: Harness hai par mera trust issues hai — "Kya yeh ek rope mujhe rok payegi?"
+She: 😂 Engineering pe trust rakho.
+Me: Engineering pe trust? Bro, main engineering student tha — I know what we did. Trust kam hi rakho.
+She: 😂😂 Valid point!
+Me: Par YOLO. Chalo, race? Jo pehle top pe pahunche?
+She: You sure? 😏
+Me: Nahi sure par ego bol raha hai "haan."
+She: 😂 Let's go!
+*she reaches top first, easily*
+She: *from top* Oi! Kahan ho?
+Me: *stuck halfway* YAHAN! Meri baazu ne resignation de di hai!
+She: 😂 Thoda aur! Almost there!
+Me: "Almost there" — meri life story.
+She: Come on! Push!
+Me: *reaches top* YES! I DID IT! *panting*
+She: 😂 See! You made it!
+Me: Thanks to your motivation! I'm [name], halfway-stuck champion.
+She: [Her name]. Next time faster hona padega!
+Me: Challenge accepted!`
+  },
+  {
+    id: 178,
+    title: "Bowling Alley — Gutter Ball King",
+    category: "Approach",
+    text: `*Context: Bowling alley, adjacent lanes*
+
+Me: *throws ball, gutter* AGAIN?! 5th gutter ball! Main toh bowling nahi, gutter cleaning kar raha hoon!
+She: *next lane, laughs* Technique change karo!
+Me: Technique?! Meri technique hai — "pray and throw." God clearly not listening.
+She: 😂 Hold the ball differently. Let me show you.
+Me: You'd help a stranger fix his terrible bowling?
+She: Can't watch you suffer anymore 😂
+Me: *she shows grip* Like this?
+She: Haan, now aim at the arrows on the lane, not the pins.
+Me: *throws — knocks 7 pins* WHAT?! HOW?!
+She: SEE! 😂
+Me: You're a wizard! Bowling wizard!
+She: 😂 Basic technique hai.
+Me: Basic for you, miraculous for me! Ek aur sikhao!
+She: Okay, this one's for a spare... *teaches*
+Me: *gets spare* I'M A PROFESSIONAL NOW!
+She: 😂 One spare doesn't make you professional.
+Me: Let me have this! First spare of my LIFE!
+She: 😂 Congrats!
+Me: Thanks guru! I'm [name]. Match khelein saath mein?
+She: Sure! Fair warning — I won't go easy.
+Me: Expected nothing less! Loser buys dinner.
+She: Done! 😊`
+  },
+  {
+    id: 179,
+    title: "Trekking Group — Steep Section",
+    category: "Approach",
+    text: `*Context: Group trek, steep section, she's struggling a bit*
+
+Me: *offers hand* Yeh path dekhke lagta hai mountain ne personally decide kiya hai "aaj inhe nahi jaane dunga."
+She: *takes hand, laughs* Seriously! Itna steep kyun hai?
+Me: Kyunki easy trek pe koi nahi jaata — Instagram pe "hard trek conquered" likhna hai sabko.
+She: 😂 True! Photo ke liye suffer karna padta hai.
+Me: "Suffer for the gram" — new generation motto.
+She: 😂 Kaunsa trek hai aapka first?
+Me: First proper trek! Pehle sirf stairs ki counting karta tha. Ab toh mountain hi count kar raha hoon.
+She: 😂 Stairs se mountain — big jump!
+Me: Too big. Meri body ne complaint file ki hai — HR mein.
+She: 😂 Body ka HR department!
+Me: "Dear Management, ye trek was not in my job description. Regards, Legs."
+She: 😂😂
+Me: Par view ke liye worth it hoga na?
+She: 100%! Top pe pahunchke sab bhool jaoge.
+Me: Sab bhool jaunga? Mere legs toh yaad rakhenge.
+She: 😂 Chalo, 20 minute aur!
+Me: 20?! *deep breath* Okay. I'm [name], mountain newbie.
+She: [Her name], trek #15 for me.
+Me: 15?! Guide ban jaao meri. Fees: yeh trek safely complete karwao.
+She: 😂 Free of cost. Chalo!`
+  },
+  {
+    id: 180,
+    title: "Tennis Court — Beginner Serve",
+    category: "Approach",
+    text: `*Context: Tennis court, you're practicing serves badly, she's on adjacent court*
+
+Me: *ball goes over the fence for the 4th time* Sorry! SORRY!
+She: *catches it, laughing* Yeh tennis hai ya baseball?
+Me: At this point, I'm not sure 😂 Mera serve ka trajectory unpredictable hai — missile defense bhi track nahi kar sakti.
+She: 😂 Toss aur hit — simple hai!
+Me: "Simple" kehna easy hai, karna mushkil. Mere haath aur racket mein communication gap hai.
+She: 😂 Want a tip?
+Me: Please! Kuch bhi! Main surrender karne wala hoon.
+She: Ball ko thoda higher toss karo, phir hit at the highest point.
+Me: *tries* *ball actually goes over the net* DID THAT JUST HAPPEN?!
+She: YAY! 😂 Good one!
+Me: Main champion hoon! Ek serve aur main Federer feel kar raha hoon!
+She: Federer is retired 😂
+Me: Exactly — ab opening hai! I'll fill his spot.
+She: 😂 With that serve? Long way to go.
+Me: Coach chahiye long-term. Application accept karogi?
+She: 😂 Kya milega mujhe?
+Me: Post-practice smoothie + bragging rights ki tumne ek zero ko hero banaya.
+She: 😂 Compelling offer. I'm [her name].
+Me: [Name]. Coach-student bond starts now!`
+  },
+  {
+    id: 181,
+    title: "Gym — Cardio Zone Treadmill",
+    category: "Approach",
+    text: `*Context: Both on adjacent treadmills at the gym*
+
+Me: *jogging slowly* Main soch raha hoon treadmill pe chalna life ka metaphor hai — bahut effort, kahin nahi pahunchte.
+She: *laughs while running* Deep thought for a treadmill.
+Me: Haan, 20 minute se chal raha hoon — literally aur philosophically — same jagah hoon.
+She: 😂 Speed badha do toh kuch feel hoga.
+Me: Speed badhaunga toh meri aatma nikal jayegi. Abhi 4 pe chal raha hoon — safe zone.
+She: Main 8 pe hoon 😂
+Me: 8?! Aap sprinting ho, main strolling! Humari treadmills mein class divide hai.
+She: 😂 Class divide on treadmill — sociology project!
+Me: Paper likh dete hain — "Economic inequality reflected in gym speed settings."
+She: A+ paper 😂
+Me: Waise roz aati ho?
+She: 5 days a week.
+Me: Dedication! Main "whenever guilt hits" basis pe aata hoon.
+She: 😂 Guilt-driven fitness!
+Me: Haan, pizza khaata hoon Friday, Saturday guilt, Sunday gym. Cycle of life.
+She: 😂 At least you come!
+Me: True. I'm [name], slowest treadmill user in this gym.
+She: [Her name]. Kal speed 5 pe chalana — progress!
+Me: 5?! Baby steps... literally. Deal!`
+  },
+  {
+    id: 182,
+    title: "Football Turf — Pickup Game",
+    category: "Approach",
+    text: `*Context: Football turf, teams being formed, she's in the other team*
+
+Me: *before game* Just so you know, meri football skill = 0. Main sirf running karta hoon, ball ko chhuna optional hai.
+She: 😂 Toh tum kya karte ho field pe?
+Me: Moral support! "SHOOT SHOOT!" bolna bhi contribution hai.
+She: 😂 Cheerleader football player!
+Me: Best role! No pressure, full credit if team wins.
+She: And if team loses?
+Me: "Main nahi tha ball ke paas" — perfect alibi.
+She: 😂 Clever!
+*during game, she scores*
+Me: *from midfield* GOAAAL! Oh wait, woh toh opponent team ka tha.
+She: *celebrating* Sorry not sorry! 😂
+Me: Respect! Woh shot was amazing though. Mujhe sikhao woh curve.
+She: After the game!
+*after game*
+She: So curve shot — inside of the foot, hit the side of the ball...
+Me: *tries, ball goes sideways*
+She: 😂 Thoda aur practice!
+Me: Ek din main Messi banunga. Ek din.
+She: Messi bhi practice se bana!
+Me: True. I'm [name], future Messi (in my dreams).
+She: [Her name]. Weekly game hai, aana!
+Me: I'll be there — cheerleading aur learning both!`
+  },
+  {
+    id: 183,
+    title: "Skating Rink — Can't Stand",
+    category: "Approach",
+    text: `*Context: Ice/roller skating rink, you can barely stand*
+
+Me: *holding railing for dear life* Main kyu aaya yahan? Kisne bola tha yeh fun hai?
+She: *skating past smoothly* Fun toh hai! 😂
+Me: Fun?! Mere paair keh rahe hain "bhai, hum flat surface ke liye bane hain!"
+She: 😂 Railing chhodo, balance aayega.
+Me: Railing chhodna = hospital jaana. Main risk nahi le sakta.
+She: Come on! Haath do, main pakad ke le jaati hoon.
+Me: Pakka? Promise girne nahi dogi?
+She: Promise! *holds hand*
+Me: *slowly moves* Oh... OH! MAIN CHAL RAHA HOON!
+She: See! 😂 Easy hai!
+Me: Easy?! Mera heart rate 200 hai abhi!
+She: 😂 Breathe!
+Me: Breathing bhi bhool gaya tha. Multi-tasking nahi hota — skating + breathing + not dying.
+She: 😂😂 You're doing great!
+Me: *does one full round* I DID IT! GOLD MEDAL!
+She: 😂 Bronze at best.
+Me: Brutal! Par accepted. I'm [name], skating catastrophe turned survivor.
+She: [Her name]. Next time without railing!
+Me: Baby steps! Next time sirf ek haath railing pe. Progress!
+She: 😂 Deal!`
+  },
+  {
+    id: 184,
+    title: "Basketball Court — Air Ball",
+    category: "Approach",
+    text: `*Context: Basketball court, you shoot and miss everything — air ball*
+
+Me: *shoots, misses everything* That didn't happen. Nobody saw that.
+She: *from the bench, laughing* I saw it 😂
+Me: Then I need to eliminate the witness.
+She: 😂 Aggressive!
+Me: Nahi nahi, witness ko bribe karunga — chai se. Less aggressive.
+She: Chai se toh kuch nahi dekha maine 😂
+Me: See? Corruption works! Aap bhi khelti ho?
+She: Haan, thoda bahut.
+Me: "Thoda bahut" — yeh sab pro log bolte hain. Aao, 1v1?
+She: Sure! Par tumhara air ball dekhke confidence aa gaya hai mujhe.
+Me: 😂 Valid! Main deliberately easy opponent hoon.
+*they play, she wins easily*
+Me: Okay so "thoda bahut" was a lie.
+She: 😂 Surprise!
+Me: Main toh opponent nahi, practice dummy tha.
+She: 😂 You have potential though!
+Me: "Potential" — teachers bhi yehi bolte the. "Beta, potential hai par use nahi karta."
+She: 😂 Use karo ab! Weekly game?
+Me: Weekly? Deal! Ek din main dunk marunga.
+She: Pehle layup seekho 😂
+Me: Fair. I'm [name], basketball potential-wala.
+She: [Her name]. Coach mode on from next week!`
+  },
+  {
+    id: 185,
+    title: "Cycling Group Ride — Can't Keep Up",
+    category: "Approach",
+    text: `*Context: Group cycling ride, you're at the back, she slows down for you*
+
+Me: *dying* Aap... aap kyun... slow ho gayi? Group aage... nikal gaya.
+She: 😂 Tumhe akela nahi chhod sakti! Peeche se koi nahi aayega.
+Me: Main toh... soch raha tha... Uber book kar loon... cycle wahi chhod ke.
+She: 😂 Don't give up! 2 km aur hai.
+Me: 2 KM?! Abhi toh 1 km mein meri zindagi flashback chal rahi thi.
+She: 😂 Dheere karo, rush mat karo.
+Me: Dheere toh chal raha hoon — itnaa dheere ki cycle bhi bol rahi hai "bhai, pedal maar."
+She: 😂 Cycle baat karti hai tumse?
+Me: Haan, relationship hai hamari — toxic, par hai.
+She: 😂😂 Chalo, race nahi hai, enjoy karo view.
+Me: View accha hai actually. *looks around* Haan, yeh worth it hai.
+She: See! Nature ka asli feel cycling mein aata hai.
+Me: Nature feel aa rahi hai, legs ka feel ja raha hai.
+She: 😂 Almost there! 
+*finish line*
+Me: MADE IT! *collapses on grass*
+She: 😂 Alive ho?
+Me: Barely! I'm [name], cycling group ka last finisher.
+She: [Her name]. Next ride mein pehle finish karoge!
+Me: Pehle survive karna hai, phir finish ki baat karenge.`
+  },
+  {
+    id: 186,
+    title: "Sports Shop — Jersey Selection",
+    category: "Approach",
+    text: `*Context: Both at a sports shop looking at football/cricket jerseys*
+
+Me: *holding two jerseys* Yeh wali ya woh wali — yeh decision mujhe 30 minute se pareshan kar raha hai.
+She: *browsing nearby* Kaunsi team?
+Me: [Team name]. Aap?
+She: [Rival team]!
+Me: OH NO. Rival fan! Yeh toh Romeo-Juliet situation hai — sports edition.
+She: 😂 Sports mein rivalry zaroori hai!
+Me: Zaroori hai par abhi toh peaceful shopping ho rahi thi. Ab toh trash talk karni padegi.
+She: Bring it! 😂
+Me: Last season yaad hai? [reference to rival team's loss]
+She: 😤 Woh referee biased tha!
+Me: "Referee biased tha" — har haarne wali team ka national anthem hai!
+She: 😂 Rude! Par funny.
+Me: See? Rivalry mein bhi fun hai. Waise yeh wali ya woh wali? Seriously batao.
+She: *looks* Hmm, yeh wali. Color suits you.
+Me: Enemy team ki fan ne mujhe fashion advice di. World is healing.
+She: 😂 Fashion has no rivalry.
+Me: Deep! I'm [name], proud [team] fan.
+She: [Her name], prouder [rival team] fan!
+Me: Next match saath dekhenge? Trash talk live mein zyada fun hai!
+She: 😂 You're on!`
+  },
+  {
+    id: 187,
+    title: "Yoga Retreat — Morning Session",
+    category: "Approach",
+    text: `*Context: Weekend yoga retreat, morning meditation session*
+
+Me: *opens one eye during meditation* Psst, tum bhi bored ho ya sirf main?
+She: *opens eye, giggles* Shh! Instructor dekhegi!
+Me: *whispers* "Clear your mind" bol rahi hai — bro, mera mind 47 tabs open hai, clear kaise karun?
+She: *trying not to laugh* 😂 Focus karo!
+Me: Main focus kar raha hoon — tumse baat karne pe.
+She: 😂 That's not the point!
+*after session*
+Me: So... enlightenment aaya?
+She: Not yet 😂 You?
+Me: Mujhe toh sirf back pain aaya. Cross-legged 30 minute — meri legs ne union meeting bula li.
+She: 😂 Flexibility badhega time ke saath.
+Me: Time ke saath? Mujhe toh ab chahiye! Amazon se order nahi hoti flexibility?
+She: 😂 Next day delivery mein nahi aati.
+Me: Sad. Waise aap pehli baar aayi ho retreat pe?
+She: 3rd time. It's peaceful.
+Me: Peaceful toh hai — jab tak main bakwaas nahi karta.
+She: 😂 Tumhari bakwaas bhi entertaining hai.
+Me: Best review! I'm [name], yoga dropout potential.
+She: [Her name]. Dropout mat bano, kal ka session accha hoga!
+Me: Kal bhi aankh kholke tumse baat karunga meditation mein 😂
+She: 😂 Main aankh band rakhungi!`
+  },
+  {
+    id: 188,
+    title: "Gym — Weights Section Confusion",
+    category: "Approach",
+    text: `*Context: Gym weights section, you're looking at machines confused*
+
+Me: *staring at a machine* Yeh kaise use karte hain? Isme baithun ya lete jaun? Ya isse hi uthaaun?
+She: *laughing from nearby* Woh chest press hai — baithke push karo.
+Me: Push?! Mujhe toh pull karna tha. No wonder kuch nahi ho raha tha!
+She: 😂 Gym mein pehle koi sikhata nahi kya?
+Me: Trainer ka slot book kiya tha — woh bhi nahi aaya. Ghosted by a trainer — new low.
+She: 😂 I can show you basics if you want.
+Me: Aap trainer ho?
+She: Nahi, par 2 saal se aa rahi hoon. Basics pata hain.
+Me: "Basics pata hain" — mujhe toh woh bhi nahi. Please teach!
+She: *shows correct form* See? Yeh chest, yeh back, yeh legs.
+Me: Oh! Yeh toh sense bana raha hai. Kal tak main sab galat kar raha tha — no wonder body same hai!
+She: 😂 Form important hai.
+Me: Form toh hai hi nahi mera — na gym mein na life mein.
+She: 😂 Gym mein toh fix kar sakte hain!
+Me: I'm [name], gym ka most confused member.
+She: [Her name]. Kal se proper routine banate hain.
+Me: Routine?! Mere life mein pehli baar! Let's go!`
+  },
+  {
+    id: 189,
+    title: "Park — Flying Kite / Makar Sankranti",
+    category: "Approach",
+    text: `*Context: Park/terrace, Makar Sankranti, flying kites*
+
+Me: *kite immediately crashes* KAT GAYA! 5th baar! Meri patang se zyada toh paise ud rahe hain.
+She: *flying her kite smoothly, laughing* Dheel do thoda!
+Me: Dheel?! Kaise?! Mujhe toh dheel ka concept samajh nahi aata — life mein bhi nahi, patang mein bhi nahi.
+She: 😂 Deep! Yeh lo, main batati hoon.
+Me: *she helps guide his kite* Oh... OH! UD RAHI HAI!
+She: See! 😂 Bas balance rakho.
+Me: BALANCE! Meri patang ud rahi hai! Achievement unlocked!
+She: 😂 Ab kisi ki kaato!
+Me: Kaatun?! Abhi toh udna seekha, battle kaise?
+She: Simple — unki patang ke paas le jaao aur string cross karo. Pull karo jaldi.
+Me: *tries, his own kite crashes again*
+Me: ... Main peacekeeper type hoon, battle mera nahi.
+She: 😂😂 Koi nahi, udate raho pehle.
+Me: Aap pro ho! Kitne kaati aaj?
+She: 7 😎
+Me: 7?! Warrior ho! Main toh 0 kataa aur 5 khoya.
+She: 😂 Negative score!
+Me: I'm [name], patang ka worst player.
+She: [Her name], patang champion! Next Sankranti pe phir sikhaungi.
+Me: Done! Tab tak practice karunga... YouTube pe.
+She: 😂 YouTube se patang nahi aaegi! Terrace pe aao!`
+  },
+  {
+    id: 190,
+    title: "Laundromat — Waiting for Clothes",
+    category: "Approach",
+    text: `*Context: Both at a laundromat/laundry service waiting*
+
+Me: *staring at washing machine* Yeh watching clothes spin = free entertainment. Netflix se zyada interesting.
+She: 😂 Hypnotizing hai actually.
+Me: Main toh 20 minute se dekh raha hoon — meri productivity zero hai par peace infinite.
+She: 😂 Laundry meditation.
+Me: "Laundry meditation — watch your clothes go round like your life" — motivational poster material.
+She: Dark 😂
+Me: Dark but relatable! Waise aap bhi apne kapde khud dhoye ho? Or hostel life?
+She: PG life 😂 Washing machine nahi hai.
+Me: Same energy! Mera bhi PG — "Kapde? Haath se dho ya bahar jao." Main bahar aaya.
+She: Outsourcing 😂
+Me: Smart outsourcing! "Why do it yourself when you can pay 50 rupees?"
+She: Life hack.
+Me: Waise kitna time lagta hai?
+She: 30 min wash, 20 min dry.
+Me: 50 minute! Perfect chai time. Saamne tapri hai — chalein?
+She: Haan! Waise bhi bore ho rahi thi.
+Me: Bore? Tumne toh abhi bola hypnotizing hai!
+She: 😂 2 minute ke liye. Uske baad boring.
+Me: Fair! I'm [name], laundry buddy.
+She: [Her name]. Weekly laundry meetup?
+Me: Same day, same machine, same boredom. Done!`
+  },
+  {
+    id: 191,
+    title: "Hospital/Clinic — Waiting Room",
+    category: "Approach",
+    text: `*Context: Both waiting at a clinic/hospital, bored*
+
+Me: *fidgeting* Yeh waiting room mein magazines 2015 ki hain. Kya main time travel kar gaya?
+She: *laughs* Haan, "Filmfare 2015 — Deepika ki new movie!"
+Me: "New movie" jo 10 saal pehle aayi. Time yahan ruk gaya hai.
+She: 😂 Doctors ka waiting time hi asal test hai.
+Me: "Doctor will see you in 5 minutes" — yeh 5 minutes hain ya 5 geological eras?
+She: 😂 Geological time!
+Me: Main toh sochta hoon ki waiting room mein WiFi achha hona chahiye — at least boredom toh solve hoga.
+She: No WiFi is a crime in 2025.
+Me: Petition sign karwaani chahiye — "WiFi in waiting rooms — a fundamental right."
+She: 😂 I'll sign!
+Me: First signatory! I'm [name], founder of the WiFi Rights Movement.
+She: [Her name], co-founder!
+Me: NGO ban gayegi humari. "Humans for WiFi — because buffering kills."
+She: 😂 Mission statement sorted.
+Me: Waise kya hua? Routine checkup?
+She: Haan, boring checkup.
+Me: Same! Doctor bolega "sab normal hai, exercise karo." Main bolunga "haan" aur pizza order karunga ghar jaake.
+She: 😂 Doctor ki advice ka shelf life = clinic se ghar tak.
+Me: Exactly! After that — back to normal chaos.
+She: True 😂`
+  },
+  {
+    id: 192,
+    title: "Photo Studio — Passport Photos",
+    category: "Approach",
+    text: `*Context: Both at a photo studio for passport/ID photos*
+
+Me: *just got photos* Bhaiya, yeh main hoon ya mera ghost? Kya kiya hai yeh?
+She: *waiting for hers, laughing* Passport photos always look like mugshots.
+Me: MUGSHOTS! Exactly! Aise lag raha hai main 3 countries se banned hoon.
+She: 😂 Everyone looks criminal in passport photos.
+Me: Immigration officer dekhega toh bolega "Sir, aap woh passport wale ho ya koi aur?"
+She: 😂 Identity crisis at the airport!
+Me: Waise aapka bhi aisa aata hai?
+She: Haan! Main toh mirror mein normal dikhti hoon, passport photo mein alien.
+Me: "Alien" — exactly the vibe. Unidentified human object.
+She: 😂 UHO!
+Me: Government should allow filters on passport photos. "Valencia" laga do — sab acche lagenge.
+She: Immigration reject kar dega 😂
+Me: Worth the risk! At least photo toh acchi hogi.
+She: True 😂
+*her photos come out*
+She: *looks at them* Ughhh.
+Me: Dikhao... oh come on, yeh toh accha hai!
+She: Accha kahan?!
+Me: Mera dekho — *shows his* See? Perspective matters.
+She: 😂😂 Okay yours is worse.
+Me: Thank you for validating my suffering. I'm [name].
+She: [Her name]. Worst photo day!`
+  },
+  {
+    id: 193,
+    title: "Bank Queue — Long Wait",
+    category: "Approach",
+    text: `*Context: Both in a long bank queue*
+
+Me: Token number 47. Current serving: 12. Main retire ho jaunga yahan baithe baithe.
+She: *laughs* Mera 52.
+Me: 52?! Tum toh mujhse 5 aur zyada suffer karogi. My condolences.
+She: 😂 Thank you for your sympathy.
+Me: Bank mein aana = "adventure sport" hona chahiye. Extreme patience required.
+She: Certificate milna chahiye — "Survived a bank visit. 4 hours."
+Me: Resume mein daalna chahiye — "Can handle bank queues. Exceptional patience."
+She: 😂 Instant hire!
+Me: "What's your greatest strength?" "Sir, main bank queue mein 4 ghante baitha hoon bina complaint kiye." "You're hired!"
+She: 😂😂 If only!
+Me: Waise UPI se nahi ho sakta tha kaam?
+She: Locker kholna hai 😅
+Me: Locker! Kya rakh rahi ho? Gold? Diamonds? Government secrets?
+She: 😂 Documents!
+Me: Boring! Main sochta tha kuch exciting hoga.
+She: Sorry to disappoint 😂
+Me: Koi nahi. I'm [name], bank queue survivor #47.
+She: [Her name], survivor #52.
+Me: Chai leke aata hoon pados se? Itna wait toh chai ke saath karna chahiye.
+She: Please! Mujhe bhi lao.
+Me: 2 chai incoming!`
+  },
+  {
+    id: 194,
+    title: "Grocery Store — Vegetable Section",
+    category: "Approach",
+    text: `*Context: Both picking vegetables, you're clearly confused*
+
+Me: *holding two tomatoes* Yeh accha hai ya yeh? Main fresh aur not-fresh mein difference nahi bata paata.
+She: *laughs* Firm wala lo, soft toh kharab ho raha hai.
+Me: Firm? *squeezes tomato* Yeh firm hai?
+She: Gently! Itna squeeze mat karo, tomato hai, stress ball nahi!
+Me: 😂 Sorry! Main mummy ke bina grocery kharidne aaya hoon first time. Disaster ho raha hai.
+She: First time?! What have you been doing all your life?
+Me: Mummy bhejti thi list ke saath aur main bol-ta tha "jo bhi do" dukan wale ko.
+She: 😂 "Jo bhi do" — ultimate grocery strategy.
+Me: Haan par aaj mummy ne bola "khud ja, seekh" — toh yahan hoon, clueless.
+She: Chalo main help karti hoon. Kya kya chahiye?
+Me: *shows list* Yeh sab.
+She: Oh easy! Chalo section by section.
+Me: You're saving my life AND my dinner!
+She: 😂 Dinner kya bana rahe ho?
+Me: Sochta hoon Maggi. Usse zyada complicated nahi bana sakta.
+She: 😂 Maggi ke liye yeh sab vegetables?!
+Me: Mummy ne bola sabzi lao, maine nahi poocha kyun.
+She: 😂😂 I'm [her name].
+Me: [Name]. Grocery guru mil gayi!
+She: Kal se apna list khud banana — Google karo recipes!
+Me: Google karunga, promise. Par emergency mein phone karun toh chalega?
+She: 😂 Emergency grocery calls? Fine!`
+  },
+  {
+    id: 195,
+    title: "Photocopy Shop — College",
+    category: "Approach",
+    text: `*Context: College photocopy shop, both waiting for copies*
+
+Me: Bhaiya kitna time aur? Mera exam kal hai aur notes abhi tak print nahi hue.
+She: Same! 😂 Last minute printing gang.
+Me: "Last minute" nahi — "strategically timed." Pehle print karte toh padhte nahi.
+She: 😂 Logic hai isme.
+Me: Full logic! Ab print hoga toh raat ko padhenge, subah exam denge, result... pray karenge.
+She: Same strategy 😂 Kaunsa exam?
+Me: [Subject].
+She: Oh same! Notes share karein?
+Me: SHARE?! Tum angel ho! Mere notes mein toh sirf question marks hain — literally "???" likha hai.
+She: 😂 Class mein kya karte ho?
+Me: Present hoon — physically. Mentally toh main Goa mein hoon.
+She: 😂 Mental vacation during lectures!
+Me: Best vacation — free hai, daily milti hai, aur professor ko pata bhi nahi chalta.
+She: 😂 Until viva.
+Me: Viva mein toh main "Sir, bahut interesting topic hai, aap batayiye aur" karke nikal jaata hoon.
+She: 😂 UNO reverse on professor!
+Me: Works 50% of the time. I'm [name].
+She: [Her name]. Notes bhej rahi hoon WhatsApp pe.
+Me: Life saver! Exam ke baad treat pakka.
+She: Pass ho jaao pehle 😂
+Me: Ouch! But fair.`
+  },
+  {
+    id: 196,
+    title: "Music Store — Guitar Section",
+    category: "Approach",
+    text: `*Context: Music store, she's trying a guitar*
+
+Me: *listening* Woh chord accha tha! Main toh 6 months se G chord pe atka hoon.
+She: 😂 G chord basic hai!
+Me: "Basic" kehti ho par meri ungliyan cooperation nahi deti. Unka apna agenda hai.
+She: 😂 Practice, that's all.
+Me: Practice karta hoon par fingers bol-ti hain "aaj nahi, kal dekhte hain."
+She: 😂 Lazy fingers!
+Me: Haan! Bahut entitled hain. "We demand better working hours. No more Bm chord."
+She: Bm toh hard hai 😂
+Me: Bm sun ke meri fingers ne resignation threat diya tha.
+She: 😂 Kaunsa guitar hai tumhara?
+Me: [Guitar type]. Basic beginner wala.
+She: Oh nice! Beginners ke liye perfect.
+Me: Perfect toh hai, player perfect nahi 😂 Koi recommend karogi songs for beginners?
+She: "Tera Ban Jaunga" — easy chords, sounds impressive.
+Me: DONE! Usse seekh ke aaunga. Phir review dogi?
+She: Sure! Private concert 😂
+Me: "Private concert" — fancy bol diya par ek chord bajaaunga bas.
+She: 😂 One chord concert!
+Me: I'm [name], one-chord wonder.
+She: [Her name]. Practice karo, phir concert!`
+  },
+  {
+    id: 197,
+    title: "Stationery Shop — Pen Collection",
+    category: "Approach",
+    text: `*Context: Both at a stationery shop, she's picking colorful pens*
+
+Me: *watching her select 20 pens* Exam ki taiyari hai ya rainbow bana rahi ho?
+She: 😂 Color-coded notes banati hoon!
+Me: Color-coded?! Main toh ek blue pen se sab kaam chala leta hoon. Maximum effort: different pressure for headings.
+She: 😂 Different pressure?! That's your highlighting?
+Me: Haan! Hard press = heading. Soft press = content. Genius system hai.
+She: 😂 Most basic system ever.
+Me: Par effective! Aur sasta! Ek pen = entire semester.
+She: Ek pen semester bhar?!
+Me: Budget constraint breeds innovation.
+She: 😂 Innovation ya laziness?
+Me: Innovation disguised as laziness — story of my life.
+She: 😂 Toh yeh sab colors try karo — life change ho jayegi.
+Me: Life change pen se? Yeh toh pen company ki marketing hai.
+She: 😂 Try toh karo!
+Me: Okay ek try. *picks a green pen* Yeh se kya karun?
+She: Definitions green se likho. Brain yaad rakhta hai colors differently.
+Me: Science hai isme?! I'm sold. I'm [name], newly converted color-coder.
+She: [Her name]. Welcome to the colorful side!
+Me: Meri boring blue pen life khatam. Naya chapter — literally!`
+  },
+  {
+    id: 198,
+    title: "Terrace — Stargazing",
+    category: "Approach",
+    text: `*Context: Both on the terrace of their building at night*
+
+Me: *looking up* Woh star dekha? Woh mera hai. Maine claim kar liya.
+She: *laughs* Star claim karne ka kya procedure hai?
+Me: Simple — pehle dekho, phir bolo "mera hai." First come, first serve.
+She: 😂 Toh woh bright wala mera!
+Me: Done! Ab humari apni apni stars hain. Space mein real estate — Elon Musk eat your heart out.
+She: 😂 Elon bhi nahi kar paaya yeh.
+Me: Exactly! Hum usse aage hain. Waise terrace pe aksar aati ho?
+She: Haan, jab neend nahi aati.
+Me: Same! Insomnia support group — terrace chapter.
+She: 😂 Late night thoughts?
+Me: Late night thoughts — "Why do we park in driveways and drive on parkways?" type.
+She: 😂 Philosophy at 1 AM!
+Me: 1 AM ke baad brain ka IQ either 200 hota hai ya 2. No in-between.
+She: Mere saath toh 2 wala hota hai 😂
+Me: Same! Kal subah padhunga jo aaj socha — kuch samajh nahi aayega.
+She: Relatable!
+Me: Chalo, since dono pagal hain raat ko — terrace buddy?
+She: Deal! I'm [her name].
+Me: [Name]. Kal same time? Stars check karne aayein ki kahin chori toh nahi hui humari.
+She: 😂 Star security check! Done!`
+  },
+  {
+    id: 199,
+    title: "Car Wash — Waiting Area",
+    category: "Approach",
+    text: `*Context: Both waiting at a car wash for their vehicles*
+
+Me: *watching car get washed* Meri car itni gandi thi ki car wash wale ne pehle mujhe judge kiya, phir car ko.
+She: 😂 How dirty was it?
+Me: Itni ki uske upar "wash me" kisi ne likh diya tha — with their finger.
+She: 😂😂 Classic!
+Me: Main ignore karta raha 2 weeks — phir "wash me please" ho gaya. Jab "WASH ME OR I'LL TELL YOUR MOM" likha toh aana pada.
+She: 😂 Mom threat works!
+Me: Always! Mummy ka naam lo — instant action.
+She: True for everyone 😂
+Me: Waise aapki car toh clean dikh rahi thi already.
+She: Bahar se, andar chaos hai.
+Me: Andar chaos?! Like life?
+She: 😂 Exactly like life — organized outside, mess inside.
+Me: Deep metaphor from a car wash. I love it.
+She: 😂 Philosopher ban jaate hain log waiting mein.
+Me: Haan, waiting does that. ATM pe bhi philosophy aati hai, bank mein bhi, car wash mein bhi.
+She: Har jagah philosopher 😂
+Me: "Waiting Room Philosopher" — LinkedIn pe title rakhna chahiye.
+She: 😂 Unique title!
+Me: I'm [name], car wash philosopher.
+She: [Her name]. Drive carefully, clean car ke saath!
+Me: Clean car = new personality! See you around, neighbor!`
+  },
+  {
+    id: 200,
+    title: "RWA Meeting — Society",
+    category: "Approach",
+    text: `*Context: Apartment society RWA meeting, both bored*
+
+Me: *whispering* Uncle ji parking ke baare mein 20 minute se bol rahe hain. Mujhe lagta hai unki car ki jagah unka ego park nahi ho raha.
+She: *trying not to laugh* 😂 Shh! Pakde jayenge!
+Me: Pakde jayenge toh kya — maximum penalty kya hai? "Beta, next meeting mein bhi aana padega." NOOOO!
+She: 😂 That IS the worst punishment.
+Me: RWA meeting = "how to waste a Sunday evening 101."
+She: Mujhe mummy ne bheja hai. Representation chahiye family ki.
+Me: Same! "Beta, society mein jaao, kuch contribute karo." Main contribute kya karunga — memes?
+She: 😂 Meme officer of the society.
+Me: Best designation! "Chief Meme Officer — responsible for keeping meetings entertaining."
+She: Nobody would complain about long meetings then 😂
+Me: Exactly! Yeh parking discussion boring hai — main ek meme banata hoon iske upar.
+She: Dikhana mujhe!
+Me: *shows phone with quick meme* How's this?
+She: 😂😂 PERFECT! Send karo group mein.
+Me: Meeting ke baad. Nahi toh uncle ji mujhe hi park kar denge.
+She: 😂 I'm [her name].
+Me: [Name]. RWA suffering partner!
+She: Next meeting bhi saath mein — at least entertainment toh rahega!
+Me: Done! Main memes ready rakh ke aaunga!`
   }
 ];
