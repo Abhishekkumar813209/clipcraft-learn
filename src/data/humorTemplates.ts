@@ -4748,13 +4748,13 @@ Me: Meeting ke baad. Nahi toh uncle ji mujhe hi park kar denge.
 She: 😂 I'm [her name].
 Me: [Name]. RWA suffering partner!
 She: Next meeting bhi saath mein — at least entertainment toh rahega!
-Me: Done! Main memes ready rakh ke aaunga!\`
+Me: Done! Main memes ready rakh ke aaunga!`
   },
   {
     id: 221,
     title: "Mandir — Shoe Rack Confusion",
     category: "Approach",
-    text: \`*Context: You both reach for the same shoe slot at a crowded mandir...*
+    text: `*Context: You both reach for the same shoe slot at a crowded mandir...*
 
 Me: Excuse me, yeh slot mera hai — maine advance booking ki thi.
 She: 😄 What? Shoes ke liye bhi booking?
@@ -4769,13 +4769,13 @@ She: 😂 Smart! Main bhi lagaungi ab se.
 Me: Chalo darshan ke baad ek chai pe baat karte hain — shoes safety tips share karunga.
 She: 😂 Done! Chai pe shoes ka gyaan — unique combo!
 Me: [Name] btw. Shoe Security Consultant.
-She: 😂 I'm [her name]. Client number 1!\`
+She: 😂 I'm [her name]. Client number 1!`
   },
   {
     id: 222,
     title: "Mandir — Donation Box Queue",
     category: "Approach",
-    text: \`*Context: Long queue at the donation box, she's standing ahead...*
+    text: `*Context: Long queue at the donation box, she's standing ahead...*
 
 Me: Excuse me, yeh donation box hai ya ATM? Queue dekh ke confuse ho gaya.
 She: 😄 ATM hota toh paisa milta, yahan toh dena padta hai.
@@ -4789,13 +4789,13 @@ Me: Nahi, par bhagwaan ke saath mera account strong hai.
 She: 😂 Mera bhi strong kara do!
 Me: Chalo saath mein prarthna karte hain — group discount milega.
 She: 😂 I'm [her name].
-Me: [Name]. Spiritual Investment Advisor!\`
+Me: [Name]. Spiritual Investment Advisor!`
   },
   {
     id: 223,
     title: "Mandir — Coconut Breaking Fail",
     category: "Approach",
-    text: \`*Context: She tries to break a coconut at mandir and it bounces off...*
+    text: `*Context: She tries to break a coconut at mandir and it bounces off...*
 
 Me: *picking up the coconut* Yeh nariyal bhi tough hai — respect karo iske determination ki.
 She: 😂 Main itni weak hoon ya coconut itna strong?
@@ -4809,13 +4809,13 @@ Me: Haan, par entrance exam mein ek nariyal todna padta hai.
 She: 😂 Toh main fail ho gayi!
 Me: Koi nahi, re-exam de do. Main tutor ban jaata hoon — free coaching.
 She: 😂 Deal! I'm [her name].
-Me: [Name]. Professor of Coconut Sciences!\`
+Me: [Name]. Professor of Coconut Sciences!`
   },
   {
     id: 224,
     title: "Mandir — Rangoli Near Mandir",
     category: "Approach",
-    text: \`*Context: She's admiring a rangoli near the mandir entrance...*
+    text: `*Context: She's admiring a rangoli near the mandir entrance...*
 
 Me: *standing next to her* Yeh rangoli dekh ke mujhe meri drawing skills ki yaad aa gayi.
 She: Achhi hain kya tumhari?
@@ -4830,13 +4830,13 @@ She: Haan thoda thoda!
 Me: Nice! Ek photo le lo iska — aur ek meri bhi le lo, rangoli ke saath.
 She: 😂 Okay sure!
 Me: [Name] btw. Non-artist but great model.
-She: 😂 I'm [her name]. Photographer ban gayi ab!\`
+She: 😂 I'm [her name]. Photographer ban gayi ab!`
   },
   {
     id: 225,
     title: "Mandir — Bell Ringing Turn",
     category: "Approach",
-    text: \`*Context: You both reach for the temple bell at the same time...*
+    text: `*Context: You both reach for the temple bell at the same time...*
 
 Me: Ladies first — par bell itni loud hai ki puri colony jaag jayegi.
 She: 😂 Haan, last time maine bajaayi toh uncle ne ghoor ke dekha.
@@ -4850,13 +4850,13 @@ Me: Exactly! Recommendation letter bhi hai bhagwaan se.
 She: 😂 Strong profile!
 Me: Darshan ke baad chai? Bell ringing tips share karunga.
 She: 😂 Done! I'm [her name].
-Me: [Name]. India's #1 Bell Consultant!\`
+Me: [Name]. India's #1 Bell Consultant!`
   },
   {
     id: 226,
     title: "Mandir — Flower Garland Stall",
     category: "Approach",
-    text: \`*Context: Both looking at flower garlands at the stall outside mandir...*
+    text: `*Context: Both looking at flower garlands at the stall outside mandir...*
 
 Me: Bhaiya, yeh maala kitne ki hai? *to her* Aur aapko kaunsi chahiye?
 She: Mujhe woh yellow waali achhi lag rahi hai.
@@ -4870,13 +4870,13 @@ Me: 😂 Bhagwaan bhi government office jaisa kaam karte hain?
 She: 😂😂 Arey nahi, express delivery hoga!
 Me: Pakka? Chalo phir aapka number de do — confirmation message aa jayega.
 She: 😂 Smooth! I'm [her name].
-Me: [Name]. Devotional Services Customer!\`
+Me: [Name]. Devotional Services Customer!`
   },
   {
     id: 227,
     title: "Mandir — Parking Chaos",
     category: "Approach",
-    text: \`*Context: Mandir parking is full, you both are looking for spots...*
+    text: `*Context: Mandir parking is full, you both are looking for spots...*
 
 Me: Yeh mandir ka parking hai ya musical chairs? Koi jagah nahi mil rahi.
 She: 😂 Same! Main 10 minute se round laga rahi hoon.
@@ -4890,13 +4890,13 @@ Me: 😂 Woh toh main kar sakta hoon. Aapka stunt: 10 minute mein parking dhundh
 She: 😂 Impossible stunt! Main haar gayi.
 Me: Chalo meri car ke paas jagah hai — adjust kar lenge. Baad mein chai?
 She: 😂 Deal! I'm [her name].
-Me: [Name]. Parking Stunt Coordinator!\`
+Me: [Name]. Parking Stunt Coordinator!`
   },
   {
     id: 228,
     title: "Mandir — Prasad Plate Sharing",
     category: "Approach",
-    text: \`*Context: Prasad distribution, she drops her plate and you catch it...*
+    text: `*Context: Prasad distribution, she drops her plate and you catch it...*
 
 Me: *catches plate* Cricket mein select nahi hua toh kya — catch practice yahin ho rahi hai!
 She: 😂 Thank you! Almost gir jaata.
@@ -4910,13 +4910,13 @@ Me: MCU — Mandir Cinematic Universe.
 She: 😂 First movie: Prasad Wars — Infinity Ladoo!
 Me: 😂 Sequel: Endgame mein sab milke aarti karte hain!
 She: 😂 I'd watch that! I'm [her name].
-Me: [Name]. Director, MCU!\`
+Me: [Name]. Director, MCU!`
   },
   {
     id: 229,
     title: "Mandir — Steps Resting",
     category: "Approach",
-    text: \`*Context: Both resting on mandir steps after climbing up...*
+    text: `*Context: Both resting on mandir steps after climbing up...*
 
 Me: *sits down heavily* Yeh mandir ki seedhiyan hai ya Everest base camp?
 She: 😂 Same feeling! Legs are dead.
@@ -4930,13 +4930,13 @@ Me: Protein shake ki jagah prasad ka laddoo!
 She: 😂 Best gym ever honestly.
 Me: Chalo recovery ke liye neeche chai peete hain — earned it!
 She: 😂 Definitely earned it! I'm [her name].
-Me: [Name]. Fitness Bhakt!\`
+Me: [Name]. Fitness Bhakt!`
   },
   {
     id: 230,
     title: "Mandir — Havan Smoke",
     category: "Approach",
-    text: \`*Context: Both coughing from havan/yajna smoke...*
+    text: `*Context: Both coughing from havan/yajna smoke...*
 
 Me: *coughing* Yeh havan hai ya smoke machine? DJ night lag rahi hai.
 She: 😂 *also coughing* Seriously! Aankhon mein paani aa gaya.
@@ -4950,13 +4950,13 @@ Me: Next time saath mein aayenge — main mask laaunga, tum sunglasses.
 She: 😂 Team Havan Survivors!
 Me: T-shirt bhi banwa lete hain — "I Survived Mandir Havan 2024"
 She: 😂 I'd wear that! I'm [her name].
-Me: [Name]. Chief Smoke Officer!\`
+Me: [Name]. Chief Smoke Officer!`
   },
   {
     id: 231,
     title: "Mandir — Temple Pond/Kund",
     category: "Approach",
-    text: \`*Context: Both looking at the temple pond/kund...*
+    text: `*Context: Both looking at the temple pond/kund...*
 
 Me: Yeh pond mein coin daalne se wish puri hoti hai kya? Ya phir yeh sirf pond ka revenue model hai?
 She: 😂 Revenue model! Pond ka apna UPI hona chahiye.
@@ -4970,13 +4970,13 @@ Me: 😂 Tagline: "Paisa phenk, tamasha dekh!"
 She: 😂😂 IPO kab la rahe ho?
 Me: Jab tum co-founder banogi! Chai pe discuss karte hain?
 She: 😂 Best pitch ever! I'm [her name].
-Me: [Name]. Founder, Pondtm!\`
+Me: [Name]. Founder, Pondtm!`
   },
   {
     id: 232,
     title: "Mandir — Anniversary Celebration",
     category: "Approach",
-    text: \`*Context: Mandir anniversary celebration with decorations everywhere...*
+    text: `*Context: Mandir anniversary celebration with decorations everywhere...*
 
 Me: Yeh mandir ki anniversary hai ya shaadi? Itna decoration!
 She: 😂 Lagta hai mandir ne apna swayamvar rakha hai.
@@ -4989,13 +4989,13 @@ She: 😂 Dono disqualified!
 Me: Chalo phir hum dono consolation prize le lete hain — chai aur samosa.
 She: 😂 Best consolation prize!
 Me: [Name] btw. Disqualified Swayamvar Contestant.
-She: 😂 I'm [her name]. Fellow Disqualified!\`
+She: 😂 I'm [her name]. Fellow Disqualified!`
   },
   {
     id: 233,
     title: "Mandir — Early Morning Rush",
     category: "Approach",
-    text: \`*Context: 5 AM mandir visit, both looking sleepy...*
+    text: `*Context: 5 AM mandir visit, both looking sleepy...*
 
 Me: *yawning* Bhagwaan 5 baje open hote hain — par meri aankhein 10 baje khulti hain.
 She: 😂 Same! Mummy ne zor se uthaya.
@@ -5009,13 +5009,13 @@ Me: Deep thought for 5 AM! Chai leni chahiye — brain activate ho jayega.
 She: 😂 Haan please, yahan koi stall khula hai kya?
 Me: Bahar ek uncle ke paas milegi — chalo saath mein?
 She: Done! I'm [her name].
-Me: [Name]. 5 AM Warrior (forcefully)!\`
+Me: [Name]. 5 AM Warrior (forcefully)!`
   },
   {
     id: 234,
     title: "Mandir — Volunteer/Seva",
     category: "Approach",
-    text: \`*Context: Both volunteering at mandir for prasad distribution...*
+    text: `*Context: Both volunteering at mandir for prasad distribution...*
 
 Me: Yeh mera first time hai seva karte hue — training dogi kya?
 She: 😂 Training? Bas thali mein halwa daal do aur smile do.
@@ -5028,13 +5028,13 @@ She: 😂 "Prasad Distribution — A Case Study" — Harvard submit karo!
 Me: Co-author banogi? Credit share karenge.
 She: 😂 Done! Research partner!
 Me: [Name] btw. Aspiring Prasad Economist.
-She: 😂 I'm [her name]. Halwa Quality Control Head!\`
+She: 😂 I'm [her name]. Halwa Quality Control Head!`
   },
   {
     id: 235,
     title: "Mandir — Janmashtami Dahi Handi",
     category: "Approach",
-    text: \`*Context: Janmashtami celebration, dahi handi setup...*
+    text: `*Context: Janmashtami celebration, dahi handi setup...*
 
 Me: Main neeche waali layer mein hoon — matlab sab ka weight main utha raha hoon. Story of my life.
 She: 😂 Always the support system, never the star?
@@ -5048,13 +5048,13 @@ Me: Bhagwaan ki insurance hai — "Shri Krishna Protection Plan."
 She: 😂 Premium kitna hai?
 Me: Ek dahi handi aur do ladoo — annual plan.
 She: 😂 Affordable! I'm [her name].
-Me: [Name]. Krishna Insurance Agent!\`
+Me: [Name]. Krishna Insurance Agent!`
   },
   {
     id: 236,
     title: "Mandir — Shivratri Night Vigil",
     category: "Approach",
-    text: \`*Context: Shivratri jagran, both trying to stay awake at 2 AM...*
+    text: `*Context: Shivratri jagran, both trying to stay awake at 2 AM...*
 
 Me: *yawning* Bholenath jaag rahe hain toh hum bhi — par bholenath ko neend nahi aati, mujhe aa rahi hai.
 She: 😂 Same! Aankhein band ho rahi hain.
@@ -5069,13 +5069,13 @@ She: 😂 Skills: Meditation, Tandav, Third Eye Management
 Me: 😂 Endorsement by Parvati ji — 5 star review!
 She: 😂 Best profile! Chai leke aata hai koi?
 Me: Main le ke aata hoon — jagran fuel chahiye! I'm [Name].
-She: I'm [her name]. Night shift buddy!\`
+She: I'm [her name]. Night shift buddy!`
   },
   {
     id: 237,
     title: "Mandir — Chhath Puja Ghat",
     category: "Approach",
-    text: \`*Context: Chhath Puja at the ghat, both standing in water...*
+    text: `*Context: Chhath Puja at the ghat, both standing in water...*
 
 Me: Yeh paani itna thanda hai — meri devotion test ho rahi hai!
 She: 😂 Haan! Paani mein khade hoke surya dev ko arghya — extreme devotion.
@@ -5088,13 +5088,13 @@ She: 😂 Verified by nature!
 Me: Chalo arghya ke baad thakua khayenge — earned it!
 She: 😂 Haan! Thakua is the best part honestly.
 Me: Best festival food! I'm [Name].
-She: I'm [her name]. Chhath food buddy!\`
+She: I'm [her name]. Chhath food buddy!`
   },
   {
     id: 238,
     title: "Mandir — Saraswati Puja Pandal",
     category: "Approach",
-    text: \`*Context: Saraswati Puja, she's placing books near the idol for blessing...*
+    text: `*Context: Saraswati Puja, she's placing books near the idol for blessing...*
 
 Me: Main bhi apna phone rakh deta hoon — usme bhi knowledge hai... YouTube University ka.
 She: 😂 YouTube University — degree milti hai kya?
@@ -5108,13 +5108,13 @@ Me: Chalo aaj se real books padhte hain — accountability partner chahiye?
 She: 😂 Done! Par books kaunsi?
 Me: Woh chai pe decide karte hain — abhi puja ke baad?
 She: Sure! I'm [her name].
-Me: [Name]. YouTube University Topper!\`
+Me: [Name]. YouTube University Topper!`
   },
   {
     id: 239,
     title: "Mandir — Ram Navami Procession",
     category: "Approach",
-    text: \`*Context: Ram Navami procession, both watching from the side...*
+    text: `*Context: Ram Navami procession, both watching from the side...*
 
 Me: Yeh procession itna grand hai — meri society ki annual function ki band baj gayi competition mein.
 She: 😂 Society function mein kya hota hai?
@@ -5128,13 +5128,13 @@ Me: Next year saath mein participate karenge? Main dhol bajaunga.
 She: 😂 Dhol aata hai tumhe?
 Me: Nahi, par YouTube University se seekh lunga — 2 din mein expert.
 She: 😂 I'm [her name].
-Me: [Name]. Future Dhol Champion!\`
+Me: [Name]. Future Dhol Champion!`
   },
   {
     id: 240,
     title: "Mandir — Hanuman Chalisa Group",
     category: "Approach",
-    text: \`*Context: Tuesday evening Hanuman Chalisa recitation group...*
+    text: `*Context: Tuesday evening Hanuman Chalisa recitation group...*
 
 Me: *whispering* Main lyrics bhool gaya — prompter chahiye.
 She: 😂 *whispering back* Google karo!
@@ -5148,6 +5148,6 @@ Me: Main toh backbencher hoon — "present sir" bolke so jaata hoon.
 She: 😂 Har jagah backbencher!
 Me: Par backbenchers ki life zyada fun hoti hai — chai pe discuss karte hain?
 She: 😂 Done! I'm [her name].
-Me: [Name]. Backbencher Bhakt since '99!\`
+Me: [Name]. Backbencher Bhakt since '99!`
   }
 ];
