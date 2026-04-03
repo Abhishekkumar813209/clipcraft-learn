@@ -1,44 +1,44 @@
 
 
-## Plan: Improve Humor Coach UI + Add 50 Snapchat Conversation Templates
+## Plan: Add 100 Real-Life Approach Templates — "Street Humor" Category
 
-### 1. Redesign Response UI — Trainer/Coach Style
+### What
 
-Instead of raw markdown dump, parse and render the response into structured coach-style cards:
+Add 100 new Hinglish conversation templates (IDs 101-200) under a new category **"Approach"** covering real-life situations where you approach a girl with humor and keep the conversation going for 10+ minutes. Each template will be a multi-turn conversation showing the full flow from opener to extended chat.
 
-- **Coach avatar/header** at the top with a "🎤 Your Coach Says..." banner
-- **Conversation lines** highlighted with colored left-border (like chat bubbles)
-- **"Comedy Goldmine"** sections rendered as gradient-bordered tip cards with a lightbulb/fire icon
-- **Opportunity Rate** badges rendered as colored pills (🟢 Easy = green, 🟡 Medium = yellow, 🔴 Advanced = red)
-- **Punchline suggestions** rendered as numbered cards with distinct backgrounds per type (Safe/Clean, Edgy/Roast, Absurdist)
-- **Technique** tags rendered as small badges
-- Keep markdown as fallback — parse known patterns from the AI response (e.g., "Comedy Goldmine:", "Punchline 1", "Technique:", "Opportunity Rate:") into styled components
-- Streaming cursor stays at bottom
+### Situations Covered (100 templates across these themes)
 
-### 2. Add 50 Snapchat/DM Conversation Templates
+**Street/Park/Jogging (20)**
+- Girl jogging in park, at traffic signal, walking dog, waiting for Uber, at juice stall, morning walk, cycling track, garden selfie, reading on bench, street food stall, bus stop, metro station, parking lot, ATM queue, market shopping, roadside chai, evening walk, skateboard park, lake/ghat, flower market
 
-New category: **"Snapchat"** — 50 templates focused on:
-- Opening conversations with girls after hi/hello
-- Finding humor in mundane DM exchanges
-- Turning awkward silences into comedy
-- Replying to stories with wit
-- Handling "seen" and late replies with humor
-- Flirty-but-funny openers
-- Group snap chaos
-- Streak conversations gone wrong
+**Mandir/Religious (15)**
+- Photo with family at mandir, prasad line, aarti time, Navratri garba, temple stairs, pooja thali, darshan queue, mandir ka langar, festival mela, Durga Puja pandal, Ganpati visarjan, Diwali puja, Holi celebration, Gurudwara langar, temple photography
 
-All in Hinglish, Indian context, realistic scenarios.
+**Cafe/Restaurant (15)**
+- Same table area, ordering same drink, WiFi password asking, book she's reading, cafe counter wait, restaurant waiting area, dessert counter, food court, rooftop cafe, juice bar, ice cream parlor, street momos stall, chai tapri, dhaba, bakery queue
 
-### 3. Template Category Tabs
+**Gym/Sports (15)**
+- Gym water cooler, badminton court, swimming pool area, yoga class, cricket match audience, football turf, marathon registration, sports shop, cycling group, rock climbing, bowling alley, skating rink, tennis court, basketball court, trekking group
 
-Add horizontal scrollable category filter tabs above the template grid so user can filter by: All, Family, Street, Cricket, Office, College, Snapchat, etc.
+**College/Library/Bookstore (15)**
+- Bookstore same section, library adjacent seat, college fest, seminar break, canteen queue, photocopy shop, coaching class, exam center, co-working space, art exhibition, workshop, hackathon, cultural event, farewell party, alumni meet
+
+**Events/Social (10)**
+- Wedding function, house party, society event, concert crowd, movie theatre, exhibition, comedy show, train journey, flight co-passenger, elevator
+
+**Shopping/Mall (10)**
+- Same store trial room queue, billing counter, escalator, parking, food court, shoe section, electronics store, pet shop, furniture store, supermarket aisle
+
+### Template Structure
+Each template will be a realistic 8-15 line conversation showing:
+1. **Situational opener** (funny observation about shared context)
+2. **Her response** (realistic, sometimes cold/confused)
+3. **Recovery + humor escalation** (keeping it light)
+4. **Extended conversation** (sustaining 10+ minutes of chat)
+5. **Natural close** (getting number/Instagram or planning to meet again)
 
 ### Files Modified
-- **`src/data/humorTemplates.ts`** — Add 50 Snapchat templates (IDs 51-100)
-- **`src/pages/HumorCoach.tsx`** — Redesign response section with coach-style UI, add category filter tabs
+- **`src/data/humorTemplates.ts`** — Append 100 templates (IDs 101-200) with category "Approach"
 
-### Technical Details
-- Response parsing: Use regex to detect patterns like `Comedy Goldmine:`, `Punchline \d`, `Opportunity Rate:`, `Technique:` and render them as styled components
-- Fallback: If parsing fails, show raw markdown as before
-- Category filter: Simple state-based filter on template grid, no new dependencies
+Category filter tabs already exist, so the new "Approach" category will automatically appear in the UI.
 
