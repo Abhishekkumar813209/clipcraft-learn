@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, Line, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Brain, Clock, Flame, Timer, TrendingUp, Zap, BookOpen, Coffee, Moon, Sun, Trophy, Target, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
