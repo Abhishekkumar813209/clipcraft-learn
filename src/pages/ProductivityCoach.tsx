@@ -242,6 +242,7 @@ export default function ProductivityCoach() {
     });
   }, [last30, logMap]);
 
+  const getPressureMessage = () => {
     if (currentSlot?.type === 'break') return `This is your ${currentSlot.label}. Rest well, you'll need it.`;
     if (actualHours === 0 && currentSlot?.type === 'study') return `You have only ${remainingStudyHours} hours of study time left today. Start now.`;
     if (remainingWork > 0 && remainingWork < 2) return `Still possible. Focus on what's left. ${remainingWork.toFixed(1)}h to go.`;
