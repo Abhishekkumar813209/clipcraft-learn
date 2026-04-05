@@ -271,6 +271,10 @@ export default function ProductivityCoach() {
   const getPressureMessage = () => {
     if (currentSlot?.type === 'break') return `This is your ${currentSlot.label}. Rest well, you'll need it.`;
     const remStudy = parseFloat(remainingStudyHours);
+    if (remStudy <= 0 && !currentSlot) {
+      if (remainingWork <= 0) return `Day done! You planned ${plannedHours}h and completed ${actualHours}h. Well done 💪`;
+      return `Day over. You planned ${plannedHours}h, done ${actualHours}h. Tomorrow is a new chance — rest now.`;
+    }
     if (actualHours === 0 && currentSlot?.type === 'study') return `You have only ${remainingStudyHours}h of study time left today. Start now.`;
     if (remainingWork <= 0) return "Great work! You've hit your target. Keep the momentum.";
     if (remainingWork > remStudy)
