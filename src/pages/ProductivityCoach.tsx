@@ -270,10 +270,12 @@ export default function ProductivityCoach() {
 
   const getPressureMessage = () => {
     if (currentSlot?.type === 'break') return `This is your ${currentSlot.label}. Rest well, you'll need it.`;
-    if (actualHours === 0 && currentSlot?.type === 'study') return `You have only ${remainingStudyHours} hours of study time left today. Start now.`;
-    if (remainingWork > 0 && remainingWork < 2) return `Still possible. Focus on what's left. ${remainingWork.toFixed(1)}h to go.`;
-    if (remainingWork > 0) return `You planned ${plannedHours}h. You've done ${actualHours}h. ${remainingWork.toFixed(1)}h still possible.`;
-    return "Great work! You've hit your target. Keep the momentum.";
+    const remStudy = parseFloat(remainingStudyHours);
+    if (actualHours === 0 && currentSlot?.type === 'study') return `You have only ${remainingStudyHours}h of study time left today. Start now.`;
+    if (remainingWork <= 0) return "Great work! You've hit your target. Keep the momentum.";
+    if (remainingWork > remStudy)
+      return `You planned ${plannedHours}h, done ${actualHours}h. Only ${remainingStudyHours}h study time left — push hard!`;
+    return `You planned ${plannedHours}h. You've done ${actualHours}h. ${remainingWork.toFixed(1)}h still possible.`;
   };
 
   const fetchAI = useCallback(async (mode: 'motivate' | 'reflect') => {
@@ -479,7 +481,8 @@ export default function ProductivityCoach() {
                   <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${slotProgress}%`, background: statusColor }} />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {currentSlot.type === 'study' ? 'You should be studying right now.' : 'Recharge. Next session coming up.'}
+                  {currentSlot.start} – {currentSlot.end} ({Math.round(slotProgress)}% elapsed)
+                  {currentSlot.type === 'study' ? ' • You should be studying right now.' : ' • Recharge for next session.'}
                 </p>
               </div>
             )}
