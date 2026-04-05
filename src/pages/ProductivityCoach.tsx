@@ -250,14 +250,23 @@ export default function ProductivityCoach() {
     return days.map(day => {
       const log = logMap[day];
       const d = new Date(day + 'T00:00:00');
+      const planned = log?.planned_hours ?? 0;
+      const actual = log?.actual_hours ?? 0;
+      const completion = planned > 0 ? Math.min(Math.round((actual / planned) * 100), 100) : 0;
       return {
         day: dayNames[d.getDay()],
         date: day,
-        Planned: log?.planned_hours ?? 0,
-        Actual: log?.actual_hours ?? 0,
+        Planned: planned,
+        Actual: actual,
+        'Goal %': completion,
       };
     });
   }, [last30, logMap]);
+
+  const selectedDayData = useMemo(() => {
+    if (!selectedDay) return null;
+    return weeklyData.find(d => d.date === selectedDay) || null;
+  }, [selectedDay, weeklyData]);
 
   const getPressureMessage = () => {
     if (currentSlot?.type === 'break') return `This is your ${currentSlot.label}. Rest well, you'll need it.`;
