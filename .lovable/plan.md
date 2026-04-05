@@ -1,22 +1,35 @@
 
 
-## Plan: Add Weekly Planned vs Actual Bar Chart
+## Plan: Sync Weekly Chart & Contribution Grid with Live Edits
 
-### What
-Add a recharts `BarChart` section to the Productivity Coach page, positioned right below the Monthly Activity grid. It will show the last 7 days with two bars per day: Planned (blue) and Actual (green).
+### Problem
+When you change Planned/Actual hours, those values are saved to the database but the `historyLogs` state (which feeds both the weekly bar chart and the monthly contribution grid) is never updated. It's only loaded once on mount.
 
-### Changes — `src/pages/ProductivityCoach.tsx`
+### Fix — `src/pages/ProductivityCoach.tsx`
 
-1. **Import** `BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend` from `recharts`
-2. **Compute `weeklyData`** via `useMemo` — take last 7 days from `last30`, map each to `{ day: "Mon", planned: X, actual: Y }` using `logMap`
-3. **Render** a new card section below the Monthly Activity card:
-   - Title: "Weekly Overview" with `TrendingUp` icon
-   - `ResponsiveContainer` (height ~220px) wrapping a `BarChart`
-   - Two `Bar` components: Planned (soft blue `hsl(220 70% 60%)`) and Actual (green `hsl(142 60% 45%)`)
-   - X-axis shows short day names (Mon, Tue, etc.)
-   - Y-axis shows hours
-   - Custom rounded bar radius
+**Update `historyLogs` in memory whenever `plannedHours` or `actualHours` change:**
+
+Add a `useEffect` that watches `plannedHours`, `actualHours`, `lastAiScore`, and `dbLoaded`. Once loaded, it updates/inserts today's entry in `historyLogs` so that `logMap`, `weeklyData`, and the contribution grid all reactively reflect the current values.
+
+```typescript
+useEffect(() => {
+  if (!dbLoaded) return;
+  const today = new Date().toISOString().slice(0, 10);
+  setHistoryLogs(prev => {
+    const existing = prev.findIndex(l => l.date === today);
+    const entry = { date: today, planned_hours: plannedHours, actual_hours: actualHours, ai_score: lastAiScore };
+    if (existing >= 0) {
+      const updated = [...prev];
+      updated[existing] = entry;
+      return updated;
+    }
+    return [...prev, entry];
+  });
+}, [plannedHours, actualHours, lastAiScore, dbLoaded]);
+```
+
+This single `useEffect` is the only change needed. The weekly chart and contribution grid will immediately update because they derive from `historyLogs` via `useMemo`.
 
 ### Files Modified
-- `src/pages/ProductivityCoach.tsx` — Add imports, data computation, and chart JSX
+- `src/pages/ProductivityCoach.tsx` — Add one `useEffect` (~10 lines)
 
