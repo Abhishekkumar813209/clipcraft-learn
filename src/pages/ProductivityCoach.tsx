@@ -68,6 +68,7 @@ const NUDGES = [
 
 export default function ProductivityCoach() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [now, setNow] = useState(new Date());
   const [plannedHours, setPlannedHours] = useState(8);
   const [actualHours, setActualHours] = useState(0);
@@ -78,6 +79,49 @@ export default function ProductivityCoach() {
   const [libraryCountdown, setLibraryCountdown] = useState<number | null>(null);
   const [showFullScreenNudge, setShowFullScreenNudge] = useState(false);
   const [nudgeIndex, setNudgeIndex] = useState(0);
+  const [dbLoaded, setDbLoaded] = useState(false);
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Load today's data from DB
+  useEffect(() => {
+    if (!user) { setDbLoaded(true); return; }
+    const today = new Date().toISOString().slice(0, 10);
+    supabase
+      .from('productivity_logs')
+      .select('planned_hours, actual_hours')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setPlannedHours(Number(data.planned_hours));
+          setActualHours(Number(data.actual_hours));
+        }
+        setDbLoaded(true);
+      });
+  }, [user]);
+
+  // Debounced save to DB
+  const saveToDb = useCallback((planned: number, actual: number) => {
+    if (!user) return;
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      await supabase.from('productivity_logs').upsert(
+        { user_id: user.id, date: today, planned_hours: planned, actual_hours: actual, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id,date' }
+      );
+    }, 1000);
+  }, [user]);
+
+  const handlePlannedChange = (val: number) => {
+    setPlannedHours(val);
+    saveToDb(val, actualHours);
+  };
+  const handleActualChange = (val: number) => {
+    setActualHours(val);
+    saveToDb(plannedHours, val);
+  };
 
   // Clock tick
   useEffect(() => {
