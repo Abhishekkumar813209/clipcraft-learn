@@ -373,6 +373,31 @@ export default function ProductivityCoach() {
           </div>
         </div>
 
+        {/* ===== Weekly Bar Chart ===== */}
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-primary" />
+            <span className="font-semibold text-sm">Weekly Overview</span>
+          </div>
+          <div className="w-full h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={weeklyData} barGap={4} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} unit="h" width={35} />
+                <Tooltip
+                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.75rem', fontSize: 12 }}
+                  labelStyle={{ color: 'hsl(var(--foreground))', fontWeight: 600 }}
+                  cursor={{ fill: 'hsl(var(--accent) / 0.3)' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                <Bar dataKey="Planned" fill="hsl(220 70% 60%)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Actual" fill="hsl(142 60% 45%)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         {/* ===== Clock Hero ===== */}
         <div className="rounded-2xl p-6 text-center border border-border bg-card relative overflow-hidden">
           <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse at 50% 0%, ${statusColor} / 0.15, transparent 70%)` }} />
