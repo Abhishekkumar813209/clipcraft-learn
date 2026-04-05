@@ -153,6 +153,22 @@ export default function ProductivityCoach() {
       });
   }, [user]);
 
+  // Keep historyLogs in sync with live edits so charts update immediately
+  useEffect(() => {
+    if (!dbLoaded) return;
+    const today = new Date().toISOString().slice(0, 10);
+    setHistoryLogs(prev => {
+      const idx = prev.findIndex(l => l.date === today);
+      const entry: DayLog = { date: today, planned_hours: plannedHours, actual_hours: actualHours, ai_score: lastAiScore };
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = entry;
+        return updated;
+      }
+      return [...prev, entry];
+    });
+  }, [plannedHours, actualHours, lastAiScore, dbLoaded]);
+
   const saveToDb = useCallback((planned: number, actual: number, score?: number) => {
     if (!user) return;
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
