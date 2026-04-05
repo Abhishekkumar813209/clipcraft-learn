@@ -1,71 +1,42 @@
 
 
-## Plan: AI-Powered Productivity Coach Page
+## Plan: Persist Productivity Coach Data to Database
 
-### Overview
-Build a new standalone page at `/productivity` — a real-time intelligent productivity coach with live clock, timetable awareness, AI motivation via Gemini, and an "I'll go to the library" commitment system.
+### What
+Create a `productivity_logs` table to store daily planned/actual hours per user, and update the ProductivityCoach page to load/save this data automatically.
 
-### Files to Create/Modify
+### Database Migration
 
-**1. New: `src/pages/ProductivityCoach.tsx`** — Main page component (~400 lines)
+Create table `productivity_logs`:
+```sql
+CREATE TABLE public.productivity_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  date date NOT NULL DEFAULT CURRENT_DATE,
+  planned_hours numeric(4,1) NOT NULL DEFAULT 8,
+  actual_hours numeric(4,1) NOT NULL DEFAULT 0,
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, date)
+);
 
-Contains all 9 features in one page:
+ALTER TABLE public.productivity_logs ENABLE ROW LEVEL SECURITY;
 
-- **Real-time clock** — `setInterval` every second, shows current time (large digital clock), remaining time till 11:59 PM, and remaining work hours
-- **Timetable engine** — Hardcoded schedule: Study 10:30 AM–1:30 PM, Break 1:30–2:30 PM, Study 2:30–5:30 PM, Break 5:30–6:45 PM, Study 6:45–8:00 PM, Break 8:00–9:00 PM, Study 9:00–11:59 PM. Shows active slot status ("You should be studying now" / "This is your break time")
-- **Smart time pressure** — Contextual nudge messages based on remaining study time and current slot
-- **Progress bars** — Day progress (0–24h), Work completion (actual/planned), Study slot progress
-- **Library commitment button** — "I will go to the library in 10 minutes" → starts 10-min countdown → "Time's up. Get up now." with full-screen nudge
-- **Planned/Actual hours inputs** — User enters planned hours and logs actual hours; remaining is calculated live
-- **Underconfidence breaker** — Static motivational messages shown when session hasn't started
-- **AI Motivation button** — Calls existing Gemini round-robin system via a new edge function to generate a personalized motivational message based on remaining time, productivity score, and session status
-- **AI Daily Reflection button** — Same edge function, different prompt mode: 2-line review + 1 improvement + 1 motivational line
-
-**2. New: `supabase/functions/productivity-coach/index.ts`** — Edge function
-
-Uses the existing `callGemini` shared utility. Two modes:
-- `mode: "motivate"` — Takes remaining hours, productivity %, session status → returns a short punchy motivational message (2-3 lines max)
-- `mode: "reflect"` — Takes planned/actual hours, tasks done → returns daily reflection (2-line review + suggestion + motivation)
-
-**3. Modify: `src/App.tsx`** — Add route `/productivity`
-
-**4. Modify: `src/components/Sidebar.tsx`** — Add "Productivity" nav item with Timer icon
-
-### UI Layout (top to bottom)
-```text
-┌─────────────────────────────────────┐
-│  ⏰ 03:47:22 PM    (large clock)    │
-│  Remaining today: 8h 12m 38s       │
-│  Status: 🟢 STUDY TIME             │
-│  "You should be studying right now" │
-├─────────────────────────────────────┤
-│  Day Progress  ████████░░░░ 65%    │
-│  Work Done     ████░░░░░░░░ 33%    │
-│  Planned: [8h] Actual: [2.5h]     │
-│  "You planned 8h. Done 2.5h.      │
-│   5.5h still possible."           │
-├─────────────────────────────────────┤
-│  🔥 AI Motivation                  │
-│  [Get Motivation]  [Daily Review]  │
-│  "It takes 10 min to reach the    │
-│   library. Why are you sitting?"   │
-├─────────────────────────────────────┤
-│  💪 Underconfidence Breaker        │
-│  "You don't need confidence.       │
-│   You need action."               │
-│  [I'll go to library in 10 min]   │
-│  ⏱ 09:42 remaining...             │
-└─────────────────────────────────────┘
+CREATE POLICY "Users can CRUD own productivity_logs"
+  ON public.productivity_logs FOR ALL
+  TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 ```
 
-### Fix: `src/data/humorTemplates.ts` build error
-The TypeScript compiler shows no error locally, but the build system reports line 5154. Will add an explicit newline or ensure the file ends cleanly with no trailing issues.
+### Code Changes — `src/pages/ProductivityCoach.tsx`
 
-### Technical Details
-- Clock uses `useState` + `useEffect` with `setInterval(1000)`
-- Timetable slots defined as an array of `{ start: "HH:MM", end: "HH:MM", type: "study" | "break" }`
-- Library countdown uses `setTimeout`/`setInterval` with state tracking
-- AI calls use `supabase.functions.invoke` or direct fetch to the edge function
-- Edge function reuses `callGemini` from `_shared/gemini.ts` (no streaming needed — short responses)
-- Full-screen nudge: fixed overlay with z-50, dismiss on click
+1. Import `useAuth` from AuthContext
+2. On mount, fetch today's row from `productivity_logs` for the current user
+3. Initialize `plannedHours` and `actualHours` from the fetched row (or defaults)
+4. On change of either value, upsert (insert or update on conflict) the row back to the database with a short debounce (~1s)
+5. If user is not logged in, fall back to local state only (no DB calls)
+
+### Files Modified
+- **Migration** — New table `productivity_logs`
+- **`src/pages/ProductivityCoach.tsx`** — Add load/save logic with upsert
 
