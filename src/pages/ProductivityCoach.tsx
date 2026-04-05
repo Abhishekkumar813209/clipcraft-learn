@@ -401,27 +401,60 @@ export default function ProductivityCoach() {
 
         {/* ===== Weekly Bar Chart ===== */}
         <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            <span className="font-semibold text-sm">Weekly Overview</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <span className="font-semibold text-sm">Weekly Overview</span>
+            </div>
+            {selectedDay && (
+              <button onClick={() => setSelectedDay(null)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                ✕ Clear selection
+              </button>
+            )}
           </div>
-          <div className="w-full h-[220px]">
+          <div className="w-full h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyData} barGap={4} barCategoryGap="20%">
+              <ComposedChart data={weeklyData} barGap={4} barCategoryGap="20%" onClick={(e: any) => {
+                if (e?.activePayload?.[0]?.payload?.date) {
+                  setSelectedDay(e.activePayload[0].payload.date);
+                }
+              }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} unit="h" width={35} />
+                <YAxis yAxisId="hours" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} unit="h" width={35} />
+                <YAxis yAxisId="percent" orientation="right" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} unit="%" domain={[0, 100]} width={40} />
                 <Tooltip
                   contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.75rem', fontSize: 12 }}
                   labelStyle={{ color: 'hsl(var(--foreground))', fontWeight: 600 }}
                   cursor={{ fill: 'hsl(var(--accent) / 0.3)' }}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-                <Bar dataKey="Planned" fill="hsl(220 70% 60%)" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="Actual" fill="hsl(142 60% 45%)" radius={[6, 6, 0, 0]} />
-              </BarChart>
+                <Bar yAxisId="hours" dataKey="Planned" fill="hsl(220 70% 60%)" radius={[6, 6, 0, 0]} cursor="pointer" />
+                <Bar yAxisId="hours" dataKey="Actual" fill="hsl(142 60% 45%)" radius={[6, 6, 0, 0]} cursor="pointer" />
+                <Line yAxisId="percent" type="monotone" dataKey="Goal %" stroke="hsl(35 90% 55%)" strokeWidth={2.5} dot={{ r: 4, fill: 'hsl(35 90% 55%)', strokeWidth: 0 }} activeDot={{ r: 6 }} />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
+          {/* Selected day detail */}
+          {selectedDayData && (
+            <div className="rounded-xl bg-accent/50 border border-border p-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <p className="text-sm font-semibold text-foreground">{selectedDayData.day} — {selectedDayData.date}</p>
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div>
+                  <p className="text-lg font-bold" style={{ color: 'hsl(220 70% 60%)' }}>{selectedDayData.Planned}h</p>
+                  <p className="text-xs text-muted-foreground">Planned</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold" style={{ color: 'hsl(142 60% 45%)' }}>{selectedDayData.Actual}h</p>
+                  <p className="text-xs text-muted-foreground">Actual</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold" style={{ color: 'hsl(35 90% 55%)' }}>{selectedDayData['Goal %']}%</p>
+                  <p className="text-xs text-muted-foreground">Goal</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ===== Clock Hero ===== */}
