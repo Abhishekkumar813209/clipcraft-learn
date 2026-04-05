@@ -285,6 +285,7 @@ export type Database = {
       productivity_logs: {
         Row: {
           actual_hours: number
+          ai_score: number | null
           date: string
           id: string
           planned_hours: number
@@ -293,6 +294,7 @@ export type Database = {
         }
         Insert: {
           actual_hours?: number
+          ai_score?: number | null
           date?: string
           id?: string
           planned_hours?: number
@@ -301,6 +303,7 @@ export type Database = {
         }
         Update: {
           actual_hours?: number
+          ai_score?: number | null
           date?: string
           id?: string
           planned_hours?: number

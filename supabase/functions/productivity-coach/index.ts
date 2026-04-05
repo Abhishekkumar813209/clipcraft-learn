@@ -27,19 +27,30 @@ Give ONLY the motivational message, nothing else.`;
     } else {
       prompt = `You are a productivity coach. The student planned ${plannedHours} hours today and actually studied ${actualHours} hours (${productivityPercent}% completion).
 
-Generate a brief daily reflection:
+You MUST respond with valid JSON only. No markdown, no backticks, no extra text. The JSON format:
+{"message": "your 4-line reflection here", "score": <number 0-100>}
+
+The message should contain:
 - Line 1-2: Performance review (honest but not harsh)
 - Line 3: One specific improvement suggestion
 - Line 4: One motivational closing line
+Keep it in Hinglish. Be concise.
 
-Keep it in Hinglish. Be concise. Give ONLY the reflection, nothing else.`;
+The score should be 0-100 based on:
+- 0-30: Very poor (did almost nothing)
+- 31-50: Below average
+- 51-70: Decent effort
+- 71-85: Good work
+- 86-100: Outstanding
+
+Respond ONLY with the JSON object.`;
     }
 
     const res = await callGemini({
       model: "gemini-2.5-flash",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.9,
-      max_tokens: 200,
+      max_tokens: 300,
     });
 
     if (!res.ok) {
@@ -52,9 +63,27 @@ Keep it in Hinglish. Be concise. Give ONLY the reflection, nothing else.`;
     }
 
     const data = await res.json();
-    const message = data.choices?.[0]?.message?.content?.trim() || "Keep pushing. Every minute counts.";
+    const rawContent = data.choices?.[0]?.message?.content?.trim() || "";
 
-    return new Response(JSON.stringify({ message }), {
+    if (mode === "motivate") {
+      return new Response(JSON.stringify({ message: rawContent || "Keep pushing. Every minute counts." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // reflect mode — parse JSON response
+    let message = "Keep pushing. Every minute counts.";
+    let score = Math.round(productivityPercent * 0.8); // fallback score
+    try {
+      const parsed = JSON.parse(rawContent);
+      message = parsed.message || message;
+      score = typeof parsed.score === "number" ? Math.min(100, Math.max(0, parsed.score)) : score;
+    } catch {
+      // If JSON parsing fails, use raw content as message
+      message = rawContent || message;
+    }
+
+    return new Response(JSON.stringify({ message, score }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
