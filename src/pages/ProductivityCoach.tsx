@@ -238,7 +238,7 @@ export default function ProductivityCoach() {
     let streak = 0;
     for (let i = last30.length - 1; i >= 0; i--) {
       const log = logMap[last30[i]];
-      if (log && log.actual_hours > 0) streak++;
+      if (log && log.planned_hours > 0 && log.actual_hours >= log.planned_hours) streak++;
       else break;
     }
     return streak;
