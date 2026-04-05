@@ -1,0 +1,1 @@
+ALTER TABLE public.productivity_logs ADD COLUMN ai_score integer DEFAULT 0;
