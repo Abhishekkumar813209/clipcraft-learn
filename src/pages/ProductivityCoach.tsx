@@ -227,7 +227,21 @@ export default function ProductivityCoach() {
     return streak;
   }, [last30, logMap]);
 
-  const getPressureMessage = () => {
+  const weeklyData = useMemo(() => {
+    const days = last30.slice(-7);
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days.map(day => {
+      const log = logMap[day];
+      const d = new Date(day + 'T00:00:00');
+      return {
+        day: dayNames[d.getDay()],
+        date: day,
+        Planned: log?.planned_hours ?? 0,
+        Actual: log?.actual_hours ?? 0,
+      };
+    });
+  }, [last30, logMap]);
+
     if (currentSlot?.type === 'break') return `This is your ${currentSlot.label}. Rest well, you'll need it.`;
     if (actualHours === 0 && currentSlot?.type === 'study') return `You have only ${remainingStudyHours} hours of study time left today. Start now.`;
     if (remainingWork > 0 && remainingWork < 2) return `Still possible. Focus on what's left. ${remainingWork.toFixed(1)}h to go.`;
