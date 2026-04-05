@@ -106,7 +106,7 @@ export default function ProductivityCoach() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [now, setNow] = useState(new Date());
-  const [plannedHours, setPlannedHours] = useState(8);
+  const [plannedHours, setPlannedHours] = useState(6);
   const [actualHours, setActualHours] = useState(0);
   const [aiMessage, setAiMessage] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
