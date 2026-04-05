@@ -1,42 +1,65 @@
 
 
-## Plan: Persist Productivity Coach Data to Database
+## Plan: White Theme + Monthly Dashboard with Green Dots + AI Score Tracking
 
-### What
-Create a `productivity_logs` table to store daily planned/actual hours per user, and update the ProductivityCoach page to load/save this data automatically.
+### Problems Identified
+1. Current UI is forced dark theme — user wants white/light theme
+2. No dashboard showing daily history — user wants GitHub-style green contribution grid (monthly)
+3. AI motivation score/points are not tracked anywhere — they should persist and show trends
 
-### Database Migration
+### Changes
 
-Create table `productivity_logs`:
+**1. Database Migration — Add `ai_score` column to `productivity_logs`**
+
 ```sql
-CREATE TABLE public.productivity_logs (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL,
-  date date NOT NULL DEFAULT CURRENT_DATE,
-  planned_hours numeric(4,1) NOT NULL DEFAULT 8,
-  actual_hours numeric(4,1) NOT NULL DEFAULT 0,
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  UNIQUE (user_id, date)
-);
-
-ALTER TABLE public.productivity_logs ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can CRUD own productivity_logs"
-  ON public.productivity_logs FOR ALL
-  TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+ALTER TABLE public.productivity_logs ADD COLUMN ai_score integer DEFAULT 0;
 ```
 
-### Code Changes — `src/pages/ProductivityCoach.tsx`
+This lets the edge function assign a daily productivity score (0–100) that gets saved per day.
 
-1. Import `useAuth` from AuthContext
-2. On mount, fetch today's row from `productivity_logs` for the current user
-3. Initialize `plannedHours` and `actualHours` from the fetched row (or defaults)
-4. On change of either value, upsert (insert or update on conflict) the row back to the database with a short debounce (~1s)
-5. If user is not logged in, fall back to local state only (no DB calls)
+**2. Update Edge Function (`supabase/functions/productivity-coach/index.ts`)**
+
+- In `reflect` mode, instruct Gemini to also return a numeric `score` (0–100) alongside the text
+- Parse the JSON response and return `{ message, score }`
+
+**3. Rewrite `src/pages/ProductivityCoach.tsx` — White Theme + Dashboard**
+
+- **Theme**: Replace all `hsl(230,15%,8%)` dark backgrounds with white/light backgrounds. Use proper text colors (gray-800, gray-600). Cards get white bg with subtle borders and shadows.
+- **New Dashboard Section** (top of page, below header):
+  - Fetch last 30 days of `productivity_logs` for the user
+  - Render a **GitHub-style contribution grid**: 30 boxes in a row, each colored from light green to dark green based on `actual_hours / planned_hours` ratio (0% = gray, 25% = light green, 50% = medium, 75% = dark green, 100% = deepest green)
+  - Show stats row: Total days active, Average score, Current streak, Best streak
+- **AI Score Display**: After daily review, save the returned score to the database. Show the score prominently in the dashboard stats.
+- **Keep all existing features**: clock, timetable, pressure messages, AI motivation, library countdown — just re-skinned to white theme
+
+### UI Layout (updated)
+```text
+┌──────────────────────────────────────┐
+│  ← Productivity Coach               │
+├──────────────────────────────────────┤
+│  📊 Monthly Dashboard               │
+│  [□□□■■□■■■■□□□■■■■■□□■■■■■□□□□□]   │
+│  (30 green-shaded dots for 30 days) │
+│                                      │
+│  Active: 18d  Avg Score: 72  🔥 5d  │
+├──────────────────────────────────────┤
+│  ⏰ 03:47 PM   Remaining: 8h 12m   │
+│  Status: 🟢 STUDY TIME              │
+├──────────────────────────────────────┤
+│  Progress bars + Circular ring       │
+│  Planned: [8h]  Actual: [2.5h]      │
+├──────────────────────────────────────┤
+│  🔥 AI Motivation / Daily Review    │
+│  AI Score: 72/100                    │
+├──────────────────────────────────────┤
+│  💪 Library Countdown               │
+├──────────────────────────────────────┤
+│  📅 Timetable                       │
+└──────────────────────────────────────┘
+```
 
 ### Files Modified
-- **Migration** — New table `productivity_logs`
-- **`src/pages/ProductivityCoach.tsx`** — Add load/save logic with upsert
+- **Migration** — Add `ai_score` column to `productivity_logs`
+- **`supabase/functions/productivity-coach/index.ts`** — Return score from reflect mode
+- **`src/pages/ProductivityCoach.tsx`** — White theme, contribution grid dashboard, score tracking
 
