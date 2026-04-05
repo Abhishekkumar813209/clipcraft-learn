@@ -296,7 +296,7 @@ export default function ProductivityCoach() {
                   max={24}
                   step={0.5}
                   value={actualHours}
-                  onChange={e => setActualHours(parseFloat(e.target.value) || 0)}
+                  onChange={e => handleActualChange(parseFloat(e.target.value) || 0)}
                 />
               </div>
             </div>
