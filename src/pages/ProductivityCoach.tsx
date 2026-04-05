@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Brain, Clock, Flame, Timer, TrendingUp, Zap, BookOpen, Coffee, Moon, Sun, Trophy, Target, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -226,6 +227,21 @@ export default function ProductivityCoach() {
     return streak;
   }, [last30, logMap]);
 
+  const weeklyData = useMemo(() => {
+    const days = last30.slice(-7);
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days.map(day => {
+      const log = logMap[day];
+      const d = new Date(day + 'T00:00:00');
+      return {
+        day: dayNames[d.getDay()],
+        date: day,
+        Planned: log?.planned_hours ?? 0,
+        Actual: log?.actual_hours ?? 0,
+      };
+    });
+  }, [last30, logMap]);
+
   const getPressureMessage = () => {
     if (currentSlot?.type === 'break') return `This is your ${currentSlot.label}. Rest well, you'll need it.`;
     if (actualHours === 0 && currentSlot?.type === 'study') return `You have only ${remainingStudyHours} hours of study time left today. Start now.`;
@@ -354,6 +370,31 @@ export default function ProductivityCoach() {
               </div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Streak</div>
             </div>
+          </div>
+        </div>
+
+        {/* ===== Weekly Bar Chart ===== */}
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-primary" />
+            <span className="font-semibold text-sm">Weekly Overview</span>
+          </div>
+          <div className="w-full h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={weeklyData} barGap={4} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} unit="h" width={35} />
+                <Tooltip
+                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.75rem', fontSize: 12 }}
+                  labelStyle={{ color: 'hsl(var(--foreground))', fontWeight: 600 }}
+                  cursor={{ fill: 'hsl(var(--accent) / 0.3)' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                <Bar dataKey="Planned" fill="hsl(220 70% 60%)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Actual" fill="hsl(142 60% 45%)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
