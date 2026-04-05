@@ -24,13 +24,13 @@ interface DayLog {
 }
 
 const TIMETABLE: TimeSlot[] = [
-  { start: '10:30', end: '13:30', type: 'study', label: 'Morning Study', icon: 'sun' },
-  { start: '13:30', end: '14:30', type: 'break', label: 'Lunch Break', icon: 'coffee' },
-  { start: '14:30', end: '17:30', type: 'study', label: 'Afternoon Study', icon: 'book' },
-  { start: '17:30', end: '18:45', type: 'break', label: 'Evening Break', icon: 'coffee' },
-  { start: '18:45', end: '20:00', type: 'study', label: 'Evening Study', icon: 'book' },
-  { start: '20:00', end: '21:00', type: 'break', label: 'Dinner Break', icon: 'coffee' },
-  { start: '21:00', end: '23:59', type: 'study', label: 'Night Study', icon: 'moon' },
+  { start: '10:30', end: '12:30', type: 'study', label: 'Morning Study', icon: 'sun' },
+  { start: '12:30', end: '14:00', type: 'break', label: 'Lunch Break', icon: 'coffee' },
+  { start: '14:00', end: '16:00', type: 'study', label: 'Afternoon Study', icon: 'book' },
+  { start: '16:00', end: '17:30', type: 'break', label: 'Evening Break', icon: 'coffee' },
+  { start: '17:30', end: '19:30', type: 'study', label: 'Evening Study', icon: 'book' },
+  { start: '19:30', end: '20:30', type: 'break', label: 'Dinner Break', icon: 'coffee' },
+  { start: '20:30', end: '22:30', type: 'study', label: 'Night Study', icon: 'moon' },
 ];
 
 const SLOT_ICONS = { sun: Sun, coffee: Coffee, book: BookOpen, moon: Moon };
