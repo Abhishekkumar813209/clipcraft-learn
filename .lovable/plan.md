@@ -1,32 +1,71 @@
 
 
-## Plan: 20 More Mandir Templates + Simplified "10 Punchlines Only" Analysis
+## Plan: AI-Powered Productivity Coach Page
 
-### 1. Add 20 new Mandir/Religious Approach templates (`src/data/humorTemplates.ts`)
+### Overview
+Build a new standalone page at `/productivity` — a real-time intelligent productivity coach with live clock, timetable awareness, AI motivation via Gemini, and an "I'll go to the library" commitment system.
 
-Append IDs 221-240 with category "Approach", all set in mandir/religious contexts:
-- Mandir shoe rack confusion, donation box queue, coconut breaking fail, rangoli near mandir, bell ringing turn, flower garland stall, mandir parking chaos, prasad plate sharing, mandir steps resting, havan/yajna smoke, temple pond/kund, mandir anniversary celebration, early morning mandir rush, mandir volunteer/seva, Janmashtami dahi handi, Shivratri night vigil, Chhath Puja ghat, Saraswati Puja pandal, Ram Navami procession, Hanuman Chalisa recitation group
+### Files to Create/Modify
 
-Each template: 8-15 line Hinglish dialogue with situational opener → humor escalation → extended conversation hooks.
+**1. New: `src/pages/ProductivityCoach.tsx`** — Main page component (~400 lines)
 
-### 2. Simplify AI prompt to output ONLY 10 punchlines (`supabase/functions/humor-coach/index.ts`)
+Contains all 9 features in one page:
 
-Replace the entire SYSTEM_PROMPT with a simplified one that instructs the AI to:
-- Read the conversation
-- Output exactly 10 numbered punchlines/comebacks the user could use
-- No difficulty ratings, no technique breakdowns, no goldmine sections, no practice exercises
-- Just: "Here are 10 punchlines for this situation:" followed by numbered list
+- **Real-time clock** — `setInterval` every second, shows current time (large digital clock), remaining time till 11:59 PM, and remaining work hours
+- **Timetable engine** — Hardcoded schedule: Study 10:30 AM–1:30 PM, Break 1:30–2:30 PM, Study 2:30–5:30 PM, Break 5:30–6:45 PM, Study 6:45–8:00 PM, Break 8:00–9:00 PM, Study 9:00–11:59 PM. Shows active slot status ("You should be studying now" / "This is your break time")
+- **Smart time pressure** — Contextual nudge messages based on remaining study time and current slot
+- **Progress bars** — Day progress (0–24h), Work completion (actual/planned), Study slot progress
+- **Library commitment button** — "I will go to the library in 10 minutes" → starts 10-min countdown → "Time's up. Get up now." with full-screen nudge
+- **Planned/Actual hours inputs** — User enters planned hours and logs actual hours; remaining is calculated live
+- **Underconfidence breaker** — Static motivational messages shown when session hasn't started
+- **AI Motivation button** — Calls existing Gemini round-robin system via a new edge function to generate a personalized motivational message based on remaining time, productivity score, and session status
+- **AI Daily Reflection button** — Same edge function, different prompt mode: 2-line review + 1 improvement + 1 motivational line
 
-### 3. Simplify response UI (`src/components/CoachResponse.tsx`)
+**2. New: `supabase/functions/productivity-coach/index.ts`** — Edge function
 
-- Remove goldmine, technique, opportunity, tip section types and their renderers
-- Remove `getDifficultyColor` function
-- Keep only punchline cards and markdown fallback
-- Simplify the parser to just detect numbered punchlines (1-10)
-- Clean, minimal UI: coach header + 10 punchline cards
+Uses the existing `callGemini` shared utility. Two modes:
+- `mode: "motivate"` — Takes remaining hours, productivity %, session status → returns a short punchy motivational message (2-3 lines max)
+- `mode: "reflect"` — Takes planned/actual hours, tasks done → returns daily reflection (2-line review + suggestion + motivation)
 
-### Files Modified
-- `src/data/humorTemplates.ts` — Add 20 Mandir templates (IDs 221-240)
-- `supabase/functions/humor-coach/index.ts` — Replace prompt to only ask for 10 punchlines
-- `src/components/CoachResponse.tsx` — Strip down to only render punchline cards
+**3. Modify: `src/App.tsx`** — Add route `/productivity`
+
+**4. Modify: `src/components/Sidebar.tsx`** — Add "Productivity" nav item with Timer icon
+
+### UI Layout (top to bottom)
+```text
+┌─────────────────────────────────────┐
+│  ⏰ 03:47:22 PM    (large clock)    │
+│  Remaining today: 8h 12m 38s       │
+│  Status: 🟢 STUDY TIME             │
+│  "You should be studying right now" │
+├─────────────────────────────────────┤
+│  Day Progress  ████████░░░░ 65%    │
+│  Work Done     ████░░░░░░░░ 33%    │
+│  Planned: [8h] Actual: [2.5h]     │
+│  "You planned 8h. Done 2.5h.      │
+│   5.5h still possible."           │
+├─────────────────────────────────────┤
+│  🔥 AI Motivation                  │
+│  [Get Motivation]  [Daily Review]  │
+│  "It takes 10 min to reach the    │
+│   library. Why are you sitting?"   │
+├─────────────────────────────────────┤
+│  💪 Underconfidence Breaker        │
+│  "You don't need confidence.       │
+│   You need action."               │
+│  [I'll go to library in 10 min]   │
+│  ⏱ 09:42 remaining...             │
+└─────────────────────────────────────┘
+```
+
+### Fix: `src/data/humorTemplates.ts` build error
+The TypeScript compiler shows no error locally, but the build system reports line 5154. Will add an explicit newline or ensure the file ends cleanly with no trailing issues.
+
+### Technical Details
+- Clock uses `useState` + `useEffect` with `setInterval(1000)`
+- Timetable slots defined as an array of `{ start: "HH:MM", end: "HH:MM", type: "study" | "break" }`
+- Library countdown uses `setTimeout`/`setInterval` with state tracking
+- AI calls use `supabase.functions.invoke` or direct fetch to the edge function
+- Edge function reuses `callGemini` from `_shared/gemini.ts` (no streaming needed — short responses)
+- Full-screen nudge: fixed overlay with z-50, dismiss on click
 
