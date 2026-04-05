@@ -282,6 +282,33 @@ export type Database = {
           },
         ]
       }
+      productivity_logs: {
+        Row: {
+          actual_hours: number
+          date: string
+          id: string
+          planned_hours: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_hours?: number
+          date?: string
+          id?: string
+          planned_hours?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_hours?: number
+          date?: string
+          id?: string
+          planned_hours?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null

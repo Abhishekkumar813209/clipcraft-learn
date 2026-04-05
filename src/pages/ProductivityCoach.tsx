@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Brain, Clock, Flame, Timer, TrendingUp, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 interface TimeSlot {
@@ -67,6 +68,7 @@ const NUDGES = [
 
 export default function ProductivityCoach() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [now, setNow] = useState(new Date());
   const [plannedHours, setPlannedHours] = useState(8);
   const [actualHours, setActualHours] = useState(0);
@@ -77,6 +79,49 @@ export default function ProductivityCoach() {
   const [libraryCountdown, setLibraryCountdown] = useState<number | null>(null);
   const [showFullScreenNudge, setShowFullScreenNudge] = useState(false);
   const [nudgeIndex, setNudgeIndex] = useState(0);
+  const [dbLoaded, setDbLoaded] = useState(false);
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Load today's data from DB
+  useEffect(() => {
+    if (!user) { setDbLoaded(true); return; }
+    const today = new Date().toISOString().slice(0, 10);
+    supabase
+      .from('productivity_logs')
+      .select('planned_hours, actual_hours')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setPlannedHours(Number(data.planned_hours));
+          setActualHours(Number(data.actual_hours));
+        }
+        setDbLoaded(true);
+      });
+  }, [user]);
+
+  // Debounced save to DB
+  const saveToDb = useCallback((planned: number, actual: number) => {
+    if (!user) return;
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      await supabase.from('productivity_logs').upsert(
+        { user_id: user.id, date: today, planned_hours: planned, actual_hours: actual, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id,date' }
+      );
+    }, 1000);
+  }, [user]);
+
+  const handlePlannedChange = (val: number) => {
+    setPlannedHours(val);
+    saveToDb(val, actualHours);
+  };
+  const handleActualChange = (val: number) => {
+    setActualHours(val);
+    saveToDb(plannedHours, val);
+  };
 
   // Clock tick
   useEffect(() => {
@@ -240,7 +285,7 @@ export default function ProductivityCoach() {
                   max={24}
                   step={0.5}
                   value={plannedHours}
-                  onChange={e => setPlannedHours(parseFloat(e.target.value) || 0)}
+                  onChange={e => handlePlannedChange(parseFloat(e.target.value) || 0)}
                 />
               </div>
               <div>
@@ -251,7 +296,7 @@ export default function ProductivityCoach() {
                   max={24}
                   step={0.5}
                   value={actualHours}
-                  onChange={e => setActualHours(parseFloat(e.target.value) || 0)}
+                  onChange={e => handleActualChange(parseFloat(e.target.value) || 0)}
                 />
               </div>
             </div>
