@@ -118,6 +118,7 @@ export default function ProductivityCoach() {
   const [nudgeIndex, setNudgeIndex] = useState(0);
   const [dbLoaded, setDbLoaded] = useState(false);
   const [historyLogs, setHistoryLogs] = useState<DayLog[]>([]);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch today + last 30 days history
