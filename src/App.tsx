@@ -48,6 +48,7 @@ import RbiPyqUpload from "./pages/RbiPyqUpload";
 import RbiPyqAnalysis from "./pages/RbiPyqAnalysis";
 import RbiPyqSession from "./pages/RbiPyqSession";
 import HumorCoach from "./pages/HumorCoach";
+import ProductivityCoach from "./pages/ProductivityCoach";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -116,6 +117,7 @@ const App = () => (
               <Route path="pyq/practice" element={<RbiPyqSession />} />
             </Route>
             <Route path="/humor" element={<HumorCoach />} />
+            <Route path="/productivity" element={<ProductivityCoach />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
