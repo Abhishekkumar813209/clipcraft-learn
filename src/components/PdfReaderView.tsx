@@ -641,7 +641,7 @@ export function PdfReaderView() {
           </PopoverContent>
         </Popover>
 
-        <PdfAutoPlay currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        <PdfAutoPlay currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} onCountdownChange={setAutoplayCountdown} />
 
         <Button variant={showChat ? 'default' : 'outline'} size="sm" className="gap-1 h-8 shrink-0" onClick={() => setShowChat(!showChat)}>
           <MessageSquare className="h-3.5 w-3.5" />
@@ -687,6 +687,13 @@ export function PdfReaderView() {
           <ScrollArea className={showSplitView ? 'w-1/2' : 'flex-1'}>
             <div className="p-2 md:p-4 flex justify-center relative">
               <canvas ref={mainCanvasRef} className="shadow-lg rounded-lg max-w-full" style={pageFoldStyle} />
+              {autoplayCountdown !== null && (
+                <div className="absolute top-4 right-4 md:top-6 md:right-6 pointer-events-none z-10">
+                  <div className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center border-2 border-white/20 shadow-lg">
+                    <span className="text-xl font-bold text-white font-mono tabular-nums">{autoplayCountdown}</span>
+                  </div>
+                </div>
+              )}
               {showOverlayTranslation && (
                 <div className="absolute inset-2 md:inset-4 bg-background/95 backdrop-blur-sm rounded-lg p-4 md:p-6 overflow-auto">
                   <div className="flex items-center justify-between mb-4">
