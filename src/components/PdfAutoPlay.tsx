@@ -8,6 +8,7 @@ interface PdfAutoPlayProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  onCountdownChange?: (seconds: number | null) => void;
 }
 
 const INTERVALS = [
@@ -19,7 +20,7 @@ const INTERVALS = [
   { label: 'Custom', value: -1 },
 ];
 
-export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPlayProps) {
+export function PdfAutoPlay({ currentPage, totalPages, onPageChange, onCountdownChange }: PdfAutoPlayProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [intervalSec, setIntervalSec] = useState(10);
   const [isCustom, setIsCustom] = useState(false);
@@ -65,6 +66,8 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
       elapsedRef.current += 0.1;
       const pct = (elapsedRef.current / activeInterval) * 100;
       setProgress(pct);
+      const remaining = Math.ceil(activeInterval - elapsedRef.current);
+      onCountdownChange?.(remaining);
 
       if (elapsedRef.current >= activeInterval) {
         elapsedRef.current = 0;
@@ -87,7 +90,12 @@ export function PdfAutoPlay({ currentPage, totalPages, onPageChange }: PdfAutoPl
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const stop = () => { setIsPlaying(false); elapsedRef.current = 0; setProgress(0); };
+  const stop = () => { setIsPlaying(false); elapsedRef.current = 0; setProgress(0); onCountdownChange?.(null); };
+
+  // Clear countdown when paused
+  useEffect(() => {
+    if (!isPlaying) onCountdownChange?.(null);
+  }, [isPlaying, onCountdownChange]);
 
   const handleSelectChange = (v: string) => {
     const num = Number(v);
