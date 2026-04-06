@@ -110,6 +110,7 @@ export function PdfReaderView() {
   const [sumTo, setSumTo] = useState(1);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const triggerSummarizeRef = useRef<((text: string, prompt: string) => void) | null>(null);
+  const [autoplayCountdown, setAutoplayCountdown] = useState<number | null>(null);
 
   const swipeGoNext = useCallback(() => {
     if (currentPage < totalPages) setCurrentPage(p => p + 1);
