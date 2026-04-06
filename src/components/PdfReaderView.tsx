@@ -455,7 +455,7 @@ export function PdfReaderView() {
           page_range: quizFrom === quizTo ? `${quizFrom}` : `${quizFrom}-${quizTo}`,
         }).select('id').single();
         if (saveError || !savedQuiz) { toast.error('Failed to save quiz'); setIsLoadingQuiz(false); return; }
-        navigate(`/quizzes/${savedQuiz.id}`);
+        window.open(`/quizzes/${savedQuiz.id}`, '_blank');
       }
       else toast.error('No questions generated');
     } catch { toast.error('Quiz generation failed'); }
