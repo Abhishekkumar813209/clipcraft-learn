@@ -183,6 +183,20 @@ export default function QuizTest() {
     setVisitedQuestions(prev => new Set(prev).add(idx));
   };
 
+  // Keyboard arrow navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (paused || loading || questions.length === 0) return;
+      if (e.key === 'ArrowRight' && currentIndex < questions.length - 1) {
+        goToQuestion(currentIndex + 1);
+      } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+        goToQuestion(currentIndex - 1);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, questions.length, paused, loading]);
+
   const answeredCount = questions.filter(q => isQuestionAnswered(q)).length;
 
   const handleSubmit = async () => {
