@@ -2,7 +2,7 @@ const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat
 
 function getKeys(): string[] {
   const keys: string[] = [];
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 10; i++) {
     const k = Deno.env.get(`GEMINI_KEY_${i}`);
     if (k) keys.push(k);
   }
