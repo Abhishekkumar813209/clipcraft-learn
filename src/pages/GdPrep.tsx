@@ -255,6 +255,26 @@ function FeedbackDisplay({ feedback }: { feedback: any }) {
           </Card>
         )}
 
+        {feedback.counterArguments?.length > 0 && (
+          <Card className="border-violet-500/30 bg-violet-500/5">
+            <CardHeader className="py-3"><CardTitle className="text-sm text-violet-600">⚔️ Counter-Arguments You May Face</CardTitle></CardHeader>
+            <CardContent className="pt-0 space-y-3">
+              {feedback.counterArguments.map((ca: { argument: string; rebuttal: string }, i: number) => (
+                <div key={i} className="space-y-1">
+                  <p className="text-sm font-medium text-destructive flex gap-2">
+                    <span className="shrink-0">🗣️</span>
+                    <span>{ca.argument}</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground flex gap-2 pl-6">
+                    <span className="text-violet-500 shrink-0 font-semibold">↳</span>
+                    <span>{ca.rebuttal}</span>
+                  </p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
         {feedback.sampleResponse && (
           <Card className="border-blue-500/30 bg-blue-500/5">
             <CardHeader className="py-3"><CardTitle className="text-sm text-blue-600">Model Response</CardTitle></CardHeader>

@@ -45,9 +45,15 @@ Your response MUST be in this exact JSON format:
   },
   "improvements": ["<specific actionable improvement 1>", "<improvement 2>", "<improvement 3>"],
   "strongPoints": ["<what they did well 1>", "<what they did well 2>"],
+  "counterArguments": [
+    { "argument": "<A likely counter-argument an opponent might raise against the student's position>", "rebuttal": "<How the student should respond to this counter-argument effectively>" },
+    { "argument": "<Another counter-argument>", "rebuttal": "<Suggested rebuttal>" },
+    { "argument": "<A third counter-argument>", "rebuttal": "<Suggested rebuttal>" }
+  ],
   "sampleResponse": "<A 100-word model response for the same topic showing ideal GD speaking style>"
 }
 
+For counterArguments, think about what OTHER participants in the GD would say to challenge this student's points, and provide smart rebuttals the student can use.
 Be encouraging but honest. Give specific examples from their text when pointing out strengths or weaknesses.
 Return ONLY the JSON, no markdown formatting.`;
 
@@ -57,7 +63,7 @@ Return ONLY the JSON, no markdown formatting.`;
       ],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 1500,
+        maxOutputTokens: 2000,
       },
     });
 
@@ -70,7 +76,6 @@ Return ONLY the JSON, no markdown formatting.`;
       feedbackText = data.choices[0].message.content;
     }
 
-    // Try to parse as JSON
     let feedback;
     try {
       const cleaned = feedbackText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
