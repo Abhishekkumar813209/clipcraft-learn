@@ -49,6 +49,7 @@ import RbiPyqAnalysis from "./pages/RbiPyqAnalysis";
 import RbiPyqSession from "./pages/RbiPyqSession";
 import HumorCoach from "./pages/HumorCoach";
 import ProductivityCoach from "./pages/ProductivityCoach";
+import GdPrep from "./pages/GdPrep";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -118,6 +119,7 @@ const App = () => (
             </Route>
             <Route path="/humor" element={<HumorCoach />} />
             <Route path="/productivity" element={<ProductivityCoach />} />
+            <Route path="/gd" element={<GdPrep />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
