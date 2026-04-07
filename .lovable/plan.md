@@ -1,40 +1,29 @@
 
 
-## Plan: GD (Group Discussion) Prep Module
+## Plan: Fix Build Errors + Add Counter-Argument Suggestions
 
-### What You Get
-A full GD preparation page at `/gd` with 4 tabs:
+### Problem
+The `gdTopics.ts` file has unescaped apostrophes inside single-quoted strings (e.g., `who's`, `India's`), causing 100+ TypeScript parse errors. This breaks the entire build, which is why `/gd` shows 404 and the sidebar link doesn't work (the app can't compile at all).
 
-1. **Topic Bank** — 50+ common GD topics organized by category (Current Affairs, Social, Tech, Business, Abstract) with pre-written points FOR and AGAINST each topic
-2. **AI Practice** — Pick/enter a topic, write your arguments, get AI feedback on clarity, structure, persuasiveness, and vocabulary
-3. **Tips & Strategies** — A reference guide covering opening techniques, body language, dos/don'ts, summarization tips, and common mistakes
-4. **Mock Timer** — Timed practice: 2-min thinking phase + 3-min speaking phase with audio cues, track your practice sessions
+### Fix
 
-### What Changes
+**1. Rewrite `src/data/gdTopics.ts`**
+- Keep all 50 topics intact
+- Switch all string literals to double quotes to avoid apostrophe escaping issues
+- This fixes all build errors at once
 
-**New files:**
-- `src/pages/GdPrep.tsx` — Main page with 4 tabs (similar structure to existing prep pages)
-- `src/data/gdTopics.ts` — Static data: 50+ topics with FOR/AGAINST points, organized by category
-- `src/data/gdTips.ts` — Static data: GD strategies, dos/don'ts, techniques
-- `supabase/functions/gd-feedback/index.ts` — Edge function that takes user's topic + arguments, returns AI feedback on structure, vocabulary, persuasiveness, and improvement suggestions (uses existing `callGemini` with HF fallback)
+**2. Update `supabase/functions/gd-feedback/index.ts` — add counter-arguments to AI prompt**
+- Expand the JSON response schema to include a new `counterArguments` array
+- Each item has: `argument` (what opponent might say), `response` (how to counter it)
+- Increase `maxOutputTokens` from 1500 to 2000 to accommodate extra content
 
-**Modified files:**
-- `src/App.tsx` — Add route `/gd` pointing to `GdPrep`
-- `src/components/Sidebar.tsx` — Add "GD Prep" nav item with `MessageSquare` icon
+**3. Update `src/pages/GdPrep.tsx` — display counter-arguments**
+- Add a new card in `FeedbackDisplay` after "Areas to Improve" showing counter-arguments
+- Each counter-argument shows the opponent's likely point and a suggested rebuttal
+- Styled with a distinct color (purple/violet) to differentiate from other feedback sections
 
-### AI Practice Flow
-- User selects a topic from the bank or types their own
-- Writes their arguments (what they'd say in a GD)
-- Hits "Get Feedback" → streams AI response with scores on: Content (structure, depth), Communication (clarity, grammar), Leadership traits (initiative, summarization ability)
-- Uses existing `callGemini` shared module (Gemini first, HF fallback)
-
-### Mock Timer Flow
-- User picks prep time (1-3 min) and speaking time (2-5 min)
-- Phase 1: "Think" countdown with topic displayed
-- Phase 2: "Speak" countdown
-- Browser notification sound at phase transitions
-- Session count tracked locally
-
-### No database changes needed
-All topic data is static. Practice history stored in component state (no persistence needed for v1).
+### Files Modified
+- `src/data/gdTopics.ts` — rewrite with double quotes (fixes build)
+- `supabase/functions/gd-feedback/index.ts` — add `counterArguments` to prompt schema
+- `src/pages/GdPrep.tsx` — render counter-arguments in feedback display
 
