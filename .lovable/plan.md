@@ -1,29 +1,32 @@
 
 
-## Plan: Fix Build Errors + Add Counter-Argument Suggestions
+## Plan: Generate a 4000-word Project Summary Document
 
-### Problem
-The `gdTopics.ts` file has unescaped apostrophes inside single-quoted strings (e.g., `who's`, `India's`), causing 100+ TypeScript parse errors. This breaks the entire build, which is why `/gd` shows 404 and the sidebar link doesn't work (the app can't compile at all).
+### What You Get
+A professionally written PDF document (~4000 words) summarizing how you conceptualized, designed, and built the StudyBrain project using Lovable. It will cover:
 
-### Fix
+1. **Introduction & Vision** — Why you built it, the problem it solves
+2. **Architecture Decisions** — React + Vite + Supabase stack, Zustand state management, edge functions
+3. **Core Modules** (each with thought process):
+   - Clip-based study system (exams, subjects, topics, clips)
+   - PDF Reader with AI chat, translation, quiz generation, auto-play
+   - SSC English prep with vocabulary extraction
+   - TCS NQT practice with AI explanations
+   - BPSC Prep with mains evaluation and PYQ extraction
+   - RBI Grade B with PYQ analysis
+   - GD Prep with AI feedback and counter-arguments
+   - Productivity Coach and Humor Coach
+4. **AI Integration** — Gemini multi-key rotation with Hugging Face fallback
+5. **Authentication & Data Layer** — Supabase auth, RLS policies, IndexedDB for PDFs
+6. **Challenges & Solutions** — Rate limiting, build errors, mobile responsiveness
+7. **What I Learned** — Iterative development with Lovable, prompt engineering
 
-**1. Rewrite `src/data/gdTopics.ts`**
-- Keep all 50 topics intact
-- Switch all string literals to double quotes to avoid apostrophe escaping issues
-- This fixes all build errors at once
+### Output
+- PDF file at `/mnt/documents/StudyBrain_Project_Summary.pdf`
+- ~4000 words, clean formatting with headers and sections
 
-**2. Update `supabase/functions/gd-feedback/index.ts` — add counter-arguments to AI prompt**
-- Expand the JSON response schema to include a new `counterArguments` array
-- Each item has: `argument` (what opponent might say), `response` (how to counter it)
-- Increase `maxOutputTokens` from 1500 to 2000 to accommodate extra content
-
-**3. Update `src/pages/GdPrep.tsx` — display counter-arguments**
-- Add a new card in `FeedbackDisplay` after "Areas to Improve" showing counter-arguments
-- Each counter-argument shows the opponent's likely point and a suggested rebuttal
-- Styled with a distinct color (purple/violet) to differentiate from other feedback sections
-
-### Files Modified
-- `src/data/gdTopics.ts` — rewrite with double quotes (fixes build)
-- `supabase/functions/gd-feedback/index.ts` — add `counterArguments` to prompt schema
-- `src/pages/GdPrep.tsx` — render counter-arguments in feedback display
+### Technical Approach
+- Use the AI gateway script to generate the content with a detailed prompt
+- Convert to PDF using Python (`fpdf2`)
+- No codebase changes needed
 
