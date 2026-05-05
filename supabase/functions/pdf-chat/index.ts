@@ -206,7 +206,6 @@ ${pageText || "No text available."}`;
         messages: [
           { role: "system", content: systemPrompt + `\n\nReturn ONLY valid JSON in this exact shape: {"questions":[{"id":1,"question":"...","type":"mcq","options":["a","b","c","d"],"correctAnswer":"a"}]}. No markdown, no commentary.` },
           { role: "user", content: `Generate ${numQ} quiz questions in ${lang}. JSON only.` },
-          stream: false,
         ],
         stream: false,
       }, { preferHuggingFace: true, stripToolsForHF: true });
