@@ -69,8 +69,8 @@ export async function callGemini(
     return res;
   }
 
-  // All Gemini keys 429 → HF fallback
-  console.log(`All ${keys.length} Gemini keys exhausted (429). Falling back to HF.`);
+  // All Gemini keys exhausted/overloaded → HF fallback
+  console.log(`All ${keys.length} Gemini keys exhausted (last status ${lastStatus}). Falling back to HF.`);
   return callHuggingFace(body, opts);
 }
 
