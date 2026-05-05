@@ -50,6 +50,7 @@ import RbiPyqSession from "./pages/RbiPyqSession";
 import HumorCoach from "./pages/HumorCoach";
 import ProductivityCoach from "./pages/ProductivityCoach";
 import GdPrep from "./pages/GdPrep";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,7 +85,7 @@ const App = () => (
             </Route>
             <Route path="/quizzes/:quizId" element={<QuizTest />} />
             <Route path="/quizzes/:quizId/analysis" element={<QuizAnalysis />} />
-            <Route path="/ssc" element={<SscLayout />}>
+            <Route path="/ssc" element={<ProtectedRoute><SscLayout /></ProtectedRoute>}>
               <Route index element={<SscDashboard />} />
               <Route path="practice" element={<SscPractice />} />
               <Route path="practice/:topic" element={<SscPracticeSession />} />
@@ -92,12 +93,12 @@ const App = () => (
               <Route path="vocab/upload" element={<SscVocabUpload />} />
               <Route path="vocab/learn/:root" element={<SscVocabLearn />} />
             </Route>
-            <Route path="/nqt" element={<NqtLayout />}>
+            <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />
               <Route path="practice" element={<NqtPractice />} />
               <Route path="practice/:topic" element={<NqtPracticeSession />} />
             </Route>
-            <Route path="/bpsc" element={<BpscLayout />}>
+            <Route path="/bpsc" element={<ProtectedRoute><BpscLayout /></ProtectedRoute>}>
               <Route index element={<BpscDashboard />} />
               <Route path="practice" element={<BpscPractice />} />
               <Route path="practice/:topic" element={<BpscPracticeSession />} />
@@ -108,7 +109,7 @@ const App = () => (
               <Route path="pyq/practice" element={<BpscPyqSession />} />
               <Route path="pyq/upload" element={<BpscPyqUpload />} />
             </Route>
-            <Route path="/rbi" element={<RbiLayout />}>
+            <Route path="/rbi" element={<ProtectedRoute><RbiLayout /></ProtectedRoute>}>
               <Route index element={<RbiDashboard />} />
               <Route path="practice" element={<RbiPractice />} />
               <Route path="practice/:topic" element={<RbiPracticeSession />} />
@@ -117,9 +118,9 @@ const App = () => (
               <Route path="pyq/analysis" element={<RbiPyqAnalysis />} />
               <Route path="pyq/practice" element={<RbiPyqSession />} />
             </Route>
-            <Route path="/humor" element={<HumorCoach />} />
-            <Route path="/productivity" element={<ProductivityCoach />} />
-            <Route path="/gd" element={<GdPrep />} />
+            <Route path="/humor" element={<ProtectedRoute><HumorCoach /></ProtectedRoute>} />
+            <Route path="/productivity" element={<ProtectedRoute><ProductivityCoach /></ProtectedRoute>} />
+            <Route path="/gd" element={<ProtectedRoute><GdPrep /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
