@@ -52,10 +52,10 @@ export async function callGemini(
       body: JSON.stringify(body),
     });
 
-    if (res.status === 429) {
-      lastStatus = 429;
+    if (res.status === 429 || res.status === 503 || res.status === 502 || res.status === 504 || res.status === 500) {
+      lastStatus = res.status;
       lastBody = await res.text().catch(() => "");
-      console.log(`Gemini key #${currentIndex} hit 429, rotating...`);
+      console.log(`Gemini key #${currentIndex} got ${res.status}, rotating...`);
       continue;
     }
 
@@ -69,8 +69,8 @@ export async function callGemini(
     return res;
   }
 
-  // All Gemini keys 429 → HF fallback
-  console.log(`All ${keys.length} Gemini keys exhausted (429). Falling back to HF.`);
+  // All Gemini keys exhausted/overloaded → HF fallback
+  console.log(`All ${keys.length} Gemini keys exhausted (last status ${lastStatus}). Falling back to HF.`);
   return callHuggingFace(body, opts);
 }
 
