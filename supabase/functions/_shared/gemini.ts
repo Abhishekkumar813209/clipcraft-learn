@@ -52,10 +52,10 @@ export async function callGemini(
       body: JSON.stringify(body),
     });
 
-    if (res.status === 429) {
-      lastStatus = 429;
+    if (res.status === 429 || res.status === 503 || res.status === 502 || res.status === 504 || res.status === 500) {
+      lastStatus = res.status;
       lastBody = await res.text().catch(() => "");
-      console.log(`Gemini key #${currentIndex} hit 429, rotating...`);
+      console.log(`Gemini key #${currentIndex} got ${res.status}, rotating...`);
       continue;
     }
 
