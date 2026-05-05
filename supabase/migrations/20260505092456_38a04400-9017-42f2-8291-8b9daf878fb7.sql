@@ -1,0 +1,1 @@
+-- noop placeholder (no DB changes); auth setting handled separately
