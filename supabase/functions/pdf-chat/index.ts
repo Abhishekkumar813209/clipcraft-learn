@@ -7,34 +7,72 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Cap how much PDF text we send to AI to keep token usage sane.
+const MAX_TEXT_CHARS = 60_000;
+function trimText(t?: string): string {
+  if (!t) return "";
+  if (t.length <= MAX_TEXT_CHARS) return t;
+  // Keep start + end (often most informative), drop middle
+  const half = Math.floor(MAX_TEXT_CHARS / 2);
+  return t.slice(0, half) + "\n\n[...content trimmed for AI quota...]\n\n" + t.slice(-half);
+}
+
+function errorResponse(status: number, message: string) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+function mapUpstreamError(status: number, body: string): { status: number; message: string } {
+  const lower = (body || "").toLowerCase();
+  if (status === 429 || lower.includes("rate") || lower.includes("quota") || lower.includes("resource_exhausted")) {
+    return { status: 429, message: "Daily AI limit reached across all keys. Try again later or use Hugging Face fallback." };
+  }
+  if (status === 402 || lower.includes("payment") || lower.includes("credit")) {
+    return { status: 402, message: "AI credits exhausted. Add credits in Settings." };
+  }
+  if (status === 401 || status === 403) {
+    return { status, message: "AI auth failed. Check API keys." };
+  }
+  return { status: 500, message: `AI service error (${status}): ${body.slice(0, 200) || "unknown"}` };
+}
+
+function extractJsonObject(text: string): any | null {
+  if (!text) return null;
+  // Try direct parse
+  try { return JSON.parse(text); } catch {}
+  // Strip code fences
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fence) {
+    try { return JSON.parse(fence[1]); } catch {}
+  }
+  // Find first { ... last }
+  const first = text.indexOf("{");
+  const last = text.lastIndexOf("}");
+  if (first >= 0 && last > first) {
+    try { return JSON.parse(text.slice(first, last + 1)); } catch {}
+  }
+  return null;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { messages, pageText, action, language, answers, numQuestions, questionTypes, focusTopics } = await req.json();
+    const { messages, pageText: rawText, action, language, answers, numQuestions, questionTypes, focusTopics } = await req.json();
+    const pageText = trimText(rawText);
 
     // --- TRANSLATE action ---
     if (action === "translate") {
-      let systemPrompt = '';
       const targetLang = language || 'hindi';
-      
-      if (targetLang === 'hinglish') {
-        systemPrompt = `Convert the following text into Hinglish (Hindi written in Roman/English script mixed with English words as naturally spoken). Stay strictly within the content of the text — do not add extra information or headings. Keep it casual and easy to read, like how students actually talk. Just give the converted text.
+      const systemPrompt = targetLang === 'hinglish'
+        ? `Convert the following text into Hinglish (Hindi written in Roman/English script mixed with English words as naturally spoken). Stay strictly within the content of the text — do not add extra information or headings. Just give the converted text.\n\nText:\n${pageText || "No text available."}`
+        : `Translate the following text into simple, easy-to-understand Hindi. Stay strictly within the content of the text — do not add extra information, headings, or elaborate breakdowns. Just give the translated text.\n\nText:\n${pageText || "No text available."}`;
 
-Text:
-${pageText || "No text available."}`;
-      } else {
-        systemPrompt = `Translate the following text into simple, easy-to-understand Hindi. Stay strictly within the content of the text — do not add extra information, headings, or elaborate breakdowns. If a sentence is complex, rephrase it simply in Hindi. Just give the translated text with brief one-line clarification only where absolutely needed.
-
-Text:
-${pageText || "No text available."}`;
-      }
-
-      const userPrompt = targetLang === 'hinglish' 
-        ? "Convert this page into Hinglish." 
-        : "Translate this page into Hindi.";
+      const userPrompt = targetLang === 'hinglish' ? "Convert this page into Hinglish." : "Translate this page into Hindi.";
 
       const response = await callGemini({
         model: "gemini-2.5-flash",
@@ -46,10 +84,9 @@ ${pageText || "No text available."}`;
       });
 
       if (!response.ok) {
-        const status = response.status;
-        if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        return new Response(JSON.stringify({ error: "AI service error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const body = await response.text().catch(() => "");
+        const m = mapUpstreamError(response.status, body);
+        return errorResponse(m.status, m.message);
       }
 
       const data = await response.json();
@@ -63,7 +100,7 @@ ${pageText || "No text available."}`;
     if (action === "quiz") {
       const lang = language === "hindi" ? "Hindi" : language === "hinglish" ? "Hinglish (Hindi in Roman script mixed with English)" : "English";
       const numQ = Math.min(Math.max(numQuestions || 4, 1), 40);
-      
+
       const types: string[] = questionTypes && questionTypes.length > 0 ? questionTypes : ['mcq', 'short'];
       const typeDescriptions: Record<string, string> = {
         mcq: 'MCQ (multiple choice with 4 options, one correct)',
@@ -73,44 +110,37 @@ ${pageText || "No text available."}`;
         short: 'Short Answer (requires a brief text answer)',
       };
       const typeList = types.map((t: string) => typeDescriptions[t] || t).join(', ');
-      
+
       const focusInstruction = focusTopics?.length
-        ? `\n\nIMPORTANT: The student has weak areas. Focus your questions specifically on these topics/questions the student struggled with:\n${focusTopics.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}\n\nGenerate NEW questions that test the same concepts from different angles.`
+        ? `\n\nIMPORTANT: Focus questions on these weak-area topics:\n${focusTopics.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}`
         : '';
 
-      const systemPrompt = `You are an expert quiz generator for students. Based on the following page text, generate exactly ${numQ} questions to test the student's understanding.
+      const systemPrompt = `You are an expert quiz generator. Based on the page text, generate exactly ${numQ} questions in ${lang}.
 
-Question types to use (distribute evenly among these): ${typeList}
+Question types to use (distribute evenly): ${typeList}
 
-IMPORTANT type field values:
-- "mcq" for multiple choice (single correct)
-- "true_false" for true/false
-- "fill_blank" for fill in the blank  
-- "multiple_correct" for multiple correct answers
-- "short" for short answer
-
-For true_false: the correctAnswer should be "True" or "False".
-For fill_blank: write the question with ___ where the blank is, correctAnswer is the word(s) that fill the blank.
-For multiple_correct: provide 4 options, correctAnswer should list all correct options separated by commas.
-
-Generate questions in ${lang}.${focusInstruction}
+Type field values: "mcq", "true_false", "fill_blank", "multiple_correct", "short".
+For true_false: correctAnswer is "True" or "False".
+For fill_blank: write ___ in question, correctAnswer = the missing word(s).
+For multiple_correct: 4 options, correctAnswer lists correct ones comma-separated.${focusInstruction}
 
 Page text:
 ${pageText || "No text available."}`;
 
       const validTypes = ["mcq", "short", "true_false", "fill_blank", "multiple_correct"];
 
+      // First try Gemini with tool-calling
       const response = await callGemini({
         model: "gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Generate ${numQ} quiz questions in ${lang} based on this page. Use these question types: ${types.join(', ')}.` },
+          { role: "user", content: `Generate ${numQ} quiz questions in ${lang}. Types: ${types.join(', ')}.` },
         ],
         tools: [{
           type: "function",
           function: {
             name: "generate_quiz",
-            description: "Generate quiz questions based on page content",
+            description: "Generate quiz questions",
             parameters: {
               type: "object",
               properties: {
@@ -122,7 +152,7 @@ ${pageText || "No text available."}`;
                       id: { type: "number" },
                       question: { type: "string" },
                       type: { type: "string", enum: validTypes },
-                      options: { type: "array", items: { type: "string" }, description: "For MCQ/multiple_correct: 4 options. For true_false/fill_blank/short: omit or empty." },
+                      options: { type: "array", items: { type: "string" } },
                       correctAnswer: { type: "string" },
                     },
                     required: ["id", "question", "type", "correctAnswer"],
@@ -137,41 +167,76 @@ ${pageText || "No text available."}`;
         }],
         tool_choice: { type: "function", function: { name: "generate_quiz" } },
         stream: false,
-      });
+      }, { stripToolsForHF: true });
 
       if (!response.ok) {
-        const status = response.status;
-        if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        return new Response(JSON.stringify({ error: "AI service error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const body = await response.text().catch(() => "");
+        const m = mapUpstreamError(response.status, body);
+        return errorResponse(m.status, m.message);
       }
 
       const data = await response.json();
-      const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+      const choice = data.choices?.[0]?.message;
+
+      // Gemini path: tool_calls
+      const toolCall = choice?.tool_calls?.[0];
       if (toolCall?.function?.arguments) {
-        const parsed = JSON.parse(toolCall.function.arguments);
-        return new Response(JSON.stringify(parsed), {
+        try {
+          const parsed = JSON.parse(toolCall.function.arguments);
+          return new Response(JSON.stringify(parsed), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        } catch (e) {
+          console.error("Failed to parse tool args:", e);
+        }
+      }
+
+      // HF path / fallback: parse JSON out of plain content
+      const content = choice?.content || "";
+      const parsed = extractJsonObject(content);
+      if (parsed?.questions?.length) {
+        return new Response(JSON.stringify({ questions: parsed.questions }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      return new Response(JSON.stringify({ questions: [] }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+
+      // If first attempt produced nothing useful AND we still have HF available, retry HF in JSON-prompt mode
+      const hfRetry = await callGemini({
+        model: "gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt + `\n\nReturn ONLY valid JSON in this exact shape: {"questions":[{"id":1,"question":"...","type":"mcq","options":["a","b","c","d"],"correctAnswer":"a"}]}. No markdown, no commentary.` },
+          { role: "user", content: `Generate ${numQ} quiz questions in ${lang}. JSON only.` },
+        ],
+        stream: false,
+      }, { preferHuggingFace: true, stripToolsForHF: true });
+
+      if (hfRetry.ok) {
+        const d2 = await hfRetry.json().catch(() => null);
+        const c2 = d2?.choices?.[0]?.message?.content || "";
+        const p2 = extractJsonObject(c2);
+        if (p2?.questions?.length) {
+          return new Response(JSON.stringify({ questions: p2.questions }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      return errorResponse(502, "AI returned no usable questions. Try fewer pages or fewer questions.");
     }
 
     // --- CHECK-ANSWERS action ---
     if (action === "check-answers") {
       const lang = language === "hindi" ? "Hindi" : "English";
-      const systemPrompt = `You are an expert educator. The student answered quiz questions based on a page. Evaluate each answer, give a score out of the total, and provide brief explanations for wrong answers.
+      const systemPrompt = `You are an expert educator. Evaluate each answer, give a score, and explain wrong answers briefly.
 
-IMPORTANT: If any answer is "(skipped)" or empty, mark it as a WEAK AREA. At the end of your feedback, add a "Weak Areas" section listing the topics/concepts the student skipped or got wrong — these are areas they need to practice more.
+If any answer is "(skipped)" or empty, mark as a WEAK AREA. End feedback with a "Weak Areas" section listing topics to practice.
 
 Respond in ${lang}.
 
-Page text for reference:
+Page text:
 ${pageText || "No text available."}
 
-Student's answers:
+Answers:
 ${JSON.stringify(answers || [])}`;
 
       const response = await callGemini({
@@ -184,10 +249,9 @@ ${JSON.stringify(answers || [])}`;
       });
 
       if (!response.ok) {
-        const status = response.status;
-        if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        return new Response(JSON.stringify({ error: "AI service error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const body = await response.text().catch(() => "");
+        const m = mapUpstreamError(response.status, body);
+        return errorResponse(m.status, m.message);
       }
 
       const data = await response.json();
@@ -198,16 +262,9 @@ ${JSON.stringify(answers || [])}`;
     }
 
     // --- DEFAULT: Chat (streaming) ---
-    const systemPrompt = `You are an expert educational content analyst and study assistant. You help students understand PDF content by summarizing, explaining, and answering questions.
+    const systemPrompt = `You are an expert study assistant. Help students understand PDF content with clear summaries and explanations.
 
-When given page text from a PDF, you should:
-- Provide clear, concise summaries
-- Explain complex concepts in simple terms
-- Highlight key points and important information
-- Answer questions about the content accurately
-- Use bullet points and structured formatting when helpful
-- If the text seems like a table of contents or index, help navigate the content
-- Always respond in a helpful, encouraging tone suitable for students
+Use bullet points and structured formatting when helpful.
 
 Current page text:
 ${pageText || "No page text available."}`;
@@ -222,24 +279,9 @@ ${pageText || "No page text available."}`;
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI credits exhausted. Please add credits in Settings." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      const t = await response.text();
-      console.error("AI error:", response.status, t);
-      return new Response(
-        JSON.stringify({ error: "AI service error" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      const body = await response.text().catch(() => "");
+      const m = mapUpstreamError(response.status, body);
+      return errorResponse(m.status, m.message);
     }
 
     return new Response(response.body, {
@@ -247,9 +289,6 @@ ${pageText || "No page text available."}`;
     });
   } catch (e) {
     console.error("pdf-chat error:", e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return errorResponse(500, e instanceof Error ? e.message : "Unknown error");
   }
 });

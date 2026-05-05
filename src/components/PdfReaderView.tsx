@@ -354,7 +354,7 @@ export function PdfReaderView() {
     if (prefetchAbortRef.current) prefetchAbortRef.current.abort();
     const controller = new AbortController();
     prefetchAbortRef.current = controller;
-    for (let p = fromPage + 1; p <= Math.min(fromPage + 3, totalPages); p++) {
+    for (let p = fromPage + 1; p <= Math.min(fromPage + 1, totalPages); p++) {
       if (controller.signal.aborted) return;
       const key = `${p}-${lang}`;
       if (translatedText.has(key)) continue;
