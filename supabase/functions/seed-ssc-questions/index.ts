@@ -12,6 +12,30 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Require authenticated user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    const { data: userData, error: userErr } = await userClient.auth.getUser(
+      authHeader.replace("Bearer ", "")
+    );
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { topic, questions } = await req.json();
 
     if (!topic || !Array.isArray(questions) || questions.length === 0) {
