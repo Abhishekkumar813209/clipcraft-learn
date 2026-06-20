@@ -9,9 +9,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   ArrowLeft, BookOpen, Brain, CheckCircle2, XCircle,
   ChevronLeft, ChevronRight, Loader2, Lightbulb, MessageSquare,
-  PenLine, Sparkles, Target, BookText, AlertTriangle, Languages
+  PenLine, Sparkles, Target, BookText, AlertTriangle, Languages, Star
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getWordById } from '@/data/vocabulary';
 
 // Support both old (string[]) and new ({english,hindi}[]) MCQ option formats
 type MCQOption = string | { english: string; hindi: string };
@@ -34,8 +35,9 @@ const getOptEnglish = (o: MCQOption) => typeof o === 'string' ? o : o.english;
 const getOptHindi = (o: MCQOption) => typeof o === 'string' ? null : o.hindi;
 
 export default function SscVocabLearn() {
-  const { root } = useParams<{ root: string }>();
+  const { root, wordId } = useParams<{ root?: string; wordId?: string }>();
   const navigate = useNavigate();
+  const staticWord = wordId ? getWordById(Number(wordId)) : null;
   const { user } = useAuth();
 
   const [wordList, setWordList] = useState<VocabWord[]>([]);
@@ -54,7 +56,11 @@ export default function SscVocabLearn() {
   const bgFetchRef = useRef(false);
   const abortRef = useRef(false);
 
-  const decodedRoot = root ? decodeURIComponent(root) : '';
+  const decodedRoot = staticWord
+    ? (staticWord.section || 'vocab')
+    : (root ? decodeURIComponent(root) : '');
+
+
 
   const fetchWordModule = useCallback(async (w: VocabWord, saveExercises: boolean) => {
     if (!user) return null;
@@ -110,9 +116,20 @@ export default function SscVocabLearn() {
 
   // Initial load: fetch word list, then load first word, then background-fetch rest
   useEffect(() => {
-    if (!root || !user) return;
+    if (!user) return;
     abortRef.current = false;
 
+    // ── Static single-word mode (Black Book) ──
+    if (staticWord) {
+      setWordList([{ word: staticWord.word, meaning: staticWord.meaning }]);
+      setRootMeaning(staticWord.subsection || staticWord.section);
+      setCurrentIdx(0);
+      return () => { abortRef.current = true; };
+    }
+
+    if (!root) return;
+
+    // ── Legacy root mode (Supabase) ──
     const init = async () => {
       setInitialLoading(true);
       setError(null);
@@ -139,7 +156,7 @@ export default function SscVocabLearn() {
     init();
 
     return () => { abortRef.current = true; };
-  }, [root, user, decodedRoot]);
+  }, [root, wordId, user, decodedRoot, staticWord]);
 
   // Once wordList is set, load first word
   useEffect(() => {
