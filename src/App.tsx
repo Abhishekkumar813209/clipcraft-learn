@@ -26,6 +26,7 @@ import SscPracticeSession from "./pages/SscPracticeSession";
 import SscVocab from "./pages/SscVocab";
 import SscVocabUpload from "./pages/SscVocabUpload";
 import SscVocabLearn from "./pages/SscVocabLearn";
+import SscVocabQuiz from "./pages/SscVocabQuiz";
 import NqtLayout from "./pages/NqtLayout";
 import NqtDashboard from "./pages/NqtDashboard";
 import NqtPractice from "./pages/NqtPractice";
@@ -90,8 +91,10 @@ const App = () => (
               <Route path="practice" element={<SscPractice />} />
               <Route path="practice/:topic" element={<SscPracticeSession />} />
               <Route path="vocab" element={<SscVocab />} />
+              <Route path="vocab/quiz" element={<SscVocabQuiz />} />
               <Route path="vocab/upload" element={<SscVocabUpload />} />
               <Route path="vocab/learn/:root" element={<SscVocabLearn />} />
+              <Route path="vocab/word/:wordId" element={<SscVocabLearn />} />
             </Route>
             <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />
