@@ -542,8 +542,37 @@ export default function AdminUpload() {
               <ClipboardPaste className="w-4 h-4 mr-1" />
               {showPasteMode ? 'Hide paste mode' : 'Paste text instead'}
             </Button>
+            <input ref={csvFileRef} type="file" accept=".csv,text/csv" onChange={handleCsv} className="hidden" id="csv-upload" />
+            <label htmlFor="csv-upload">
+              <Button asChild variant="outline" size="sm"><span><FileSpreadsheet className="w-4 h-4 mr-1" />Choose CSV</span></Button>
+            </label>
             {pdfName && <span className="text-sm">{pdfName} · {pages.length} pages</span>}
+            {csvName && <span className="text-sm text-emerald-600 dark:text-emerald-400">{csvName} · {csvRowCount} rows</span>}
           </div>
+
+          {csvText && (
+            <div className="space-y-2 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-muted-foreground">
+                  CSV loaded — first row treated as header. AI maps columns automatically.
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setCsvText(''); setCsvName(''); setCsvRowCount(0); if (csvFileRef.current) csvFileRef.current.value = ''; }}
+                >
+                  Clear
+                </Button>
+              </div>
+              <pre className="text-[10px] font-mono bg-background/60 rounded p-2 max-h-32 overflow-auto whitespace-pre">
+                {csvText.split(/\r?\n/).slice(0, 4).join('\n')}
+              </pre>
+              <Button onClick={extractFromCsv} disabled={extracting || !csvText.trim()}>
+                {extracting ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
+                Extract from CSV
+              </Button>
+            </div>
+          )}
 
           {showPasteMode && (
             <div className="space-y-2 rounded-md border border-primary/30 bg-primary/5 p-3">
