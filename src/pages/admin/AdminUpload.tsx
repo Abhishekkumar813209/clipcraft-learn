@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine } from 'lucide-react';
+import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine, ClipboardPaste } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import PdfPagePicker from '@/components/admin/PdfPagePicker';
 
