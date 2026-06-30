@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine } from 'lucide-react';
+import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine, ClipboardPaste } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import PdfPagePicker from '@/components/admin/PdfPagePicker';
 
@@ -68,12 +68,20 @@ export default function AdminUpload() {
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(1);
   const [answerKey, setAnswerKey] = useState('');
+  const [contentType, setContentType] = useState<'mcq' | 'vocab' | 'qa'>('mcq');
+  const [pastedText, setPastedText] = useState('');
+  const [showPasteMode, setShowPasteMode] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [ocring, setOcring] = useState(false);
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMsg, setProgressMsg] = useState('');
+  const [diagLog, setDiagLog] = useState<string[]>([]);
   const [questions, setQuestions] = useState<ExtractedQ[]>([]);
+
+  function logDiag(line: string) {
+    setDiagLog((prev) => [...prev.slice(-20), line]);
+  }
 
   useEffect(() => {
     (async () => {
@@ -159,11 +167,14 @@ export default function AdminUpload() {
         toast({ title: 'OCR failed', description: error.message, variant: 'destructive' });
         continue;
       }
-      const results: { pageNum: number; text: string }[] = data?.results || [];
+      const results: { pageNum: number; text: string; chars?: number }[] = data?.results || [];
       for (const r of results) {
         const idx = updated.findIndex((p) => p.pageNum === r.pageNum);
         if (idx >= 0) {
-          updated[idx] = { ...updated[idx], text: r.text || updated[idx].text, ocrDone: true };
+          const newText = r.text || updated[idx].text;
+          updated[idx] = { ...updated[idx], text: newText, ocrDone: true };
+          const chars = r.chars ?? (r.text?.length ?? 0);
+          logDiag(`Page ${r.pageNum} · OCR returned ${chars} chars${chars < 50 ? ' ⚠️ low — page may be blank/unreadable' : ''}`);
         }
       }
       setPages([...updated]);
@@ -224,8 +235,14 @@ export default function AdminUpload() {
       for (let i = 0; i < slice.length; i += BATCH_SIZE) {
         const batch = slice.slice(i, i + BATCH_SIZE);
         const pageText = batch.map((p) => `--- Page ${p.pageNum} ---\n${p.text}`).join('\n\n');
-        setProgressMsg(`Extracting pages ${batch[0].pageNum}-${batch[batch.length - 1].pageNum}...`);
+        const label = `Pages ${batch[0].pageNum}-${batch[batch.length - 1].pageNum}`;
+        setProgressMsg(`Extracting ${label}...`);
         setProgress(Math.round((i / slice.length) * 100));
+
+        if (pageText.trim().length < 40) {
+          logDiag(`${label} · sent ${pageText.length} chars · skipped (text too short — OCR may have failed)`);
+          continue;
+        }
 
         const { data, error } = await supabase.functions.invoke('admin-question-extract', {
           body: {
@@ -235,9 +252,12 @@ export default function AdminUpload() {
             topicName,
             subtopicName,
             answerKeyText: answerKey || undefined,
+            contentType,
           },
         });
         if (error) throw error;
+        const got = data?.questions?.length || 0;
+        logDiag(`${label} · sent ${pageText.length} chars · got ${got} questions${got === 0 ? ' (try a different Content Type)' : ''}`);
         if (data?.questions) all.push(...data.questions);
         setQuestions([...all]);
         await new Promise((r) => setTimeout(r, 800));
@@ -251,6 +271,77 @@ export default function AdminUpload() {
       setExtracting(false);
     }
   }
+
+  /** Extract from manually pasted text (skip PDF entirely). */
+  async function extractFromPasted() {
+    if (!bookId || !topicId) {
+      toast({ title: 'Pick book & topic first', variant: 'destructive' });
+      return;
+    }
+    const text = pastedText.trim();
+    if (text.length < 40) {
+      toast({ title: 'Paste some text first', variant: 'destructive' });
+      return;
+    }
+
+    setExtracting(true);
+    setQuestions([]);
+    setDiagLog([]);
+
+    // Chunk to ~6k chars at paragraph boundaries
+    const CHUNK = 6000;
+    const chunks: string[] = [];
+    let buf = '';
+    for (const para of text.split(/\n\s*\n/)) {
+      if ((buf + '\n\n' + para).length > CHUNK && buf) {
+        chunks.push(buf);
+        buf = para;
+      } else {
+        buf = buf ? buf + '\n\n' + para : para;
+      }
+    }
+    if (buf) chunks.push(buf);
+
+    const all: ExtractedQ[] = [];
+    const bookName = selectedBook?.name;
+    const topicName = topics.find((t) => t.id === topicId)?.name;
+    const subtopicName = subtopics.find((sub) => sub.id === subtopicId)?.name;
+
+    try {
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        const label = `Chunk ${i + 1}/${chunks.length}`;
+        setProgressMsg(`Extracting ${label}...`);
+        setProgress(Math.round((i / chunks.length) * 100));
+
+        const { data, error } = await supabase.functions.invoke('admin-question-extract', {
+          body: {
+            pageText: chunk,
+            examTag: selectedBook?.exam_tag,
+            bookName,
+            topicName,
+            subtopicName,
+            answerKeyText: answerKey || undefined,
+            contentType,
+          },
+        });
+        if (error) throw error;
+        const got = data?.questions?.length || 0;
+        logDiag(`${label} · sent ${chunk.length} chars · got ${got} questions`);
+        if (data?.questions) all.push(...data.questions);
+        setQuestions([...all]);
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      setProgress(100);
+      setProgressMsg(`Done — ${all.length} questions extracted from pasted text`);
+      toast({ title: 'Extracted', description: `${all.length} questions found` });
+    } catch (err: any) {
+      toast({ title: 'Extract failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setExtracting(false);
+    }
+  }
+
 
   async function saveAll() {
     if (!questions.length) return;
@@ -301,7 +392,7 @@ export default function AdminUpload() {
       <h1 className="text-2xl font-semibold">Upload Questions PDF</h1>
 
       <Card>
-        <CardContent className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <CardContent className="p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
             <label className="text-xs text-muted-foreground">Book</label>
             <Select value={bookId} onValueChange={(v) => { setBookId(v); setTopicId(''); setSubtopicId(''); }}>
@@ -329,18 +420,59 @@ export default function AdminUpload() {
               </SelectContent>
             </Select>
           </div>
+          <div>
+            <label className="text-xs text-muted-foreground">Content type</label>
+            <Select value={contentType} onValueChange={(v) => setContentType(v as 'mcq' | 'vocab' | 'qa')}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mcq">MCQ paper</SelectItem>
+                <SelectItem value="vocab">Vocabulary list → auto-MCQ</SelectItem>
+                <SelectItem value="qa">Generic Q&amp;A / fill-blank</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <input ref={fileRef} type="file" accept="application/pdf" onChange={handleFile} className="hidden" id="pdf-upload" />
             <label htmlFor="pdf-upload">
               <Button asChild variant="outline"><span><Upload className="w-4 h-4 mr-1" />Choose PDF</span></Button>
             </label>
+            <Button
+              variant={showPasteMode ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setShowPasteMode((v) => !v)}
+            >
+              <ClipboardPaste className="w-4 h-4 mr-1" />
+              {showPasteMode ? 'Hide paste mode' : 'Paste text instead'}
+            </Button>
             {pdfName && <span className="text-sm">{pdfName} · {pages.length} pages</span>}
           </div>
+
+          {showPasteMode && (
+            <div className="space-y-2 rounded-md border border-primary/30 bg-primary/5 p-3">
+              <label className="text-xs text-muted-foreground">
+                Paste raw text (e.g. from ChatGPT / Adobe export). Skips PDF parsing & OCR entirely.
+              </label>
+              <Textarea
+                rows={8}
+                value={pastedText}
+                onChange={(e) => setPastedText(e.target.value)}
+                placeholder="Paste the full text of your questions / vocabulary entries here..."
+              />
+              <div className="flex items-center gap-2">
+                <Button onClick={extractFromPasted} disabled={extracting || !pastedText.trim()}>
+                  {extracting ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
+                  Extract from pasted text
+                </Button>
+                <span className="text-xs text-muted-foreground">{pastedText.length} chars</span>
+              </div>
+            </div>
+          )}
+
 
           {scannedInRange > 0 && (
             <div className="flex items-center justify-between gap-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
@@ -378,6 +510,15 @@ export default function AdminUpload() {
             <span className="text-xs text-muted-foreground">{progressMsg}</span>
           </div>
           {(extracting || ocring) && <Progress value={progress} />}
+
+          {diagLog.length > 0 && (
+            <div className="rounded-md border bg-muted/30 p-2 text-xs font-mono max-h-40 overflow-y-auto space-y-0.5">
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Diagnostics</div>
+              {diagLog.map((line, i) => (
+                <div key={i} className="text-muted-foreground">{line}</div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 

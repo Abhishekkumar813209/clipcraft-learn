@@ -16,37 +16,49 @@ interface PageImg {
 const PROMPT =
   "Transcribe ALL visible text from this scanned page verbatim. Preserve question numbers, option letters (A/B/C/D), tables, and line breaks. Do NOT summarize, translate, or add commentary. If the page is blank, reply with an empty string.";
 
-async function ocrOne(p: PageImg): Promise<{ pageNum: number; text: string }> {
+const STRICT_PROMPT =
+  "This page contains text. Even if blurry or low quality, transcribe every visible character verbatim — words, numbers, punctuation, headings, tables. Do NOT return an empty response unless the page is truly 100% blank. Output plain text only.";
+
+async function callOcr(dataUrl: string, prompt: string): Promise<string> {
+  const res = await callGemini({
+    model: "gemini-2.5-flash",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: prompt },
+          { type: "image_url", image_url: { url: dataUrl } },
+        ],
+      },
+    ],
+    stream: false,
+  });
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    console.error(`OCR call ${res.status}: ${t.slice(0, 200)}`);
+    return "";
+  }
+  const data = await res.json();
+  const text = data?.choices?.[0]?.message?.content ?? "";
+  return typeof text === "string" ? text : "";
+}
+
+async function ocrOne(p: PageImg): Promise<{ pageNum: number; text: string; chars: number }> {
   const dataUrl = p.imageBase64.startsWith("data:")
     ? p.imageBase64
     : `data:image/jpeg;base64,${p.imageBase64}`;
 
   try {
-    const res = await callGemini({
-      model: "gemini-2.5-flash",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: PROMPT },
-            { type: "image_url", image_url: { url: dataUrl } },
-          ],
-        },
-      ],
-      stream: false,
-    });
-
-    if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      console.error(`OCR page ${p.pageNum} failed ${res.status}: ${t.slice(0, 200)}`);
-      return { pageNum: p.pageNum, text: "" };
+    let text = await callOcr(dataUrl, PROMPT);
+    if (text.trim().length < 20) {
+      console.log(`OCR page ${p.pageNum} empty/short (${text.length} chars), retrying with strict prompt`);
+      const retry = await callOcr(dataUrl, STRICT_PROMPT);
+      if (retry.trim().length > text.trim().length) text = retry;
     }
-    const data = await res.json();
-    const text = data?.choices?.[0]?.message?.content ?? "";
-    return { pageNum: p.pageNum, text: typeof text === "string" ? text : "" };
+    return { pageNum: p.pageNum, text, chars: text.length };
   } catch (e) {
     console.error(`OCR page ${p.pageNum} threw:`, e);
-    return { pageNum: p.pageNum, text: "" };
+    return { pageNum: p.pageNum, text: "", chars: 0 };
   }
 }
 
