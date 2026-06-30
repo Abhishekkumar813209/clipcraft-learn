@@ -282,6 +282,7 @@ export function PdfReaderView() {
     if (!file) return;
     setFileName(file.name);
     const arrayBuffer = await file.arrayBuffer();
+    pdfBytesRef.current = new Uint8Array(arrayBuffer.slice(0));
     const doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     setPdfDoc(doc);
     setTotalPages(doc.numPages);
