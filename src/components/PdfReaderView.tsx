@@ -199,6 +199,7 @@ export function PdfReaderView() {
   const loadPdfFromDataUrl = useCallback(async (dataUrl: string, name: string, page: number, z: number) => {
     const resp = await fetch(dataUrl);
     const ab = await resp.arrayBuffer();
+    pdfBytesRef.current = new Uint8Array(ab.slice(0));
     const doc = await pdfjsLib.getDocument({ data: ab }).promise;
     setPdfDoc(doc);
     setTotalPages(doc.numPages);
