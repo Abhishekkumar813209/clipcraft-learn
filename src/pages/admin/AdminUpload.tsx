@@ -510,6 +510,15 @@ export default function AdminUpload() {
             <span className="text-xs text-muted-foreground">{progressMsg}</span>
           </div>
           {(extracting || ocring) && <Progress value={progress} />}
+
+          {diagLog.length > 0 && (
+            <div className="rounded-md border bg-muted/30 p-2 text-xs font-mono max-h-40 overflow-y-auto space-y-0.5">
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Diagnostics</div>
+              {diagLog.map((line, i) => (
+                <div key={i} className="text-muted-foreground">{line}</div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
