@@ -167,11 +167,14 @@ export default function AdminUpload() {
         toast({ title: 'OCR failed', description: error.message, variant: 'destructive' });
         continue;
       }
-      const results: { pageNum: number; text: string }[] = data?.results || [];
+      const results: { pageNum: number; text: string; chars?: number }[] = data?.results || [];
       for (const r of results) {
         const idx = updated.findIndex((p) => p.pageNum === r.pageNum);
         if (idx >= 0) {
-          updated[idx] = { ...updated[idx], text: r.text || updated[idx].text, ocrDone: true };
+          const newText = r.text || updated[idx].text;
+          updated[idx] = { ...updated[idx], text: newText, ocrDone: true };
+          const chars = r.chars ?? (r.text?.length ?? 0);
+          logDiag(`Page ${r.pageNum} · OCR returned ${chars} chars${chars < 50 ? ' ⚠️ low — page may be blank/unreadable' : ''}`);
         }
       }
       setPages([...updated]);
