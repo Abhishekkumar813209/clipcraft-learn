@@ -436,13 +436,43 @@ export default function AdminUpload() {
 
       <Card>
         <CardContent className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <input ref={fileRef} type="file" accept="application/pdf" onChange={handleFile} className="hidden" id="pdf-upload" />
             <label htmlFor="pdf-upload">
               <Button asChild variant="outline"><span><Upload className="w-4 h-4 mr-1" />Choose PDF</span></Button>
             </label>
+            <Button
+              variant={showPasteMode ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setShowPasteMode((v) => !v)}
+            >
+              <ClipboardPaste className="w-4 h-4 mr-1" />
+              {showPasteMode ? 'Hide paste mode' : 'Paste text instead'}
+            </Button>
             {pdfName && <span className="text-sm">{pdfName} · {pages.length} pages</span>}
           </div>
+
+          {showPasteMode && (
+            <div className="space-y-2 rounded-md border border-primary/30 bg-primary/5 p-3">
+              <label className="text-xs text-muted-foreground">
+                Paste raw text (e.g. from ChatGPT / Adobe export). Skips PDF parsing & OCR entirely.
+              </label>
+              <Textarea
+                rows={8}
+                value={pastedText}
+                onChange={(e) => setPastedText(e.target.value)}
+                placeholder="Paste the full text of your questions / vocabulary entries here..."
+              />
+              <div className="flex items-center gap-2">
+                <Button onClick={extractFromPasted} disabled={extracting || !pastedText.trim()}>
+                  {extracting ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
+                  Extract from pasted text
+                </Button>
+                <span className="text-xs text-muted-foreground">{pastedText.length} chars</span>
+              </div>
+            </div>
+          )}
+
 
           {scannedInRange > 0 && (
             <div className="flex items-center justify-between gap-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
