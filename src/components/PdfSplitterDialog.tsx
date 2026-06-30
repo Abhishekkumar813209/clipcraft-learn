@@ -59,7 +59,7 @@ export function PdfSplitterDialog({ open, onOpenChange, totalPages, fileName, ge
       const copied = await newDoc.copyPages(srcDoc, indices);
       copied.forEach((p) => newDoc.addPage(p));
       const out = await newDoc.save();
-      const blob = new Blob([out], { type: 'application/pdf' });
+      const blob = new Blob([out as BlobPart], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
