@@ -109,13 +109,14 @@ export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, o
         <div>
           <label className="text-xs text-muted-foreground block">Start page</label>
           <Input
-            type="number"
-            min={1}
-            max={pageCount}
+            type="text"
+            inputMode="numeric"
             value={startPage}
             onChange={(e) => {
-              const v = Math.max(1, Math.min(pageCount, parseInt(e.target.value) || 1));
-              onChange(v, Math.max(v, endPage));
+              const raw = parseInt(e.target.value.replace(/\D/g, ''));
+              if (isNaN(raw)) { onChange(1, endPage); return; }
+              const v = Math.max(1, Math.min(pageCount, raw));
+              onChange(v, endPage);
             }}
             className="w-24"
           />
@@ -123,13 +124,14 @@ export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, o
         <div>
           <label className="text-xs text-muted-foreground block">End page</label>
           <Input
-            type="number"
-            min={1}
-            max={pageCount}
+            type="text"
+            inputMode="numeric"
             value={endPage}
             onChange={(e) => {
-              const v = Math.max(1, Math.min(pageCount, parseInt(e.target.value) || pageCount));
-              onChange(Math.min(startPage, v), v);
+              const raw = parseInt(e.target.value.replace(/\D/g, ''));
+              if (isNaN(raw)) { onChange(startPage, 1); return; }
+              const v = Math.max(1, Math.min(pageCount, raw));
+              onChange(startPage, v);
             }}
             className="w-24"
           />
