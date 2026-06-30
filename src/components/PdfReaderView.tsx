@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify, X } from 'lucide-react';
+import { ArrowLeft, Upload, ZoomIn, ZoomOut, MessageSquare, RotateCcw, Languages, Brain, Loader2, ChevronDown, Sparkles, Columns2, AlignJustify, X, Scissors } from 'lucide-react';
+import { PdfSplitterDialog } from './PdfSplitterDialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
@@ -85,6 +86,9 @@ export function PdfReaderView() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isRendering, setIsRendering] = useState(false);
   const isRenderingRef = useRef(false);
+  const pdfBytesRef = useRef<Uint8Array | null>(null);
+  const [splitterOpen, setSplitterOpen] = useState(false);
+
 
   const [translatedText, setTranslatedText] = useState<Map<string, string>>(new Map());
   const [showTranslation, setShowTranslation] = useState(false);
@@ -195,6 +199,7 @@ export function PdfReaderView() {
   const loadPdfFromDataUrl = useCallback(async (dataUrl: string, name: string, page: number, z: number) => {
     const resp = await fetch(dataUrl);
     const ab = await resp.arrayBuffer();
+    pdfBytesRef.current = new Uint8Array(ab.slice(0));
     const doc = await pdfjsLib.getDocument({ data: ab }).promise;
     setPdfDoc(doc);
     setTotalPages(doc.numPages);
@@ -277,6 +282,7 @@ export function PdfReaderView() {
     if (!file) return;
     setFileName(file.name);
     const arrayBuffer = await file.arrayBuffer();
+    pdfBytesRef.current = new Uint8Array(arrayBuffer.slice(0));
     const doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     setPdfDoc(doc);
     setTotalPages(doc.numPages);
@@ -548,6 +554,13 @@ export function PdfReaderView() {
           </Button>
         </div>
 
+        <Button variant="outline" size="sm" className="gap-1 h-8 shrink-0" onClick={() => setSplitterOpen(true)} disabled={!pdfDoc} title="Split PDF">
+          <Scissors className="h-3.5 w-3.5" />
+          <span className="hidden md:inline">Split</span>
+        </Button>
+
+
+
         {/* Language */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -777,6 +790,24 @@ export function PdfReaderView() {
         )}
       </div>
 
+      <PdfSplitterDialog
+        open={splitterOpen}
+        onOpenChange={setSplitterOpen}
+        totalPages={totalPages}
+        fileName={fileName}
+        getBytes={async () => {
+          if (pdfBytesRef.current) return pdfBytesRef.current;
+          const cache = getPdfMemoryCache();
+          if (cache?.dataUrl) {
+            const ab = await (await fetch(cache.dataUrl)).arrayBuffer();
+            const u8 = new Uint8Array(ab.slice(0));
+            pdfBytesRef.current = u8;
+            return u8;
+          }
+          return null;
+        }}
+      />
     </div>
+
   );
 }
