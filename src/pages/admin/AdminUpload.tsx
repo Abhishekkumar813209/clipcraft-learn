@@ -235,8 +235,14 @@ export default function AdminUpload() {
       for (let i = 0; i < slice.length; i += BATCH_SIZE) {
         const batch = slice.slice(i, i + BATCH_SIZE);
         const pageText = batch.map((p) => `--- Page ${p.pageNum} ---\n${p.text}`).join('\n\n');
-        setProgressMsg(`Extracting pages ${batch[0].pageNum}-${batch[batch.length - 1].pageNum}...`);
+        const label = `Pages ${batch[0].pageNum}-${batch[batch.length - 1].pageNum}`;
+        setProgressMsg(`Extracting ${label}...`);
         setProgress(Math.round((i / slice.length) * 100));
+
+        if (pageText.trim().length < 40) {
+          logDiag(`${label} · sent ${pageText.length} chars · skipped (text too short — OCR may have failed)`);
+          continue;
+        }
 
         const { data, error } = await supabase.functions.invoke('admin-question-extract', {
           body: {
@@ -246,9 +252,12 @@ export default function AdminUpload() {
             topicName,
             subtopicName,
             answerKeyText: answerKey || undefined,
+            contentType,
           },
         });
         if (error) throw error;
+        const got = data?.questions?.length || 0;
+        logDiag(`${label} · sent ${pageText.length} chars · got ${got} questions${got === 0 ? ' (try a different Content Type)' : ''}`);
         if (data?.questions) all.push(...data.questions);
         setQuestions([...all]);
         await new Promise((r) => setTimeout(r, 800));
@@ -262,6 +271,77 @@ export default function AdminUpload() {
       setExtracting(false);
     }
   }
+
+  /** Extract from manually pasted text (skip PDF entirely). */
+  async function extractFromPasted() {
+    if (!bookId || !topicId) {
+      toast({ title: 'Pick book & topic first', variant: 'destructive' });
+      return;
+    }
+    const text = pastedText.trim();
+    if (text.length < 40) {
+      toast({ title: 'Paste some text first', variant: 'destructive' });
+      return;
+    }
+
+    setExtracting(true);
+    setQuestions([]);
+    setDiagLog([]);
+
+    // Chunk to ~6k chars at paragraph boundaries
+    const CHUNK = 6000;
+    const chunks: string[] = [];
+    let buf = '';
+    for (const para of text.split(/\n\s*\n/)) {
+      if ((buf + '\n\n' + para).length > CHUNK && buf) {
+        chunks.push(buf);
+        buf = para;
+      } else {
+        buf = buf ? buf + '\n\n' + para : para;
+      }
+    }
+    if (buf) chunks.push(buf);
+
+    const all: ExtractedQ[] = [];
+    const bookName = selectedBook?.name;
+    const topicName = topics.find((t) => t.id === topicId)?.name;
+    const subtopicName = subtopics.find((sub) => sub.id === subtopicId)?.name;
+
+    try {
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        const label = `Chunk ${i + 1}/${chunks.length}`;
+        setProgressMsg(`Extracting ${label}...`);
+        setProgress(Math.round((i / chunks.length) * 100));
+
+        const { data, error } = await supabase.functions.invoke('admin-question-extract', {
+          body: {
+            pageText: chunk,
+            examTag: selectedBook?.exam_tag,
+            bookName,
+            topicName,
+            subtopicName,
+            answerKeyText: answerKey || undefined,
+            contentType,
+          },
+        });
+        if (error) throw error;
+        const got = data?.questions?.length || 0;
+        logDiag(`${label} · sent ${chunk.length} chars · got ${got} questions`);
+        if (data?.questions) all.push(...data.questions);
+        setQuestions([...all]);
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      setProgress(100);
+      setProgressMsg(`Done — ${all.length} questions extracted from pasted text`);
+      toast({ title: 'Extracted', description: `${all.length} questions found` });
+    } catch (err: any) {
+      toast({ title: 'Extract failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setExtracting(false);
+    }
+  }
+
 
   async function saveAll() {
     if (!questions.length) return;
