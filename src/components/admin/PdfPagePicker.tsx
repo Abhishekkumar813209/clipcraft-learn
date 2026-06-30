@@ -14,6 +14,8 @@ interface Props {
   startPage: number;
   endPage: number;
   onChange: (start: number, end: number) => void;
+  scannedPages?: Set<number>;
+  ocrDonePages?: Set<number>;
 }
 
 const THUMB_WIDTH = 140;
