@@ -1,38 +1,55 @@
-## Goal
-Aapki email `abhishek.kumar.chy21@itbhu.ac.in` ko admin banana, taaki same account se aap normal user (PDF reader, quizzes, SSC, etc.) bhi use kar sako **aur** `/admin` dashboard bhi access kar sako.
+## Problem
+Abhi `/admin/upload` me start/end page inputs hain, par sirf PDF upload ke baad dikhte hain — aur koi visual preview nahi hai, isliye decide karna mushkil hai ki kaunse page se kaunse tak select karna hai.
 
-## Approach
-Currently `public.is_admin()` me hardcoded `'admin@example.com'` hai. Bas us string ko aapki email se replace karna hai — koi schema change nahi, koi naya table nahi.
+## Solution — Smart PDF Range Picker with Thumbnail Preview
 
-Admin status sirf `/admin/*` routes par `AdminRoute` guard check karta hai. Baki app me yeh function call hi nahi hota, isliye aapka regular usage (PDF reader, quizzes, SSC vocab, daily quiz, etc.) bilkul same rahega — same login, same data.
+### 1. Thumbnail grid preview
+PDF upload hone ke baad har page ka chhota thumbnail (pdf.js canvas render, ~150px wide) ek scrollable grid me dikhega. Page number niche label.
 
-## What the migration does
-- `public.is_admin()` ko update karta hai: ab `true` return karega jab logged-in user ki email `abhishek.kumar.chy21@itbhu.ac.in` ho.
-- Function signature, security definer, search_path — sab same rakhe jaayenge (RLS policies jo `is_admin()` use karti hain wo as-is kaam karti rahengi).
+### 2. Click-to-select range
+- Pehla click pe page = **Start page** set
+- Doosra click pe page = **End page** set
+- Range me aane wale thumbnails highlighted (blue border + tint)
+- "Reset selection" button range clear karne ke liye
+- Manual number inputs bhi rahenge (jo kuch users prefer karte hain), dono in-sync rahenge
 
-## SQL that will run
+### 3. Live feedback
+- Selection bar upar: "Pages 12 → 34 selected (23 pages, ~8 AI batches)"
+- Approx batches = `ceil(pages / 3)` — user ko quota ka andaaza ho jaaye
+- Agar bahut zyada select kiya (e.g. >60 pages) to ek subtle warning ke "this may take a while / use lots of AI calls"
 
-```sql
-CREATE OR REPLACE FUNCTION public.is_admin()
-RETURNS boolean
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT COALESCE(
-    (SELECT (auth.jwt() ->> 'email') = 'abhishek.kumar.chy21@itbhu.ac.in'),
-    false
-  );
-$$;
+### 4. Performance
+- Thumbnails sequentially render (background, non-blocking) using a small render queue — UI lock nahi hoga bade PDFs me
+- Each thumbnail rendered at low scale (0.3-0.4) so memory bhi controlled
+- Already-rendered thumbnails cached in component state
+
+### 5. Layout
+```text
+┌──────────────────────────────────────────────────┐
+│ [Choose PDF]  filename.pdf · 87 pages            │
+├──────────────────────────────────────────────────┤
+│ Start [12]  End [34]   ✓ 23 pages, ~8 batches    │
+│ [Reset]                                          │
+├──────────────────────────────────────────────────┤
+│ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐               │
+│ │ 1│ │ 2│ │ 3│ │ 4│ │ 5│ │ 6│ │ 7│  ...          │
+│ └──┘ └──┘ └──┘ └──┘ └──┘ └──┘ └──┘               │
+│   (12-34 highlighted in blue)                    │
+└──────────────────────────────────────────────────┘
+[Answer key textarea unchanged]
+[Extract Questions]
 ```
 
-## After it runs
-1. Agar abhi logged-in ho to ek baar **logout → login** karna (JWT refresh ho jaaye email claim ke saath).
-2. `/admin` open karo — dashboard khulega.
-3. `/admin/books` → book + topics + subtopics banao.
-4. `/admin/upload` → PDF drop, extract, save.
-5. Normal usage (PDF reader, `/ssc`, `/quiz/daily`, etc.) wahi same account se chalu rahega — admin hone se kuch break nahi hoga.
+### 6. Optional: full-page preview on hover/click
+Thumbnail pe hover → bigger preview tooltip (peek mode), ya double-click → modal me full-page render. Decide karna hai ki ye chahiye ya nahi (extra complexity).
 
-## Future (optional, nahi karna abhi)
-Agar kabhi multiple admins chahiye to alag `user_roles` table + `has_role()` pattern me migrate kar sakte hain. Abhi single-admin email check is simplest aur safest.
+## Files to change
+- `src/pages/admin/AdminUpload.tsx` — add thumbnail grid, click-to-select logic, batch estimate (only edit this one file; backend/extract flow same rehega)
+
+## Out of scope
+- Backend changes (already accepts whatever pages you slice)
+- PDF text re-extraction logic (no change)
+- Other admin pages
+
+## Question for you
+Full-page preview on double-click chahiye, ya sirf thumbnail grid hi enough hai (faster to build, lighter UI)?
