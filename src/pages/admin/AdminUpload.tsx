@@ -68,12 +68,20 @@ export default function AdminUpload() {
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(1);
   const [answerKey, setAnswerKey] = useState('');
+  const [contentType, setContentType] = useState<'mcq' | 'vocab' | 'qa'>('mcq');
+  const [pastedText, setPastedText] = useState('');
+  const [showPasteMode, setShowPasteMode] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [ocring, setOcring] = useState(false);
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMsg, setProgressMsg] = useState('');
+  const [diagLog, setDiagLog] = useState<string[]>([]);
   const [questions, setQuestions] = useState<ExtractedQ[]>([]);
+
+  function logDiag(line: string) {
+    setDiagLog((prev) => [...prev.slice(-20), line]);
+  }
 
   useEffect(() => {
     (async () => {
