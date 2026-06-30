@@ -14,6 +14,205 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_books: {
+        Row: {
+          created_at: string
+          description: string | null
+          exam_tag: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          exam_tag: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          exam_tag?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      admin_questions: {
+        Row: {
+          book_id: string
+          correct_option: number
+          created_at: string
+          difficulty: string | null
+          exam_tag: string
+          explanation: string | null
+          id: string
+          options: Json
+          question_text: string
+          source_pdf_name: string | null
+          subtopic_id: string | null
+          topic_id: string
+          updated_at: string
+        }
+        Insert: {
+          book_id: string
+          correct_option: number
+          created_at?: string
+          difficulty?: string | null
+          exam_tag: string
+          explanation?: string | null
+          id?: string
+          options: Json
+          question_text: string
+          source_pdf_name?: string | null
+          subtopic_id?: string | null
+          topic_id: string
+          updated_at?: string
+        }
+        Update: {
+          book_id?: string
+          correct_option?: number
+          created_at?: string
+          difficulty?: string | null
+          exam_tag?: string
+          explanation?: string | null
+          id?: string
+          options?: Json
+          question_text?: string
+          source_pdf_name?: string | null
+          subtopic_id?: string | null
+          topic_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_questions_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "admin_books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_questions_subtopic_id_fkey"
+            columns: ["subtopic_id"]
+            isOneToOne: false
+            referencedRelation: "admin_subtopics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_questions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "admin_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_study_log: {
+        Row: {
+          id: string
+          questions_attempted: number
+          studied_at: string
+          subtopic_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          questions_attempted?: number
+          studied_at?: string
+          subtopic_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          questions_attempted?: number
+          studied_at?: string
+          subtopic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_study_log_subtopic_id_fkey"
+            columns: ["subtopic_id"]
+            isOneToOne: false
+            referencedRelation: "admin_subtopics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_subtopics: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          order_index: number
+          topic_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          order_index?: number
+          topic_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          order_index?: number
+          topic_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_subtopics_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "admin_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_topics: {
+        Row: {
+          book_id: string
+          created_at: string
+          id: string
+          name: string
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          id?: string
+          name: string
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_topics_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "admin_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bpsc_mains_questions: {
         Row: {
           created_at: string
@@ -694,7 +893,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       bpsc_mains_paper: "gs1" | "gs2" | "essay" | "hindi"
