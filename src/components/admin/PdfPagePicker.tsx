@@ -22,7 +22,7 @@ const THUMB_WIDTH = 140;
 const THUMB_SCALE = 0.35;
 const BATCH_SIZE = 3;
 
-export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, onChange }: Props) {
+export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, onChange, scannedPages, ocrDonePages }: Props) {
   const [thumbs, setThumbs] = useState<Record<number, string>>({});
   const [renderingPage, setRenderingPage] = useState<number | null>(null);
   const [pickPhase, setPickPhase] = useState<'start' | 'end'>('start');
