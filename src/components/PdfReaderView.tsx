@@ -790,6 +790,24 @@ export function PdfReaderView() {
         )}
       </div>
 
+      <PdfSplitterDialog
+        open={splitterOpen}
+        onOpenChange={setSplitterOpen}
+        totalPages={totalPages}
+        fileName={fileName}
+        getBytes={async () => {
+          if (pdfBytesRef.current) return pdfBytesRef.current;
+          const cache = getPdfMemoryCache();
+          if (cache?.dataUrl) {
+            const ab = await (await fetch(cache.dataUrl)).arrayBuffer();
+            const u8 = new Uint8Array(ab.slice(0));
+            pdfBytesRef.current = u8;
+            return u8;
+          }
+          return null;
+        }}
+      />
     </div>
+
   );
 }
