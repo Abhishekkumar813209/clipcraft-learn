@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Upload, Save, Trash2, Sparkles } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
+import PdfPagePicker from '@/components/admin/PdfPagePicker';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.mjs',
@@ -42,8 +43,9 @@ export default function AdminUpload() {
   const [subtopicId, setSubtopicId] = useState('');
   const [pdfName, setPdfName] = useState('');
   const [pages, setPages] = useState<{ pageNum: number; text: string }[]>([]);
-  const [startPage, setStartPage] = useState('1');
-  const [endPage, setEndPage] = useState('');
+  const [pdfDoc, setPdfDoc] = useState<any>(null);
+  const [startPage, setStartPage] = useState(1);
+  const [endPage, setEndPage] = useState(1);
   const [answerKey, setAnswerKey] = useState('');
   const [extracting, setExtracting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -77,11 +79,13 @@ export default function AdminUpload() {
     }
     setPdfName(file.name);
     setPages([]);
+    setPdfDoc(null);
     setQuestions([]);
     setProgressMsg('Reading PDF...');
     try {
       const buf = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      setPdfDoc(pdf);
       const collected: { pageNum: number; text: string }[] = [];
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
@@ -91,7 +95,8 @@ export default function AdminUpload() {
         setProgressMsg(`Reading page ${i}/${pdf.numPages}`);
       }
       setPages(collected);
-      setEndPage(String(collected.length));
+      setStartPage(1);
+      setEndPage(collected.length);
       setProgressMsg(`Loaded ${collected.length} pages`);
     } catch (err: any) {
       toast({ title: 'PDF error', description: err.message, variant: 'destructive' });
@@ -107,8 +112,8 @@ export default function AdminUpload() {
       toast({ title: 'Upload a PDF first', variant: 'destructive' });
       return;
     }
-    const s = Math.max(1, parseInt(startPage) || 1);
-    const e = Math.min(pages.length, parseInt(endPage) || pages.length);
+    const s = Math.max(1, startPage);
+    const e = Math.min(pages.length, endPage);
     const slice = pages.slice(s - 1, e);
 
     setExtracting(true);
@@ -171,6 +176,7 @@ export default function AdminUpload() {
       toast({ title: 'Saved', description: `${rows.length} questions saved to database` });
       setQuestions([]);
       setPages([]);
+      setPdfDoc(null);
       setPdfName('');
       if (fileRef.current) fileRef.current.value = '';
     } catch (err: any) {
@@ -233,16 +239,13 @@ export default function AdminUpload() {
             {pdfName && <span className="text-sm">{pdfName} · {pages.length} pages</span>}
           </div>
           {pages.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div>
-                <label className="text-xs text-muted-foreground">Start page</label>
-                <Input type="number" value={startPage} onChange={(e) => setStartPage(e.target.value)} />
-              </div>
-              <div>
-                <label className="text-xs text-muted-foreground">End page</label>
-                <Input type="number" value={endPage} onChange={(e) => setEndPage(e.target.value)} />
-              </div>
-            </div>
+            <PdfPagePicker
+              pdfDoc={pdfDoc}
+              pageCount={pages.length}
+              startPage={startPage}
+              endPage={endPage}
+              onChange={(s, e) => { setStartPage(s); setEndPage(e); }}
+            />
           )}
           <div>
             <label className="text-xs text-muted-foreground">Answer key (optional, paste text)</label>
