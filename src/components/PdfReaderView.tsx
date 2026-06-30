@@ -554,6 +554,13 @@ export function PdfReaderView() {
           </Button>
         </div>
 
+        <Button variant="outline" size="sm" className="gap-1 h-8 shrink-0" onClick={() => setSplitterOpen(true)} disabled={!pdfDoc} title="Split PDF">
+          <Scissors className="h-3.5 w-3.5" />
+          <span className="hidden md:inline">Split</span>
+        </Button>
+
+
+
         {/* Language */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
