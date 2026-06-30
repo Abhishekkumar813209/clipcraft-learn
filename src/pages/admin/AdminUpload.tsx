@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine, ClipboardPaste } from 'lucide-react';
+import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine, ClipboardPaste, FileSpreadsheet } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import PdfPagePicker from '@/components/admin/PdfPagePicker';
 
@@ -71,6 +71,10 @@ export default function AdminUpload() {
   const [contentType, setContentType] = useState<'mcq' | 'vocab' | 'qa'>('mcq');
   const [pastedText, setPastedText] = useState('');
   const [showPasteMode, setShowPasteMode] = useState(false);
+  const [csvText, setCsvText] = useState('');
+  const [csvName, setCsvName] = useState('');
+  const [csvRowCount, setCsvRowCount] = useState(0);
+  const csvFileRef = useRef<HTMLInputElement>(null);
   const [extracting, setExtracting] = useState(false);
   const [ocring, setOcring] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -342,6 +346,95 @@ export default function AdminUpload() {
     }
   }
 
+  async function handleCsv(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!/\.csv$/i.test(file.name) && file.type !== 'text/csv') {
+      toast({ title: 'Invalid file', description: 'CSV only', variant: 'destructive' });
+      return;
+    }
+    const text = await file.text();
+    const rows = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+    setCsvText(text);
+    setCsvName(file.name);
+    setCsvRowCount(Math.max(0, rows.length - 1));
+    toast({ title: 'CSV loaded', description: `${file.name} · ${rows.length - 1} rows (1 header)` });
+  }
+
+  async function extractFromCsv() {
+    if (!bookId || !topicId) {
+      toast({ title: 'Pick book & topic first', variant: 'destructive' });
+      return;
+    }
+    if (!csvText.trim()) {
+      toast({ title: 'Choose a CSV first', variant: 'destructive' });
+      return;
+    }
+
+    setExtracting(true);
+    setQuestions([]);
+    setDiagLog([]);
+
+    // Split rows, keep header in every chunk
+    const lines = csvText.split(/\r?\n/);
+    const header = lines[0];
+    const dataLines = lines.slice(1).filter((l) => l.trim().length > 0);
+    const CHUNK = 6000;
+    const chunks: string[] = [];
+    let buf = header;
+    for (const line of dataLines) {
+      if ((buf + '\n' + line).length > CHUNK && buf !== header) {
+        chunks.push(buf);
+        buf = header + '\n' + line;
+      } else {
+        buf = buf + '\n' + line;
+      }
+    }
+    if (buf !== header) chunks.push(buf);
+
+    const all: ExtractedQ[] = [];
+    const bookName = selectedBook?.name;
+    const topicName = topics.find((t) => t.id === topicId)?.name;
+    const subtopicName = subtopics.find((sub) => sub.id === subtopicId)?.name;
+
+    try {
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        const label = `CSV chunk ${i + 1}/${chunks.length}`;
+        setProgressMsg(`Extracting ${label}...`);
+        setProgress(Math.round((i / chunks.length) * 100));
+
+        const { data, error } = await supabase.functions.invoke('admin-question-extract', {
+          body: {
+            pageText: chunk,
+            examTag: selectedBook?.exam_tag,
+            bookName,
+            topicName,
+            subtopicName,
+            answerKeyText: answerKey || undefined,
+            contentType,
+            format: 'csv',
+          },
+        });
+        if (error) throw error;
+        const got = data?.questions?.length || 0;
+        logDiag(`${label} · sent ${chunk.length} chars · got ${got} questions`);
+        if (data?.questions) all.push(...data.questions);
+        setQuestions([...all]);
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      setProgress(100);
+      setProgressMsg(`Done — ${all.length} questions extracted from CSV`);
+      toast({ title: 'Extracted', description: `${all.length} questions found` });
+    } catch (err: any) {
+      toast({ title: 'Extract failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setExtracting(false);
+    }
+  }
+
+
+
 
   async function saveAll() {
     if (!questions.length) return;
@@ -449,8 +542,37 @@ export default function AdminUpload() {
               <ClipboardPaste className="w-4 h-4 mr-1" />
               {showPasteMode ? 'Hide paste mode' : 'Paste text instead'}
             </Button>
+            <input ref={csvFileRef} type="file" accept=".csv,text/csv" onChange={handleCsv} className="hidden" id="csv-upload" />
+            <label htmlFor="csv-upload">
+              <Button asChild variant="outline" size="sm"><span><FileSpreadsheet className="w-4 h-4 mr-1" />Choose CSV</span></Button>
+            </label>
             {pdfName && <span className="text-sm">{pdfName} · {pages.length} pages</span>}
+            {csvName && <span className="text-sm text-emerald-600 dark:text-emerald-400">{csvName} · {csvRowCount} rows</span>}
           </div>
+
+          {csvText && (
+            <div className="space-y-2 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-muted-foreground">
+                  CSV loaded — first row treated as header. AI maps columns automatically.
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setCsvText(''); setCsvName(''); setCsvRowCount(0); if (csvFileRef.current) csvFileRef.current.value = ''; }}
+                >
+                  Clear
+                </Button>
+              </div>
+              <pre className="text-[10px] font-mono bg-background/60 rounded p-2 max-h-32 overflow-auto whitespace-pre">
+                {csvText.split(/\r?\n/).slice(0, 4).join('\n')}
+              </pre>
+              <Button onClick={extractFromCsv} disabled={extracting || !csvText.trim()}>
+                {extracting ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
+                Extract from CSV
+              </Button>
+            </div>
+          )}
 
           {showPasteMode && (
             <div className="space-y-2 rounded-md border border-primary/30 bg-primary/5 p-3">

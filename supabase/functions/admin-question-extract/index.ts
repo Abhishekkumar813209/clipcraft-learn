@@ -107,6 +107,7 @@ serve(async (req) => {
       subtopicName,
       answerKeyText,
       contentType: rawType,
+      format,
     } = body;
 
     const contentType: ContentType =
@@ -131,10 +132,15 @@ serve(async (req) => {
       subtopicName,
     );
 
+    const csvHint =
+      format === "csv"
+        ? `\n\nNOTE: Input is CSV. The first row is the header (column names). Each subsequent row is ONE item (question or vocabulary entry). Map columns intelligently (e.g. question/q/stem, optionA-D / opt1-4, answer/correct, explanation, word, meaning).`
+        : "";
+
     const userMsg =
       contentType === "vocab"
-        ? `Vocabulary text — generate one MCQ per word:\n\n${pageText}`
-        : `Extract all questions:\n\n${pageText}${
+        ? `Vocabulary text — generate one MCQ per word:${csvHint}\n\n${pageText}`
+        : `Extract all questions:${csvHint}\n\n${pageText}${
             answerKeyText ? `\n\n--- ANSWER KEY ---\n${answerKeyText}` : ""
           }`;
 
