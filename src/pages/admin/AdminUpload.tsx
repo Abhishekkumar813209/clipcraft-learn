@@ -346,6 +346,95 @@ export default function AdminUpload() {
     }
   }
 
+  async function handleCsv(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!/\.csv$/i.test(file.name) && file.type !== 'text/csv') {
+      toast({ title: 'Invalid file', description: 'CSV only', variant: 'destructive' });
+      return;
+    }
+    const text = await file.text();
+    const rows = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+    setCsvText(text);
+    setCsvName(file.name);
+    setCsvRowCount(Math.max(0, rows.length - 1));
+    toast({ title: 'CSV loaded', description: `${file.name} · ${rows.length - 1} rows (1 header)` });
+  }
+
+  async function extractFromCsv() {
+    if (!bookId || !topicId) {
+      toast({ title: 'Pick book & topic first', variant: 'destructive' });
+      return;
+    }
+    if (!csvText.trim()) {
+      toast({ title: 'Choose a CSV first', variant: 'destructive' });
+      return;
+    }
+
+    setExtracting(true);
+    setQuestions([]);
+    setDiagLog([]);
+
+    // Split rows, keep header in every chunk
+    const lines = csvText.split(/\r?\n/);
+    const header = lines[0];
+    const dataLines = lines.slice(1).filter((l) => l.trim().length > 0);
+    const CHUNK = 6000;
+    const chunks: string[] = [];
+    let buf = header;
+    for (const line of dataLines) {
+      if ((buf + '\n' + line).length > CHUNK && buf !== header) {
+        chunks.push(buf);
+        buf = header + '\n' + line;
+      } else {
+        buf = buf + '\n' + line;
+      }
+    }
+    if (buf !== header) chunks.push(buf);
+
+    const all: ExtractedQ[] = [];
+    const bookName = selectedBook?.name;
+    const topicName = topics.find((t) => t.id === topicId)?.name;
+    const subtopicName = subtopics.find((sub) => sub.id === subtopicId)?.name;
+
+    try {
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        const label = `CSV chunk ${i + 1}/${chunks.length}`;
+        setProgressMsg(`Extracting ${label}...`);
+        setProgress(Math.round((i / chunks.length) * 100));
+
+        const { data, error } = await supabase.functions.invoke('admin-question-extract', {
+          body: {
+            pageText: chunk,
+            examTag: selectedBook?.exam_tag,
+            bookName,
+            topicName,
+            subtopicName,
+            answerKeyText: answerKey || undefined,
+            contentType,
+            format: 'csv',
+          },
+        });
+        if (error) throw error;
+        const got = data?.questions?.length || 0;
+        logDiag(`${label} · sent ${chunk.length} chars · got ${got} questions`);
+        if (data?.questions) all.push(...data.questions);
+        setQuestions([...all]);
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      setProgress(100);
+      setProgressMsg(`Done — ${all.length} questions extracted from CSV`);
+      toast({ title: 'Extracted', description: `${all.length} questions found` });
+    } catch (err: any) {
+      toast({ title: 'Extract failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setExtracting(false);
+    }
+  }
+
+
+
 
   async function saveAll() {
     if (!questions.length) return;
