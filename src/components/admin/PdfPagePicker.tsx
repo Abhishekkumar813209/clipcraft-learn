@@ -14,13 +14,15 @@ interface Props {
   startPage: number;
   endPage: number;
   onChange: (start: number, end: number) => void;
+  scannedPages?: Set<number>;
+  ocrDonePages?: Set<number>;
 }
 
 const THUMB_WIDTH = 140;
 const THUMB_SCALE = 0.35;
 const BATCH_SIZE = 3;
 
-export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, onChange }: Props) {
+export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, onChange, scannedPages, ocrDonePages }: Props) {
   const [thumbs, setThumbs] = useState<Record<number, string>>({});
   const [renderingPage, setRenderingPage] = useState<number | null>(null);
   const [pickPhase, setPickPhase] = useState<'start' | 'end'>('start');
@@ -201,6 +203,16 @@ export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, o
                 {pageNum === startPage && selectedCount > 0 && <span className="text-primary"> · S</span>}
                 {pageNum === endPage && selectedCount > 0 && pageNum !== startPage && <span className="text-primary"> · E</span>}
               </div>
+              {scannedPages?.has(pageNum) && (
+                <div className={cn(
+                  'absolute top-1 right-1 text-[9px] font-semibold px-1.5 py-0.5 rounded',
+                  ocrDonePages?.has(pageNum)
+                    ? 'bg-emerald-500/90 text-white'
+                    : 'bg-amber-500/90 text-white',
+                )}>
+                  {ocrDonePages?.has(pageNum) ? 'OCR ✓' : 'SCAN'}
+                </div>
+              )}
             </button>
           );
         })}

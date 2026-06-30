@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Upload, Save, Trash2, Sparkles } from 'lucide-react';
+import { Loader2, Upload, Save, Trash2, Sparkles, ScanLine } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import PdfPagePicker from '@/components/admin/PdfPagePicker';
 
@@ -20,6 +20,13 @@ interface Book { id: string; name: string; exam_tag: string; }
 interface Topic { id: string; book_id: string; name: string; }
 interface Subtopic { id: string; topic_id: string; name: string; }
 
+interface PageData {
+  pageNum: number;
+  text: string;
+  needsOcr: boolean;
+  ocrDone: boolean;
+}
+
 interface ExtractedQ {
   question_text: string;
   options: string[];
@@ -29,6 +36,20 @@ interface ExtractedQ {
 }
 
 const BATCH_SIZE = 3;
+const OCR_BATCH = 3;
+const SCAN_TEXT_THRESHOLD = 40; // chars
+
+async function renderPageToJpeg(pdf: any, pageNum: number, scale = 1.6): Promise<string> {
+  const page = await pdf.getPage(pageNum);
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas context unavailable');
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  return canvas.toDataURL('image/jpeg', 0.78);
+}
 
 export default function AdminUpload() {
   const { toast } = useToast();
@@ -42,12 +63,13 @@ export default function AdminUpload() {
   const [topicId, setTopicId] = useState('');
   const [subtopicId, setSubtopicId] = useState('');
   const [pdfName, setPdfName] = useState('');
-  const [pages, setPages] = useState<{ pageNum: number; text: string }[]>([]);
+  const [pages, setPages] = useState<PageData[]>([]);
   const [pdfDoc, setPdfDoc] = useState<any>(null);
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(1);
   const [answerKey, setAnswerKey] = useState('');
   const [extracting, setExtracting] = useState(false);
+  const [ocring, setOcring] = useState(false);
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressMsg, setProgressMsg] = useState('');
@@ -86,22 +108,89 @@ export default function AdminUpload() {
       const buf = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
       setPdfDoc(pdf);
-      const collected: { pageNum: number; text: string }[] = [];
+      const collected: PageData[] = [];
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
         const text = content.items.map((it: any) => it.str).join(' ');
-        collected.push({ pageNum: i, text });
+        const needsOcr = text.trim().length < SCAN_TEXT_THRESHOLD;
+        collected.push({ pageNum: i, text, needsOcr, ocrDone: false });
         setProgressMsg(`Reading page ${i}/${pdf.numPages}`);
       }
       setPages(collected);
       setStartPage(1);
       setEndPage(collected.length);
-      setProgressMsg(`Loaded ${collected.length} pages`);
+      const scanned = collected.filter((p) => p.needsOcr).length;
+      setProgressMsg(
+        scanned > 0
+          ? `Loaded ${collected.length} pages · ${scanned} look scanned (OCR will run)`
+          : `Loaded ${collected.length} pages`,
+      );
     } catch (err: any) {
       toast({ title: 'PDF error', description: err.message, variant: 'destructive' });
     }
   }, [toast]);
+
+  /** Run OCR on a list of pages (mutates state in place). Returns updated page array. */
+  async function runOcrOnPages(targetPages: PageData[]): Promise<PageData[]> {
+    if (!pdfDoc || !targetPages.length) return pages;
+    const updated = [...pages];
+    for (let i = 0; i < targetPages.length; i += OCR_BATCH) {
+      const batch = targetPages.slice(i, i + OCR_BATCH);
+      setProgressMsg(
+        `OCR pages ${batch[0].pageNum}-${batch[batch.length - 1].pageNum}...`,
+      );
+      // Render to JPEGs (client-side)
+      const payload: { pageNum: number; imageBase64: string }[] = [];
+      for (const p of batch) {
+        try {
+          const url = await renderPageToJpeg(pdfDoc, p.pageNum, 1.6);
+          payload.push({ pageNum: p.pageNum, imageBase64: url });
+        } catch (e) {
+          console.warn('render fail page', p.pageNum, e);
+        }
+      }
+      if (!payload.length) continue;
+      const { data, error } = await supabase.functions.invoke('admin-ocr-pages', {
+        body: { pages: payload },
+      });
+      if (error) {
+        console.error('OCR error', error);
+        toast({ title: 'OCR failed', description: error.message, variant: 'destructive' });
+        continue;
+      }
+      const results: { pageNum: number; text: string }[] = data?.results || [];
+      for (const r of results) {
+        const idx = updated.findIndex((p) => p.pageNum === r.pageNum);
+        if (idx >= 0) {
+          updated[idx] = { ...updated[idx], text: r.text || updated[idx].text, ocrDone: true };
+        }
+      }
+      setPages([...updated]);
+      await new Promise((r) => setTimeout(r, 400));
+    }
+    return updated;
+  }
+
+  async function runOcrOnly() {
+    if (!pdfDoc) return;
+    const s = Math.max(1, startPage);
+    const e = Math.min(pages.length, endPage);
+    const targets = pages
+      .slice(s - 1, e)
+      .filter((p) => p.needsOcr && !p.ocrDone);
+    if (!targets.length) {
+      toast({ title: 'Nothing to OCR', description: 'All selected pages already have text.' });
+      return;
+    }
+    setOcring(true);
+    try {
+      await runOcrOnPages(targets);
+      toast({ title: 'OCR complete', description: `${targets.length} pages transcribed` });
+    } finally {
+      setOcring(false);
+    }
+  }
 
   async function extract() {
     if (!bookId || !topicId) {
@@ -114,10 +203,18 @@ export default function AdminUpload() {
     }
     const s = Math.max(1, startPage);
     const e = Math.min(pages.length, endPage);
-    const slice = pages.slice(s - 1, e);
 
     setExtracting(true);
     setQuestions([]);
+
+    // 1. OCR pass for any pages in range that still need it
+    let working = pages;
+    const ocrTargets = pages.slice(s - 1, e).filter((p) => p.needsOcr && !p.ocrDone);
+    if (ocrTargets.length) {
+      working = await runOcrOnPages(ocrTargets);
+    }
+
+    const slice = working.slice(s - 1, e);
     const all: ExtractedQ[] = [];
     const bookName = selectedBook?.name;
     const topicName = topics.find((t) => t.id === topicId)?.name;
@@ -193,6 +290,12 @@ export default function AdminUpload() {
     setQuestions((prev) => prev.filter((_, idx) => idx !== i));
   }
 
+  const scannedInRange = pages
+    .slice(Math.max(0, startPage - 1), Math.min(pages.length, endPage))
+    .filter((p) => p.needsOcr && !p.ocrDone).length;
+  const scannedPages = new Set(pages.filter((p) => p.needsOcr).map((p) => p.pageNum));
+  const ocrDonePages = new Set(pages.filter((p) => p.ocrDone).map((p) => p.pageNum));
+
   return (
     <div className="p-6 space-y-6 max-w-5xl">
       <h1 className="text-2xl font-semibold">Upload Questions PDF</h1>
@@ -238,6 +341,20 @@ export default function AdminUpload() {
             </label>
             {pdfName && <span className="text-sm">{pdfName} · {pages.length} pages</span>}
           </div>
+
+          {scannedInRange > 0 && (
+            <div className="flex items-center justify-between gap-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
+              <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+                <ScanLine className="w-4 h-4" />
+                {scannedInRange} scanned page{scannedInRange > 1 ? 's' : ''} in selected range — OCR will run automatically before extraction.
+              </div>
+              <Button size="sm" variant="outline" onClick={runOcrOnly} disabled={ocring || extracting}>
+                {ocring ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <ScanLine className="w-3 h-3 mr-1" />}
+                Run OCR now
+              </Button>
+            </div>
+          )}
+
           {pages.length > 0 && (
             <PdfPagePicker
               pdfDoc={pdfDoc}
@@ -245,6 +362,8 @@ export default function AdminUpload() {
               startPage={startPage}
               endPage={endPage}
               onChange={(s, e) => { setStartPage(s); setEndPage(e); }}
+              scannedPages={scannedPages}
+              ocrDonePages={ocrDonePages}
             />
           )}
           <div>
@@ -252,13 +371,13 @@ export default function AdminUpload() {
             <Textarea rows={3} value={answerKey} onChange={(e) => setAnswerKey(e.target.value)} placeholder="1-C, 2-A, 3-B ..." />
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={extract} disabled={extracting || !pages.length}>
+            <Button onClick={extract} disabled={extracting || ocring || !pages.length}>
               {extracting ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
               Extract Questions
             </Button>
             <span className="text-xs text-muted-foreground">{progressMsg}</span>
           </div>
-          {extracting && <Progress value={progress} />}
+          {(extracting || ocring) && <Progress value={progress} />}
         </CardContent>
       </Card>
 

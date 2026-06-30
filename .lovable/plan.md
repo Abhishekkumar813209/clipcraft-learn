@@ -1,55 +1,45 @@
-## Problem
-Abhi `/admin/upload` me start/end page inputs hain, par sirf PDF upload ke baad dikhte hain — aur koi visual preview nahi hai, isliye decide karna mushkil hai ki kaunse page se kaunse tak select karna hai.
 
-## Solution — Smart PDF Range Picker with Thumbnail Preview
+## Goal
+Currently `AdminUpload` uses `pdf.js` `getTextContent()`, which returns ~empty strings for scanned/image-only PDFs. Result: thumbnails render fine (preview already works), but extraction sends blank text to Gemini and returns 0 questions. Add automatic OCR so scanned PDFs also produce extracted text + questions.
 
-### 1. Thumbnail grid preview
-PDF upload hone ke baad har page ka chhota thumbnail (pdf.js canvas render, ~150px wide) ek scrollable grid me dikhega. Page number niche label.
+## Approach
+Use **Gemini vision OCR via a new edge function** (no extra dependency, reuses existing key rotation pool). Tesseract.js is rejected because Hindi/multilingual SSC PDFs OCR poorly with it and it bloats the bundle.
 
-### 2. Click-to-select range
-- Pehla click pe page = **Start page** set
-- Doosra click pe page = **End page** set
-- Range me aane wale thumbnails highlighted (blue border + tint)
-- "Reset selection" button range clear karne ke liye
-- Manual number inputs bhi rahenge (jo kuch users prefer karte hain), dono in-sync rahenge
+### Flow
+1. After existing text extraction in `handleFile`, compute `text.trim().length` per page.
+2. Mark a page as `needsOcr` if its text length < 40 chars (typical for image-only pages). If >70% of pages need OCR, show a banner: *"Scanned PDF detected — OCR will run when you click Extract."*
+3. On **Extract**, before each batch:
+   - For pages in the batch where `needsOcr` is true (and no cached OCR yet), render that page to a JPEG dataURL via `pdfDoc.getPage(n).render()` at scale 1.6.
+   - POST `{ pageNum, imageBase64 }[]` to a new edge function `admin-ocr-pages` which calls Gemini `google/gemini-3-flash-preview` (or existing `callGemini` helper) with the image parts + prompt: *"Transcribe all visible text verbatim. Preserve question numbering and options. Return plain text only."*
+   - Replace the page's text in the local `pages` state with the OCR result (also cache so re-extract doesn't re-OCR).
+4. Existing batched call to `admin-question-extract` then runs unchanged on the OCR'd text.
 
-### 3. Live feedback
-- Selection bar upar: "Pages 12 → 34 selected (23 pages, ~8 AI batches)"
-- Approx batches = `ceil(pages / 3)` — user ko quota ka andaaza ho jaaye
-- Agar bahut zyada select kiya (e.g. >60 pages) to ek subtle warning ke "this may take a while / use lots of AI calls"
+### Files
 
-### 4. Performance
-- Thumbnails sequentially render (background, non-blocking) using a small render queue — UI lock nahi hoga bade PDFs me
-- Each thumbnail rendered at low scale (0.3-0.4) so memory bhi controlled
-- Already-rendered thumbnails cached in component state
+**New** `supabase/functions/admin-ocr-pages/index.ts`
+- CORS + JWT verify (admin check via `is_admin()` RPC, mirroring existing admin functions).
+- Body: `{ pages: { pageNum: number; imageBase64: string }[] }` (validate with zod, cap at 5 pages/call).
+- Uses shared `_shared/gemini.ts` `callGemini` with multimodal `parts` (inlineData image/jpeg) — extend helper if needed to accept image parts.
+- Returns `{ results: { pageNum, text }[] }`.
 
-### 5. Layout
-```text
-┌──────────────────────────────────────────────────┐
-│ [Choose PDF]  filename.pdf · 87 pages            │
-├──────────────────────────────────────────────────┤
-│ Start [12]  End [34]   ✓ 23 pages, ~8 batches    │
-│ [Reset]                                          │
-├──────────────────────────────────────────────────┤
-│ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐               │
-│ │ 1│ │ 2│ │ 3│ │ 4│ │ 5│ │ 6│ │ 7│  ...          │
-│ └──┘ └──┘ └──┘ └──┘ └──┘ └──┘ └──┘               │
-│   (12-34 highlighted in blue)                    │
-└──────────────────────────────────────────────────┘
-[Answer key textarea unchanged]
-[Extract Questions]
-```
+**Edit** `src/pages/admin/AdminUpload.tsx`
+- Extend page state: `{ pageNum, text, needsOcr, ocrDone }`.
+- Add `scannedCount` banner + "Run OCR now" optional button (so user can OCR before extracting if they want to preview text).
+- In `extract()`, run OCR pass per batch before invoking `admin-question-extract`.
+- Update progress messages: `OCR page 4/12...` then `Extracting pages 4–6...`.
 
-### 6. Optional: full-page preview on hover/click
-Thumbnail pe hover → bigger preview tooltip (peek mode), ya double-click → modal me full-page render. Decide karna hai ki ye chahiye ya nahi (extra complexity).
+**Edit** `src/components/admin/PdfPagePicker.tsx`
+- Add small "scanned" badge on thumbs whose page text length is low (pass `scannedPages: Set<number>` prop, optional). Visual cue only.
 
-## Files to change
-- `src/pages/admin/AdminUpload.tsx` — add thumbnail grid, click-to-select logic, batch estimate (only edit this one file; backend/extract flow same rehega)
+**Edit** `supabase/functions/_shared/gemini.ts`
+- Allow passing `contents` with `inlineData` image parts (current helper likely accepts only text). Minor signature tweak: accept a `parts` array directly when provided.
 
-## Out of scope
-- Backend changes (already accepts whatever pages you slice)
-- PDF text re-extraction logic (no change)
-- Other admin pages
+### Edge cases
+- Mixed PDFs (some text, some scanned) — OCR only the blank ones, normal extraction for the rest.
+- Large scanned PDFs — keep batch of 3 pages (current) but OCR call also limited to 3 images to stay within Gemini request size.
+- OCR failure on a page → keep original empty text, log warning, continue (don't abort batch).
+- Quota: each OCR page = 1 Gemini call; warn in the existing "heavy quota" banner when scanned page count > 30.
 
-## Question for you
-Full-page preview on double-click chahiye, ya sirf thumbnail grid hi enough hai (faster to build, lighter UI)?
+### Out of scope
+- Server-side PDF rasterization (we render on client via pdf.js — no need for Poppler in the edge function).
+- Editing/correcting OCR text manually (user can already edit extracted questions afterwards).
