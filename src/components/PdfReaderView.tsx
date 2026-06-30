@@ -86,6 +86,9 @@ export function PdfReaderView() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isRendering, setIsRendering] = useState(false);
   const isRenderingRef = useRef(false);
+  const pdfBytesRef = useRef<Uint8Array | null>(null);
+  const [splitterOpen, setSplitterOpen] = useState(false);
+
 
   const [translatedText, setTranslatedText] = useState<Map<string, string>>(new Map());
   const [showTranslation, setShowTranslation] = useState(false);
