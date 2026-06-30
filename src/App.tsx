@@ -52,6 +52,13 @@ import HumorCoach from "./pages/HumorCoach";
 import ProductivityCoach from "./pages/ProductivityCoach";
 import GdPrep from "./pages/GdPrep";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AdminRoute } from "./components/AdminRoute";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminBooks from "./pages/admin/AdminBooks";
+import AdminUpload from "./pages/admin/AdminUpload";
+import AdminQuestions from "./pages/admin/AdminQuestions";
+import DailyQuiz from "./pages/DailyQuiz";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -124,6 +131,13 @@ const App = () => (
             <Route path="/humor" element={<ProtectedRoute><HumorCoach /></ProtectedRoute>} />
             <Route path="/productivity" element={<ProtectedRoute><ProductivityCoach /></ProtectedRoute>} />
             <Route path="/gd" element={<ProtectedRoute><GdPrep /></ProtectedRoute>} />
+            <Route path="/quiz/daily" element={<ProtectedRoute><DailyQuiz /></ProtectedRoute>} />
+            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="books" element={<AdminBooks />} />
+              <Route path="upload" element={<AdminUpload />} />
+              <Route path="questions" element={<AdminQuestions />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
