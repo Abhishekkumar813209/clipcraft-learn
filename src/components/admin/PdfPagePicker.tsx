@@ -203,6 +203,16 @@ export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, o
                 {pageNum === startPage && selectedCount > 0 && <span className="text-primary"> · S</span>}
                 {pageNum === endPage && selectedCount > 0 && pageNum !== startPage && <span className="text-primary"> · E</span>}
               </div>
+              {scannedPages?.has(pageNum) && (
+                <div className={cn(
+                  'absolute top-1 right-1 text-[9px] font-semibold px-1.5 py-0.5 rounded',
+                  ocrDonePages?.has(pageNum)
+                    ? 'bg-emerald-500/90 text-white'
+                    : 'bg-amber-500/90 text-white',
+                )}>
+                  {ocrDonePages?.has(pageNum) ? 'OCR ✓' : 'SCAN'}
+                </div>
+              )}
             </button>
           );
         })}
