@@ -392,7 +392,7 @@ export default function AdminUpload() {
       <h1 className="text-2xl font-semibold">Upload Questions PDF</h1>
 
       <Card>
-        <CardContent className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <CardContent className="p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
             <label className="text-xs text-muted-foreground">Book</label>
             <Select value={bookId} onValueChange={(v) => { setBookId(v); setTopicId(''); setSubtopicId(''); }}>
@@ -417,6 +417,17 @@ export default function AdminUpload() {
               <SelectTrigger><SelectValue placeholder="Select subtopic" /></SelectTrigger>
               <SelectContent>
                 {filteredSubtopics.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground">Content type</label>
+            <Select value={contentType} onValueChange={(v) => setContentType(v as 'mcq' | 'vocab' | 'qa')}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mcq">MCQ paper</SelectItem>
+                <SelectItem value="vocab">Vocabulary list → auto-MCQ</SelectItem>
+                <SelectItem value="qa">Generic Q&amp;A / fill-blank</SelectItem>
               </SelectContent>
             </Select>
           </div>
