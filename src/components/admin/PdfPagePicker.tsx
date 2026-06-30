@@ -45,7 +45,7 @@ export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, o
           canvas.height = viewport.height;
           const ctx = canvas.getContext('2d');
           if (!ctx) continue;
-          await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+          await page.render({ canvasContext: ctx, viewport }).promise;
           const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
           if (cancelRef.current) return;
           setThumbs((prev) => ({ ...prev, [i]: dataUrl }));
@@ -83,7 +83,7 @@ export default function PdfPagePicker({ pdfDoc, pageCount, startPage, endPage, o
       canvas.height = viewport.height;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+      await page.render({ canvasContext: ctx, viewport }).promise;
       setPreview({ pageNum, url: canvas.toDataURL('image/jpeg', 0.85) });
     } catch (e) {
       console.warn('preview fail', e);
