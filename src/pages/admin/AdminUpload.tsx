@@ -71,6 +71,10 @@ export default function AdminUpload() {
   const [contentType, setContentType] = useState<'mcq' | 'vocab' | 'qa'>('mcq');
   const [pastedText, setPastedText] = useState('');
   const [showPasteMode, setShowPasteMode] = useState(false);
+  const [csvText, setCsvText] = useState('');
+  const [csvName, setCsvName] = useState('');
+  const [csvRowCount, setCsvRowCount] = useState(0);
+  const csvFileRef = useRef<HTMLInputElement>(null);
   const [extracting, setExtracting] = useState(false);
   const [ocring, setOcring] = useState(false);
   const [saving, setSaving] = useState(false);
