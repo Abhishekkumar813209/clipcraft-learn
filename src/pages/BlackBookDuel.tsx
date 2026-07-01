@@ -207,8 +207,12 @@ export default function BlackBookDuel() {
               })}
             </div>
             {picked !== null && (
-              <Button className="w-full" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next question'}</Button>
+              <>
+                <BlackBookExplanation item={q.item} />
+                <Button className="w-full" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next question'}</Button>
+              </>
             )}
+
           </CardContent>
         </Card>
       </div>

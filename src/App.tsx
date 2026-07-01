@@ -61,8 +61,10 @@ import AdminQuestions from "./pages/admin/AdminQuestions";
 import DailyQuiz from "./pages/DailyQuiz";
 import BlackBookHub from "./pages/BlackBookHub";
 import BlackBookPractice from "./pages/BlackBookPractice";
+import BlackBookBrowse from "./pages/BlackBookBrowse";
 import BlackBookDuelNew from "./pages/BlackBookDuelNew";
 import BlackBookDuel from "./pages/BlackBookDuel";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -107,7 +109,9 @@ const App = () => (
               <Route path="vocab/learn/:root" element={<SscVocabLearn />} />
               <Route path="vocab/word/:wordId" element={<SscVocabLearn />} />
               <Route path="blackbook" element={<BlackBookHub />} />
+              <Route path="blackbook/browse/:category" element={<BlackBookBrowse />} />
               <Route path="blackbook/practice/:category" element={<BlackBookPractice />} />
+
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
             </Route>
