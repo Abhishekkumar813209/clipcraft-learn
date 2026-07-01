@@ -75,11 +75,19 @@ export default function BlackBookHub() {
                   <div className="h-1.5 bg-slate-900/60 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-400" style={{ width: `${Math.min(100, (done / target) * 100)}%` }} />
                   </div>
-                  <Link to={`/ssc/blackbook/practice/${c.key}`}>
-                    <Button size="sm" className="w-full mt-2">
-                      <Sparkles className="w-4 h-4 mr-1" /> Practice
-                    </Button>
-                  </Link>
+                  <div className="flex gap-2 pt-1">
+                    <Link to={`/ssc/blackbook/browse/${c.key}`} className="flex-1">
+                      <Button size="sm" variant="outline" className="w-full">
+                        <BookOpen className="w-4 h-4 mr-1" /> Browse
+                      </Button>
+                    </Link>
+                    <Link to={`/ssc/blackbook/practice/${c.key}`} className="flex-1">
+                      <Button size="sm" className="w-full">
+                        <Sparkles className="w-4 h-4 mr-1" /> Practice
+                      </Button>
+                    </Link>
+                  </div>
+
                 </CardContent>
               </Card>
             );

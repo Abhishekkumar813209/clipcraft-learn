@@ -19,12 +19,14 @@ export interface BBItem {
 
 export interface BBQuestion {
   itemId: string;
+  item: BBItem;
   category: BBCategory;
   question: string;
   options: string[];
   correct: number; // index in options
   explanation?: string;
 }
+
 
 export async function fetchBBItems(category?: BBCategory | 'mixed'): Promise<BBItem[]> {
   let q = supabase.from('ssc_black_book_items' as never).select('*');
@@ -72,12 +74,14 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
     const options = shuffle([correct, ...distractors]);
     return {
       itemId: item.id,
+      item,
       category: 'syn_ant',
       question: `${useAnt ? 'Antonym' : 'Synonym'} of "${item.prompt}"?`,
       options,
       correct: options.indexOf(correct),
       explanation: item.english_meaning || undefined,
     };
+
   }
   if (item.category === 'idiom') {
     const correct = item.answer;
@@ -87,12 +91,14 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
     const options = shuffle([correct, ...distractors]);
     return {
       itemId: item.id,
+      item,
       category: 'idiom',
       question: `Meaning of the idiom: "${item.prompt}"?`,
       options,
       correct: options.indexOf(correct),
       explanation: item.example || item.hinglish_meaning || undefined,
     };
+
   }
   // ows
   const correct = item.answer;
@@ -102,8 +108,10 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
   const options = shuffle([correct, ...distractors]);
   return {
     itemId: item.id,
+    item,
     category: 'ows',
     question: `One word for: "${item.prompt}"`,
+
     options,
     correct: options.indexOf(correct),
     explanation: item.hinglish_meaning || undefined,

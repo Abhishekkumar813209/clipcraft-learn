@@ -6,6 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { fetchBBItems, buildQuestionSet, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
+import { BlackBookExplanation } from '@/components/BlackBookExplanation';
+
 import { Loader2, Copy, Swords, Trophy, Clock } from 'lucide-react';
 
 interface Match {
@@ -205,8 +207,12 @@ export default function BlackBookDuel() {
               })}
             </div>
             {picked !== null && (
-              <Button className="w-full" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next question'}</Button>
+              <>
+                <BlackBookExplanation item={q.item} />
+                <Button className="w-full" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next question'}</Button>
+              </>
             )}
+
           </CardContent>
         </Card>
       </div>
