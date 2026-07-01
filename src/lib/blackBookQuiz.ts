@@ -19,12 +19,14 @@ export interface BBItem {
 
 export interface BBQuestion {
   itemId: string;
+  item: BBItem;
   category: BBCategory;
   question: string;
   options: string[];
   correct: number; // index in options
   explanation?: string;
 }
+
 
 export async function fetchBBItems(category?: BBCategory | 'mixed'): Promise<BBItem[]> {
   let q = supabase.from('ssc_black_book_items' as never).select('*');
