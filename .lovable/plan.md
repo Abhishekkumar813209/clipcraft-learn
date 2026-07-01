@@ -1,48 +1,22 @@
 ## Problem
+Black Book pages (Hub, Practice, Duel, Duel New, Browse, Explanation card) use hardcoded dark slate/blue gradients (`bg-gradient-to-br from-slate-950 via-blue-950/40 to-slate-950`, `bg-slate-900/60`, `text-slate-100`, etc.). Text contrast is poor and vibe is heavy/black.
 
-DB me har row ke paas rich fields hain — `hindi_meaning`, `english_meaning`, `hinglish_meaning`, `example`, `synonyms[]`, `antonyms[]`, `pos` — but abhi frontend sirf `prompt` + `answer` use kar raha hai (Practice + Duel me ek chhota `explanation` line). Baaki sab data DB me pada rehta hai, kahin dikhta hi nahi.
+## New theme: soft white + mint/emerald
+- Page bg: `bg-gradient-to-br from-emerald-50 via-white to-teal-50`
+- Cards: `bg-white/80 backdrop-blur border border-emerald-100 shadow-sm`
+- Headings: `text-slate-900`, body: `text-slate-700`, muted: `text-slate-500`
+- Accents: emerald-600/500 for primary actions, teal-500 for secondary, amber-600 for Hindi text (readable on white), rose-600 for antonyms, indigo-600 for idiom accent
+- Option buttons in quiz: white with emerald hover; correct = emerald-100/emerald-700; wrong = rose-100/rose-700
+- Progress rings/bars: emerald
 
-## Fix — 2 jagah surface karo
+## Files to update
+1. `src/pages/BlackBookHub.tsx` — bg, cards, target ring colors
+2. `src/pages/BlackBookPractice.tsx` — bg, question card, option buttons, score chip
+3. `src/pages/BlackBookDuel.tsx` — bg, match card, opponent score panel, option buttons
+4. `src/pages/BlackBookDuelNew.tsx` — bg, form card
+5. `src/pages/BlackBookBrowse.tsx` — bg, search input, category chips
+6. `src/components/BlackBookExplanation.tsx` — swap slate-900 surfaces for white/emerald surfaces; adjust badge colors for light bg (emerald/rose/indigo/sky remain but with `bg-*-50 text-*-700 border-*-200`)
 
-### 1. Naya "Browse / Study" page (bulk view of all rows)
-
-Route: `/ssc/blackbook/browse/:category` (syn_ant | idiom | ows | mixed)  
-File: `src/pages/BlackBookBrowse.tsx` (new)
-
-Har category ka layout thoda alag, kyunki fields alag-alag populated hain:
-
-- **syn_ant** — card grid: `prompt` (word) + `pos` badge · Hindi meaning (Devanagari) · English meaning · Synonyms chips (green) · Antonyms chips (red).
-- **idiom** — card list: idiom `prompt` · English meaning · **Hinglish meaning** · Example (italic quote).
-- **ows** — card grid: phrase `prompt` → one-word `answer` · Hinglish meaning · Hindi (if present).
-
-Top bar: search box (matches `prompt`/`answer`/meanings), category tabs, and a "Practice these" button that jumps to `/ssc/blackbook/practice/:category`. Data fetch = one `supabase.from('ssc_black_book_items').select('*').eq('category', ...)` call, filter client-side.
-
-Hub (`BlackBookHub.tsx`) me har category card pe 2 buttons: **Browse** + **Practice** (abhi sirf Practice hai).
-
-### 2. Richer explanation card in Practice + Duel (after each answer)
-
-Files: `src/pages/BlackBookPractice.tsx`, `src/pages/BlackBookDuel.tsx`
-
-`buildQuestion()` sirf ek `explanation` string set karta hai. Instead, `BBQuestion` me pura `item: BBItem` reference rakho (already have `itemId` — bas full item pass karo) taaki reveal ke waqt dikha saken:
-
-- syn_ant → Hindi meaning · English meaning · Full synonyms list · Full antonyms list
-- idiom → English + Hinglish + Example
-- ows → One-word answer + Hinglish + Hindi
-
-Small reusable component `src/components/BlackBookExplanation.tsx` — same card dono jagah use hoga.
-
-### 3. Sidebar / hub link
-
-`BlackBookHub.tsx` me ek "Browse dictionary" section add karo jo teeno categories ke browse links dikhaye.
-
-## Files touched
-
-- **New**: `src/pages/BlackBookBrowse.tsx`, `src/components/BlackBookExplanation.tsx`
-- **Edit**: `src/lib/blackBookQuiz.ts` (attach full `item` to `BBQuestion`), `src/pages/BlackBookPractice.tsx`, `src/pages/BlackBookDuel.tsx`, `src/pages/BlackBookHub.tsx`, `src/App.tsx` (new route)
-
-Koi DB change nahi, koi AI call nahi — sab already-imported 507 rows se render.
-
-## Confirm
-
-- Browse page chahiye ya sirf explanation card badhana hai? (Main dono kar raha hoon default me.)
-- Practice/Duel me answer reveal ke baad ye rich card auto-dikhe ya "Show details" button pe?
+## Non-goals
+- No changes to logic, routes, quiz generation, or DB.
+- Only these 6 files; rest of app theme untouched.
