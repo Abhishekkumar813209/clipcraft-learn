@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -63,19 +63,19 @@ export default function BlackBookPractice() {
     setI(i + 1); setPicked(null);
   }
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100"><Loader2 className="w-6 h-6 animate-spin" /></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-emerald-50 text-slate-700"><Loader2 className="w-6 h-6 animate-spin" /></div>;
 
   if (done) return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6">
-      <Card className="bg-slate-900 border-blue-900/40 max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 flex items-center justify-center p-6">
+      <Card className="bg-white border-emerald-100 shadow-sm max-w-md w-full">
         <CardContent className="p-8 text-center space-y-4">
-          <Trophy className="w-14 h-14 mx-auto text-yellow-400" />
+          <Trophy className="w-14 h-14 mx-auto text-amber-500" />
           <h2 className="text-2xl font-bold">Session complete!</h2>
-          <div className="text-5xl font-bold">{score} / {qs.length}</div>
-          <div className="text-slate-400">{Math.round((score / qs.length) * 100)}% correct</div>
+          <div className="text-5xl font-bold text-emerald-600">{score} / {qs.length}</div>
+          <div className="text-slate-500">{Math.round((score / qs.length) * 100)}% correct</div>
           <div className="flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={() => nav('/ssc/blackbook')}>Back</Button>
-            <Button className="flex-1" onClick={() => { setQs(buildQuestionSet(items, 20)); setI(0); setPicked(null); setScore(0); setDone(false); }}>Play again</Button>
+            <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50" onClick={() => nav('/ssc/blackbook')}>Back</Button>
+            <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white" onClick={() => { setQs(buildQuestionSet(items, 20)); setI(0); setPicked(null); setScore(0); setDone(false); }}>Play again</Button>
           </div>
         </CardContent>
       </Card>
@@ -83,15 +83,15 @@ export default function BlackBookPractice() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950/40 to-slate-950 text-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => nav('/ssc/blackbook')}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
-          <div className="text-sm text-slate-400">Q {i + 1} / {qs.length} · Score {score}</div>
+          <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav('/ssc/blackbook')}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
+          <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
-        <Card className="bg-slate-900/70 border-blue-900/40">
+        <Card className="bg-white border-emerald-100 shadow-sm">
           <CardContent className="p-6 space-y-4">
-            <div className="text-lg font-medium">{q.question}</div>
+            <div className="text-lg font-medium text-slate-900">{q.question}</div>
             <div className="space-y-2">
               {q.options.map((opt, idx) => {
                 const isCorrect = q.correct === idx;
@@ -100,9 +100,9 @@ export default function BlackBookPractice() {
                 return (
                   <button key={idx} disabled={show} onClick={() => choose(idx)}
                     className={`w-full text-left p-3 rounded-md border transition-all ${
-                      show && isCorrect ? 'border-emerald-500 bg-emerald-500/10' :
-                      show && isPicked ? 'border-red-500 bg-red-500/10' :
-                      'border-slate-700 hover:border-blue-400 hover:bg-blue-500/5'
+                      show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
+                      show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
+                      'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
                     }`}>
                     <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
                   </button>
@@ -114,7 +114,7 @@ export default function BlackBookPractice() {
             )}
 
             {picked !== null && (
-              <Button className="w-full" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next'}</Button>
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next'}</Button>
             )}
           </CardContent>
         </Card>

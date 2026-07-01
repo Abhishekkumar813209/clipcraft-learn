@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -43,15 +42,15 @@ export default function BlackBookBrowse() {
   }, [items, q]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950/40 to-slate-950 text-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
       <div className="max-w-5xl mx-auto space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <Button variant="ghost" size="sm" onClick={() => nav('/ssc/blackbook')}>
+          <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav('/ssc/blackbook')}>
             <ArrowLeft className="w-4 h-4 mr-1" /> Back
           </Button>
           {category && category !== 'mixed' && (
             <Link to={`/ssc/blackbook/practice/${category}`}>
-              <Button size="sm"><Sparkles className="w-4 h-4 mr-1" /> Practice these</Button>
+              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white"><Sparkles className="w-4 h-4 mr-1" /> Practice these</Button>
             </Link>
           )}
         </div>
@@ -59,7 +58,13 @@ export default function BlackBookBrowse() {
         <div className="flex gap-2 flex-wrap">
           {TABS.map((t) => (
             <Link key={t.key} to={`/ssc/blackbook/browse/${t.key}`}>
-              <Badge variant={category === t.key ? 'default' : 'outline'} className="cursor-pointer">
+              <Badge
+                className={`cursor-pointer border ${
+                  category === t.key
+                    ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-500'
+                    : 'bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50'
+                }`}
+              >
                 {t.label}
               </Badge>
             </Link>
@@ -67,19 +72,19 @@ export default function BlackBookBrowse() {
         </div>
 
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <Input
             placeholder="Search word / meaning / synonym…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="pl-9 bg-slate-900/60 border-blue-900/40"
+            className="pl-9 bg-white border-emerald-200 text-slate-900 placeholder:text-slate-400"
           />
         </div>
 
-        <div className="text-xs text-slate-400">{filtered.length} items</div>
+        <div className="text-xs text-slate-500">{filtered.length} items</div>
 
         {loading ? (
-          <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin" /></div>
+          <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>
         ) : (
           <div className="grid md:grid-cols-2 gap-3">
             {filtered.map((it) => (

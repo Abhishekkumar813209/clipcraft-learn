@@ -21,7 +21,6 @@ export default function BlackBookDuelNew() {
     setLoading(true);
     try {
       const items = await fetchBBItems(category);
-      // Pick 10 random ids
       const shuffled = [...items].sort(() => Math.random() - 0.5).slice(0, 10);
       const ids = shuffled.map((i) => i.id);
       const { data, error } = await supabase.from('duel_matches' as never).insert({
@@ -39,17 +38,17 @@ export default function BlackBookDuelNew() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950/40 to-slate-950 text-slate-100 p-6 flex items-center justify-center">
-      <Card className="bg-slate-900/70 border-blue-900/40 max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6 flex items-center justify-center">
+      <Card className="bg-white border-emerald-100 shadow-sm max-w-md w-full">
         <CardContent className="p-6 space-y-5">
           <div className="flex items-center gap-3">
-            <Swords className="w-8 h-8 text-pink-400" />
+            <Swords className="w-8 h-8 text-emerald-600" />
             <h1 className="text-2xl font-bold">Create Duel</h1>
           </div>
           <div className="space-y-2">
-            <label className="text-sm text-slate-300">Category</label>
+            <label className="text-sm text-slate-600">Category</label>
             <Select value={category} onValueChange={(v) => setCategory(v as any)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger className="bg-white border-emerald-200"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="mixed">Mixed (all 3)</SelectItem>
                 <SelectItem value="syn_ant">Synonyms & Antonyms</SelectItem>
@@ -58,8 +57,8 @@ export default function BlackBookDuelNew() {
               </SelectContent>
             </Select>
           </div>
-          <div className="text-xs text-slate-400">10 questions · 30 seconds each · winner = highest score, tie broken by fastest total time</div>
-          <Button className="w-full bg-pink-600 hover:bg-pink-500" onClick={create} disabled={loading}>
+          <div className="text-xs text-slate-500">10 questions · 30 seconds each · winner = highest score, tie broken by fastest total time</div>
+          <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white" onClick={create} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Swords className="w-4 h-4 mr-2" />}
             Create & get invite link
           </Button>
