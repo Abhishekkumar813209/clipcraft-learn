@@ -65,6 +65,18 @@ export default function BlackBookPractice() {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-emerald-50 text-slate-700"><Loader2 className="w-6 h-6 animate-spin" /></div>;
 
+  if (!qs.length || !q) return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 flex items-center justify-center p-6">
+      <Card className="bg-white border-emerald-100 shadow-sm max-w-md w-full">
+        <CardContent className="p-8 text-center space-y-4">
+          <h2 className="text-xl font-bold">No questions available</h2>
+          <p className="text-slate-600 text-sm">Not enough items in this category to build a quiz yet.</p>
+          <Button className="bg-emerald-600 hover:bg-emerald-500 text-white" onClick={() => nav('/ssc/blackbook')}>Back to hub</Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   if (done) return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 flex items-center justify-center p-6">
       <Card className="bg-white border-emerald-100 shadow-sm max-w-md w-full">
