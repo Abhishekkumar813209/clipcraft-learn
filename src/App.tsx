@@ -59,6 +59,10 @@ import AdminBooks from "./pages/admin/AdminBooks";
 import AdminUpload from "./pages/admin/AdminUpload";
 import AdminQuestions from "./pages/admin/AdminQuestions";
 import DailyQuiz from "./pages/DailyQuiz";
+import BlackBookHub from "./pages/BlackBookHub";
+import BlackBookPractice from "./pages/BlackBookPractice";
+import BlackBookDuelNew from "./pages/BlackBookDuelNew";
+import BlackBookDuel from "./pages/BlackBookDuel";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,6 +106,10 @@ const App = () => (
               <Route path="vocab/upload" element={<SscVocabUpload />} />
               <Route path="vocab/learn/:root" element={<SscVocabLearn />} />
               <Route path="vocab/word/:wordId" element={<SscVocabLearn />} />
+              <Route path="blackbook" element={<BlackBookHub />} />
+              <Route path="blackbook/practice/:category" element={<BlackBookPractice />} />
+              <Route path="duel/new" element={<BlackBookDuelNew />} />
+              <Route path="duel/:id" element={<BlackBookDuel />} />
             </Route>
             <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />

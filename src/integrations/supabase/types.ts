@@ -213,6 +213,39 @@ export type Database = {
           },
         ]
       }
+      black_book_daily_progress: {
+        Row: {
+          attempted: number
+          category: string
+          correct: number
+          date: string
+          id: string
+          target: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempted?: number
+          category: string
+          correct?: number
+          date?: string
+          id?: string
+          target?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempted?: number
+          category?: string
+          correct?: number
+          date?: string
+          id?: string
+          target?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       bpsc_mains_questions: {
         Row: {
           created_at: string
@@ -383,6 +416,89 @@ export type Database = {
         }
         Relationships: []
       }
+      duel_answers: {
+        Row: {
+          created_at: string
+          id: string
+          is_correct: boolean
+          match_id: string
+          ms_taken: number
+          q_index: number
+          selected: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          match_id: string
+          ms_taken?: number
+          q_index: number
+          selected: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          match_id?: string
+          ms_taken?: number
+          q_index?: number
+          selected?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duel_answers_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "duel_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      duel_matches: {
+        Row: {
+          category: string
+          created_at: string
+          ended_at: string | null
+          guest_id: string | null
+          host_id: string
+          id: string
+          question_ids: string[]
+          seconds_per_q: number
+          started_at: string | null
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          ended_at?: string | null
+          guest_id?: string | null
+          host_id: string
+          id?: string
+          question_ids?: string[]
+          seconds_per_q?: number
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          ended_at?: string | null
+          guest_id?: string | null
+          host_id?: string
+          id?: string
+          question_ids?: string[]
+          seconds_per_q?: number
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       exams: {
         Row: {
           created_at: string | null
@@ -526,6 +642,54 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      ssc_black_book_items: {
+        Row: {
+          answer: string
+          antonyms: string[] | null
+          category: string
+          created_at: string
+          english_meaning: string | null
+          example: string | null
+          hindi_meaning: string | null
+          hinglish_meaning: string | null
+          id: string
+          pos: string | null
+          prompt: string
+          serial_no: number | null
+          synonyms: string[] | null
+        }
+        Insert: {
+          answer: string
+          antonyms?: string[] | null
+          category: string
+          created_at?: string
+          english_meaning?: string | null
+          example?: string | null
+          hindi_meaning?: string | null
+          hinglish_meaning?: string | null
+          id?: string
+          pos?: string | null
+          prompt: string
+          serial_no?: number | null
+          synonyms?: string[] | null
+        }
+        Update: {
+          answer?: string
+          antonyms?: string[] | null
+          category?: string
+          created_at?: string
+          english_meaning?: string | null
+          example?: string | null
+          hindi_meaning?: string | null
+          hinglish_meaning?: string | null
+          id?: string
+          pos?: string | null
+          prompt?: string
+          serial_no?: number | null
+          synonyms?: string[] | null
         }
         Relationships: []
       }
