@@ -6,6 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { fetchBBItems, buildQuestionSet, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
+import { BlackBookExplanation } from '@/components/BlackBookExplanation';
+
 import { Loader2, Copy, Swords, Trophy, Clock } from 'lucide-react';
 
 interface Match {

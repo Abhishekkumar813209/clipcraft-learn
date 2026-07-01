@@ -4,6 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Trophy, ArrowLeft } from 'lucide-react';
 import { fetchBBItems, buildQuestionSet, BBCategory, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
+import { BlackBookExplanation } from '@/components/BlackBookExplanation';
+
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -107,9 +109,10 @@ export default function BlackBookPractice() {
                 );
               })}
             </div>
-            {picked !== null && q.explanation && (
-              <div className="text-sm text-slate-300 border-l-2 border-blue-500 pl-3 italic">{q.explanation}</div>
+            {picked !== null && (
+              <BlackBookExplanation item={q.item} />
             )}
+
             {picked !== null && (
               <Button className="w-full" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next'}</Button>
             )}
