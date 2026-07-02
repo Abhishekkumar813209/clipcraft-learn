@@ -15,7 +15,7 @@ const TABS: { key: BBCategory | 'mixed'; label: string }[] = [
 ];
 
 export default function BlackBookBrowse() {
-  const { category } = useParams<{ category: BBCategory | 'mixed' }>();
+  const { category = 'mixed' } = useParams<{ category: BBCategory | 'mixed' }>();
   const nav = useNavigate();
   const [items, setItems] = useState<BBItem[]>([]);
   const [loading, setLoading] = useState(true);
