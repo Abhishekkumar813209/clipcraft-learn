@@ -109,7 +109,9 @@ const App = () => (
               <Route path="vocab/learn/:root" element={<SscVocabLearn />} />
               <Route path="vocab/word/:wordId" element={<SscVocabLearn />} />
               <Route path="blackbook" element={<BlackBookHub />} />
+              <Route path="blackbook/browse" element={<BlackBookBrowse />} />
               <Route path="blackbook/browse/:category" element={<BlackBookBrowse />} />
+              <Route path="blackbook/practice" element={<BlackBookPractice />} />
               <Route path="blackbook/practice/:category" element={<BlackBookPractice />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
