@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function BlackBookPractice() {
-  const { category } = useParams<{ category: BBCategory }>();
+  const { category = 'mixed' } = useParams<{ category: BBCategory }>();
   const nav = useNavigate();
   const { user } = useAuth();
   const [items, setItems] = useState<BBItem[]>([]);
