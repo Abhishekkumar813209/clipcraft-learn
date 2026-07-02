@@ -33,7 +33,7 @@ export default function BlackBookPractice() {
   const q = qs[i];
 
   async function logProgress(correct: boolean) {
-    if (!user || !category) return;
+    if (!user || !category || category === 'mixed') return;
     const today = new Date().toISOString().slice(0, 10);
     const { data: existing } = await supabase.from('black_book_daily_progress' as never)
       .select('*').eq('user_id', user.id).eq('date', today).eq('category', category).maybeSingle();
