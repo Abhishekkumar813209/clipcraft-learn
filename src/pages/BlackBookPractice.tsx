@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
 import { fetchBBItems, buildQuestionSet, BBCategory, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
-
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -16,21 +15,33 @@ export default function BlackBookPractice() {
   const [items, setItems] = useState<BBItem[]>([]);
   const [qs, setQs] = useState<BBQuestion[]>([]);
   const [i, setI] = useState(0);
-  const [picked, setPicked] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
+  const [picks, setPicks] = useState<(number | null)[]>([]);
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      const data = await fetchBBItems(category);
+      const data = await fetchBBItems(category as BBCategory | 'mixed');
       setItems(data);
-      setQs(buildQuestionSet(data, 20));
+      const built = buildQuestionSet(data, 20);
+      setQs(built);
+      setPicks(new Array(built.length).fill(null));
       setLoading(false);
+      // create session
+      if (user && built.length) {
+        const { data: s } = await supabase.from('bb_practice_sessions' as never).insert({
+          user_id: user.id, category, total: built.length, correct: 0,
+        } as never).select('id').single();
+        if (s) setSessionId((s as any).id);
+      }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
   const q = qs[i];
+  const picked = picks[i];
+  const score = picks.reduce((acc, p, idx) => acc + (p !== null && p === qs[idx]?.correct ? 1 : 0), 0);
 
   async function logProgress(correct: boolean) {
     if (!user || !category || category === 'mixed') return;
@@ -50,17 +61,48 @@ export default function BlackBookPractice() {
     }
   }
 
-  function choose(idx: number) {
+  async function choose(idx: number) {
     if (picked !== null) return;
-    setPicked(idx);
     const ok = idx === q.correct;
-    if (ok) setScore((s) => s + 1);
+    const nextPicks = [...picks];
+    nextPicks[i] = idx;
+    setPicks(nextPicks);
     logProgress(ok);
+    if (user && sessionId) {
+      await supabase.from('bb_practice_attempts' as never).insert({
+        session_id: sessionId, user_id: user.id, item_id: q.item.id,
+        category: q.category, question: q.question, options: q.options,
+        correct_index: q.correct, picked_index: idx, is_correct: ok,
+      } as never);
+    }
+  }
+
+  async function finish() {
+    if (user && sessionId) {
+      const correct = picks.reduce((a, p, idx) => a + (p === qs[idx]?.correct ? 1 : 0), 0);
+      await supabase.from('bb_practice_sessions' as never).update({ correct } as never).eq('id', sessionId);
+    }
+    setDone(true);
   }
 
   function next() {
-    if (i + 1 >= qs.length) { setDone(true); return; }
-    setI(i + 1); setPicked(null);
+    if (i + 1 >= qs.length) { finish(); return; }
+    setI(i + 1);
+  }
+  function prev() { if (i > 0) setI(i - 1); }
+
+  function restart() {
+    const built = buildQuestionSet(items, 20);
+    setQs(built);
+    setPicks(new Array(built.length).fill(null));
+    setI(0);
+    setDone(false);
+    setSessionId(null);
+    if (user && built.length) {
+      supabase.from('bb_practice_sessions' as never).insert({
+        user_id: user.id, category, total: built.length, correct: 0,
+      } as never).select('id').single().then(({ data: s }) => { if (s) setSessionId((s as any).id); });
+    }
   }
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-emerald-50 text-slate-700"><Loader2 className="w-6 h-6 animate-spin" /></div>;
@@ -78,19 +120,60 @@ export default function BlackBookPractice() {
   );
 
   if (done) return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 flex items-center justify-center p-6">
-      <Card className="bg-white border-emerald-100 shadow-sm max-w-md w-full">
-        <CardContent className="p-8 text-center space-y-4">
-          <Trophy className="w-14 h-14 mx-auto text-amber-500" />
-          <h2 className="text-2xl font-bold">Session complete!</h2>
-          <div className="text-5xl font-bold text-emerald-600">{score} / {qs.length}</div>
-          <div className="text-slate-500">{Math.round((score / qs.length) * 100)}% correct</div>
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50" onClick={() => nav('/ssc/blackbook')}>Back</Button>
-            <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white" onClick={() => { setQs(buildQuestionSet(items, 20)); setI(0); setPicked(null); setScore(0); setDone(false); }}>Play again</Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
+      <div className="max-w-3xl mx-auto space-y-4">
+        <Card className="bg-white border-emerald-100 shadow-sm">
+          <CardContent className="p-8 text-center space-y-3">
+            <Trophy className="w-14 h-14 mx-auto text-amber-500" />
+            <h2 className="text-2xl font-bold">Session complete!</h2>
+            <div className="text-5xl font-bold text-emerald-600">{score} / {qs.length}</div>
+            <div className="text-slate-500">{Math.round((score / qs.length) * 100)}% correct</div>
+            <div className="flex gap-2 pt-2">
+              <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50" onClick={() => nav('/ssc/blackbook')}>Back</Button>
+              <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50" onClick={() => nav('/ssc/blackbook/history')}>View History</Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white" onClick={restart}>Play again</Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Review</h3>
+          {qs.map((question, idx) => {
+            const p = picks[idx];
+            const ok = p === question.correct;
+            return (
+              <Card key={idx} className="bg-white border-emerald-100 shadow-sm">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <span className={`mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${ok ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                      {ok ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm text-slate-500">Q{idx + 1}</div>
+                      <div className="font-medium text-slate-900">{question.question}</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-8">
+                    {question.options.map((opt, oi) => {
+                      const isCorrect = oi === question.correct;
+                      const isPicked = oi === p;
+                      return (
+                        <div key={oi} className={`text-sm px-2.5 py-1.5 rounded border ${
+                          isCorrect ? 'border-emerald-400 bg-emerald-50 text-emerald-800' :
+                          isPicked ? 'border-rose-300 bg-rose-50 text-rose-800' :
+                          'border-slate-200 bg-white text-slate-600'
+                        }`}>
+                          <span className="font-semibold mr-1">{String.fromCharCode(65 + oi)}.</span>{opt}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 
@@ -125,9 +208,14 @@ export default function BlackBookPractice() {
               <BlackBookExplanation item={q.item} />
             )}
 
-            {picked !== null && (
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white" onClick={next}>{i + 1 >= qs.length ? 'Finish' : 'Next'}</Button>
-            )}
+            <div className="flex gap-2 pt-1">
+              <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 disabled:opacity-40" onClick={prev} disabled={i === 0}>
+                <ChevronLeft className="w-4 h-4 mr-1" />Previous
+              </Button>
+              <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white" onClick={next}>
+                {i + 1 >= qs.length ? 'Finish' : (<>Next<ChevronRight className="w-4 h-4 ml-1" /></>)}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

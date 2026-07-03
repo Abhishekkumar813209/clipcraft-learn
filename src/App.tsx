@@ -64,6 +64,7 @@ import BlackBookPractice from "./pages/BlackBookPractice";
 import BlackBookBrowse from "./pages/BlackBookBrowse";
 import BlackBookDuelNew from "./pages/BlackBookDuelNew";
 import BlackBookDuel from "./pages/BlackBookDuel";
+import BlackBookHistory from "./pages/BlackBookHistory";
 
 
 const queryClient = new QueryClient({
@@ -113,6 +114,7 @@ const App = () => (
               <Route path="blackbook/browse/:category" element={<BlackBookBrowse />} />
               <Route path="blackbook/practice" element={<BlackBookPractice />} />
               <Route path="blackbook/practice/:category" element={<BlackBookPractice />} />
+              <Route path="blackbook/history" element={<BlackBookHistory />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />

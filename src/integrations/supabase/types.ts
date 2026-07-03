@@ -213,6 +213,90 @@ export type Database = {
           },
         ]
       }
+      bb_practice_attempts: {
+        Row: {
+          category: string
+          correct_index: number
+          created_at: string
+          id: string
+          is_correct: boolean
+          item_id: string | null
+          options: Json
+          picked_index: number | null
+          question: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          correct_index: number
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          item_id?: string | null
+          options: Json
+          picked_index?: number | null
+          question: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          correct_index?: number
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          item_id?: string | null
+          options?: Json
+          picked_index?: number | null
+          question?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bb_practice_attempts_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "ssc_black_book_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bb_practice_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "bb_practice_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bb_practice_sessions: {
+        Row: {
+          category: string
+          correct: number
+          created_at: string
+          id: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          category: string
+          correct?: number
+          created_at?: string
+          id?: string
+          total?: number
+          user_id: string
+        }
+        Update: {
+          category?: string
+          correct?: number
+          created_at?: string
+          id?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       black_book_daily_progress: {
         Row: {
           attempted: number
