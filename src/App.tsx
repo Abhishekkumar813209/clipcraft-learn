@@ -65,6 +65,7 @@ import BlackBookBrowse from "./pages/BlackBookBrowse";
 import BlackBookDuelNew from "./pages/BlackBookDuelNew";
 import BlackBookDuel from "./pages/BlackBookDuel";
 import BlackBookHistory from "./pages/BlackBookHistory";
+import OAuthConsent from "./pages/OAuthConsent";
 
 
 const queryClient = new QueryClient({
@@ -87,6 +88,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
             <Route path="/" element={<Index />}>
               <Route index element={<DashboardView />} />
               <Route path="sources" element={<SourceLibraryView />} />
