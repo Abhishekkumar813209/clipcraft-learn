@@ -65,6 +65,7 @@ import BlackBookBrowse from "./pages/BlackBookBrowse";
 import BlackBookDuelNew from "./pages/BlackBookDuelNew";
 import BlackBookDuel from "./pages/BlackBookDuel";
 import BlackBookHistory from "./pages/BlackBookHistory";
+import OAuthConsent from "./pages/OAuthConsent";
 
 
 const queryClient = new QueryClient({
