@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,9 +10,17 @@ import { Separator } from '@/components/ui/separator';
 import { GraduationCap, Loader2, Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
+function safeNext(next: string | null): string {
+  if (!next) return '/';
+  if (!next.startsWith('/') || next.startsWith('//')) return '/';
+  return next;
+}
+
 export default function Auth() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextPath = safeNext(searchParams.get('next'));
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,15 +34,18 @@ export default function Auth() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      navigate('/');
+      navigate(nextPath, { replace: true });
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, navigate, nextPath]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
+      const redirectTarget = nextPath === '/'
+        ? window.location.origin
+        : `${window.location.origin}${nextPath}`;
       const { error } = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: redirectTarget,
       });
       if (error) throw error;
     } catch (error: any) {
@@ -43,6 +54,7 @@ export default function Auth() {
       setGoogleLoading(false);
     }
   };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
