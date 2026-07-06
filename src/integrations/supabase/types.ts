@@ -729,6 +729,87 @@ export type Database = {
         }
         Relationships: []
       }
+      root_practice_attempts: {
+        Row: {
+          correct_index: number
+          created_at: string
+          id: string
+          is_correct: boolean
+          options: Json
+          picked_index: number | null
+          qtype: string | null
+          question: string
+          session_id: string
+          user_id: string
+          word_id: number | null
+        }
+        Insert: {
+          correct_index: number
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          options: Json
+          picked_index?: number | null
+          qtype?: string | null
+          question: string
+          session_id: string
+          user_id: string
+          word_id?: number | null
+        }
+        Update: {
+          correct_index?: number
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          options?: Json
+          picked_index?: number | null
+          qtype?: string | null
+          question?: string
+          session_id?: string
+          user_id?: string
+          word_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "root_practice_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "root_practice_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "root_practice_attempts_word_id_fkey"
+            columns: ["word_id"]
+            isOneToOne: false
+            referencedRelation: "ssc_root_words"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      root_practice_sessions: {
+        Row: {
+          correct: number
+          created_at: string
+          id: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          correct?: number
+          created_at?: string
+          id?: string
+          total?: number
+          user_id: string
+        }
+        Update: {
+          correct?: number
+          created_at?: string
+          id?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       ssc_black_book_items: {
         Row: {
           answer: string
@@ -822,6 +903,51 @@ export type Database = {
           topic?: Database["public"]["Enums"]["ssc_topic"]
           user_id?: string | null
           year?: number | null
+        }
+        Relationships: []
+      }
+      ssc_root_words: {
+        Row: {
+          antonym: string | null
+          created_at: string
+          definition: string | null
+          example: string | null
+          hinglish_meaning: string | null
+          id: number
+          root: string
+          root_meaning: string | null
+          root_plus_word: string | null
+          sno: number | null
+          synonym: string | null
+          word: string
+        }
+        Insert: {
+          antonym?: string | null
+          created_at?: string
+          definition?: string | null
+          example?: string | null
+          hinglish_meaning?: string | null
+          id?: number
+          root: string
+          root_meaning?: string | null
+          root_plus_word?: string | null
+          sno?: number | null
+          synonym?: string | null
+          word: string
+        }
+        Update: {
+          antonym?: string | null
+          created_at?: string
+          definition?: string | null
+          example?: string | null
+          hinglish_meaning?: string | null
+          id?: number
+          root?: string
+          root_meaning?: string | null
+          root_plus_word?: string | null
+          sno?: number | null
+          synonym?: string | null
+          word?: string
         }
         Relationships: []
       }
