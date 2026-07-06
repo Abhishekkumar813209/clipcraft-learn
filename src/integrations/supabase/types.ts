@@ -922,35 +922,50 @@ export type Database = {
       }
       ssc_vocabulary: {
         Row: {
+          antonym: string | null
           created_at: string
           example_sentence: string | null
+          hinglish_meaning: string | null
           id: string
           meaning: string | null
           root: string | null
           root_meaning: string | null
+          root_word: string | null
+          sno: number | null
           source_book: string | null
+          synonym: string | null
           user_id: string | null
           word: string
         }
         Insert: {
+          antonym?: string | null
           created_at?: string
           example_sentence?: string | null
+          hinglish_meaning?: string | null
           id?: string
           meaning?: string | null
           root?: string | null
           root_meaning?: string | null
+          root_word?: string | null
+          sno?: number | null
           source_book?: string | null
+          synonym?: string | null
           user_id?: string | null
           word: string
         }
         Update: {
+          antonym?: string | null
           created_at?: string
           example_sentence?: string | null
+          hinglish_meaning?: string | null
           id?: string
           meaning?: string | null
           root?: string | null
           root_meaning?: string | null
+          root_word?: string | null
+          sno?: number | null
           source_book?: string | null
+          synonym?: string | null
           user_id?: string | null
           word?: string
         }
