@@ -65,6 +65,8 @@ import BlackBookBrowse from "./pages/BlackBookBrowse";
 import BlackBookDuelNew from "./pages/BlackBookDuelNew";
 import BlackBookDuel from "./pages/BlackBookDuel";
 import BlackBookHistory from "./pages/BlackBookHistory";
+import SscRoots from "./pages/SscRoots";
+import SscRootsPractice from "./pages/SscRootsPractice";
 import OAuthConsent from "./pages/OAuthConsent";
 
 
@@ -117,6 +119,8 @@ const App = () => (
               <Route path="blackbook/practice" element={<BlackBookPractice />} />
               <Route path="blackbook/practice/:category" element={<BlackBookPractice />} />
               <Route path="blackbook/history" element={<BlackBookHistory />} />
+              <Route path="roots" element={<SscRoots />} />
+              <Route path="roots/practice" element={<SscRootsPractice />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />

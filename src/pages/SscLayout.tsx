@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { BookOpen, Grid3X3, Trophy, BookMarked, FileText, ArrowLeft, Sparkles, Search, Menu, History } from 'lucide-react';
+import { BookOpen, Grid3X3, Trophy, BookMarked, FileText, ArrowLeft, Sparkles, Search, Menu, History, Sprout } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: 'Practice', path: '/ssc/practice', icon: Grid3X3 },
   { label: 'Vocabulary', path: '/ssc/vocab', icon: BookMarked },
   { label: 'BB Practice', path: '/ssc/blackbook', icon: Sparkles },
+  { label: 'English Vocabulary', path: '/ssc/roots', icon: Sprout },
   { label: 'BB Browse', path: '/ssc/blackbook/browse', icon: Search },
   { label: 'BB History', path: '/ssc/blackbook/history', icon: History },
   { label: 'PYQ Mode', path: '/ssc/pyq', icon: Trophy, disabled: true },
