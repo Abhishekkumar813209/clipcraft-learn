@@ -1,69 +1,40 @@
-## Goal
-Add persistent practice history + analytics for Black Book, session review with correct/wrong breakdown, Hindi-flip on double-click (history only), and Prev/Next navigation in the practice quiz.
+# English Root Words Module (SSC)
 
-## 1. Database (new migration)
-Create two tables to persist per-attempt data:
+Add the uploaded root-words dataset to the backend and build a browse + practice experience inside the SSC segment, mirroring the OWS / Synonyms style already in use.
 
-- `bb_practice_sessions`
-  - `id uuid pk`, `user_id uuid`, `category text` (syn_ant | idiom | ows | mixed)
-  - `total int`, `correct int`, `created_at timestamptz default now()`
-- `bb_practice_attempts`
-  - `id uuid pk`, `session_id uuid fk → bb_practice_sessions`, `user_id uuid`
-  - `item_id uuid fk → ssc_black_book_items`
-  - `category text`, `question text`, `options jsonb`, `correct_index int`, `picked_index int`
-  - `is_correct bool`, `created_at timestamptz`
+## 1. Data & Backend
 
-Both with RLS: user can only read/insert their own rows. Include GRANTs to `authenticated` + `service_role`.
+- Create table `ssc_root_words` with fields: `root`, `root_meaning`, `word`, `root_plus_word`, `definition`, `hinglish_meaning`, `example`, `synonym`, `antonym`, `sno` (group id from CSV).
+- Grants + RLS: publicly readable (SELECT to `anon`, `authenticated`); writes to `service_role` only.
+- Seed all ~4,341 rows from `English_Root_Words_350-469_Improved.csv` via an insert step after the migration.
 
-## 2. Save data during practice
-`src/pages/BlackBookPractice.tsx`:
-- On session start, insert a `bb_practice_sessions` row → keep `sessionId` in state.
-- On each `choose()`, insert an `bb_practice_attempts` row (with full question snapshot so history renders without depending on live items).
-- On `done`, update the session's `correct`/`total`.
-- Works for `mixed` too (removes the current mixed skip).
+## 2. Sidebar entry
 
-## 3. Prev / Next navigation in practice
-Same file:
-- Add "Previous" and "Next" buttons below options.
-- Track `picked` per question in an array (`picked: (number|null)[]`) instead of a single value so navigating back preserves answers.
-- Prev enabled from Q2; Next always enabled once question exists; final question shows "Finish".
-- Answering a question locks it (no re-pick) — matches current behavior.
+- Add "English Vocabulary" item in `src/pages/SscLayout.tsx` (icon: `Sprout` or `Languages`) → route `/ssc/roots`.
 
-## 4. Post-session review inside the same page
-When `done`:
-- Show summary card (already exists) + a scrollable list of all 20 questions with:
-  - Question text, user's pick (red if wrong, green if right), correct answer highlighted.
-  - Rich `BlackBookExplanation` collapsed per row (expand on click).
-- Buttons: "Back", "Play again", "View full history".
+## 3. Browse view (`/ssc/roots`)
 
-## 5. New "Practice History" sidebar tab
-`src/pages/SscLayout.tsx`: add nav item "BB History" → `/ssc/blackbook/history`.
+- Groups words by `root`. Search bar (root / word / meaning), letter filter.
+- Each root shown as a card header ("Ab — Off, Away From, Apart") expanding into child word cards styled like the existing One-Word-Substitution cards: word, definition, Hinglish meaning, example, synonyms/antonyms chips.
 
-New page `src/pages/BlackBookHistory.tsx` with 3 tabs (Synonyms & Antonyms, Idioms & Phrases, One Word Substitutions):
+## 4. Practice mode (`/ssc/roots/practice`)
 
-Each tab shows two sections:
-- **Word analytics** — aggregate wrong-count per item for that category:
-  - Query `bb_practice_attempts` grouped by `item_id` where `is_correct=false`, ordered by wrong count desc.
-  - Render as list: prompt, wrong count badge, total attempts, accuracy%.
-  - Click row → open a modal with the full `BlackBookExplanation`.
-- **Session history** — list of past sessions (date, score) → click to open a session detail view showing every question with user's pick vs correct, plus the Hindi-flip feature (see #6).
+- Session = **30 root words** picked at random (each with all its child words available for question generation).
+- 20-question quiz set drawn from those roots' words, same UX as Black Book practice:
+  - Prev/Next navigation, running score, review screen at end.
+  - Question types (mixed):
+    1. "Meaning of *word*?" — 4 definition options.
+    2. "Which word belongs to root *X (meaning …)*?" — 4 word options.
+    3. "Synonym of *word*?" — when a synonym exists in the row.
+- Distractors pulled from other words in the dataset (prefer same root group when possible).
+- Persist attempts to a new `root_practice_sessions` / `root_practice_attempts` pair (same shape as `bb_practice_*`) so history/weak-word tracking can be added later.
 
-## 6. Double-click Hindi flip (history only)
-In the session-detail review under History:
-- Each option button wrapped in a component that stores `showHindi` state.
-- `onDoubleClick` toggles English ↔ Hindi meaning for all four options at once (per question card).
-- Hindi comes from `ssc_black_book_items.hindi_meaning`; for options that are other items' words we lookup the item by matching `answer`/`prompt` in the cached items list. If no Hindi found, show "—".
-- This flip is **only** in `BlackBookHistory` session-detail, not in live practice.
+## 5. Routing
 
-## 7. Files to touch
-- Migration (new).
-- `src/pages/BlackBookPractice.tsx` — persistence, prev/next, review list.
-- `src/pages/SscLayout.tsx` — new nav link.
-- `src/pages/BlackBookHistory.tsx` — new page (tabs, analytics, session detail).
-- `src/App.tsx` — route `/ssc/blackbook/history`.
-- `src/lib/blackBookQuiz.ts` — small helper to lookup item by text for Hindi flip (optional).
+- Register `/ssc/roots` and `/ssc/roots/practice` in `src/App.tsx` under the existing SSC layout.
 
-## Notes
-- All persistence uses the existing supabase client; no edge functions needed → zero AI quota.
-- Mixed-category sessions also saved; analytics query still groups per item so it works.
-- No changes to Duel flow.
+## Technical notes
+
+- CSV parsed server-side in the seed step (chunked inserts of ~500 rows) to stay under statement limits.
+- Reuse `BlackBookPractice` UI patterns (`Card`, colour classes, review screen) for consistency — new files: `src/pages/SscRoots.tsx`, `src/pages/SscRootsPractice.tsx`, `src/lib/rootWordsQuiz.ts`.
+- No changes to existing Black Book flow.
