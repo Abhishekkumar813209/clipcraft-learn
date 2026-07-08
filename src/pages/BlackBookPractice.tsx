@@ -217,7 +217,7 @@ export default function BlackBookPractice() {
             </div>
 {(() => {
               const isIdiom = q.item.category === 'idiom';
-              const isSynAnt = q.item.category === 'synonym' || q.item.category === 'antonym';
+              const isSynAnt = q.item.category === 'syn_ant';
               const hintText = isIdiom
                 ? q.item.hint
                 : isSynAnt
