@@ -215,25 +215,38 @@ export default function BlackBookPractice() {
               {q.question}
               {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
             </div>
-            {picked === null && q.item.category === 'idiom' && q.item.hint && (
-              <div>
-                {hintShown[i] ? (
-                  <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
-                    <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
-                    <span>{q.item.hint}</span>
-                  </div>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-amber-200 text-amber-700 hover:bg-amber-50"
-                    onClick={() => setHintShown({ ...hintShown, [i]: true })}
-                  >
-                    <Lightbulb className="w-4 h-4 mr-1" />Show hint
-                  </Button>
-                )}
-              </div>
-            )}
+{(() => {
+              const isIdiom = q.item.category === 'idiom';
+              const isSynAnt = q.item.category === 'syn_ant';
+              const hintText = isIdiom
+                ? q.item.hint
+                : isSynAnt
+                  ? hindiForOption(q.item.prompt || '')
+                  : null;
+              if (picked !== null || !hintText || hintText === '—') return null;
+              return (
+                <div>
+                  {hintShown[i] ? (
+                    <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
+                      <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
+                      <span>
+                        {isSynAnt && <span className="font-semibold not-italic mr-1">{q.item.prompt}:</span>}
+                        {hintText}
+                      </span>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-amber-200 text-amber-700 hover:bg-amber-50"
+                      onClick={() => setHintShown({ ...hintShown, [i]: true })}
+                    >
+                      <Lightbulb className="w-4 h-4 mr-1" />Show hint
+                    </Button>
+                  )}
+                </div>
+              );
+            })()}
             <div className="space-y-2">
               {q.options.map((opt, idx) => {
                 const isCorrect = q.correct === idx;
