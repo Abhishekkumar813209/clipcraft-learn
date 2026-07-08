@@ -22,6 +22,7 @@ export default function BlackBookPractice() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
+  const [hintShown, setHintShown] = useState<Record<number, boolean>>({});
   const wordHindi = useWordHindi();
 
   // Build item->meaning map. Prefer hinglish_meaning (already stored in DB) then hindi_meaning.
