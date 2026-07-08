@@ -195,10 +195,10 @@ function AttemptCard({ attempt, idx, itemById }: { attempt: AttemptRow; idx: num
   const hindiOptions = useMemo(() => {
     const map = new Map<string, string>();
     itemById.forEach((it) => {
-      if (it.hindi_meaning) {
-        if (it.prompt) map.set(it.prompt.toLowerCase(), it.hindi_meaning);
-        if (it.answer) map.set(it.answer.toLowerCase(), it.hindi_meaning);
-      }
+      const meaning = it.hinglish_meaning || it.hindi_meaning;
+      if (!meaning) return;
+      if (it.prompt) map.set(it.prompt.toLowerCase(), meaning);
+      if (it.answer) map.set(it.answer.toLowerCase(), meaning);
     });
     return attempt.options.map((o) => map.get(o.trim().toLowerCase()) || lookupHindi(wordHindi, o) || '—');
   }, [attempt.options, itemById, wordHindi]);
