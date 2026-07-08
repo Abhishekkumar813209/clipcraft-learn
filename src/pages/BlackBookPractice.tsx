@@ -24,14 +24,14 @@ export default function BlackBookPractice() {
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const wordHindi = useWordHindi();
 
-  // Build item->hindi map to also resolve prompts/answers to hindi_meaning already on the item
+  // Build item->meaning map. Prefer hinglish_meaning (already stored in DB) then hindi_meaning.
   const itemHindiMap = useMemo(() => {
     const m = new Map<string, string>();
     for (const it of items) {
-      if (it.hindi_meaning) {
-        if (it.prompt) m.set(it.prompt.trim().toLowerCase(), it.hindi_meaning);
-        if (it.answer) m.set(it.answer.trim().toLowerCase(), it.hindi_meaning);
-      }
+      const meaning = it.hinglish_meaning || it.hindi_meaning;
+      if (!meaning) continue;
+      if (it.prompt) m.set(it.prompt.trim().toLowerCase(), meaning);
+      if (it.answer) m.set(it.answer.trim().toLowerCase(), meaning);
     }
     return m;
   }, [items]);
