@@ -90,7 +90,7 @@ export default function SscRoots() {
                             {w.root_plus_word && <div className="text-[10px] text-emerald-700 font-mono">{w.root_plus_word}</div>}
                           </div>
                           {w.definition && <div className="text-sm text-slate-700 mt-1">{w.definition}</div>}
-                          {w.hinglish_meaning && <div className="text-xs text-slate-500 mt-1 italic">{w.hinglish_meaning}</div>}
+                          {(w.hindi_meaning || w.hinglish_meaning) && <div className="text-xs text-amber-700 mt-1">{w.hindi_meaning || w.hinglish_meaning}</div>}
                           {w.example && <div className="text-xs text-slate-600 mt-2 border-l-2 border-emerald-300 pl-2">{w.example}</div>}
                           <div className="flex flex-wrap gap-1 mt-2">
                             {w.synonym && <Badge className="bg-teal-100 text-teal-800 hover:bg-teal-100">syn: {w.synonym}</Badge>}
