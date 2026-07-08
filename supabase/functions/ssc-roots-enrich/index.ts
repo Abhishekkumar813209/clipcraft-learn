@@ -88,13 +88,7 @@ Return STRICT JSON only, no prose:
     }
     const json = await res.json();
     const content = json.choices?.[0]?.message?.content || "{}";
-    let parsed: { items: { id: number; hindi_meaning: string; example: string }[] };
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      const m = content.match(/\{[\s\S]*\}/);
-      parsed = m ? JSON.parse(m[0]) : { items: [] };
-    }
+    const parsed = safeParseItems<{ id: number; hindi_meaning: string; example: string }>(content);
 
     let updated = 0;
     for (const it of parsed.items || []) {
