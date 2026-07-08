@@ -169,34 +169,54 @@ export default function SscRootsPractice() {
           <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav('/ssc/roots')}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
           <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
-        <Card className="bg-white border-emerald-100">
+        <Card
+          className={`bg-white border-emerald-100 select-none ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
+          onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
+        >
           <CardContent className="p-6 space-y-4">
-            <div className="text-xs uppercase tracking-wide text-emerald-600 font-semibold">{q.qtype.replace('_', ' ')}</div>
+            <div className="text-xs uppercase tracking-wide text-emerald-600 font-semibold flex items-center gap-2">
+              {q.qtype.replace('_', ' ')}
+              {flipAll[i] && <span className="text-amber-700">· Hindi view</span>}
+            </div>
             <div className="text-lg font-medium text-slate-900">{q.question}</div>
             <div className="space-y-2">
               {q.options.map((opt, idx) => {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const show = picked !== null;
+                const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
+                const label = isFlipped ? hindiForOption(q, opt) : opt;
                 return (
-                  <button key={idx} disabled={show} onClick={() => choose(idx)}
+                  <button
+                    key={idx}
+                    disabled={!show && picked !== null}
+                    onClick={() => {
+                      if (picked === null) { choose(idx); return; }
+                      // toggle per-option hindi reveal
+                      const cur = new Set(revealed[i] || []);
+                      if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                      setRevealed({ ...revealed, [i]: cur });
+                    }}
                     className={`w-full text-left p-3 rounded-md border transition-all ${
                       show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
                       show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
                       'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
-                    }`}>
-                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
+                    } ${isFlipped ? 'italic' : ''}`}>
+                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
                   </button>
                 );
               })}
             </div>
             {picked !== null && (
-              <div className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3 text-sm space-y-1">
-                <div><span className="font-semibold text-emerald-800">{q.word.word}</span> <span className="text-xs text-slate-500">· root {q.word.root}{q.word.root_meaning ? ` (${q.word.root_meaning})` : ''}</span></div>
-                {q.word.definition && <div className="text-slate-700">{q.word.definition}</div>}
-                {q.word.hinglish_meaning && <div className="text-slate-500 italic">{q.word.hinglish_meaning}</div>}
-                {q.word.example && <div className="text-slate-600 border-l-2 border-emerald-300 pl-2">{q.word.example}</div>}
-              </div>
+              <>
+                <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for its Hindi meaning · double-click card to flip all</div>
+                <div className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3 text-sm space-y-1">
+                  <div><span className="font-semibold text-emerald-800">{q.word.word}</span> <span className="text-xs text-slate-500">· root {q.word.root}{q.word.root_meaning ? ` (${q.word.root_meaning})` : ''}</span></div>
+                  {q.word.definition && <div className="text-slate-700">{q.word.definition}</div>}
+                  {(q.word.hindi_meaning || q.word.hinglish_meaning) && <div className="text-amber-700">{q.word.hindi_meaning || q.word.hinglish_meaning}</div>}
+                  {q.word.example && <div className="text-slate-600 border-l-2 border-emerald-300 pl-2">{q.word.example}</div>}
+                </div>
+              </>
             )}
 
             <div className="flex gap-2 pt-1">
