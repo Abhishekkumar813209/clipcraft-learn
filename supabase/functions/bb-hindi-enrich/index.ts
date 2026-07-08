@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { callGemini } from "../_shared/gemini.ts";
+import { safeParseItems } from "../_shared/json.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -69,9 +70,7 @@ Return STRICT JSON: {"items":[{"id":"...","hindi":"..."}]}`;
       }
       const json = await res.json();
       const content = json.choices?.[0]?.message?.content || "{}";
-      let parsed: { items: { id: string; hindi: string }[] };
-      try { parsed = JSON.parse(content); }
-      catch { const m = content.match(/\{[\s\S]*\}/); parsed = m ? JSON.parse(m[0]) : { items: [] }; }
+      const parsed = safeParseItems<{ id: string; hindi: string }>(content);
       let updated = 0;
       for (const it of parsed.items || []) {
         if (!it.id || !it.hindi) continue;
@@ -149,9 +148,7 @@ Return STRICT JSON: {"items":[{"word":"...","hindi":"..."}]}`;
     }
     const json = await res.json();
     const content = json.choices?.[0]?.message?.content || "{}";
-    let parsed: { items: { word: string; hindi: string }[] };
-    try { parsed = JSON.parse(content); }
-    catch { const m = content.match(/\{[\s\S]*\}/); parsed = m ? JSON.parse(m[0]) : { items: [] }; }
+    const parsed = safeParseItems<{ word: string; hindi: string }>(content);
 
     const upserts: { word_key: string; display: string; hindi: string; kind: string }[] = [];
     for (const it of parsed.items || []) {
