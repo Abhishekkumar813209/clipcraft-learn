@@ -266,12 +266,6 @@ export default function BlackBookPractice() {
                 <BlackBookExplanation item={q.item} />
               </>
             )}
-            {picked !== null && (
-              <>
-                <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for Hindi · double-click card to flip all</div>
-                <BlackBookExplanation item={q.item} />
-              </>
-            )}
 
             <div className="flex gap-2 pt-1">
               <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 disabled:opacity-40" onClick={prev} disabled={i === 0}>
