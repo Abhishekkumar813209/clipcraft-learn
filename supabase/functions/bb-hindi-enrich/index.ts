@@ -109,8 +109,6 @@ Return STRICT JSON: {"items":[{"id":"...","hindi":"..."}]}`;
         push(it.prompt);
         (it.synonyms || []).forEach(push);
         (it.antonyms || []).forEach(push);
-      } else if (it.category === "ows") {
-        push(it.answer);
       }
     }
     // Skip tokens we already have
