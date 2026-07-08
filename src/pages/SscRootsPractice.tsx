@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw } from 'lucide-react';
 import { fetchAllRootWords, buildRootSession, RootQuestion, RootWord } from '@/lib/rootWordsQuiz';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
 export default function SscRootsPractice() {
   const nav = useNavigate();
@@ -17,6 +18,31 @@ export default function SscRootsPractice() {
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
+  const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
+  const wordHindi = useWordHindi();
+
+  // Build a map: word -> hindi (from ssc_root_words). Also lookup by definition and by synonym token.
+  const rootMaps = useMemo(() => {
+    const byWord = new Map<string, string>();
+    const byDefinition = new Map<string, string>();
+    for (const w of all) {
+      const h = w.hindi_meaning || w.hinglish_meaning;
+      if (!h) continue;
+      byWord.set(w.word.trim().toLowerCase(), h);
+      if (w.definition) byDefinition.set(w.definition.trim().toLowerCase(), h);
+    }
+    return { byWord, byDefinition };
+  }, [all]);
+
+  function hindiForOption(q: RootQuestion, opt: string): string {
+    const k = opt.trim().toLowerCase();
+    if (q.qtype === 'definition') {
+      return rootMaps.byDefinition.get(k) || '—';
+    }
+    // root_match & synonym: option is a word
+    return rootMaps.byWord.get(k) || lookupHindi(wordHindi, opt) || '—';
+  }
 
   async function start(allWords: RootWord[]) {
     const { questions } = buildRootSession(allWords, 30, 20);
@@ -143,34 +169,54 @@ export default function SscRootsPractice() {
           <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav('/ssc/roots')}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
           <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
-        <Card className="bg-white border-emerald-100">
+        <Card
+          className={`bg-white border-emerald-100 select-none ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
+          onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
+        >
           <CardContent className="p-6 space-y-4">
-            <div className="text-xs uppercase tracking-wide text-emerald-600 font-semibold">{q.qtype.replace('_', ' ')}</div>
+            <div className="text-xs uppercase tracking-wide text-emerald-600 font-semibold flex items-center gap-2">
+              {q.qtype.replace('_', ' ')}
+              {flipAll[i] && <span className="text-amber-700">· Hindi view</span>}
+            </div>
             <div className="text-lg font-medium text-slate-900">{q.question}</div>
             <div className="space-y-2">
               {q.options.map((opt, idx) => {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const show = picked !== null;
+                const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
+                const label = isFlipped ? hindiForOption(q, opt) : opt;
                 return (
-                  <button key={idx} disabled={show} onClick={() => choose(idx)}
+                  <button
+                    key={idx}
+                    disabled={!show && picked !== null}
+                    onClick={() => {
+                      if (picked === null) { choose(idx); return; }
+                      // toggle per-option hindi reveal
+                      const cur = new Set(revealed[i] || []);
+                      if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                      setRevealed({ ...revealed, [i]: cur });
+                    }}
                     className={`w-full text-left p-3 rounded-md border transition-all ${
                       show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
                       show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
                       'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
-                    }`}>
-                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
+                    } ${isFlipped ? 'italic' : ''}`}>
+                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
                   </button>
                 );
               })}
             </div>
             {picked !== null && (
-              <div className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3 text-sm space-y-1">
-                <div><span className="font-semibold text-emerald-800">{q.word.word}</span> <span className="text-xs text-slate-500">· root {q.word.root}{q.word.root_meaning ? ` (${q.word.root_meaning})` : ''}</span></div>
-                {q.word.definition && <div className="text-slate-700">{q.word.definition}</div>}
-                {q.word.hinglish_meaning && <div className="text-slate-500 italic">{q.word.hinglish_meaning}</div>}
-                {q.word.example && <div className="text-slate-600 border-l-2 border-emerald-300 pl-2">{q.word.example}</div>}
-              </div>
+              <>
+                <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for its Hindi meaning · double-click card to flip all</div>
+                <div className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3 text-sm space-y-1">
+                  <div><span className="font-semibold text-emerald-800">{q.word.word}</span> <span className="text-xs text-slate-500">· root {q.word.root}{q.word.root_meaning ? ` (${q.word.root_meaning})` : ''}</span></div>
+                  {q.word.definition && <div className="text-slate-700">{q.word.definition}</div>}
+                  {(q.word.hindi_meaning || q.word.hinglish_meaning) && <div className="text-amber-700">{q.word.hindi_meaning || q.word.hinglish_meaning}</div>}
+                  {q.word.example && <div className="text-slate-600 border-l-2 border-emerald-300 pl-2">{q.word.example}</div>}
+                </div>
+              </>
             )}
 
             <div className="flex gap-2 pt-1">

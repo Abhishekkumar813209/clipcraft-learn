@@ -1,40 +1,89 @@
-# English Root Words Module (SSC)
+## Goals
 
-Add the uploaded root-words dataset to the backend and build a browse + practice experience inside the SSC segment, mirroring the OWS / Synonyms style already in use.
+1. **English Vocabulary (roots)** — rewrite `hinglish_meaning` as proper descriptive Hindi and regenerate `example` for all 4,341 rows (currently generic "committee/manager" templates).
+2. **Roots practice** — after answer is locked: single-tap on any option → show that option's Hindi meaning; double-tap on the card → flip all options to Hindi.
+3. **Black Book practice + history** — double-tap flip already exists but shows nothing because Hindi meanings for individual option words (Wise, Cautious, Elegy…) and idiom answers are missing. Backfill Hindi data so the flip actually works.
 
-## 1. Data & Backend
+---
 
-- Create table `ssc_root_words` with fields: `root`, `root_meaning`, `word`, `root_plus_word`, `definition`, `hinglish_meaning`, `example`, `synonym`, `antonym`, `sno` (group id from CSV).
-- Grants + RLS: publicly readable (SELECT to `anon`, `authenticated`); writes to `service_role` only.
-- Seed all ~4,341 rows from `English_Root_Words_350-469_Improved.csv` via an insert step after the migration.
+## 1. Regenerate Root Words Hindi + Examples
 
-## 2. Sidebar entry
+- Add a column `hindi_meaning` (text) to `ssc_root_words`. Keep the old `hinglish_meaning` untouched for safety; UI switches to the new field.
+- New edge function `ssc-roots-enrich` (admin-only, service-role writes):
+  - Fetches rows in batches of 25 where `hindi_meaning IS NULL` (or force-regenerate flag).
+  - Prompts Gemini (round-robin the 10 keys) to return JSON: `{ id, hindi_meaning, example }` where:
+    - `hindi_meaning`: one clean descriptive Hindi line (Devanagari), no English filler like "matlab hai / yani".
+    - `example`: a fresh natural English sentence *actually using the word* — never mention "committee/manager/professor/novel" templates.
+  - Persists via service-role update.
+- Admin trigger button on `/admin` (or a hidden `/admin/roots-enrich` page) with a progress counter. Run to completion in the background.
+- Update `SscRoots.tsx` and `rootWordsQuiz.ts` interface to read `hindi_meaning` (fallback to `hinglish_meaning` while migration runs).
 
-- Add "English Vocabulary" item in `src/pages/SscLayout.tsx` (icon: `Sprout` or `Languages`) → route `/ssc/roots`.
+## 2. Roots Practice — Tap-to-Hindi
 
-## 3. Browse view (`/ssc/roots`)
+In `SscRootsPractice.tsx`, once `picked !== null` for the current question:
 
-- Groups words by `root`. Search bar (root / word / meaning), letter filter.
-- Each root shown as a card header ("Ab — Off, Away From, Apart") expanding into child word cards styled like the existing One-Word-Substitution cards: word, definition, Hinglish meaning, example, synonyms/antonyms chips.
+- Build an `optionHindi[]` array by matching each option string back to a `ssc_root_words` row:
+  - `root_match` qtype: option is a word → direct lookup on `word`.
+  - `definition` qtype: option is a definition → lookup by `definition` match.
+  - `synonym` qtype: option is a synonym token → lookup by `word` first, else fall back to the shared `ssc_word_hindi` table (see §3).
+- State: `revealed: Set<number>` for per-option Hindi, plus `flipAll: boolean`.
+- Interactions on each option button (only enabled after answer locked):
+  - Single click → toggle that option in `revealed`.
+  - Double click on the **card** → toggle `flipAll` (shows Hindi for every option).
+- Rendering: when `flipAll || revealed.has(i)`, replace the option label with its Hindi text; if Hindi missing show a subtle "—".
+- Small hint line under options: "Tap an option for Hindi · double-click card for all".
 
-## 4. Practice mode (`/ssc/roots/practice`)
+## 3. Black Book — Backfill Hindi for Options
 
-- Session = **30 root words** picked at random (each with all its child words available for question generation).
-- 20-question quiz set drawn from those roots' words, same UX as Black Book practice:
-  - Prev/Next navigation, running score, review screen at end.
-  - Question types (mixed):
-    1. "Meaning of *word*?" — 4 definition options.
-    2. "Which word belongs to root *X (meaning …)*?" — 4 word options.
-    3. "Synonym of *word*?" — when a synonym exists in the row.
-- Distractors pulled from other words in the dataset (prefer same root group when possible).
-- Persist attempts to a new `root_practice_sessions` / `root_practice_attempts` pair (same shape as `bb_practice_*`) so history/weak-word tracking can be added later.
+Root cause: syn_ant options are individual words (Wise, Cautious…), OWS options are one-word answers, idiom options are meaning sentences — none currently have Hindi in the DB, so the existing history flip renders blanks.
 
-## 5. Routing
+**Schema**
 
-- Register `/ssc/roots` and `/ssc/roots/practice` in `src/App.tsx` under the existing SSC layout.
+- New table `public.ssc_word_hindi`:
+  - `word_key text primary key` (lowercased)
+  - `display text` (original casing)
+  - `hindi text not null`
+  - `kind text` ('word' | 'phrase')
+  - standard `created_at` / `updated_at`
+  - GRANT `SELECT` to `anon, authenticated`, ALL to `service_role`; RLS public-read.
+- Populate `ssc_black_book_items.hindi_meaning` for all 200 idiom rows and 200 OWS rows (currently empty).
 
-## Technical notes
+**Backfill edge function** `bb-hindi-enrich` (admin-only):
 
-- CSV parsed server-side in the seed step (chunked inserts of ~500 rows) to stay under statement limits.
-- Reuse `BlackBookPractice` UI patterns (`Card`, colour classes, review screen) for consistency — new files: `src/pages/SscRoots.tsx`, `src/pages/SscRootsPractice.tsx`, `src/lib/rootWordsQuiz.ts`.
-- No changes to existing Black Book flow.
+- Collects unique tokens across all BB items: every syn_ant `prompt` + each element of `synonyms[]` / `antonyms[]`, every OWS `answer`, plus OWS/idiom `prompt`s so option flips work for prompts too.
+- Batches (30–40 at a time) to Gemini → returns `{ word, hindi }` list → upserts into `ssc_word_hindi`.
+- Separate pass: for idiom + OWS rows without `hindi_meaning`, translate the `answer` and update the row.
+
+**UI wiring**
+
+- `BlackBookHistory.tsx` (and `BlackBookPractice.tsx` if we add the same flip there — see §4): extend the hindi map builder to also fetch and merge `ssc_word_hindi` so option text like "Wise" resolves to "बुद्धिमान".
+
+## 4. Black Book Practice — Same Flip Behavior
+
+Currently only history has the double-click flip. Mirror the roots-practice interaction inside `BlackBookPractice.tsx` after answer locked:
+
+- Single tap on option → reveal its Hindi.
+- Double tap on card → flip all options to Hindi.
+- Uses the same combined map (item's own Hindi fields + `ssc_word_hindi`).
+
+## Deliverables
+
+**Migrations**
+- `ssc_root_words.hindi_meaning` column.
+- `ssc_word_hindi` table + grants + RLS.
+
+**Edge functions**
+- `supabase/functions/ssc-roots-enrich/index.ts`
+- `supabase/functions/bb-hindi-enrich/index.ts`
+
+**Frontend**
+- `SscRootsPractice.tsx` — tap/double-tap Hindi reveal + option→Hindi lookup helper.
+- `SscRoots.tsx`, `rootWordsQuiz.ts` — read new `hindi_meaning`.
+- `BlackBookPractice.tsx` — mirror flip UX from history.
+- `BlackBookHistory.tsx` — extend map with `ssc_word_hindi`.
+- Small admin trigger UI for both enrich functions with progress.
+
+## Non-Goals
+
+- No changes to BB/roots question generation logic, scoring, or persistence.
+- No changes to unrelated SSC modules.

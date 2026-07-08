@@ -8,6 +8,7 @@ export interface RootWord {
   root_plus_word: string | null;
   word: string;
   definition: string | null;
+  hindi_meaning: string | null;
   hinglish_meaning: string | null;
   example: string | null;
   synonym: string | null;

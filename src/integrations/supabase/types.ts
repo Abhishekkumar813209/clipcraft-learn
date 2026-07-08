@@ -912,6 +912,7 @@ export type Database = {
           created_at: string
           definition: string | null
           example: string | null
+          hindi_meaning: string | null
           hinglish_meaning: string | null
           id: number
           root: string
@@ -926,6 +927,7 @@ export type Database = {
           created_at?: string
           definition?: string | null
           example?: string | null
+          hindi_meaning?: string | null
           hinglish_meaning?: string | null
           id?: number
           root: string
@@ -940,6 +942,7 @@ export type Database = {
           created_at?: string
           definition?: string | null
           example?: string | null
+          hindi_meaning?: string | null
           hinglish_meaning?: string | null
           id?: number
           root?: string
@@ -1094,6 +1097,33 @@ export type Database = {
           synonym?: string | null
           user_id?: string | null
           word?: string
+        }
+        Relationships: []
+      }
+      ssc_word_hindi: {
+        Row: {
+          created_at: string
+          display: string
+          hindi: string
+          kind: string
+          updated_at: string
+          word_key: string
+        }
+        Insert: {
+          created_at?: string
+          display: string
+          hindi: string
+          kind?: string
+          updated_at?: string
+          word_key: string
+        }
+        Update: {
+          created_at?: string
+          display?: string
+          hindi?: string
+          kind?: string
+          updated_at?: string
+          word_key?: string
         }
         Relationships: []
       }
