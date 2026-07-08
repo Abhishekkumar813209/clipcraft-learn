@@ -15,6 +15,7 @@ export interface BBItem {
   synonyms: string[] | null;
   antonyms: string[] | null;
   example: string | null;
+  hint?: string | null;
 }
 
 export interface BBQuestion {
