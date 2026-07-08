@@ -820,6 +820,7 @@ export type Database = {
           example: string | null
           hindi_meaning: string | null
           hinglish_meaning: string | null
+          hint: string | null
           id: string
           pos: string | null
           prompt: string
@@ -835,6 +836,7 @@ export type Database = {
           example?: string | null
           hindi_meaning?: string | null
           hinglish_meaning?: string | null
+          hint?: string | null
           id?: string
           pos?: string | null
           prompt: string
@@ -850,6 +852,7 @@ export type Database = {
           example?: string | null
           hindi_meaning?: string | null
           hinglish_meaning?: string | null
+          hint?: string | null
           id?: string
           pos?: string | null
           prompt?: string
