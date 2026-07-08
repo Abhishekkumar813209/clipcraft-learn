@@ -205,28 +205,46 @@ export default function BlackBookPractice() {
           <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav('/ssc/blackbook')}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
           <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
-        <Card className="bg-white border-emerald-100 shadow-sm">
+        <Card
+          className={`bg-white border-emerald-100 shadow-sm select-none ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
+          onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
+        >
           <CardContent className="p-6 space-y-4">
-            <div className="text-lg font-medium text-slate-900">{q.question}</div>
+            <div className="text-lg font-medium text-slate-900 flex items-center gap-2">
+              {q.question}
+              {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
+            </div>
             <div className="space-y-2">
               {q.options.map((opt, idx) => {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const show = picked !== null;
+                const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
+                const label = isFlipped ? hindiForOption(opt) : opt;
                 return (
-                  <button key={idx} disabled={show} onClick={() => choose(idx)}
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      if (picked === null) { choose(idx); return; }
+                      const cur = new Set(revealed[i] || []);
+                      if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                      setRevealed({ ...revealed, [i]: cur });
+                    }}
                     className={`w-full text-left p-3 rounded-md border transition-all ${
                       show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
                       show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
                       'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
-                    }`}>
-                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{opt}
+                    } ${isFlipped ? 'italic' : ''}`}>
+                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
                   </button>
                 );
               })}
             </div>
             {picked !== null && (
-              <BlackBookExplanation item={q.item} />
+              <>
+                <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for Hindi · double-click card to flip all</div>
+                <BlackBookExplanation item={q.item} />
+              </>
             )}
 
             <div className="flex gap-2 pt-1">
