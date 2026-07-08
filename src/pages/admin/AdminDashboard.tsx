@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { BookOpen, ListChecks, Layers } from 'lucide-react';
+import { BookOpen, ListChecks, Layers, Sparkles, Loader2 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
   const [counts, setCounts] = useState({ books: 0, topics: 0, subtopics: 0, questions: 0 });
