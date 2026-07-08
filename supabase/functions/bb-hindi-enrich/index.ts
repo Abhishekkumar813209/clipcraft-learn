@@ -148,9 +148,7 @@ Return STRICT JSON: {"items":[{"word":"...","hindi":"..."}]}`;
     }
     const json = await res.json();
     const content = json.choices?.[0]?.message?.content || "{}";
-    let parsed: { items: { word: string; hindi: string }[] };
-    try { parsed = JSON.parse(content); }
-    catch { const m = content.match(/\{[\s\S]*\}/); parsed = m ? JSON.parse(m[0]) : { items: [] }; }
+    const parsed = safeParseItems<{ word: string; hindi: string }>(content);
 
     const upserts: { word_key: string; display: string; hindi: string; kind: string }[] = [];
     for (const it of parsed.items || []) {
