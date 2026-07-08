@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw } from 'lucide-react';
 import { fetchBBItems, buildQuestionSet, BBCategory, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
 export default function BlackBookPractice() {
   const { category = 'mixed' } = useParams<{ category: BBCategory }>();
