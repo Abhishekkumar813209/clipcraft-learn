@@ -70,9 +70,7 @@ Return STRICT JSON: {"items":[{"id":"...","hindi":"..."}]}`;
       }
       const json = await res.json();
       const content = json.choices?.[0]?.message?.content || "{}";
-      let parsed: { items: { id: string; hindi: string }[] };
-      try { parsed = JSON.parse(content); }
-      catch { const m = content.match(/\{[\s\S]*\}/); parsed = m ? JSON.parse(m[0]) : { items: [] }; }
+      const parsed = safeParseItems<{ id: string; hindi: string }>(content);
       let updated = 0;
       for (const it of parsed.items || []) {
         if (!it.id || !it.hindi) continue;
