@@ -22,12 +22,12 @@ export default function SscRootsPractice() {
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const wordHindi = useWordHindi();
 
-  // Build a map: word -> hindi (from ssc_root_words). Also lookup by definition and by synonym token.
+  // Build a map: word/definition -> stored meaning (prefer hinglish_meaning from DB, then hindi_meaning).
   const rootMaps = useMemo(() => {
     const byWord = new Map<string, string>();
     const byDefinition = new Map<string, string>();
     for (const w of all) {
-      const h = w.hindi_meaning || w.hinglish_meaning;
+      const h = w.hinglish_meaning || w.hindi_meaning;
       if (!h) continue;
       byWord.set(w.word.trim().toLowerCase(), h);
       if (w.definition) byDefinition.set(w.definition.trim().toLowerCase(), h);
