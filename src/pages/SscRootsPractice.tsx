@@ -18,6 +18,31 @@ export default function SscRootsPractice() {
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
+  const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
+  const wordHindi = useWordHindi();
+
+  // Build a map: word -> hindi (from ssc_root_words). Also lookup by definition and by synonym token.
+  const rootMaps = useMemo(() => {
+    const byWord = new Map<string, string>();
+    const byDefinition = new Map<string, string>();
+    for (const w of all) {
+      const h = w.hindi_meaning || w.hinglish_meaning;
+      if (!h) continue;
+      byWord.set(w.word.trim().toLowerCase(), h);
+      if (w.definition) byDefinition.set(w.definition.trim().toLowerCase(), h);
+    }
+    return { byWord, byDefinition };
+  }, [all]);
+
+  function hindiForOption(q: RootQuestion, opt: string): string {
+    const k = opt.trim().toLowerCase();
+    if (q.qtype === 'definition') {
+      return rootMaps.byDefinition.get(k) || '—';
+    }
+    // root_match & synonym: option is a word
+    return rootMaps.byWord.get(k) || lookupHindi(wordHindi, opt) || '—';
+  }
 
   async function start(allWords: RootWord[]) {
     const { questions } = buildRootSession(allWords, 30, 20);
