@@ -29,3 +29,9 @@ verify_jwt = false
 
 [functions.generate-weak-area-questions]
 verify_jwt = false
+
+[functions.ssc-roots-enrich]
+verify_jwt = false
+
+[functions.bb-hindi-enrich]
+verify_jwt = false
