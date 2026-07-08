@@ -52,10 +52,12 @@ export async function callGemini(
       body: JSON.stringify(body),
     });
 
-    if (res.status === 429 || res.status === 503 || res.status === 502 || res.status === 504 || res.status === 500) {
+    // Rotate on rate limits, server errors, and billing/permission denials (dunning, quota, disabled key).
+    const rotatable = [429, 503, 502, 504, 500, 403, 401];
+    if (rotatable.includes(res.status)) {
       lastStatus = res.status;
       lastBody = await res.text().catch(() => "");
-      console.log(`Gemini key #${currentIndex} got ${res.status}, rotating...`);
+      console.log(`Gemini key #${currentIndex} got ${res.status}, rotating... detail: ${lastBody.slice(0, 200)}`);
       continue;
     }
 
