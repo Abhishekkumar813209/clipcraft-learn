@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { BBCategory, BBItem, fetchBBItems } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
+import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
 interface SessionRow {
   id: string; category: string; total: number; correct: number; created_at: string;
