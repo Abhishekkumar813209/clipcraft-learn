@@ -20,6 +20,26 @@ export default function BlackBookPractice() {
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
+  const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
+  const wordHindi = useWordHindi();
+
+  // Build item->hindi map to also resolve prompts/answers to hindi_meaning already on the item
+  const itemHindiMap = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const it of items) {
+      if (it.hindi_meaning) {
+        if (it.prompt) m.set(it.prompt.trim().toLowerCase(), it.hindi_meaning);
+        if (it.answer) m.set(it.answer.trim().toLowerCase(), it.hindi_meaning);
+      }
+    }
+    return m;
+  }, [items]);
+
+  function hindiForOption(opt: string): string {
+    const k = opt.trim().toLowerCase();
+    return itemHindiMap.get(k) || lookupHindi(wordHindi, opt) || '—';
+  }
 
   useEffect(() => {
     (async () => {
