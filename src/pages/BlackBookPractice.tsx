@@ -214,6 +214,7 @@ export default function BlackBookPractice() {
             <div className="text-lg font-medium text-slate-900 flex items-center gap-2">
               {q.question}
               {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
+            </div>
             {picked === null && q.item.category === 'idiom' && q.item.hint && (
               <div>
                 {hintShown[i] ? (
