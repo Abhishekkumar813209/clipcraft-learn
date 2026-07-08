@@ -189,7 +189,9 @@ function AttemptCard({ attempt, idx, itemById }: { attempt: AttemptRow; idx: num
   const [showHindi, setShowHindi] = useState(false);
   const ok = attempt.is_correct;
 
-  // Build Hindi lookup for each option: match option text against known item prompts/answers.
+  const wordHindi = useWordHindi();
+
+  // Build Hindi lookup for each option: match option text against known item prompts/answers, then fall back to shared word_hindi table.
   const hindiOptions = useMemo(() => {
     const map = new Map<string, string>();
     itemById.forEach((it) => {
@@ -197,12 +199,9 @@ function AttemptCard({ attempt, idx, itemById }: { attempt: AttemptRow; idx: num
         if (it.prompt) map.set(it.prompt.toLowerCase(), it.hindi_meaning);
         if (it.answer) map.set(it.answer.toLowerCase(), it.hindi_meaning);
       }
-      if (it.hinglish_meaning) {
-        if (it.answer) map.set(it.answer.toLowerCase(), map.get(it.answer.toLowerCase()) || it.hinglish_meaning);
-      }
     });
-    return attempt.options.map((o) => map.get(o.toLowerCase()) || '—');
-  }, [attempt.options, itemById]);
+    return attempt.options.map((o) => map.get(o.trim().toLowerCase()) || lookupHindi(wordHindi, o) || '—');
+  }, [attempt.options, itemById, wordHindi]);
 
   const item = attempt.item_id ? itemById.get(attempt.item_id) : undefined;
 
