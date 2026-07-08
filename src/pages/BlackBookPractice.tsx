@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw, Lightbulb } from 'lucide-react';
 import { fetchBBItems, buildQuestionSet, BBCategory, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +22,7 @@ export default function BlackBookPractice() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
+  const [hintShown, setHintShown] = useState<Record<number, boolean>>({});
   const wordHindi = useWordHindi();
 
   // Build item->meaning map. Prefer hinglish_meaning (already stored in DB) then hindi_meaning.
@@ -240,6 +241,25 @@ export default function BlackBookPractice() {
                 );
               })}
             </div>
+            {picked === null && q.item.category === 'idiom' && q.item.hint && (
+              <div className="pt-1">
+                {hintShown[i] ? (
+                  <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
+                    <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
+                    <span>{q.item.hint}</span>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-amber-200 text-amber-700 hover:bg-amber-50"
+                    onClick={() => setHintShown({ ...hintShown, [i]: true })}
+                  >
+                    <Lightbulb className="w-4 h-4 mr-1" />Show hint
+                  </Button>
+                )}
+              </div>
+            )}
             {picked !== null && (
               <>
                 <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for Hindi · double-click card to flip all</div>
