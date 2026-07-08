@@ -241,6 +241,25 @@ export default function BlackBookPractice() {
                 );
               })}
             </div>
+            {picked === null && q.item.category === 'idiom' && q.item.hint && (
+              <div className="pt-1">
+                {hintShown[i] ? (
+                  <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
+                    <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
+                    <span>{q.item.hint}</span>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-amber-200 text-amber-700 hover:bg-amber-50"
+                    onClick={() => setHintShown({ ...hintShown, [i]: true })}
+                  >
+                    <Lightbulb className="w-4 h-4 mr-1" />Show hint
+                  </Button>
+                )}
+              </div>
+            )}
             {picked !== null && (
               <>
                 <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for Hindi · double-click card to flip all</div>
