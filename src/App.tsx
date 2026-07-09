@@ -112,6 +112,11 @@ const App = () => (
               <Route path="blackbook/history" element={<BlackBookHistory />} />
               <Route path="roots" element={<SscRoots />} />
               <Route path="roots/practice" element={<SscRootsPractice />} />
+              <Route path=":subject(english|maths|reasoning|quant|gk)" element={<SscSubject />} />
+              <Route path="english" element={<SscSubject />} />
+              <Route path="maths" element={<SscSubject />} />
+              <Route path="reasoning" element={<SscSubject />} />
+              <Route path="gk" element={<SscSubject />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
