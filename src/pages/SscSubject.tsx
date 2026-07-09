@@ -1,9 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject } from '@/types/ssc';
+import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject, type SscTopic } from '@/types/ssc';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
 import { useSscTopicAccuracy } from '@/hooks/useSscProgress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
+
+const BLACK_BOOK_TOPICS: SscTopic[] = ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms'];
 
 const SLUG_TO_SUBJECT: Record<string, SscSubject> = {
   english: 'english',
