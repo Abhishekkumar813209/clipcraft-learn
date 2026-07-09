@@ -104,7 +104,7 @@ function EnrichPanel() {
         <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> AI Enrichment</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">Backfills Hindi meanings and regenerates root-word examples. Runs in batches; safe to re-run.</p>
+        <p className="text-sm text-muted-foreground">Backfills root-word Hindi/examples and batch-generates short guessable hints for idioms. Safe to re-run — only fills rows with missing values.</p>
         <div className="grid gap-2">
           {jobs.map((j) => (
             <div key={j.name} className="flex items-center justify-between gap-3 border rounded-md p-3">
