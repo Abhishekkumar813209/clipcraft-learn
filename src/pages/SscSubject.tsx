@@ -29,6 +29,20 @@ export default function SscSubjectPage() {
 
   const meta = SSC_SUBJECTS.find(s => s.key === subject)!;
   const topics = SUBJECT_TOPICS[subject];
+  const { user } = useAuth();
+  const [bbAttempted, setBbAttempted] = useState(0);
+  const bbTarget = 60;
+
+  useEffect(() => {
+    if (!user || subject !== 'english') return;
+    const today = new Date().toISOString().slice(0, 10);
+    supabase.from('black_book_daily_progress' as never)
+      .select('attempted').eq('user_id', user.id).eq('date', today)
+      .then(({ data }) => {
+        const sum = ((data as { attempted: number }[]) || []).reduce((s, p) => s + (p.attempted || 0), 0);
+        setBbAttempted(sum);
+      });
+  }, [user, subject]);
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
