@@ -120,7 +120,7 @@ export default function BlackBookPractice() {
   function prev() { if (i > 0) setI(i - 1); }
 
   function restart() {
-    const built = buildQuestionSet(items, 20);
+    const built = buildQuestionSet(items, targetCount);
     setQs(built);
     setPicks(new Array(built.length).fill(null));
     setI(0);
