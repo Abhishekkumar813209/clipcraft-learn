@@ -112,7 +112,7 @@ const App = () => (
               <Route path="blackbook/history" element={<BlackBookHistory />} />
               <Route path="roots" element={<SscRoots />} />
               <Route path="roots/practice" element={<SscRootsPractice />} />
-              <Route path=":subject" element={<SscSubject />} />
+              
               <Route path="english" element={<SscSubject />} />
               <Route path="maths" element={<SscSubject />} />
               <Route path="reasoning" element={<SscSubject />} />
