@@ -20,6 +20,7 @@ import QuizTest from "./pages/QuizTest";
 import QuizAnalysis from "./pages/QuizAnalysis";
 import UpscMotivation from "./pages/UpscMotivation";
 import SscLayout from "./pages/SscLayout";
+import SscSubject from "./pages/SscSubject";
 import SscDashboard from "./pages/SscDashboard";
 import SscPractice from "./pages/SscPractice";
 import SscPracticeSession from "./pages/SscPracticeSession";
@@ -112,6 +113,11 @@ const App = () => (
               <Route path="blackbook/history" element={<BlackBookHistory />} />
               <Route path="roots" element={<SscRoots />} />
               <Route path="roots/practice" element={<SscRootsPractice />} />
+              
+              <Route path="english" element={<SscSubject />} />
+              <Route path="maths" element={<SscSubject />} />
+              <Route path="reasoning" element={<SscSubject />} />
+              <Route path="gk" element={<SscSubject />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
