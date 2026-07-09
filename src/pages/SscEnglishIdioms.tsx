@@ -101,9 +101,6 @@ export default function SscEnglishIdioms() {
 
         <div className="grid md:grid-cols-2 gap-4">
           {GROUPS.map((g) => {
-            const p = prog[g.key];
-            const done = p?.attempted ?? 0;
-            const target = p?.target ?? g.target;
             const count = counts[g.key] ?? g.total;
             return (
               <Card key={g.key} className={`bg-gradient-to-br ${g.color} border-emerald-100 shadow-sm`}>
@@ -115,10 +112,8 @@ export default function SscEnglishIdioms() {
                     </div>
                     <Badge className="bg-white/70 text-emerald-700 border border-emerald-200">{count}</Badge>
                   </div>
-                  <div className="text-xs text-slate-600">Today: {done} / {target} · {p?.correct ?? 0} correct · Quiz size {g.quiz}</div>
-                  <div className="h-1.5 bg-white/60 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (done / target) * 100)}%` }} />
-                  </div>
+                  <div className="text-xs text-slate-600">Quiz size: {g.quiz} questions per session</div>
+
                   <div className="flex gap-2 pt-1">
                     <Link to={`/ssc/blackbook/browse/idiom?sub=${g.key}`} className="flex-1">
                       <Button size="sm" variant="outline" className="w-full bg-white/70 border-emerald-200 text-emerald-700 hover:bg-white">
