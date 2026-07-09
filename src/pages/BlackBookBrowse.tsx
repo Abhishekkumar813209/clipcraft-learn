@@ -17,6 +17,8 @@ const TABS: { key: BBCategory | 'mixed'; label: string }[] = [
 
 export default function BlackBookBrowse() {
   const { category = 'mixed' } = useParams<{ category: BBCategory | 'mixed' }>();
+  const [searchParams] = useSearchParams();
+  const sub = searchParams.get('sub') || undefined;
   const nav = useNavigate();
   const [items, setItems] = useState<BBItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,11 +26,12 @@ export default function BlackBookBrowse() {
 
   useEffect(() => {
     setLoading(true);
-    fetchBBItems(category).then((d) => {
+    fetchBBItems(category, sub).then((d) => {
       setItems(d);
       setLoading(false);
     });
-  }, [category]);
+  }, [category, sub]);
+
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
