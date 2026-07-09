@@ -101,7 +101,7 @@ function EnrichPanel() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> Hindi Enrichment (AI)</CardTitle>
+        <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> AI Enrichment</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">Backfills Hindi meanings and regenerates root-word examples. Runs in batches; safe to re-run.</p>
