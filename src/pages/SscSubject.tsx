@@ -1,9 +1,11 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject } from '@/types/ssc';
+import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject, type SscTopic } from '@/types/ssc';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
 import { useSscTopicAccuracy } from '@/hooks/useSscProgress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+
+const BLACK_BOOK_TOPICS: SscTopic[] = ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms'];
 
 const SLUG_TO_SUBJECT: Record<string, SscSubject> = {
   english: 'english',
@@ -50,6 +52,11 @@ export default function SscSubjectPage() {
                 <div className="flex items-start gap-3">
                   <span className="text-3xl">{t.icon}</span>
                   <div className="flex-1 min-w-0">
+                    {BLACK_BOOK_TOPICS.includes(topic) && (
+                      <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 px-2 py-0.5 rounded mb-1.5">
+                        Black Book
+                      </span>
+                    )}
                     <h3 className="font-semibold text-foreground">{t.label}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>
                     {pct !== null ? (
