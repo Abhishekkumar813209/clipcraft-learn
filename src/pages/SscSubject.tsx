@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject, type SscTopic } from '@/types/ssc';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
 import { useSscTopicAccuracy } from '@/hooks/useSscProgress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Target } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const BLACK_BOOK_TOPICS: SscTopic[] = ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms'];
 
@@ -25,6 +29,20 @@ export default function SscSubjectPage() {
 
   const meta = SSC_SUBJECTS.find(s => s.key === subject)!;
   const topics = SUBJECT_TOPICS[subject];
+  const { user } = useAuth();
+  const [bbAttempted, setBbAttempted] = useState(0);
+  const bbTarget = 60;
+
+  useEffect(() => {
+    if (!user || subject !== 'english') return;
+    const today = new Date().toISOString().slice(0, 10);
+    supabase.from('black_book_daily_progress' as never)
+      .select('attempted').eq('user_id', user.id).eq('date', today)
+      .then(({ data }) => {
+        const sum = ((data as { attempted: number }[]) || []).reduce((s, p) => s + (p.attempted || 0), 0);
+        setBbAttempted(sum);
+      });
+  }, [user, subject]);
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -34,6 +52,23 @@ export default function SscSubjectPage() {
         </h1>
         <p className="text-muted-foreground">Pick a topic to start practicing.</p>
       </div>
+
+      {subject === 'english' && (
+        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-100">
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Target className="w-5 h-5 text-emerald-600" />
+              <div>
+                <div className="text-xs text-muted-foreground">Aaj ka Black Book target</div>
+                <div className="text-lg font-semibold">{bbAttempted} / {bbTarget}</div>
+              </div>
+            </div>
+            <div className="w-40 h-2.5 bg-emerald-100 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500" style={{ width: `${Math.min(100, (bbAttempted / bbTarget) * 100)}%` }} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {topics.map((topic) => {
@@ -46,7 +81,7 @@ export default function SscSubjectPage() {
             <Card
               key={topic}
               className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
-              onClick={() => navigate(`/ssc/practice/${topic}`)}
+              onClick={() => navigate(topic === 'idioms_phrases' ? '/ssc/english/idioms' : `/ssc/practice/${topic}`)}
             >
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">

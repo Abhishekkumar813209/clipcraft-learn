@@ -94,18 +94,17 @@ function EnrichPanel() {
 
   const jobs = [
     { name: 'Roots Hindi + examples', fn: 'ssc-roots-enrich', body: {} },
-    { name: 'BB option Hindi (syn/ant only)', fn: 'bb-hindi-enrich', body: { mode: 'words' } },
-    { name: 'BB idiom Hindi meanings', fn: 'bb-hindi-enrich', body: { mode: 'idioms' } },
-    { name: 'BB OWS Hindi meanings', fn: 'bb-hindi-enrich', body: { mode: 'ows' } },
+    { name: 'Idiom hints — Top 100', fn: 'bb-hint-enrich', body: { subcategory: 'top_100' } },
+    { name: 'Idiom hints — All (Grand Master)', fn: 'bb-hint-enrich', body: { subcategory: 'all' } },
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> Hindi Enrichment (AI)</CardTitle>
+        <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> AI Enrichment</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">Backfills Hindi meanings and regenerates root-word examples. Runs in batches; safe to re-run.</p>
+        <p className="text-sm text-muted-foreground">Backfills root-word Hindi/examples and batch-generates short guessable hints for idioms. Safe to re-run — only fills rows with missing values.</p>
         <div className="grid gap-2">
           {jobs.map((j) => (
             <div key={j.name} className="flex items-center justify-between gap-3 border rounded-md p-3">

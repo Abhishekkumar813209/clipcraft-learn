@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw, Lightbulb } from 'lucide-react';
@@ -11,8 +12,12 @@ import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
 export default function BlackBookPractice() {
   const { category = 'mixed' } = useParams<{ category: BBCategory }>();
+  const [searchParams] = useSearchParams();
+  const subcategory = searchParams.get('sub') || undefined;
+  const targetCount = Number(searchParams.get('n')) || 20;
   const nav = useNavigate();
   const { user } = useAuth();
+
   const [items, setItems] = useState<BBItem[]>([]);
   const [qs, setQs] = useState<BBQuestion[]>([]);
   const [i, setI] = useState(0);
@@ -44,9 +49,9 @@ export default function BlackBookPractice() {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchBBItems(category as BBCategory | 'mixed');
+      const data = await fetchBBItems(category as BBCategory | 'mixed', subcategory);
       setItems(data);
-      const built = buildQuestionSet(data, 20);
+      const built = buildQuestionSet(data, targetCount);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
@@ -59,7 +64,8 @@ export default function BlackBookPractice() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [category, subcategory, targetCount]);
+
 
   const q = qs[i];
   const picked = picks[i];
@@ -114,7 +120,7 @@ export default function BlackBookPractice() {
   function prev() { if (i > 0) setI(i - 1); }
 
   function restart() {
-    const built = buildQuestionSet(items, 20);
+    const built = buildQuestionSet(items, targetCount);
     setQs(built);
     setPicks(new Array(built.length).fill(null));
     setI(0);
