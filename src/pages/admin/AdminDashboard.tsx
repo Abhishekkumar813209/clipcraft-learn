@@ -94,9 +94,8 @@ function EnrichPanel() {
 
   const jobs = [
     { name: 'Roots Hindi + examples', fn: 'ssc-roots-enrich', body: {} },
-    { name: 'BB option Hindi (syn/ant only)', fn: 'bb-hindi-enrich', body: { mode: 'words' } },
-    { name: 'BB idiom Hindi meanings', fn: 'bb-hindi-enrich', body: { mode: 'idioms' } },
-    { name: 'BB OWS Hindi meanings', fn: 'bb-hindi-enrich', body: { mode: 'ows' } },
+    { name: 'Idiom hints — Top 100', fn: 'bb-hint-enrich', body: { subcategory: 'top_100' } },
+    { name: 'Idiom hints — All (Grand Master)', fn: 'bb-hint-enrich', body: { subcategory: 'all' } },
   ];
 
   return (
