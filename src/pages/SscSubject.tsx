@@ -46,7 +46,7 @@ export default function SscSubjectPage() {
             <Card
               key={topic}
               className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
-              onClick={() => navigate(`/ssc/practice/${topic}`)}
+              onClick={() => navigate(topic === 'idioms_phrases' ? '/ssc/english/idioms' : `/ssc/practice/${topic}`)}
             >
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
