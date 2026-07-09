@@ -12,8 +12,12 @@ import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
 export default function BlackBookPractice() {
   const { category = 'mixed' } = useParams<{ category: BBCategory }>();
+  const [searchParams] = useSearchParams();
+  const subcategory = searchParams.get('sub') || undefined;
+  const targetCount = Number(searchParams.get('n')) || 20;
   const nav = useNavigate();
   const { user } = useAuth();
+
   const [items, setItems] = useState<BBItem[]>([]);
   const [qs, setQs] = useState<BBQuestion[]>([]);
   const [i, setI] = useState(0);
