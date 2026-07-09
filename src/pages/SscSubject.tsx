@@ -53,6 +53,11 @@ export default function SscSubjectPage() {
                 <div className="flex items-start gap-3">
                   <span className="text-3xl">{t.icon}</span>
                   <div className="flex-1 min-w-0">
+                    {BLACK_BOOK_TOPICS.includes(topic) && (
+                      <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 px-2 py-0.5 rounded mb-1.5">
+                        Black Book
+                      </span>
+                    )}
                     <h3 className="font-semibold text-foreground">{t.label}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>
                     {pct !== null ? (
