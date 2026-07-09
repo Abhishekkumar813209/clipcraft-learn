@@ -53,6 +53,23 @@ export default function SscSubjectPage() {
         <p className="text-muted-foreground">Pick a topic to start practicing.</p>
       </div>
 
+      {subject === 'english' && (
+        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-100">
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Target className="w-5 h-5 text-emerald-600" />
+              <div>
+                <div className="text-xs text-muted-foreground">Aaj ka Black Book target</div>
+                <div className="text-lg font-semibold">{bbAttempted} / {bbTarget}</div>
+              </div>
+            </div>
+            <div className="w-40 h-2.5 bg-emerald-100 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500" style={{ width: `${Math.min(100, (bbAttempted / bbTarget) * 100)}%` }} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {topics.map((topic) => {
           const t = TOPIC_META[topic];
