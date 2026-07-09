@@ -29,13 +29,18 @@ export interface BBQuestion {
 }
 
 
-export async function fetchBBItems(category?: BBCategory | 'mixed'): Promise<BBItem[]> {
+export async function fetchBBItems(
+  category?: BBCategory | 'mixed',
+  subcategory?: string,
+): Promise<BBItem[]> {
   let q = supabase.from('ssc_black_book_items' as never).select('*');
   if (category && category !== 'mixed') q = q.eq('category', category);
+  if (subcategory) q = q.eq('subcategory', subcategory);
   const { data, error } = await q;
   if (error) throw error;
   return (data as BBItem[]) || [];
 }
+
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
