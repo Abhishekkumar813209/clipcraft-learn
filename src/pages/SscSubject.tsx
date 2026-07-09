@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject, type SscTopic } from '@/types/ssc';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
 import { useSscTopicAccuracy } from '@/hooks/useSscProgress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Target } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const BLACK_BOOK_TOPICS: SscTopic[] = ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms'];
 
