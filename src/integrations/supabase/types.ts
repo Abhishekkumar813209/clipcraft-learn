@@ -825,6 +825,7 @@ export type Database = {
           pos: string | null
           prompt: string
           serial_no: number | null
+          subcategory: string | null
           synonyms: string[] | null
         }
         Insert: {
@@ -841,6 +842,7 @@ export type Database = {
           pos?: string | null
           prompt: string
           serial_no?: number | null
+          subcategory?: string | null
           synonyms?: string[] | null
         }
         Update: {
@@ -857,6 +859,7 @@ export type Database = {
           pos?: string | null
           prompt?: string
           serial_no?: number | null
+          subcategory?: string | null
           synonyms?: string[] | null
         }
         Relationships: []
