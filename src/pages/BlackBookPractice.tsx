@@ -49,9 +49,9 @@ export default function BlackBookPractice() {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchBBItems(category as BBCategory | 'mixed');
+      const data = await fetchBBItems(category as BBCategory | 'mixed', subcategory);
       setItems(data);
-      const built = buildQuestionSet(data, 20);
+      const built = buildQuestionSet(data, targetCount);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
@@ -64,7 +64,8 @@ export default function BlackBookPractice() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [category, subcategory, targetCount]);
+
 
   const q = qs[i];
   const picked = picks[i];
