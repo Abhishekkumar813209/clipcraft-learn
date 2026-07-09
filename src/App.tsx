@@ -65,6 +65,7 @@ import BlackBookHistory from "./pages/BlackBookHistory";
 import SscRoots from "./pages/SscRoots";
 import SscRootsPractice from "./pages/SscRootsPractice";
 import OAuthConsent from "./pages/OAuthConsent";
+import SscEnglishIdioms from "./pages/SscEnglishIdioms";
 
 
 const queryClient = new QueryClient({
