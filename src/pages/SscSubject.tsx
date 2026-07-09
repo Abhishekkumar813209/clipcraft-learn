@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject } from '@/types/ssc';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
 import { useSscTopicAccuracy } from '@/hooks/useSscProgress';
@@ -14,9 +14,10 @@ const SLUG_TO_SUBJECT: Record<string, SscSubject> = {
 };
 
 export default function SscSubjectPage() {
-  const { subject: slug } = useParams<{ subject: string }>();
   const navigate = useNavigate();
-  const subject: SscSubject = SLUG_TO_SUBJECT[slug ?? ''] ?? 'english';
+  const location = useLocation();
+  const slug = location.pathname.split('/').filter(Boolean).pop() ?? '';
+  const subject: SscSubject = SLUG_TO_SUBJECT[slug] ?? 'english';
   const { data: counts } = useSscQuestionCount();
   const { data: accuracy } = useSscTopicAccuracy();
 
