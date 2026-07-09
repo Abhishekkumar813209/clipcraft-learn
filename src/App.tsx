@@ -116,6 +116,7 @@ const App = () => (
               <Route path="roots/practice" element={<SscRootsPractice />} />
               
               <Route path="english" element={<SscSubject />} />
+              <Route path="english/idioms" element={<SscEnglishIdioms />} />
               <Route path="maths" element={<SscSubject />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
