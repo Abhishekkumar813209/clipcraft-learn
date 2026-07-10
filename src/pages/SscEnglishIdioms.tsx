@@ -58,7 +58,7 @@ export default function SscEnglishIdioms() {
       .then(({ data }) => {
         const m: Record<string, Progress> = {};
         ((data as Progress[]) || []).forEach((p) => {
-          m[(p as any).subcategory || 'top_100'] = p;
+          m[(p as any).subcategory || 'top_200'] = p;
         });
         setProg(m);
       });
