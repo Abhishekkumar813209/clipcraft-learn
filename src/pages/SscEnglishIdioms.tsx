@@ -43,7 +43,7 @@ export default function SscEnglishIdioms() {
       .then(({ data }) => {
         const c: Record<string, number> = {};
         ((data as any[]) || []).forEach((r) => {
-          const k = r.subcategory || 'top_100';
+          const k = r.subcategory || 'top_200';
           c[k] = (c[k] || 0) + 1;
         });
         setCounts(c);
