@@ -60,17 +60,19 @@ serve(async (req) => {
 
     const prompt = `You are enriching SSC English ${label} data. For each item, return:
 - "hint": a SHORT 4–10 word English nudge helping a learner GUESS without revealing the answer. Never repeat the answer phrase. No "It means…". Optionally a tiny Hinglish nudge in brackets.
-- "hinglish": ROMAN Hinglish (Latin script) meaning, 4–12 words. If the input meaning is in Devanagari, transliterate + naturalize it into Hinglish. NEVER return Devanagari characters.
-- "english": short English meaning, 4–15 words, plain.
+- "hinglish": NATURAL Roman Hinglish meaning, 4–12 words, casual bolchaal style (jaisa "bahut kam hota hai, kabhi kabhi hi"). If the input is in Devanagari, transliterate + naturalize into Hinglish. NEVER return Devanagari characters.
+- "english": SHORT proper ENGLISH meaning, 4–15 words. Must be pure English (no Hindi/Hinglish words like "maza", "karna", "wala"). If the current answer/meaning is actually Hinglish (e.g. "Bahut maza karna"), rewrite it as proper English (e.g. "To have great fun").
+${isIdiom ? `- "answer_fix": if the current ${answerLabel} contains Hinglish/Roman-Hindi words instead of proper English, return a corrected proper-English ${answerLabel} here. Otherwise return empty string "".` : ""}
 
 Rules:
 - Output only Latin/Roman characters.
 - Keep everything terse and exam-focused.
+- "english" and ${isIdiom ? '"answer_fix"' : '"english"'} MUST be pure English — zero Hindi/Hinglish tokens.
 
 Examples:
 ${isIdiom
-  ? `Idiom: "Bite the bullet" → {"hint":"Face something painful with courage","hinglish":"himmat karke mushkil kaam karna","english":"Endure something difficult bravely"}
-Idiom: "Once in a blue moon" → {"hint":"Extremely rare event, kabhi kabhi hi","hinglish":"bahut kam, kabhi kabhi hi hota hai","english":"Very rarely happens"}`
+  ? `Idiom: "Bite the bullet", current answer "Face difficult situation with courage" → {"hint":"Face something painful with courage","hinglish":"himmat karke mushkil kaam karna","english":"Endure something difficult bravely","answer_fix":""}
+Idiom: "Have a ball", current answer "Bahut maza karna" → {"hint":"Enjoy thoroughly, party hard","hinglish":"bahut maza karna, khoob enjoy karna","english":"To have great fun","answer_fix":"To have great fun"}`
   : `OWS: prompt "One who cannot make mistakes", answer "Infallible" → {"hint":"Someone who never goes wrong","hinglish":"jo kabhi galti nahi karta","english":"A person who never errs"}
 OWS: prompt "Government by the wealthy", answer "Plutocracy" → {"hint":"Rule by rich people","hinglish":"ameeron dwara shasan","english":"Rule by the wealthy class"}`}
 
@@ -79,10 +81,11 @@ ${JSON.stringify(rows.map((r) => ({
   id: r.id,
   [promptLabel]: r.prompt,
   [answerLabel]: r.answer,
-  current_meaning: r.hinglish_meaning || r.english_meaning || "",
+  current_english: r.english_meaning || "",
+  current_hinglish: r.hinglish_meaning || "",
 })))}
 
-Return STRICT JSON only: {"items":[{"id":"...","hint":"...","hinglish":"...","english":"..."}]}`;
+Return STRICT JSON only: {"items":[{"id":"...","hint":"...","hinglish":"...","english":"..."${isIdiom ? ',"answer_fix":"..."' : ""}}]}`;
 
     const res = await callGemini({
       model: "gemini-2.5-flash",
