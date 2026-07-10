@@ -12,25 +12,25 @@ interface Progress { category: string; subcategory?: string | null; attempted: n
 const GROUPS = [
   {
     key: 'top_200',
-    label: 'Top 200 Idioms',
-    tagline: 'Most-repeated SSC idioms with curated hints',
+    label: 'Top 200 OWS',
+    tagline: 'Most-repeated SSC one-word substitutions',
     color: 'from-emerald-100 to-teal-100',
     total: 200,
     quiz: 20,
     target: 20,
   },
   {
-    key: 'all',
-    label: 'All Idioms & Phrases',
-    tagline: 'Grand Master list — 500+ full PYQ pool',
+    key: 'all_repeated',
+    label: 'All Repeated OWS',
+    tagline: 'Grand Master OWS pool — 1000+ from PYQs',
     color: 'from-teal-100 to-cyan-100',
-    total: 539,
+    total: 1168,
     quiz: 50,
     target: 50,
   },
 ] as const;
 
-export default function SscEnglishIdioms() {
+export default function SscEnglishOws() {
   const { user } = useAuth();
   const nav = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -39,7 +39,7 @@ export default function SscEnglishIdioms() {
   useEffect(() => {
     supabase.from('ssc_black_book_items' as never)
       .select('subcategory')
-      .eq('category', 'idiom')
+      .eq('category', 'ows')
       .then(({ data }) => {
         const c: Record<string, number> = {};
         ((data as any[]) || []).forEach((r) => {
@@ -54,7 +54,7 @@ export default function SscEnglishIdioms() {
     if (!user) return;
     const today = new Date().toISOString().slice(0, 10);
     supabase.from('black_book_daily_progress' as never)
-      .select('*').eq('user_id', user.id).eq('date', today).eq('category', 'idiom')
+      .select('*').eq('user_id', user.id).eq('date', today).eq('category', 'ows')
       .then(({ data }) => {
         const m: Record<string, Progress> = {};
         ((data as Progress[]) || []).forEach((p) => {
@@ -79,8 +79,8 @@ export default function SscEnglishIdioms() {
         <div className="flex items-center gap-3">
           <BookOpen className="w-8 h-8 text-emerald-600" />
           <div>
-            <h1 className="text-3xl font-bold">Idioms & Phrases</h1>
-            <p className="text-sm text-slate-500">Do sets: Top 200 (curated hints) or the Grand Master pool (500+)</p>
+            <h1 className="text-3xl font-bold">One Word Substitution</h1>
+            <p className="text-sm text-slate-500">Do sets: Top 200 curated or the Grand Master repeated pool (1000+)</p>
           </div>
         </div>
 
@@ -115,12 +115,12 @@ export default function SscEnglishIdioms() {
                   <div className="text-xs text-slate-600">Quiz size: {g.quiz} questions per session</div>
 
                   <div className="flex gap-2 pt-1">
-                    <Link to={`/ssc/blackbook/browse/idiom?sub=${g.key}`} className="flex-1">
+                    <Link to={`/ssc/blackbook/browse/ows?sub=${g.key}`} className="flex-1">
                       <Button size="sm" variant="outline" className="w-full bg-white/70 border-emerald-200 text-emerald-700 hover:bg-white">
                         <BookOpen className="w-4 h-4 mr-1" /> Browse
                       </Button>
                     </Link>
-                    <Link to={`/ssc/blackbook/practice/idiom?sub=${g.key}&n=${g.quiz}`} className="flex-1">
+                    <Link to={`/ssc/blackbook/practice/ows?sub=${g.key}&n=${g.quiz}`} className="flex-1">
                       <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">
                         <Sparkles className="w-4 h-4 mr-1" /> Practice
                       </Button>
