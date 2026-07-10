@@ -66,6 +66,7 @@ import SscRoots from "./pages/SscRoots";
 import SscRootsPractice from "./pages/SscRootsPractice";
 import OAuthConsent from "./pages/OAuthConsent";
 import SscEnglishIdioms from "./pages/SscEnglishIdioms";
+import SscEnglishOws from "./pages/SscEnglishOws";
 
 
 const queryClient = new QueryClient({
