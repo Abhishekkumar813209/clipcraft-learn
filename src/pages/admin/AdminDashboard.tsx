@@ -94,8 +94,10 @@ function EnrichPanel() {
 
   const jobs = [
     { name: 'Roots Hindi + examples', fn: 'ssc-roots-enrich', body: {} },
-    { name: 'Idiom hints — Top 100', fn: 'bb-hint-enrich', body: { subcategory: 'top_100' } },
-    { name: 'Idiom hints — All (Grand Master)', fn: 'bb-hint-enrich', body: { subcategory: 'all' } },
+    { name: 'Idiom enrich — Top 200 (hint)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'top_200' } },
+    { name: 'Idiom enrich — All (hint + fix hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'all' } },
+    { name: 'OWS enrich — Top 200 (hint)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'top_200' } },
+    { name: 'OWS enrich — All Repeated (hint + hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'all_repeated' } },
   ];
 
   return (
