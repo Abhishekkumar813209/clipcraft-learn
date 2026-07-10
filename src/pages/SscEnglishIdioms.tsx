@@ -11,8 +11,8 @@ interface Progress { category: string; subcategory?: string | null; attempted: n
 
 const GROUPS = [
   {
-    key: 'top_100',
-    label: 'Top 100 Idioms',
+    key: 'top_200',
+    label: 'Top 200 Idioms',
     tagline: 'Most-repeated SSC idioms with curated hints',
     color: 'from-emerald-100 to-teal-100',
     total: 200,
