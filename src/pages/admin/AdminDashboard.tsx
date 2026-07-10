@@ -94,10 +94,13 @@ function EnrichPanel() {
 
   const jobs = [
     { name: 'Roots Hindi + examples', fn: 'ssc-roots-enrich', body: {} },
-    { name: 'Idiom enrich — Top 200 (hint)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'top_200' } },
-    { name: 'Idiom enrich — All (hint + fix hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'all' } },
-    { name: 'OWS enrich — Top 200 (hint)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'top_200' } },
-    { name: 'OWS enrich — All Repeated (hint + hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'all_repeated' } },
+    { name: 'Idiom fill — Top 200 (missing hints)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'top_200', mode: 'fill' } },
+    { name: 'Idiom fill — All (hint + fix hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'all', mode: 'fill' } },
+    { name: '✨ Idiom UPGRADE hints — Top 200 (scene = meaning Hinglish)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'top_200', mode: 'upgrade_hints' } },
+    { name: '✨ Idiom UPGRADE hints — All (scene = meaning Hinglish)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'all', mode: 'upgrade_hints' } },
+    { name: 'OWS fill — Top 200 (missing hints)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'top_200', mode: 'fill' } },
+    { name: 'OWS fill — All Repeated (hint + hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'all_repeated', mode: 'fill' } },
+    { name: '✨ OWS UPGRADE Hinglish — All Repeated (descriptive)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'all_repeated', mode: 'upgrade_hinglish' } },
   ];
 
   return (
