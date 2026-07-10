@@ -80,7 +80,7 @@ export default function SscEnglishIdioms() {
           <BookOpen className="w-8 h-8 text-emerald-600" />
           <div>
             <h1 className="text-3xl font-bold">Idioms & Phrases</h1>
-            <p className="text-sm text-slate-500">Do sets: Top 100 (curated hints) or the Grand Master pool (500+)</p>
+            <p className="text-sm text-slate-500">Do sets: Top 200 (curated hints) or the Grand Master pool (500+)</p>
           </div>
         </div>
 
