@@ -105,7 +105,7 @@ Return STRICT JSON only: {"items":[{"id":"...","hint":"...","hinglish":"...","en
     }
     const json = await res.json();
     const content = json.choices?.[0]?.message?.content || "{}";
-    const parsed = safeParseItems<{ id: string; hint: string; hinglish?: string; english?: string }>(content);
+    const parsed = safeParseItems<{ id: string; hint: string; hinglish?: string; english?: string; answer_fix?: string }>(content);
     let updated = 0;
     const byId = new Map(rows.map((r) => [r.id, r]));
     for (const it of parsed.items || []) {
@@ -113,15 +113,18 @@ Return STRICT JSON only: {"items":[{"id":"...","hint":"...","hinglish":"...","en
       const src = byId.get(it.id);
       if (!src) continue;
       const patch: Record<string, string> = { hint: it.hint };
-      // Fix hinglish if currently missing OR contains Devanagari
       if (it.hinglish && !DEVANAGARI.test(it.hinglish)) {
         if (!src.hinglish_meaning || DEVANAGARI.test(src.hinglish_meaning)) {
           patch.hinglish_meaning = it.hinglish;
         }
       }
-      // Fix english_meaning if missing
-      if (it.english && !src.english_meaning) {
+      // Always overwrite english_meaning with clean English (fixes Hinglish leftovers like "Bahut maza karna")
+      if (it.english && !DEVANAGARI.test(it.english)) {
         patch.english_meaning = it.english;
+      }
+      // Idioms only: rewrite `answer` when AI detected Hinglish in it
+      if (isIdiom && it.answer_fix && it.answer_fix.trim() && !DEVANAGARI.test(it.answer_fix)) {
+        patch.answer = it.answer_fix.trim();
       }
       const { error: uErr } = await admin
         .from("ssc_black_book_items")
