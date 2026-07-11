@@ -31,7 +31,25 @@ export default function SscSubjectPage() {
   const topics = SUBJECT_TOPICS[subject];
   const { user } = useAuth();
   const [bbAttempted, setBbAttempted] = useState(0);
-  const bbTarget = 60;
+  const [bbCounts, setBbCounts] = useState<Record<string, number>>({});
+  const bbTarget = 300;
+
+  useEffect(() => {
+    if (subject !== 'english') return;
+    supabase.from('ssc_black_book_items' as never).select('category')
+      .then(({ data }) => {
+        const c: Record<string, number> = {};
+        ((data as { category: string }[]) || []).forEach((r) => {
+          c[r.category] = (c[r.category] || 0) + 1;
+        });
+        // also count from ssc_syn_ant_items for the syn_ant topic total pool
+        supabase.from('ssc_syn_ant_items' as never).select('id', { count: 'exact', head: true })
+          .then(({ count }) => {
+            c.syn_ant_ext = count || 0;
+            setBbCounts(c);
+          });
+      });
+  }, [subject]);
 
   useEffect(() => {
     if (!user || subject !== 'english') return;
@@ -73,7 +91,10 @@ export default function SscSubjectPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {topics.map((topic) => {
           const t = TOPIC_META[topic];
-          const count = counts?.[topic] || 0;
+          let count = counts?.[topic] || 0;
+          if (topic === 'idioms_phrases') count = bbCounts.idiom || 0;
+          else if (topic === 'one_word_substitution') count = bbCounts.ows || 0;
+          else if (topic === 'synonyms_antonyms') count = (bbCounts.syn_ant || 0) + (bbCounts.syn_ant_ext || 0);
           const acc = accuracy?.[topic];
           const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
 
@@ -84,6 +105,7 @@ export default function SscSubjectPage() {
               onClick={() => navigate(
                 topic === 'idioms_phrases' ? '/ssc/english/idioms'
                 : topic === 'one_word_substitution' ? '/ssc/english/ows'
+                : topic === 'synonyms_antonyms' ? '/ssc/english/synant'
                 : `/ssc/practice/${topic}`
               )}
             >

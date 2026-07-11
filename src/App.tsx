@@ -67,6 +67,8 @@ import SscRootsPractice from "./pages/SscRootsPractice";
 import OAuthConsent from "./pages/OAuthConsent";
 import SscEnglishIdioms from "./pages/SscEnglishIdioms";
 import SscEnglishOws from "./pages/SscEnglishOws";
+import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
+import SscSynAntPractice from "./pages/SscSynAntPractice";
 
 
 const queryClient = new QueryClient({
@@ -119,6 +121,8 @@ const App = () => (
               <Route path="english" element={<SscSubject />} />
               <Route path="english/idioms" element={<SscEnglishIdioms />} />
               <Route path="english/ows" element={<SscEnglishOws />} />
+              <Route path="english/synant" element={<SscEnglishSynAnt />} />
+              <Route path="english/synant/practice" element={<SscSynAntPractice />} />
               <Route path="maths" element={<SscSubject />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />

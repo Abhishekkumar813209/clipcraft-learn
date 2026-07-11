@@ -960,6 +960,57 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_syn_ant_items: {
+        Row: {
+          antonym_example_sentence: string | null
+          antonym_hinglish_meaning: string | null
+          antonyms: string | null
+          created_at: string
+          example_sentence: string | null
+          hinglish_meaning: string | null
+          id: string
+          kind: string
+          meaning: string | null
+          serial_no: number | null
+          subcategory: string
+          synonyms: string | null
+          updated_at: string
+          word: string
+        }
+        Insert: {
+          antonym_example_sentence?: string | null
+          antonym_hinglish_meaning?: string | null
+          antonyms?: string | null
+          created_at?: string
+          example_sentence?: string | null
+          hinglish_meaning?: string | null
+          id?: string
+          kind: string
+          meaning?: string | null
+          serial_no?: number | null
+          subcategory: string
+          synonyms?: string | null
+          updated_at?: string
+          word: string
+        }
+        Update: {
+          antonym_example_sentence?: string | null
+          antonym_hinglish_meaning?: string | null
+          antonyms?: string | null
+          created_at?: string
+          example_sentence?: string | null
+          hinglish_meaning?: string | null
+          id?: string
+          kind?: string
+          meaning?: string | null
+          serial_no?: number | null
+          subcategory?: string
+          synonyms?: string | null
+          updated_at?: string
+          word?: string
+        }
+        Relationships: []
+      }
       ssc_user_progress: {
         Row: {
           answered_at: string
