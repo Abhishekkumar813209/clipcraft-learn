@@ -16,8 +16,8 @@ const GROUPS = [
     tagline: 'Most-repeated SSC idioms with curated hints',
     color: 'from-emerald-100 to-teal-100',
     total: 200,
-    quiz: 20,
-    target: 20,
+    defaultQuiz: 20,
+    target: 50,
   },
   {
     key: 'all',
@@ -25,7 +25,7 @@ const GROUPS = [
     tagline: 'Grand Master list — 500+ full PYQ pool',
     color: 'from-teal-100 to-cyan-100',
     total: 539,
-    quiz: 50,
+    defaultQuiz: 50,
     target: 50,
   },
 ] as const;
