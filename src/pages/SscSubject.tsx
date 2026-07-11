@@ -31,7 +31,25 @@ export default function SscSubjectPage() {
   const topics = SUBJECT_TOPICS[subject];
   const { user } = useAuth();
   const [bbAttempted, setBbAttempted] = useState(0);
-  const bbTarget = 60;
+  const [bbCounts, setBbCounts] = useState<Record<string, number>>({});
+  const bbTarget = 300;
+
+  useEffect(() => {
+    if (subject !== 'english') return;
+    supabase.from('ssc_black_book_items' as never).select('category')
+      .then(({ data }) => {
+        const c: Record<string, number> = {};
+        ((data as { category: string }[]) || []).forEach((r) => {
+          c[r.category] = (c[r.category] || 0) + 1;
+        });
+        // also count from ssc_syn_ant_items for the syn_ant topic total pool
+        supabase.from('ssc_syn_ant_items' as never).select('id', { count: 'exact', head: true })
+          .then(({ count }) => {
+            c.syn_ant_ext = count || 0;
+            setBbCounts(c);
+          });
+      });
+  }, [subject]);
 
   useEffect(() => {
     if (!user || subject !== 'english') return;
