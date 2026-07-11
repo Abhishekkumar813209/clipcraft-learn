@@ -16,8 +16,8 @@ const GROUPS = [
     tagline: 'Most-repeated SSC one-word substitutions',
     color: 'from-emerald-100 to-teal-100',
     total: 200,
-    quiz: 20,
-    target: 20,
+    defaultQuiz: 20,
+    target: 50,
   },
   {
     key: 'all_repeated',
@@ -25,7 +25,7 @@ const GROUPS = [
     tagline: 'Grand Master OWS pool — 1000+ from PYQs',
     color: 'from-teal-100 to-cyan-100',
     total: 1168,
-    quiz: 50,
+    defaultQuiz: 50,
     target: 50,
   },
 ] as const;
@@ -35,6 +35,9 @@ export default function SscEnglishOws() {
   const nav = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [prog, setProg] = useState<Record<string, Progress>>({});
+  const [nMap, setNMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, String(g.defaultQuiz)]))
+  );
 
   useEffect(() => {
     supabase.from('ssc_black_book_items' as never)
@@ -102,6 +105,9 @@ export default function SscEnglishOws() {
         <div className="grid md:grid-cols-2 gap-4">
           {GROUPS.map((g) => {
             const count = counts[g.key] ?? g.total;
+            const rawN = nMap[g.key] ?? '';
+            const parsedN = parseInt(rawN, 10);
+            const validN = Number.isFinite(parsedN) && parsedN > 0 ? parsedN : g.defaultQuiz;
             return (
               <Card key={g.key} className={`bg-gradient-to-br ${g.color} border-emerald-100 shadow-sm`}>
                 <CardContent className="p-5 space-y-3">
@@ -112,7 +118,20 @@ export default function SscEnglishOws() {
                     </div>
                     <Badge className="bg-white/70 text-emerald-700 border border-emerald-200">{count}</Badge>
                   </div>
-                  <div className="text-xs text-slate-600">Quiz size: {g.quiz} questions per session</div>
+
+                  <div className="flex items-center gap-2 text-xs text-slate-700">
+                    <label htmlFor={`n-${g.key}`}>Questions:</label>
+                    <input
+                      id={`n-${g.key}`}
+                      type="text"
+                      inputMode="numeric"
+                      value={rawN}
+                      onChange={(e) => setNMap((m) => ({ ...m, [g.key]: e.target.value.replace(/[^0-9]/g, '') }))}
+                      className="w-20 px-2 py-1 rounded border border-emerald-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      placeholder={String(g.defaultQuiz)}
+                    />
+                    <span className="text-slate-500">(default {g.defaultQuiz})</span>
+                  </div>
 
                   <div className="flex gap-2 pt-1">
                     <Link to={`/ssc/blackbook/browse/ows?sub=${g.key}`} className="flex-1">
@@ -120,7 +139,7 @@ export default function SscEnglishOws() {
                         <BookOpen className="w-4 h-4 mr-1" /> Browse
                       </Button>
                     </Link>
-                    <Link to={`/ssc/blackbook/practice/ows?sub=${g.key}&n=${g.quiz}`} className="flex-1">
+                    <Link to={`/ssc/blackbook/practice/ows?sub=${g.key}&n=${validN}`} className="flex-1">
                       <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">
                         <Sparkles className="w-4 h-4 mr-1" /> Practice
                       </Button>
