@@ -91,7 +91,10 @@ export default function SscSubjectPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {topics.map((topic) => {
           const t = TOPIC_META[topic];
-          const count = counts?.[topic] || 0;
+          let count = counts?.[topic] || 0;
+          if (topic === 'idioms_phrases') count = bbCounts.idiom || 0;
+          else if (topic === 'one_word_substitution') count = bbCounts.ows || 0;
+          else if (topic === 'synonyms_antonyms') count = (bbCounts.syn_ant || 0) + (bbCounts.syn_ant_ext || 0);
           const acc = accuracy?.[topic];
           const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
 
@@ -102,6 +105,7 @@ export default function SscSubjectPage() {
               onClick={() => navigate(
                 topic === 'idioms_phrases' ? '/ssc/english/idioms'
                 : topic === 'one_word_substitution' ? '/ssc/english/ows'
+                : topic === 'synonyms_antonyms' ? '/ssc/english/synant'
                 : `/ssc/practice/${topic}`
               )}
             >
