@@ -28,13 +28,26 @@ export default function SscSynAntPractice() {
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-  // Hinglish lookup: match option text against known SA item words, then fall back to shared word_hindi table.
+  // Hinglish lookup: index every item's word AND its syn/ant tokens so any option can flip to Hindi.
   const itemHindiMap = useMemo(() => {
     const m = new Map<string, string>();
+    const put = (k: string | null | undefined, v: string | null | undefined) => {
+      if (!k || !v) return;
+      const key = k.trim().toLowerCase();
+      if (!key || m.has(key)) return;
+      m.set(key, v);
+    };
+    const split = (s: string | null) =>
+      s ? s.split(/[,;/|]/).map((x) => x.trim()).filter(Boolean) : [];
     for (const it of items) {
-      const meaning = it.hinglish_meaning || it.meaning;
-      if (!meaning) continue;
-      if (it.word) m.set(it.word.trim().toLowerCase(), meaning);
+      const synMean = it.hinglish_meaning || it.meaning;
+      const antMean = it.antonym_hinglish_meaning || it.hinglish_meaning || it.meaning;
+      // The item's own word carries the synonym-side meaning.
+      put(it.word, synMean);
+      // Every synonym token shares the synonym-side meaning.
+      for (const t of split(it.synonyms)) put(t, synMean);
+      // Every antonym token shares the antonym-side meaning.
+      for (const t of split(it.antonyms)) put(t, antMean);
     }
     return m;
   }, [items]);
