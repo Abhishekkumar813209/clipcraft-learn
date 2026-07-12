@@ -23,7 +23,6 @@ export default function SscSubjectPage() {
   const slug = location.pathname.split('/').filter(Boolean).pop() ?? '';
   const subject: SscSubject = SLUG_TO_SUBJECT[slug] ?? 'english';
   const { data: counts } = useSscQuestionCount();
-  const { data: accuracy } = useSscTopicAccuracy();
 
   const meta = SSC_SUBJECTS.find(s => s.key === subject)!;
   const topics = SUBJECT_TOPICS[subject];
