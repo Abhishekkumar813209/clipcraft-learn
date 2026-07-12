@@ -36,19 +36,19 @@ export default function SscSubjectPage() {
 
   useEffect(() => {
     if (subject !== 'english') return;
-    supabase.from('ssc_black_book_items' as never).select('category')
-      .then(({ data }) => {
-        const c: Record<string, number> = {};
-        ((data as { category: string }[]) || []).forEach((r) => {
-          c[r.category] = (c[r.category] || 0) + 1;
-        });
-        // also count from ssc_syn_ant_items for the syn_ant topic total pool
-        supabase.from('ssc_syn_ant_items' as never).select('id', { count: 'exact', head: true })
-          .then(({ count }) => {
-            c.syn_ant_ext = count || 0;
-            setBbCounts(c);
-          });
-      });
+    (async () => {
+      const cats = ['idiom', 'ows', 'syn_ant'];
+      const c: Record<string, number> = {};
+      await Promise.all(cats.map(async (cat) => {
+        const { count } = await supabase.from('ssc_black_book_items' as never)
+          .select('id', { count: 'exact', head: true }).eq('category', cat);
+        c[cat] = count || 0;
+      }));
+      const { count: synAntExt } = await supabase.from('ssc_syn_ant_items' as never)
+        .select('id', { count: 'exact', head: true });
+      c.syn_ant_ext = synAntExt || 0;
+      setBbCounts(c);
+    })();
   }, [subject]);
 
   useEffect(() => {

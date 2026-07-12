@@ -209,7 +209,7 @@ export default function BlackBookPractice() {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav('/ssc/blackbook')}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
+          <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav(-1)}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
           <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
         <Card

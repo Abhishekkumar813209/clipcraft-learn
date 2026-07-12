@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Loader2, Check, X, ChevronRight, RotateCcw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { BBCategory, BBItem, fetchBBItems } from '@/lib/blackBookQuiz';
+import { BBCategory, BBItem } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
@@ -35,17 +35,36 @@ export default function BlackBookHistory() {
   const [items, setItems] = useState<BBItem[]>([]);
   const [openSession, setOpenSession] = useState<string | null>(null);
 
+  const [saItems, setSaItems] = useState<any[]>([]);
+
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: s }, { data: a }, itemsAll] = await Promise.all([
+      // paginate items so lookups for items beyond the default 1000 row cap still resolve
+      async function fetchAll(table: string): Promise<any[]> {
+        const out: any[] = [];
+        const pageSize = 1000;
+        let from = 0;
+        while (true) {
+          const { data, error } = await supabase.from(table as never).select('*').range(from, from + pageSize - 1);
+          if (error) break;
+          const rows = (data as any[]) || [];
+          out.push(...rows);
+          if (rows.length < pageSize) break;
+          from += pageSize;
+        }
+        return out;
+      }
+      const [{ data: s }, { data: a }, bbAll, saAll] = await Promise.all([
         supabase.from('bb_practice_sessions' as never).select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('bb_practice_attempts' as never).select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-        fetchBBItems('mixed'),
+        fetchAll('ssc_black_book_items'),
+        fetchAll('ssc_syn_ant_items'),
       ]);
       setSessions((s as any) || []);
       setAttempts((a as any) || []);
-      setItems(itemsAll);
+      setItems(bbAll as BBItem[]);
+      setSaItems(saAll);
       setLoading(false);
     })();
   }, [user]);
@@ -53,8 +72,25 @@ export default function BlackBookHistory() {
   const itemById = useMemo(() => {
     const m = new Map<string, BBItem>();
     items.forEach((it) => m.set(it.id, it));
+    // Map syn/ant items into BBItem-ish shape so history can display them
+    saItems.forEach((it) => {
+      m.set(it.id, {
+        id: it.id,
+        category: 'syn_ant',
+        serial_no: it.serial_no ?? null,
+        prompt: it.word,
+        answer: it.word,
+        pos: null,
+        hindi_meaning: null,
+        english_meaning: it.meaning ?? null,
+        hinglish_meaning: it.hinglish_meaning ?? null,
+        synonyms: it.synonyms ? String(it.synonyms).split(/[,;/|]/).map((x: string) => x.trim()).filter(Boolean) : null,
+        antonyms: it.antonyms ? String(it.antonyms).split(/[,;/|]/).map((x: string) => x.trim()).filter(Boolean) : null,
+        example: it.example_sentence ?? null,
+      } as BBItem);
+    });
     return m;
-  }, [items]);
+  }, [items, saItems]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-emerald-50 text-slate-700"><Loader2 className="w-6 h-6 animate-spin" /></div>;
 
