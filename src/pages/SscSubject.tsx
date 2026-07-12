@@ -92,8 +92,6 @@ export default function SscSubjectPage() {
           if (topic === 'idioms_phrases') count = bbCounts.idiom || 0;
           else if (topic === 'one_word_substitution') count = bbCounts.ows || 0;
           else if (topic === 'synonyms_antonyms') count = (bbCounts.syn_ant || 0) + (bbCounts.syn_ant_ext || 0);
-          const acc = accuracy?.[topic];
-          const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
 
           return (
             <Card
