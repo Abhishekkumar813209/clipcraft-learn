@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { SSC_SUBJECTS, SUBJECT_TOPICS, TOPIC_META, type SscSubject, type SscTopic } from '@/types/ssc';
 import { useSscQuestionCount } from '@/hooks/useSscQuestions';
-import { useSscTopicAccuracy } from '@/hooks/useSscProgress';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Target } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -25,7 +23,6 @@ export default function SscSubjectPage() {
   const slug = location.pathname.split('/').filter(Boolean).pop() ?? '';
   const subject: SscSubject = SLUG_TO_SUBJECT[slug] ?? 'english';
   const { data: counts } = useSscQuestionCount();
-  const { data: accuracy } = useSscTopicAccuracy();
 
   const meta = SSC_SUBJECTS.find(s => s.key === subject)!;
   const topics = SUBJECT_TOPICS[subject];
@@ -95,8 +92,6 @@ export default function SscSubjectPage() {
           if (topic === 'idioms_phrases') count = bbCounts.idiom || 0;
           else if (topic === 'one_word_substitution') count = bbCounts.ows || 0;
           else if (topic === 'synonyms_antonyms') count = (bbCounts.syn_ant || 0) + (bbCounts.syn_ant_ext || 0);
-          const acc = accuracy?.[topic];
-          const pct = acc && acc.total > 0 ? Math.round((acc.correct / acc.total) * 100) : null;
 
           return (
             <Card
@@ -120,17 +115,6 @@ export default function SscSubjectPage() {
                     )}
                     <h3 className="font-semibold text-foreground">{t.label}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>
-                    {pct !== null ? (
-                      <div className="mt-3">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground">Accuracy</span>
-                          <span className="font-medium" style={{ color: pct >= 60 ? 'hsl(var(--primary))' : 'hsl(var(--destructive))' }}>{pct}%</span>
-                        </div>
-                        <Progress value={pct} className="h-1.5" />
-                      </div>
-                    ) : (
-                      <p className="text-xs text-muted-foreground/60 mt-2">Not started yet</p>
-                    )}
                   </div>
                 </div>
               </CardContent>
