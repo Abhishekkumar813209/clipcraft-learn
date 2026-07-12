@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Loader2, Check, X, ChevronRight, RotateCcw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { BBCategory, BBItem, fetchBBItems } from '@/lib/blackBookQuiz';
+import { BBCategory, BBItem } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
 
