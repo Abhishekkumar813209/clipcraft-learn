@@ -120,17 +120,6 @@ export default function SscSubjectPage() {
                     )}
                     <h3 className="font-semibold text-foreground">{t.label}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>
-                    {pct !== null ? (
-                      <div className="mt-3">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground">Accuracy</span>
-                          <span className="font-medium" style={{ color: pct >= 60 ? 'hsl(var(--primary))' : 'hsl(var(--destructive))' }}>{pct}%</span>
-                        </div>
-                        <Progress value={pct} className="h-1.5" />
-                      </div>
-                    ) : (
-                      <p className="text-xs text-muted-foreground/60 mt-2">Not started yet</p>
-                    )}
                   </div>
                 </div>
               </CardContent>
