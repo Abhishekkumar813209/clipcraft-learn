@@ -199,8 +199,8 @@ export default function SscPosVerbBasicPractice() {
                 </div>
               )}
               <div className="flex gap-2 pt-1">
-                <Button variant="outline" className="flex-1 border-amber-200 text-amber-700 hover:bg-amber-50" onClick={exitDrill}>
-                  <ArrowLeft className="w-4 h-4 mr-1" />Back to Q{drillFor + 1}
+                <Button variant="outline" className="flex-1 border-amber-200 text-amber-700 hover:bg-amber-50 disabled:opacity-40" onClick={drillI > 0 ? drillPrev : exitDrill} disabled={false}>
+                  {drillI > 0 ? <><ChevronLeft className="w-4 h-4 mr-1" />Previous drill</> : <><ArrowLeft className="w-4 h-4 mr-1" />Back to Q{drillFor + 1}</>}
                 </Button>
                 <Button className="flex-1 bg-amber-600 hover:bg-amber-500 text-white" onClick={drillNext} disabled={drillPicked === null}>
                   {drillI + 1 >= 3 ? `Return to Q${drillFor + 1}` : <>Next drill<ChevronRight className="w-4 h-4 ml-1" /></>}
