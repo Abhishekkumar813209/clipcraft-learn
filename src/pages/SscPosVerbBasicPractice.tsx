@@ -156,6 +156,11 @@ export default function SscPosVerbBasicPractice() {
             <CardContent className="p-6 space-y-4">
               <div className="text-xs uppercase tracking-wider text-amber-700 font-semibold">Similar Practice</div>
               <div className="text-base font-medium text-slate-800">Spot the error in the sentence below.</div>
+              {drill.full_sentence && (
+                <div className="rounded-md border border-amber-100 bg-white/70 p-3 text-slate-700 italic">
+                  {drill.full_sentence}
+                </div>
+              )}
               {drillPicked === null && drill.hint && (
                 drillHint[drillI] ? (
                   <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
