@@ -219,6 +219,12 @@ export default function SscPosVerbBasicPractice() {
         <Card className="border-emerald-100 shadow-sm">
           <CardContent className="p-6 space-y-4">
             <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold">Spot the Error</div>
+            <div className="text-base font-medium text-slate-800">Spot the error in the sentence below. Choose the part that contains the mistake, or "No error" if the sentence is correct.</div>
+            {q.full_sentence && (
+              <div className="rounded-md border border-emerald-100 bg-white/70 p-3 text-slate-700 italic">
+                {q.full_sentence}
+              </div>
+            )}
             {picked === null && q.hint && (
               hint[i] ? (
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
