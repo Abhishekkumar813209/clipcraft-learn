@@ -99,6 +99,9 @@ export default function SscPosVerbBasicPractice() {
     if (drillI + 1 >= 3) { exitDrill(); return; }
     setDrillI(drillI + 1);
   }
+  function drillPrev() {
+    if (drillI > 0) setDrillI(drillI - 1);
+  }
   function startDrill() {
     setDrillFor(i);
     setDrillI(0);
