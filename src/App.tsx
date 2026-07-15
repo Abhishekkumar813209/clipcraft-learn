@@ -68,6 +68,10 @@ import OAuthConsent from "./pages/OAuthConsent";
 import SscEnglishIdioms from "./pages/SscEnglishIdioms";
 import SscEnglishOws from "./pages/SscEnglishOws";
 import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
+import SscPartsOfSpeech from "./pages/SscPartsOfSpeech";
+import SscPosVerb from "./pages/SscPosVerb";
+import SscPosVerbBasic from "./pages/SscPosVerbBasic";
+import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
 
 
@@ -123,6 +127,10 @@ const App = () => (
               <Route path="english/ows" element={<SscEnglishOws />} />
               <Route path="english/synant" element={<SscEnglishSynAnt />} />
               <Route path="english/synant/practice" element={<SscSynAntPractice />} />
+              <Route path="english/parts-of-speech" element={<SscPartsOfSpeech />} />
+              <Route path="english/parts-of-speech/verb" element={<SscPosVerb />} />
+              <Route path="english/parts-of-speech/verb/basic" element={<SscPosVerbBasic />} />
+              <Route path="english/parts-of-speech/verb/basic/practice" element={<SscPosVerbBasicPractice />} />
               <Route path="maths" element={<SscSubject />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
