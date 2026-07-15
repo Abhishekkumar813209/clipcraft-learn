@@ -864,6 +864,66 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_pos_spot_error: {
+        Row: {
+          correct_form: string | null
+          created_at: string
+          error_in: string
+          full_sentence: string
+          hint: string | null
+          id: string
+          level: string
+          part_a: string
+          part_b: string
+          part_c: string
+          part_d: string
+          pos: string
+          practice: Json
+          q_no: number
+          rule_tag: string | null
+          solution: string | null
+          updated_at: string
+        }
+        Insert: {
+          correct_form?: string | null
+          created_at?: string
+          error_in: string
+          full_sentence: string
+          hint?: string | null
+          id?: string
+          level: string
+          part_a: string
+          part_b: string
+          part_c: string
+          part_d: string
+          pos: string
+          practice?: Json
+          q_no: number
+          rule_tag?: string | null
+          solution?: string | null
+          updated_at?: string
+        }
+        Update: {
+          correct_form?: string | null
+          created_at?: string
+          error_in?: string
+          full_sentence?: string
+          hint?: string | null
+          id?: string
+          level?: string
+          part_a?: string
+          part_b?: string
+          part_c?: string
+          part_d?: string
+          pos?: string
+          practice?: Json
+          q_no?: number
+          rule_tag?: string | null
+          solution?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ssc_questions: {
         Row: {
           correct_option: number
