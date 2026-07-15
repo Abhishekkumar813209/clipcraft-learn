@@ -1,57 +1,44 @@
-# Add Hints for 200 Idioms & Phrases
+# Parts of Speech → Verb Basic (Spot the Error)
 
-## Goal
-Har idiom ke saath ek chhota "hint" store karo (jo tumne 200 numbered lines me diye hain), aur practice screen par answer mark karne se pehle ek **💡 Hint** button dikhe jo woh hint reveal kare.
+## New Card on `/ssc/english`
+- Add a **"Parts of Speech"** card to `SscSubject.tsx` (english view).
+- Route: `/ssc/english/parts-of-speech` → hub page listing sub-topics: **Verb**, Noun, Pronoun, Adjective, Adverb, Preposition, Conjunction, Interjection (only Verb active for now).
+- Verb card → `/ssc/english/parts-of-speech/verb` with two cards: **Basic** (active) and **Advanced** (coming soon).
+- Basic → `/ssc/english/parts-of-speech/verb/basic` shows one card "Spot the Error" (47 questions).
 
-## 1. Database change
-Table: `ssc_black_book_items`
+## Database
+New table `ssc_pos_spot_error` seeded from `Verb_Basic_SpotError_v2.xlsx` (47 rows):
+- `pos` ('verb'), `level` ('basic'), `q_no`
+- `full_sentence`, `part_a/b/c/d`, `error_in` (A/B/C/D), `correct_form`, `rule_tag`, `hint`, `solution`
+- `practice` jsonb array (3 items: `{ full_sentence, hint, error_in, correct_form, solution }`)
+- Public read; admin insert.
 
-- Naya nullable column `hint text` add karo.
-- Sirf `category = 'idiom'` rows ke liye populate karenge — baaki categories NULL rahengi.
+## Practice Flow (`/ssc/english/parts-of-speech/verb/basic/practice`)
+- Fetch all 47 questions; user answers by tapping Part A/B/C/D.
+- After submit → highlight correct/wrong, reveal **Correct Form**, **Rule/Tag**, and **Solution** card.
+- Hint button (💡) available before answering — shows `hint` text.
+- Solution card includes a **"Practice More (3 similar)"** button.
 
-## 2. Hint mapping (insertion order)
-- Idioms ko `created_at ASC, id ASC` order me fetch karke pehle 200 rows lo.
-- Line 1 → 1st idiom, line 2 → 2nd, … line 200 → 200th.
-- Migration me ek `WITH ordered AS (SELECT id, row_number() OVER (ORDER BY created_at, id) rn FROM ssc_black_book_items WHERE category='idiom')` + `UPDATE … FROM (VALUES (1,'…'),(2,'…'),…(200,'…')) v(rn,hint)` pattern use karenge — ek hi migration me saare 200 hints seed ho jayenge.
-- Agar DB me 200 se kam idioms hain to extra hints skip ho jaayenge (safe).
-- Re-run safety: `UPDATE` idempotent hai; column already exists check ke saath `ADD COLUMN IF NOT EXISTS`.
+### Practice-More sub-flow
+- Clicking opens the same question UI but iterates through the 3 `practice` variants of *that* Q.
+- Header shows `Practice 1/3 · from Q#4`.
+- After all 3 done (or user hits "Back to Q4"), returns to the main list at question index 4 exactly where left off.
+- State kept in component (no route change) so the return is instant; alternatively a nested route `/practice/:qNo/more` with return-to-parent state — chosen: **in-page overlay/stack** to preserve original index and picks.
 
-## 3. Types
-`src/integrations/supabase/types.ts` auto-regen ho jayega migration approve hone ke baad — usme `hint: string | null` add ho jayega `ssc_black_book_items` row me.
+## Files
+- `supabase/migrations/*` — create table + seed all 47 rows.
+- `src/pages/SscPartsOfSpeech.tsx` — hub (8 POS cards, only Verb active).
+- `src/pages/SscPosVerb.tsx` — Basic / Advanced cards.
+- `src/pages/SscPosVerbBasic.tsx` — Spot the Error card + count input (default 20, max 47).
+- `src/pages/SscPosVerbBasicPractice.tsx` — main practice + practice-more overlay.
+- `src/pages/SscSubject.tsx` — add Parts of Speech card (english only).
+- `src/App.tsx` — register 4 new routes.
 
-## 4. Practice UI change — `src/pages/BlackBookPractice.tsx`
+## Design
+- Emerald/mint theme, matches existing BB practice pages.
+- Options rendered as 4 tappable pills labeled A / B / C / D with the underlying phrase.
+- Progress bar and Prev/Next buttons like existing practice pages.
+- Practice-More overlay has a distinct amber accent to signal "drill mode", with a clear **"← Back to Q{n}"** button always visible.
 
-State: pehle se `picked` (selected option index or null) available hai. `picked === null` ka matlab "abhi answer nahi diya".
-
-- Har current question ke saath uska `hint` bhi fetch karo (already `fetchBBItems` idiom rows return karta hai — bas hint field include karna hai).
-- Question card ke andar, options ke ऊpar ek chhota inline button:
-  ```
-  [💡 Hint]
-  ```
-  - Sirf tab dikhe jab:
-    - `category === 'idiom'` (ya current question ka category idiom hai — mixed mode ke liye)
-    - `currentItem.hint` non-empty hai
-    - `picked === null` (answer abhi mark nahi hua)
-  - Click karne par local state `hintShown` true ho jaye → button ke neeche italic emerald-tinted line me hint text dikhe.
-  - Naya question load hote hi `hintShown` reset ho jaye.
-- Answer mark hone ke baad hint button hide ho jaye (distraction na ho); Hindi meaning wala existing double-tap flow as-is chalega.
-
-## 5. Kya nahi chhoo rahe
-- Hindi/Hinglish meaning wala flow, history page, roots practice — koi change nahi.
-- Baaki categories (syn_ant, ows, word) — koi hint UI nahi.
-
-## Technical summary
-```text
-Migration
-├── ALTER TABLE ssc_black_book_items ADD COLUMN IF NOT EXISTS hint text
-└── UPDATE …idiom rows by row_number ordering with VALUES(1..200, '…')
-
-Frontend (BlackBookPractice.tsx)
-├── fetchBBItems: ensure `hint` included in select
-├── currentItem.hint + picked === null + category idiom → render 💡 Hint button
-├── local useState hintShown; reset on question change
-└── No other files touched
-```
-
-## Open confirmation
-Mixed-category practice me bhi jab idiom question aaye tab hint button dikhe — yehi assume kar raha hoon. Agar sirf pure "Idioms only" practice me chahiye to bata dena, condition tighten kar dunga.
+## Notes
+- No progress logging to `bb_practice_sessions` for this module in v1 (kept scoped to UI + data). Can be added later if you want it in BB History.
