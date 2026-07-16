@@ -70,7 +70,7 @@ export default function SscPosVerbBasicPractice() {
       setPicks(new Array(shuffled.length).fill(null));
       setLoading(false);
     })();
-  }, [n]);
+  }, [n, pos]);
 
   const q = rows[i];
   const picked = picks[i];
