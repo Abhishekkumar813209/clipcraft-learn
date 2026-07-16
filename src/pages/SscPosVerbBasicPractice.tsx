@@ -227,8 +227,8 @@ export default function SscPosVerbBasicPractice() {
         </div>
         <Card className="border-emerald-100 shadow-sm">
           <CardContent className="p-6 space-y-4">
-            <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold">Spot the Error</div>
-            <div className="text-base font-medium text-slate-800">Spot the error in the sentence below. Choose the part that contains the mistake, or "No error" if the sentence is correct.</div>
+            <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold">{pos === 'passive_voice_mcq' ? 'Passive Voice · MCQ' : 'Spot the Error'}</div>
+            <div className="text-base font-medium text-slate-800">{pos === 'passive_voice_mcq' ? 'Choose the correct passive-voice form of the sentence below.' : 'Spot the error in the sentence below. Choose the part that contains the mistake, or "No error" if the sentence is correct.'}</div>
             {q.full_sentence && (
               <div className="rounded-md border border-emerald-100 bg-white/70 p-3 text-slate-700 italic">
                 {q.full_sentence}
