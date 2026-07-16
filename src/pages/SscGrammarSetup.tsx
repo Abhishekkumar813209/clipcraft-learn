@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
-const META: Record<string, { label: string }> = {
+const META: Record<string, { label: string; mode?: 'mcq' }> = {
   verb: { label: 'Verb' },
   tense: { label: 'Tense' },
   passive_voice: { label: 'Passive Voice' },
+  passive_voice_mcq: { label: 'Passive Voice · MCQs', mode: 'mcq' },
 };
 
 export default function SscGrammarSetup() {
