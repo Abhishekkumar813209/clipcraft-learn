@@ -6,16 +6,18 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
-const META: Record<string, { label: string }> = {
+const META: Record<string, { label: string; mode?: 'mcq' }> = {
   verb: { label: 'Verb' },
   tense: { label: 'Tense' },
   passive_voice: { label: 'Passive Voice' },
+  passive_voice_mcq: { label: 'Passive Voice · MCQs', mode: 'mcq' },
 };
 
 export default function SscGrammarSetup() {
   const nav = useNavigate();
   const { pos = 'verb' } = useParams();
   const label = META[pos]?.label ?? pos;
+  const isMcq = META[pos]?.mode === 'mcq';
   const [total, setTotal] = useState(0);
   const [n, setN] = useState(20);
 
@@ -35,13 +37,13 @@ export default function SscGrammarSetup() {
       </Button>
       <div>
         <h1 className="text-2xl font-bold">{label} · Basic</h1>
-        <p className="text-muted-foreground">Spot the error in each sentence.</p>
+        <p className="text-muted-foreground">{isMcq ? 'Choose the correct passive form for each sentence.' : 'Spot the error in each sentence.'}</p>
       </div>
       <Card className="border-emerald-100">
         <CardContent className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold">Spot the Error</h3>
+              <h3 className="font-semibold">{isMcq ? 'MCQs' : 'Spot the Error'}</h3>
               <p className="text-sm text-muted-foreground">{total} questions in pool · each with hint, solution & 3 similar drills</p>
             </div>
           </div>
