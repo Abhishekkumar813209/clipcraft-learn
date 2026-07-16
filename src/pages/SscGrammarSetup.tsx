@@ -1,22 +1,30 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
-export default function SscPosVerbBasic() {
+const META: Record<string, { label: string }> = {
+  verb: { label: 'Verb' },
+  tense: { label: 'Tense' },
+  passive_voice: { label: 'Passive Voice' },
+};
+
+export default function SscGrammarSetup() {
   const nav = useNavigate();
+  const { pos = 'verb' } = useParams();
+  const label = META[pos]?.label ?? pos;
   const [total, setTotal] = useState(0);
   const [n, setN] = useState(20);
 
   useEffect(() => {
     supabase.from('ssc_pos_spot_error' as never)
       .select('id', { count: 'exact', head: true })
-      .eq('pos', 'verb').eq('level', 'basic')
+      .eq('pos', pos).eq('level', 'basic')
       .then(({ count }) => setTotal(count || 0));
-  }, []);
+  }, [pos]);
 
   const capped = Math.max(1, Math.min(n || 1, total || 1));
 
@@ -26,7 +34,7 @@ export default function SscPosVerbBasic() {
         <ArrowLeft className="w-4 h-4 mr-1" />Back
       </Button>
       <div>
-        <h1 className="text-2xl font-bold">Verb · Basic</h1>
+        <h1 className="text-2xl font-bold">{label} · Basic</h1>
         <p className="text-muted-foreground">Spot the error in each sentence.</p>
       </div>
       <Card className="border-emerald-100">
@@ -48,7 +56,7 @@ export default function SscPosVerbBasic() {
           </div>
           <Button
             className="w-full bg-emerald-600 hover:bg-emerald-500 text-white"
-            onClick={() => nav(`/ssc/english/parts-of-speech/verb/basic/practice?n=${capped}`)}
+            onClick={() => nav(`/ssc/english/grammar/${pos}/basic/practice?n=${capped}`)}
             disabled={!total}
           >
             <Play className="w-4 h-4 mr-2" />Start Practice

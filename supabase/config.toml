@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.bb-hint-enrich]
 verify_jwt = false
+
+[functions.seed-grammar-pos]
+verify_jwt = false

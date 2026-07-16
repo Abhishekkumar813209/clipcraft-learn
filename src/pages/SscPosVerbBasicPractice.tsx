@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ChevronLeft, ChevronRight, Check, X, Lightbulb, Loader2, Sparkles, Trophy } from 'lucide-react';
@@ -43,6 +43,7 @@ function parsePracticeParts(sentence: string): [string, string, string, string] 
 export default function SscPosVerbBasicPractice() {
   const [sp] = useSearchParams();
   const nav = useNavigate();
+  const { pos = 'verb' } = useParams();
   const n = Number(sp.get('n')) || 20;
 
   const [rows, setRows] = useState<Row[]>([]);
@@ -61,7 +62,7 @@ export default function SscPosVerbBasicPractice() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('ssc_pos_spot_error' as never)
-        .select('*').eq('pos', 'verb').eq('level', 'basic').order('q_no');
+        .select('*').eq('pos', pos).eq('level', 'basic').order('q_no');
       const all = (data || []) as unknown as Row[];
       // shuffle & slice
       const shuffled = [...all].sort(() => Math.random() - 0.5).slice(0, Math.min(n, all.length));
@@ -69,7 +70,7 @@ export default function SscPosVerbBasicPractice() {
       setPicks(new Array(shuffled.length).fill(null));
       setLoading(false);
     })();
-  }, [n]);
+  }, [n, pos]);
 
   const q = rows[i];
   const picked = picks[i];
