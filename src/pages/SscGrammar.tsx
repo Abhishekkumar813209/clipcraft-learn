@@ -34,13 +34,16 @@ export default function SscGrammar() {
         {TOPICS.map(t => (
           <Card
             key={t.key}
-            className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow border-border"
-            onClick={() => nav(`/ssc/english/grammar/${t.key}`)}
+            className={`transition-shadow border-border ${t.active ? 'cursor-pointer hover:shadow-md hover:border-emerald-400' : 'opacity-60 cursor-not-allowed'}`}
+            onClick={() => t.active && nav(`/ssc/english/grammar/${t.key}`)}
           >
             <CardContent className="p-5 flex items-start gap-3">
               <span className="text-3xl">{t.icon}</span>
               <div className="flex-1">
-                <h3 className="font-semibold">{t.label}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold">{t.label}</h3>
+                  {!t.active && <span className="text-[10px] font-semibold tracking-wider uppercase text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">Soon</span>}
+                </div>
                 <p className="text-sm text-muted-foreground mt-0.5">{t.desc}</p>
               </div>
             </CardContent>
