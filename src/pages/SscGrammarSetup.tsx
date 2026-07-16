@@ -17,6 +17,7 @@ export default function SscGrammarSetup() {
   const nav = useNavigate();
   const { pos = 'verb' } = useParams();
   const label = META[pos]?.label ?? pos;
+  const isMcq = META[pos]?.mode === 'mcq';
   const [total, setTotal] = useState(0);
   const [n, setN] = useState(20);
 
