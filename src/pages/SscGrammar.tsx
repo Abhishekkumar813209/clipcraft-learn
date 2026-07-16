@@ -3,10 +3,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
-const TOPICS = [
-  { key: 'verb', label: 'Verb', icon: '🏃', desc: 'Verb forms, agreement, common mistakes.' },
-  { key: 'tense', label: 'Tense', icon: '⏳', desc: 'Since/for, past perfect, sequence of tenses.' },
-  { key: 'passive_voice', label: 'Passive Voice', icon: '🔄', desc: 'Active vs passive, modal passives, prepositions.' },
+const TOPICS: { key: string; label: string; icon: string; desc: string; active?: boolean }[] = [
+  { key: 'verb', label: 'Verb', icon: '🏃', desc: 'Verb forms, agreement, common mistakes.', active: true },
+  { key: 'tense', label: 'Tense', icon: '⏳', desc: 'Since/for, past perfect, sequence of tenses.', active: true },
+  { key: 'passive_voice', label: 'Passive Voice', icon: '🔄', desc: 'Active vs passive, modal passives, prepositions.', active: true },
+  { key: 'noun', label: 'Noun', icon: '🏷️', desc: 'Countable/uncountable, collective nouns, number.' },
+  { key: 'pronoun', label: 'Pronoun', icon: '👤', desc: 'Case, agreement, reflexive & relative pronouns.' },
+  { key: 'adjective', label: 'Adjective', icon: '🎨', desc: 'Degrees of comparison, order, common confusions.' },
+  { key: 'adverb', label: 'Adverb', icon: '⚡', desc: 'Placement, types, adverbs vs adjectives.' },
+  { key: 'preposition', label: 'Preposition', icon: '🔗', desc: 'Correct usage, appropriate prepositions.' },
+  { key: 'conjunction', label: 'Conjunction', icon: '➕', desc: 'Coordinating, subordinating, correlative pairs.' },
+  { key: 'article', label: 'Article', icon: '🔤', desc: 'A / an / the — omission and usage rules.' },
+  { key: 'subject_verb_agreement', label: 'Subject-Verb Agreement', icon: '🤝', desc: 'Singular/plural agreement, tricky subjects.' },
+  { key: 'narration', label: 'Narration', icon: '💬', desc: 'Direct & indirect speech conversions.' },
+  { key: 'conditionals', label: 'Conditionals', icon: '🔀', desc: 'If-clauses, mixed conditionals, unreal past.' },
 ];
 
 export default function SscGrammar() {
