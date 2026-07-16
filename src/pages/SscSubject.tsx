@@ -89,15 +89,15 @@ export default function SscSubjectPage() {
         {subject === 'english' && (
           <Card
             className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
-            onClick={() => navigate('/ssc/english/parts-of-speech')}
+            onClick={() => navigate('/ssc/english/grammar')}
           >
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
-                <span className="text-3xl">🧩</span>
+                <span className="text-3xl">📚</span>
                 <div className="flex-1 min-w-0">
                   <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-amber-700 bg-amber-100 px-2 py-0.5 rounded mb-1.5">New</span>
-                  <h3 className="font-semibold text-foreground">Parts of Speech</h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">Verb · Basic (47) + more</p>
+                  <h3 className="font-semibold text-foreground">Grammar</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">Verb · Tense · Passive Voice</p>
                 </div>
               </div>
             </CardContent>
