@@ -189,9 +189,9 @@ export default function SscSynAntPractice() {
     </div>
   );
 
-  const hintText = q.kind === 'antonym'
-    ? (q.item.antonym_hinglish_meaning || q.item.hinglish_meaning)
-    : q.item.hinglish_meaning;
+  const hintText = q.item.hinglish_meaning || q.item.meaning;
+  const correctOption = q.options[q.correct];
+  const correctHindi = hindiForOption(correctOption);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6">
@@ -219,7 +219,7 @@ export default function SscSynAntPractice() {
                 </div>
               ) : (
                 <Button variant="outline" size="sm" className="border-amber-200 text-amber-700 hover:bg-amber-50" onClick={() => setHint({ ...hint, [i]: true })}>
-                  <Lightbulb className="w-4 h-4 mr-1" />Show hint
+                  <Lightbulb className="w-4 h-4 mr-1" />Show hint (Hinglish meaning)
                 </Button>
               )
             )}
@@ -228,8 +228,9 @@ export default function SscSynAntPractice() {
                 const show = picked !== null;
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
+                // After picking: correct option auto-shows Hinglish inline; others reveal on tap.
                 const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
-                const label = isFlipped ? hindiForOption(opt) : opt;
+                const optHindi = show ? hindiForOption(opt) : '';
                 return (
                   <button
                     key={idx}
@@ -243,21 +244,41 @@ export default function SscSynAntPractice() {
                       show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
                       show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
                       'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60'
-                    } ${isFlipped ? 'italic' : ''}`}>
-                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
+                    }`}>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-semibold">{String.fromCharCode(65 + idx)}.</span>
+                      <span className={isFlipped ? 'italic' : ''}>{isFlipped ? optHindi : opt}</span>
+                    </div>
+                    {show && isCorrect && optHindi && optHindi !== '—' && !isFlipped && (
+                      <div className="text-xs italic text-emerald-700 mt-1 pl-6">→ {optHindi}</div>
+                    )}
                   </button>
                 );
               })}
             </div>
             {picked !== null && (
               <>
-                <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap an option for Hindi · double-click card to flip all</div>
-                {(q.item.meaning || q.item.example_sentence) && (
-                  <div className="rounded-md border border-emerald-100 bg-emerald-50/50 p-3 text-sm space-y-1">
-                    {q.item.meaning && <div><span className="font-semibold">Meaning:</span> {q.item.meaning}</div>}
-                    {q.item.example_sentence && <div className="italic text-slate-600">"{q.item.example_sentence}"</div>}
+                <div className="text-xs text-slate-500 flex items-center gap-1"><RotateCcw className="w-3 h-3" />Tap any option to reveal Hinglish · double-click card to flip all</div>
+                <div className="rounded-md border border-emerald-100 bg-emerald-50/50 p-3 text-sm space-y-2">
+                  <div>
+                    <div className="font-semibold text-slate-800">{q.item.word}</div>
+                    {(q.item.hinglish_meaning || q.item.meaning) && (
+                      <div className="text-slate-700">{q.item.hinglish_meaning || q.item.meaning}</div>
+                    )}
+                    {q.item.example_sentence && <div className="italic text-slate-600 mt-1">"{q.item.example_sentence}"</div>}
                   </div>
-                )}
+                  <div className="border-t border-emerald-100 pt-2">
+                    <div className="font-semibold text-emerald-800">
+                      {q.kind === 'antonym' ? 'Antonym' : 'Synonym'}: {correctOption}
+                    </div>
+                    {correctHindi && correctHindi !== '—' && (
+                      <div className="text-slate-700">{correctHindi}</div>
+                    )}
+                    {q.kind === 'antonym' && q.item.antonym_example_sentence && (
+                      <div className="italic text-slate-600 mt-1">"{q.item.antonym_example_sentence}"</div>
+                    )}
+                  </div>
+                </div>
               </>
             )}
             <div className="flex gap-2 pt-1">

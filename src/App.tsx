@@ -55,6 +55,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBooks from "./pages/admin/AdminBooks";
 import AdminUpload from "./pages/admin/AdminUpload";
 import AdminQuestions from "./pages/admin/AdminQuestions";
+import AdminUsers from "./pages/admin/AdminUsers";
 import DailyQuiz from "./pages/DailyQuiz";
 import BlackBookHub from "./pages/BlackBookHub";
 import BlackBookPractice from "./pages/BlackBookPractice";
@@ -172,6 +173,7 @@ const App = () => (
               <Route path="books" element={<AdminBooks />} />
               <Route path="upload" element={<AdminUpload />} />
               <Route path="questions" element={<AdminQuestions />} />
+              <Route path="users" element={<AdminUsers />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

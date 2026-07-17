@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
-const META: Record<string, { label: string; mode?: 'mcq' }> = {
+const META: Record<string, { label: string; mode?: 'mcq'; mcqPrompt?: string }> = {
   verb: { label: 'Verb' },
   tense: { label: 'Tense' },
   passive_voice: { label: 'Passive Voice' },
-  passive_voice_mcq: { label: 'Passive Voice · MCQs', mode: 'mcq' },
+  passive_voice_mcq: { label: 'Passive Voice · MCQs', mode: 'mcq', mcqPrompt: 'Choose the correct passive form for each sentence.' },
+  narration_spot: { label: 'Narration · Spot the Error' },
+  narration_mcq: { label: 'Narration · MCQs', mode: 'mcq', mcqPrompt: 'Choose the correct direct/indirect speech form.' },
 };
 
 export default function SscGrammarSetup() {
@@ -37,7 +39,7 @@ export default function SscGrammarSetup() {
       </Button>
       <div>
         <h1 className="text-2xl font-bold">{label} · Basic</h1>
-        <p className="text-muted-foreground">{isMcq ? 'Choose the correct passive form for each sentence.' : 'Spot the error in each sentence.'}</p>
+        <p className="text-muted-foreground">{isMcq ? (META[pos]?.mcqPrompt || 'Choose the correct option.') : 'Spot the error in each sentence.'}</p>
       </div>
       <Card className="border-emerald-100">
         <CardContent className="p-6 space-y-4">
