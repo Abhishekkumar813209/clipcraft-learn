@@ -15,7 +15,7 @@ const TOPICS: { key: string; label: string; icon: string; desc: string; active?:
   { key: 'conjunction', label: 'Conjunction', icon: '➕', desc: 'Coordinating, subordinating, correlative pairs.' },
   { key: 'article', label: 'Article', icon: '🔤', desc: 'A / an / the — omission and usage rules.' },
   { key: 'subject_verb_agreement', label: 'Subject-Verb Agreement', icon: '🤝', desc: 'Singular/plural agreement, tricky subjects.' },
-  { key: 'narration', label: 'Narration', icon: '💬', desc: 'Direct & indirect speech conversions.' },
+  { key: 'narration', label: 'Narration', icon: '💬', desc: 'Direct & indirect speech — spot the error + MCQs.', active: true },
   { key: 'conditionals', label: 'Conditionals', icon: '🔀', desc: 'If-clauses, mixed conditionals, unreal past.' },
 ];
 

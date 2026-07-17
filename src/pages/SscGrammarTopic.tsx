@@ -7,13 +7,27 @@ const META: Record<string, { label: string; icon: string }> = {
   verb: { label: 'Verb', icon: '🏃' },
   tense: { label: 'Tense', icon: '⏳' },
   passive_voice: { label: 'Passive Voice', icon: '🔄' },
+  narration: { label: 'Narration', icon: '💬' },
+};
+
+const SPLIT_TOPICS: Record<string, { spotKey: string; mcqKey: string; spotDesc: string; mcqDesc: string }> = {
+  passive_voice: {
+    spotKey: 'passive_voice', mcqKey: 'passive_voice_mcq',
+    spotDesc: 'Find the passive-voice error in each sentence.',
+    mcqDesc: 'Choose the correct passive form from the options.',
+  },
+  narration: {
+    spotKey: 'narration_spot', mcqKey: 'narration_mcq',
+    spotDesc: 'Find the reported-speech error in each sentence.',
+    mcqDesc: 'Choose the correct direct/indirect speech form.',
+  },
 };
 
 export default function SscGrammarTopic() {
   const nav = useNavigate();
   const { pos = 'verb' } = useParams();
   const m = META[pos] || { label: pos, icon: '📘' };
-  const isPassive = pos === 'passive_voice';
+  const split = SPLIT_TOPICS[pos];
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -25,22 +39,22 @@ export default function SscGrammarTopic() {
         <p className="text-muted-foreground">Pick a level.</p>
       </div>
 
-      {isPassive ? (
+      {split ? (
         <div className="space-y-4">
           <div className="text-xs font-semibold tracking-wider uppercase text-emerald-700">Basic</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow" onClick={() => nav(`/ssc/english/grammar/passive_voice/basic`)}>
+            <Card className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow" onClick={() => nav(`/ssc/english/grammar/${split.spotKey}/basic`)}>
               <CardContent className="p-6">
                 <div className="text-xs font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 inline-block px-2 py-0.5 rounded mb-2">Available</div>
                 <h3 className="text-lg font-bold">Spot the Error</h3>
-                <p className="text-sm text-muted-foreground mt-1">Find the passive-voice error in each sentence.</p>
+                <p className="text-sm text-muted-foreground mt-1">{split.spotDesc}</p>
               </CardContent>
             </Card>
-            <Card className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow" onClick={() => nav(`/ssc/english/grammar/passive_voice_mcq/basic`)}>
+            <Card className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow" onClick={() => nav(`/ssc/english/grammar/${split.mcqKey}/basic`)}>
               <CardContent className="p-6">
                 <div className="text-xs font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 inline-block px-2 py-0.5 rounded mb-2">Available</div>
                 <h3 className="text-lg font-bold">MCQs</h3>
-                <p className="text-sm text-muted-foreground mt-1">Choose the correct passive form from the options.</p>
+                <p className="text-sm text-muted-foreground mt-1">{split.mcqDesc}</p>
               </CardContent>
             </Card>
           </div>
@@ -48,7 +62,7 @@ export default function SscGrammarTopic() {
             <CardContent className="p-6">
               <div className="text-xs font-semibold tracking-wider uppercase text-slate-500 bg-slate-100 inline-block px-2 py-0.5 rounded mb-2">Coming soon</div>
               <h3 className="text-lg font-bold">Advanced</h3>
-              <p className="text-sm text-muted-foreground mt-1">Harder mixed drills for passive voice.</p>
+              <p className="text-sm text-muted-foreground mt-1">Harder mixed drills for {m.label.toLowerCase()}.</p>
             </CardContent>
           </Card>
         </div>
