@@ -74,6 +74,8 @@ import SscGrammarTopic from "./pages/SscGrammarTopic";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
 import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
+import SscMathsCalculation from "./pages/SscMathsCalculation";
+import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
 
 
 const queryClient = new QueryClient({
@@ -133,6 +135,8 @@ const App = () => (
               <Route path="english/grammar/:pos/basic" element={<SscGrammarSetup />} />
               <Route path="english/grammar/:pos/basic/practice" element={<SscPosVerbBasicPractice />} />
               <Route path="maths" element={<SscSubject />} />
+              <Route path="maths/calculation" element={<SscMathsCalculation />} />
+              <Route path="maths/calculation/:chapter" element={<SscMathsCalcQuiz />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
 

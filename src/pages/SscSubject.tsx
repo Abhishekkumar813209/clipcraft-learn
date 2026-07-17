@@ -104,6 +104,24 @@ export default function SscSubjectPage() {
           </Card>
         )}
 
+        {subject === 'quant' && (
+          <Card
+            className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
+            onClick={() => navigate('/ssc/maths/calculation')}
+          >
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">🧮</span>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-amber-700 bg-amber-100 px-2 py-0.5 rounded mb-1.5">New · Timed</span>
+                  <h3 className="font-semibold text-foreground">Calculation</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">Squares · Cubes · % / Fractions</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {topics.map((topic) => {
           const t = TOPIC_META[topic];
           let count = counts?.[topic] || 0;
