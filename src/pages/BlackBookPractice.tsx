@@ -265,30 +265,34 @@ export default function BlackBookPractice() {
               );
             })()}
             <div className="space-y-2">
-              {q.options.map((opt, idx) => {
-                const isCorrect = q.correct === idx;
-                const isPicked = picked === idx;
-                const show = picked !== null;
-                const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
-                const label = isFlipped ? hindiForOption(opt) : opt;
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      if (picked === null) { choose(idx); return; }
-                      const cur = new Set(revealed[i] || []);
-                      if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
-                      setRevealed({ ...revealed, [i]: cur });
-                    }}
-                    className={`w-full text-left p-3 rounded-md border transition-all ${
-                      show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
-                      show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
-                      'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
-                    } ${isFlipped ? 'italic' : ''}`}>
-                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
-                  </button>
-                );
-              })}
+              {q.options.map((opt, idx) => (
+                <OptionButton
+                  key={`${i}-${idx}`}
+                  opt={opt}
+                  idx={idx}
+                  isCorrect={q.correct === idx}
+                  isPicked={picked === idx}
+                  show={picked !== null}
+                  isFlipped={picked !== null && (flipAll[i] || !!revealed[i]?.has(idx))}
+                  flippedLabel={hindiForOption(opt)}
+                  onClick={() => {
+                    if (picked === null) { choose(idx); return; }
+                    const cur = new Set(revealed[i] || []);
+                    if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                    setRevealed({ ...revealed, [i]: cur });
+                  }}
+                  onSwipe={async () => {
+                    if (!user) return;
+                    const res = await toggleBookmark(user.id, {
+                      kind: 'option', subject: 'english', chapter: q.item.category,
+                      subcategory: (q.item as any).subcategory ?? null,
+                      item_ref: q.item.id, question_text: q.question,
+                      option_text: opt, correct_text: q.options[q.correct],
+                    });
+                    toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1500 });
+                  }}
+                />
+              ))}
             </div>
             {picked !== null && (
               <>
