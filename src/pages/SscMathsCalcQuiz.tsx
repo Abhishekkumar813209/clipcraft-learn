@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Timer, RefreshCw, CheckCircle2, XCircle, Play } from 'lucide-react';
-import { CHAPTER_META, generateQuiz, type CalcQ } from '@/lib/calcQuiz';
+import { CHAPTER_META, generateQuiz, type CalcQ, type Mode, type Difficulty } from '@/lib/calcQuiz';
 import { cn } from '@/lib/utils';
 
 export default function SscMathsCalcQuiz() {
@@ -11,8 +11,14 @@ export default function SscMathsCalcQuiz() {
   const { chapter = 'squares' } = useParams();
   const meta = CHAPTER_META[chapter];
 
+  // ranged config
+  const [start, setStart] = useState<string>(String(meta?.defaultStart ?? 2));
+  const [end,   setEnd]   = useState<string>(String(meta?.defaultEnd   ?? 20));
+  const [mode, setMode] = useState<Mode>('serial');
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+
   const [pool, setPool] = useState<CalcQ[]>([]);
-  const [n, setN] = useState(20);
+  const [n, setN] = useState<string>('20');
   const [started, setStarted] = useState(false);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -24,12 +30,22 @@ export default function SscMathsCalcQuiz() {
   const qStartRef = useRef<number>(Date.now());
   const totalStartRef = useRef<number>(Date.now());
 
-  useEffect(() => { setPool(generateQuiz(chapter)); }, [chapter]);
+  // regenerate pool on chapter or config change (before start)
+  useEffect(() => {
+    if (!meta) return;
+    if (meta.kind === 'ranged') {
+      const s = Math.max(meta.minAllowed ?? 1, Math.min(meta.maxAllowed ?? 100, Number(start) || (meta.defaultStart ?? 2)));
+      const e = Math.max(meta.minAllowed ?? 1, Math.min(meta.maxAllowed ?? 100, Number(end) || (meta.defaultEnd ?? 20)));
+      setPool(generateQuiz(chapter, { start: s, end: e, mode, difficulty }));
+    } else {
+      setPool(generateQuiz(chapter));
+    }
+  }, [chapter, start, end, mode, difficulty, meta]);
 
-  const active = useMemo(() => pool.slice(0, n), [pool, n]);
+  const nNum = Math.max(1, Math.min(Number(n) || 1, pool.length || 1));
+  const active = useMemo(() => pool.slice(0, nNum), [pool, nNum]);
   const q = active[i];
 
-  // per-question timer
   useEffect(() => {
     if (!started || done) return;
     qStartRef.current = Date.now();
@@ -38,14 +54,13 @@ export default function SscMathsCalcQuiz() {
     return () => clearInterval(t);
   }, [i, started, done]);
 
-  // total timer
   useEffect(() => {
     if (!started || done) return;
     const t = setInterval(() => setTotalElapsed(Math.floor((Date.now() - totalStartRef.current) / 1000)), 500);
     return () => clearInterval(t);
   }, [started, done]);
 
-  const start = () => {
+  const start_ = () => {
     setStarted(true);
     setDone(false);
     setI(0);
@@ -66,23 +81,29 @@ export default function SscMathsCalcQuiz() {
   };
 
   const next = () => {
-    if (i + 1 >= active.length) {
-      setDone(true);
-      return;
-    }
+    if (i + 1 >= active.length) { setDone(true); return; }
     setI(i + 1);
     setPicked(null);
   };
 
   const reshuffle = () => {
-    setPool(generateQuiz(chapter));
-    start();
+    if (meta?.kind === 'ranged') {
+      const s = Number(start) || (meta.defaultStart ?? 2);
+      const e = Number(end)   || (meta.defaultEnd   ?? 20);
+      setPool(generateQuiz(chapter, { start: s, end: e, mode, difficulty }));
+    } else {
+      setPool(generateQuiz(chapter));
+    }
+    start_();
   };
 
   if (!meta) return <div className="p-6">Unknown chapter.</div>;
 
+  const numInputCls = 'w-24 px-3 py-1.5 rounded-md border border-input bg-background text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none';
+
   // ---------- START SCREEN ----------
   if (!started) {
+    const isRanged = meta.kind === 'ranged';
     return (
       <div className="p-6 max-w-2xl mx-auto space-y-6">
         <Button variant="ghost" size="sm" onClick={() => nav('/ssc/maths/calculation')} className="text-slate-700">
@@ -94,31 +115,98 @@ export default function SscMathsCalcQuiz() {
           </h1>
           <p className="text-muted-foreground mt-1">Timed MCQ drill · pool of {pool.length} questions.</p>
         </div>
+
         <Card className="border-primary/20">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <label className="text-sm text-slate-600">Number of questions</label>
-              <input
-                type="number" min={5} max={pool.length || 200}
-                value={n}
-                onChange={(e) => setN(Math.max(5, Math.min(Number(e.target.value) || 5, pool.length || 200)))}
-                className="w-24 px-3 py-1.5 rounded-md border border-input bg-background text-sm"
-              />
-              <span className="text-xs text-slate-500">max {pool.length}</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[10, 20, 30, 50, 100].filter((x) => x <= pool.length).map((x) => (
-                <button
-                  key={x}
-                  onClick={() => setN(x)}
-                  className={cn(
-                    'px-3 py-1 rounded-full text-xs border transition',
-                    n === x ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent',
+          <CardContent className="p-6 space-y-5">
+            {isRanged && (
+              <>
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-slate-700">Range ({meta.minAllowed} → {meta.maxAllowed})</div>
+                  <div className="flex items-center gap-3">
+                    <label className="text-xs text-slate-500">Start</label>
+                    <input
+                      type="text" inputMode="numeric" pattern="[0-9]*"
+                      value={start}
+                      onChange={(e) => setStart(e.target.value.replace(/[^0-9]/g, ''))}
+                      className={numInputCls}
+                      placeholder={String(meta.defaultStart ?? 2)}
+                    />
+                    <label className="text-xs text-slate-500">End</label>
+                    <input
+                      type="text" inputMode="numeric" pattern="[0-9]*"
+                      value={end}
+                      onChange={(e) => setEnd(e.target.value.replace(/[^0-9]/g, ''))}
+                      className={numInputCls}
+                      placeholder={String(meta.defaultEnd ?? 20)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-slate-700">Order</div>
+                  <div className="flex gap-2">
+                    {(['serial', 'random'] as Mode[]).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setMode(m)}
+                        className={cn(
+                          'px-3 py-1.5 rounded-full text-xs border transition capitalize',
+                          mode === m ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent',
+                        )}
+                      >{m}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-slate-700">Difficulty</div>
+                  <div className="flex gap-2">
+                    {(['easy', 'medium'] as Difficulty[]).map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => setDifficulty(d)}
+                        className={cn(
+                          'px-3 py-1.5 rounded-full text-xs border transition capitalize',
+                          difficulty === d ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent',
+                        )}
+                      >{d}</button>
+                    ))}
+                  </div>
+                  {difficulty === 'medium' && (
+                    <p className="text-xs text-amber-700 bg-amber-50 rounded-md p-2">
+                      Medium: distractors share the unit-digit of the correct answer, so quick unit-digit prediction won't work.
+                    </p>
                   )}
-                >{x}</button>
-              ))}
+                </div>
+              </>
+            )}
+
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-slate-700">Number of questions</div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="text" inputMode="numeric" pattern="[0-9]*"
+                  value={n}
+                  onChange={(e) => setN(e.target.value.replace(/[^0-9]/g, ''))}
+                  className={numInputCls}
+                />
+                <span className="text-xs text-slate-500">max {pool.length}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[10, 20, 30, 50, 100].filter((x) => x <= pool.length).map((x) => (
+                  <button
+                    key={x}
+                    onClick={() => setN(String(x))}
+                    className={cn(
+                      'px-3 py-1 rounded-full text-xs border transition',
+                      nNum === x ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent',
+                    )}
+                  >{x}</button>
+                ))}
+              </div>
             </div>
-            <Button className="w-full" onClick={start} disabled={!pool.length}>
+
+            <Button className="w-full" onClick={start_} disabled={!pool.length}>
               <Play className="w-4 h-4 mr-2" />Start Timed Quiz
             </Button>
           </CardContent>
@@ -175,7 +263,6 @@ export default function SscMathsCalcQuiz() {
 
   return (
     <div className="p-4 sm:p-6 max-w-2xl mx-auto space-y-4">
-      {/* Header / timer strip */}
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => setStarted(false)} className="text-slate-700">
           <ArrowLeft className="w-4 h-4 mr-1" />Exit

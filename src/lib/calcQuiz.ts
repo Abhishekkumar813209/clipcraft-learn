@@ -1,9 +1,19 @@
-// Client-side question generators for calculation speed drills.
+// Client-side question generators for calculation & mental-maths speed drills.
 export interface CalcQ {
   q: string;
   options: string[];
   correct: number;
   explain?: string;
+}
+
+export type Mode = 'serial' | 'random';
+export type Difficulty = 'easy' | 'medium';
+
+export interface RangedParams {
+  start?: number;
+  end?: number;
+  mode?: Mode;
+  difficulty?: Difficulty;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -20,177 +30,349 @@ function fmt(n: number): string {
   return (Math.round(n * 100) / 100).toString();
 }
 
-function makeOptions(correct: number, distractors: number[]): { options: string[]; correctIdx: number } {
-  const uniq = Array.from(new Set([correct, ...distractors])).slice(0, 4);
+function pickOptions(correct: number, distractors: number[]): { options: string[]; correctIdx: number } {
+  const uniq: number[] = [correct];
+  for (const d of distractors) if (!uniq.includes(d) && d > 0) uniq.push(d);
   while (uniq.length < 4) {
     const d = correct + Math.floor(Math.random() * 20) - 10;
-    if (!uniq.includes(d) && d !== correct) uniq.push(d);
+    if (!uniq.includes(d) && d > 0 && d !== correct) uniq.push(d);
   }
-  const shuffled = shuffle(uniq);
+  const four = uniq.slice(0, 4);
+  const shuffled = shuffle(four);
   return { options: shuffled.map(fmt), correctIdx: shuffled.indexOf(correct) };
 }
 
-// ============ SQUARES only ============
-export function genSquaresOnly(): CalcQ[] {
-  const qs: CalcQ[] = [];
-  for (let x = 2; x <= 100; x++) {
+// same-last-digit distractors (medium mode)
+function sameLastDigitDistractors(correct: number, count = 3): number[] {
+  const out: number[] = [];
+  const seen = new Set<number>([correct]);
+  // pick nearby multiples of 10 offsets (preserves last digit)
+  const offsets = shuffle([-3, -2, -1, 1, 2, 3, 4, -4, 5, -5, 6, -6, 7, -7]);
+  for (const off of offsets) {
+    if (out.length >= count) break;
+    const cand = correct + off * 10;
+    if (cand <= 0 || seen.has(cand)) continue;
+    seen.add(cand);
+    out.push(cand);
+  }
+  return out;
+}
+
+function easyDistractors(correct: number, spread = 12): number[] {
+  const out: number[] = [];
+  const seen = new Set<number>([correct]);
+  for (let i = 0; i < 40 && out.length < 3; i++) {
+    const cand = correct + Math.floor(Math.random() * spread * 2) - spread;
+    if (cand <= 0 || seen.has(cand)) continue;
+    seen.add(cand);
+    out.push(cand);
+  }
+  return out;
+}
+
+function buildNumberList(start: number, end: number, mode: Mode): number[] {
+  const lo = Math.min(start, end);
+  const hi = Math.max(start, end);
+  const list: number[] = [];
+  for (let x = lo; x <= hi; x++) list.push(x);
+  return mode === 'random' ? shuffle(list) : list;
+}
+
+// ============ SQUARES ============
+export function genSquares(p: RangedParams = {}): CalcQ[] {
+  const { start = 2, end = 100, mode = 'serial', difficulty = 'easy' } = p;
+  const nums = buildNumberList(start, end, mode);
+  return nums.map((x) => {
     const c = x * x;
-    const distractors = [(x - 1) * (x - 1), (x + 1) * (x + 1), x * x + x, x * x - x];
-    const { options, correctIdx } = makeOptions(c, distractors);
-    qs.push({ q: `${x}² = ?`, options, correct: correctIdx, explain: `${x} × ${x} = ${c}` });
-  }
-  return shuffle(qs);
+    const distractors = difficulty === 'medium' ? sameLastDigitDistractors(c) : easyDistractors(c, Math.max(8, Math.floor(c * 0.15)));
+    const { options, correctIdx } = pickOptions(c, distractors);
+    return { q: `${x}² = ?`, options, correct: correctIdx, explain: `${x} × ${x} = ${c}` };
+  });
 }
 
-// ============ SQUARE ROOTS only ============
-export function genSquareRootsOnly(): CalcQ[] {
-  const qs: CalcQ[] = [];
-  for (let r = 2; r <= 100; r++) {
+// ============ SQUARE ROOTS ============
+export function genSquareRoots(p: RangedParams = {}): CalcQ[] {
+  const { start = 2, end = 100, mode = 'serial', difficulty = 'easy' } = p;
+  const nums = buildNumberList(start, end, mode);
+  return nums.map((r) => {
     const n = r * r;
-    const distractors = [r - 1, r + 1, r - 2, r + 2].filter((d) => d > 0);
-    const { options, correctIdx } = makeOptions(r, distractors);
-    qs.push({ q: `√${n} = ?`, options, correct: correctIdx, explain: `${r} × ${r} = ${n}` });
-  }
-  return shuffle(qs);
+    // medium: distractors share unit digit with r (add ±10 offsets to r)
+    const distractors = difficulty === 'medium'
+      ? sameLastDigitDistractors(r).filter((d) => d > 0)
+      : [r - 1, r + 1, r - 2, r + 2].filter((d) => d > 0);
+    const { options, correctIdx } = pickOptions(r, distractors);
+    return { q: `√${n} = ?`, options, correct: correctIdx, explain: `${r} × ${r} = ${n}` };
+  });
 }
 
-// ============ CUBES only ============
-export function genCubesOnly(): CalcQ[] {
-  const qs: CalcQ[] = [];
-  for (let x = 2; x <= 20; x++) {
+// ============ CUBES ============
+export function genCubes(p: RangedParams = {}): CalcQ[] {
+  const { start = 2, end = 30, mode = 'serial', difficulty = 'easy' } = p;
+  const nums = buildNumberList(start, end, mode);
+  return nums.map((x) => {
     const c = x * x * x;
-    const distractors = [(x - 1) ** 3, (x + 1) ** 3, x * x * (x + 1), x * x * (x - 1)];
-    const { options, correctIdx } = makeOptions(c, distractors);
-    qs.push({ q: `${x}³ = ?`, options, correct: correctIdx, explain: `${x} × ${x} × ${x} = ${c}` });
-  }
-  return shuffle(qs);
+    const distractors = difficulty === 'medium'
+      ? sameLastDigitDistractors(c)
+      : easyDistractors(c, Math.max(20, Math.floor(c * 0.15)));
+    const { options, correctIdx } = pickOptions(c, distractors);
+    return { q: `${x}³ = ?`, options, correct: correctIdx, explain: `${x} × ${x} × ${x} = ${c}` };
+  });
 }
 
-// ============ CUBE ROOTS only ============
-export function genCubeRootsOnly(): CalcQ[] {
-  const qs: CalcQ[] = [];
-  for (let x = 2; x <= 20; x++) {
+// ============ CUBE ROOTS ============
+export function genCubeRoots(p: RangedParams = {}): CalcQ[] {
+  const { start = 2, end = 30, mode = 'serial', difficulty = 'easy' } = p;
+  const nums = buildNumberList(start, end, mode);
+  return nums.map((x) => {
     const c = x * x * x;
-    const distractors = [x - 1, x + 1, x - 2, x + 2].filter((d) => d > 0);
-    const { options, correctIdx } = makeOptions(x, distractors);
-    qs.push({ q: `∛${c} = ?`, options, correct: correctIdx, explain: `${x}³ = ${c}` });
-  }
-  return shuffle(qs);
+    // medium: distractors share unit digit of x (so unit-digit prediction trick fails)
+    const distractors = difficulty === 'medium'
+      ? sameLastDigitDistractors(x).filter((d) => d > 0)
+      : [x - 1, x + 1, x - 2, x + 2].filter((d) => d > 0);
+    const { options, correctIdx } = pickOptions(x, distractors);
+    return { q: `∛${c} = ?`, options, correct: correctIdx, explain: `${x}³ = ${c}` };
+  });
 }
 
-const FRAC_TABLE: { n: number; pct: number; label: string }[] = [
-  { n: 2, pct: 50, label: '50%' },
-  { n: 3, pct: 33.33, label: '33.33%' },
-  { n: 4, pct: 25, label: '25%' },
-  { n: 5, pct: 20, label: '20%' },
-  { n: 6, pct: 16.67, label: '16.67%' },
-  { n: 7, pct: 14.28, label: '14.28%' },
-  { n: 8, pct: 12.5, label: '12.5%' },
-  { n: 9, pct: 11.11, label: '11.11%' },
-  { n: 10, pct: 10, label: '10%' },
-  { n: 11, pct: 9.09, label: '9.09%' },
-  { n: 12, pct: 8.33, label: '8.33%' },
-  { n: 13, pct: 7.69, label: '7.69%' },
-  { n: 14, pct: 7.14, label: '7.14%' },
-  { n: 15, pct: 6.67, label: '6.67%' },
-  { n: 16, pct: 6.25, label: '6.25%' },
-  { n: 17, pct: 5.88, label: '5.88%' },
-  { n: 18, pct: 5.55, label: '5.55%' },
-  { n: 19, pct: 5.26, label: '5.26%' },
-  { n: 20, pct: 5, label: '5%' },
-];
+// ============ % ↔ FRACTION CONVERSION (200+ multiplied values) ============
+function reduce(a: number, b: number): [number, number] {
+  const g = (x: number, y: number): number => (y === 0 ? x : g(y, x % y));
+  const d = g(a, b);
+  return [a / d, b / d];
+}
 
-// ============ % ↔ FRACTION CONVERSION only ============
 export function genPercentConversion(): CalcQ[] {
   const qs: CalcQ[] = [];
-  for (const f of FRAC_TABLE) {
-    const set = new Set<string>([fmt(f.pct)]);
-    [f.pct + 1, f.pct - 1, Math.round(100 / (f.n + 1) * 100) / 100, Math.round(100 / Math.max(1, f.n - 1) * 100) / 100]
-      .forEach((d) => { if (d > 0) set.add(fmt(d)); });
-    const arr = shuffle(Array.from(set)).slice(0, 4);
-    if (!arr.includes(fmt(f.pct))) arr[0] = fmt(f.pct);
-    const shuffled = shuffle(arr);
-    qs.push({ q: `1/${f.n} × 100 = ? %`, options: shuffled, correct: shuffled.indexOf(fmt(f.pct)), explain: `1/${f.n} = ${f.label}` });
-  }
-  for (const f of FRAC_TABLE) {
-    const correctStr = `1/${f.n}`;
-    const opts = new Set<string>([correctStr]);
-    while (opts.size < 4) {
-      const d = f.n + Math.floor(Math.random() * 6) - 3;
-      if (d > 0 && d !== f.n) opts.add(`1/${d}`);
+  const seenReverse = new Set<string>();
+  const seenForward = new Set<string>();
+
+  // build k/n across n=2..20, k=1..n (include >1 like 5/4=125%)
+  const items: { k: number; n: number; pct: number }[] = [];
+  for (let n = 2; n <= 20; n++) {
+    for (let k = 1; k <= 2 * n; k++) {
+      if (k === n) continue;
+      const [rk, rn] = reduce(k, n);
+      const pct = Math.round((k / n) * 10000) / 100;
+      items.push({ k: rk, n: rn, pct });
     }
-    const arr = shuffle(Array.from(opts));
-    qs.push({ q: `${f.label} as a fraction = ?`, options: arr, correct: arr.indexOf(correctStr), explain: `${f.label} = 1/${f.n}` });
   }
-  return shuffle(qs);
+
+  // forward: "k/n × 100 = ?%"
+  for (const it of items) {
+    const key = `f-${it.k}/${it.n}`;
+    if (seenForward.has(key)) continue;
+    seenForward.add(key);
+    const correct = it.pct;
+    const distractors = [
+      Math.round((it.k / (it.n + 1)) * 10000) / 100,
+      Math.round(((it.k + 1) / it.n) * 10000) / 100,
+      Math.round((it.k / Math.max(1, it.n - 1)) * 10000) / 100,
+    ].filter((d) => d > 0 && d !== correct);
+    const pool = new Set<string>([fmt(correct)]);
+    for (const d of distractors) pool.add(fmt(d));
+    while (pool.size < 4) pool.add(fmt(Math.round((correct + Math.random() * 20 - 10) * 100) / 100));
+    const arr = shuffle(Array.from(pool)).slice(0, 4);
+    if (!arr.includes(fmt(correct))) arr[0] = fmt(correct);
+    const shuffled = shuffle(arr);
+    qs.push({
+      q: `${it.k}/${it.n} × 100 = ? %`,
+      options: shuffled,
+      correct: shuffled.indexOf(fmt(correct)),
+      explain: `${it.k}/${it.n} = ${fmt(correct)}%`,
+    });
+  }
+
+  // reverse: "X% as a fraction = ?"
+  for (const it of items) {
+    const key = `r-${it.k}/${it.n}`;
+    if (seenReverse.has(key)) continue;
+    seenReverse.add(key);
+    const correctStr = `${it.k}/${it.n}`;
+    const distractors = new Set<string>([correctStr]);
+    const nearby = [
+      `${it.k}/${it.n + 1}`,
+      `${it.k + 1}/${it.n}`,
+      `${it.k}/${Math.max(1, it.n - 1)}`,
+      `${Math.max(1, it.k - 1)}/${it.n}`,
+    ];
+    for (const d of nearby) distractors.add(d);
+    while (distractors.size < 4) {
+      const d = `${1 + Math.floor(Math.random() * (it.n + 3))}/${2 + Math.floor(Math.random() * (it.n + 3))}`;
+      distractors.add(d);
+    }
+    const arr = shuffle(Array.from(distractors)).slice(0, 4);
+    if (!arr.includes(correctStr)) arr[0] = correctStr;
+    const shuffled = shuffle(arr);
+    qs.push({
+      q: `${fmt(it.pct)}% as a fraction = ?`,
+      options: shuffled,
+      correct: shuffled.indexOf(correctStr),
+      explain: `${fmt(it.pct)}% = ${correctStr}`,
+    });
+  }
+
+  return shuffle(qs).slice(0, 240);
 }
 
-// ============ % / DECIMAL MULTIPLICATION only ============
+// ============ % / DECIMAL MULTIPLICATION ============
 export function genPercentCalculation(): CalcQ[] {
   const qs: CalcQ[] = [];
-  const targets = FRAC_TABLE;
+  const bases: { pct: number; n: number; label: string }[] = [
+    { n: 2, pct: 50, label: '50%' }, { n: 3, pct: 33.33, label: '33.33%' },
+    { n: 4, pct: 25, label: '25%' }, { n: 5, pct: 20, label: '20%' },
+    { n: 6, pct: 16.67, label: '16.67%' }, { n: 7, pct: 14.28, label: '14.28%' },
+    { n: 8, pct: 12.5, label: '12.5%' }, { n: 9, pct: 11.11, label: '11.11%' },
+    { n: 10, pct: 10, label: '10%' }, { n: 11, pct: 9.09, label: '9.09%' },
+    { n: 12, pct: 8.33, label: '8.33%' }, { n: 15, pct: 6.67, label: '6.67%' },
+    { n: 16, pct: 6.25, label: '6.25%' }, { n: 20, pct: 5, label: '5%' },
+  ];
   for (let i = 0; i < 120; i++) {
-    const t = targets[i % targets.length];
+    const t = bases[i % bases.length];
     const k = 2 + Math.floor(Math.random() * 12);
     const N = t.n * k;
     const answer = k;
     const distractors = [k + 1, k - 1, k * 2, Math.round(k / 2)].filter((d) => d > 0 && d !== answer);
-    const { options, correctIdx } = makeOptions(answer, distractors);
+    const { options, correctIdx } = pickOptions(answer, distractors);
     qs.push({ q: `${t.label} of ${N} = ?`, options, correct: correctIdx, explain: `${t.label} = 1/${t.n} → ${N} ÷ ${t.n} = ${answer}` });
   }
   const multiples = [
-    { pct: 125, frac: 5 / 4, label: '125%', d: 4 },
-    { pct: 150, frac: 3 / 2, label: '150%', d: 2 },
-    { pct: 175, frac: 7 / 4, label: '175%', d: 4 },
-    { pct: 133.33, frac: 4 / 3, label: '133.33%', d: 3 },
-    { pct: 166.67, frac: 5 / 3, label: '166.67%', d: 3 },
-    { pct: 200, frac: 2, label: '200%', d: 1 },
-    { pct: 250, frac: 5 / 2, label: '250%', d: 2 },
-    { pct: 66.67, frac: 2 / 3, label: '66.67%', d: 3 },
-    { pct: 37.5, frac: 3 / 8, label: '37.5%', d: 8 },
-    { pct: 62.5, frac: 5 / 8, label: '62.5%', d: 8 },
-    { pct: 87.5, frac: 7 / 8, label: '87.5%', d: 8 },
-    { pct: 40, frac: 2 / 5, label: '40%', d: 5 },
-    { pct: 60, frac: 3 / 5, label: '60%', d: 5 },
-    { pct: 80, frac: 4 / 5, label: '80%', d: 5 },
-    { pct: 22.22, frac: 2 / 9, label: '22.22%', d: 9 },
-    { pct: 44.44, frac: 4 / 9, label: '44.44%', d: 9 },
-    { pct: 55.55, frac: 5 / 9, label: '55.55%', d: 9 },
-    { pct: 77.77, frac: 7 / 9, label: '77.77%', d: 9 },
-    { pct: 88.88, frac: 8 / 9, label: '88.88%', d: 9 },
-    { pct: 27.27, frac: 3 / 11, label: '27.27%', d: 11 },
-    { pct: 45.45, frac: 5 / 11, label: '45.45%', d: 11 },
-    { pct: 90.9, frac: 10 / 11, label: '90.9%', d: 11 },
+    { frac: 5 / 4, label: '125%', d: 4 }, { frac: 3 / 2, label: '150%', d: 2 },
+    { frac: 7 / 4, label: '175%', d: 4 }, { frac: 4 / 3, label: '133.33%', d: 3 },
+    { frac: 5 / 3, label: '166.67%', d: 3 }, { frac: 2, label: '200%', d: 1 },
+    { frac: 2 / 3, label: '66.67%', d: 3 }, { frac: 3 / 8, label: '37.5%', d: 8 },
+    { frac: 5 / 8, label: '62.5%', d: 8 }, { frac: 7 / 8, label: '87.5%', d: 8 },
+    { frac: 2 / 5, label: '40%', d: 5 }, { frac: 3 / 5, label: '60%', d: 5 },
+    { frac: 4 / 5, label: '80%', d: 5 }, { frac: 2 / 9, label: '22.22%', d: 9 },
+    { frac: 4 / 9, label: '44.44%', d: 9 }, { frac: 5 / 9, label: '55.55%', d: 9 },
+    { frac: 7 / 9, label: '77.77%', d: 9 }, { frac: 8 / 9, label: '88.88%', d: 9 },
   ];
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 80; i++) {
     const m = multiples[i % multiples.length];
     const k = 2 + Math.floor(Math.random() * 15);
     const N = m.d * k;
     const answer = Math.round(m.frac * N);
     const distractors = [answer + k, answer - k, answer + 1, answer - 1].filter((x) => x > 0 && x !== answer);
-    const { options, correctIdx } = makeOptions(answer, distractors);
+    const { options, correctIdx } = pickOptions(answer, distractors);
     qs.push({ q: `${m.label} of ${N} = ?`, options, correct: correctIdx, explain: `${m.label} × ${N} = ${answer}` });
   }
   return shuffle(qs);
 }
 
-export function generateQuiz(slug: string): CalcQ[] {
-  switch (slug) {
-    case 'squares': return genSquaresOnly();
-    case 'sqroots': return genSquareRootsOnly();
-    case 'cubes': return genCubesOnly();
-    case 'cbroots': return genCubeRootsOnly();
-    case 'pct-conv': return genPercentConversion();
-    case 'pct-calc': return genPercentCalculation();
+// ============ MENTAL MATHS (+ − × ÷) ============
+type Op = 'add' | 'sub' | 'mul' | 'div';
+
+function randDigits(d: number): number {
+  const lo = d === 1 ? 2 : Math.pow(10, d - 1);
+  const hi = Math.pow(10, d) - 1;
+  return lo + Math.floor(Math.random() * (hi - lo + 1));
+}
+
+function mentalOptions(correct: number): { options: string[]; correctIdx: number } {
+  const spread = Math.max(4, Math.floor(Math.abs(correct) * 0.08));
+  const distractors: number[] = [];
+  const seen = new Set<number>([correct]);
+  while (distractors.length < 3) {
+    const off = Math.floor(Math.random() * spread * 2) - spread;
+    if (off === 0) continue;
+    const cand = correct + off;
+    if (seen.has(cand) || cand < 0) continue;
+    seen.add(cand);
+    distractors.push(cand);
+  }
+  return pickOptions(correct, distractors);
+}
+
+export function genMental(op: Op, dA: number, dB: number, count = 100): CalcQ[] {
+  const qs: CalcQ[] = [];
+  for (let i = 0; i < count; i++) {
+    let a = randDigits(dA);
+    let b = randDigits(dB);
+    let ans = 0;
+    let sym = '+';
+    if (op === 'add') { ans = a + b; sym = '+'; }
+    else if (op === 'sub') {
+      if (b > a) [a, b] = [b, a];
+      ans = a - b; sym = '−';
+    } else if (op === 'mul') { ans = a * b; sym = '×'; }
+    else {
+      // div: build quotient*divisor so answer is integer
+      const q = randDigits(dA);
+      const div = randDigits(dB);
+      a = q * div; b = div; ans = q; sym = '÷';
+    }
+    const { options, correctIdx } = mentalOptions(ans);
+    qs.push({ q: `${a} ${sym} ${b} = ?`, options, correct: correctIdx, explain: `${a} ${sym} ${b} = ${ans}` });
+  }
+  return qs;
+}
+
+// ============ Meta / dispatcher ============
+export type ChapterKind = 'ranged' | 'percent' | 'mental';
+
+export interface ChapterMeta {
+  title: string;
+  icon: string;
+  perQSeconds: number;
+  kind: ChapterKind;
+  // ranged
+  minAllowed?: number;
+  maxAllowed?: number;
+  defaultStart?: number;
+  defaultEnd?: number;
+  // mental
+  op?: Op;
+  digitsA?: number;
+  digitsB?: number;
+  count?: number;
+}
+
+export const CHAPTER_META: Record<string, ChapterMeta> = {
+  squares:   { title: 'Squares',       icon: '🟦', perQSeconds: 10, kind: 'ranged', minAllowed: 2, maxAllowed: 100, defaultStart: 2, defaultEnd: 30 },
+  sqroots:   { title: 'Square Roots',  icon: '√',  perQSeconds: 10, kind: 'ranged', minAllowed: 2, maxAllowed: 100, defaultStart: 2, defaultEnd: 30 },
+  cubes:     { title: 'Cubes',         icon: '🧊', perQSeconds: 12, kind: 'ranged', minAllowed: 2, maxAllowed: 30,  defaultStart: 2, defaultEnd: 20 },
+  cbroots:   { title: 'Cube Roots',    icon: '∛',  perQSeconds: 12, kind: 'ranged', minAllowed: 2, maxAllowed: 30,  defaultStart: 2, defaultEnd: 20 },
+
+  'pct-conv': { title: '% ↔ Fraction Conversion',    icon: '％',  perQSeconds: 12, kind: 'percent' },
+  'pct-calc': { title: '% / Decimal Multiplication', icon: '✖️', perQSeconds: 18, kind: 'percent' },
+
+  // Addition
+  'add-2-2': { title: '2-digit + 2-digit', icon: '➕', perQSeconds: 8,  kind: 'mental', op: 'add', digitsA: 2, digitsB: 2, count: 100 },
+  'add-2-3': { title: '2-digit + 3-digit', icon: '➕', perQSeconds: 10, kind: 'mental', op: 'add', digitsA: 2, digitsB: 3, count: 100 },
+  'add-3-3': { title: '3-digit + 3-digit', icon: '➕', perQSeconds: 12, kind: 'mental', op: 'add', digitsA: 3, digitsB: 3, count: 100 },
+  // Subtraction
+  'sub-2-1': { title: '2-digit − 1-digit', icon: '➖', perQSeconds: 7,  kind: 'mental', op: 'sub', digitsA: 2, digitsB: 1, count: 100 },
+  'sub-2-2': { title: '2-digit − 2-digit', icon: '➖', perQSeconds: 8,  kind: 'mental', op: 'sub', digitsA: 2, digitsB: 2, count: 100 },
+  'sub-3-2': { title: '3-digit − 2-digit', icon: '➖', perQSeconds: 10, kind: 'mental', op: 'sub', digitsA: 3, digitsB: 2, count: 100 },
+  'sub-3-3': { title: '3-digit − 3-digit', icon: '➖', perQSeconds: 12, kind: 'mental', op: 'sub', digitsA: 3, digitsB: 3, count: 100 },
+  // Multiplication
+  'mul-2-1': { title: '2-digit × 1-digit', icon: '✖️', perQSeconds: 10, kind: 'mental', op: 'mul', digitsA: 2, digitsB: 1, count: 100 },
+  'mul-2-2': { title: '2-digit × 2-digit', icon: '✖️', perQSeconds: 15, kind: 'mental', op: 'mul', digitsA: 2, digitsB: 2, count: 100 },
+  'mul-3-2': { title: '3-digit × 2-digit', icon: '✖️', perQSeconds: 20, kind: 'mental', op: 'mul', digitsA: 3, digitsB: 2, count: 100 },
+  'mul-3-3': { title: '3-digit × 3-digit', icon: '✖️', perQSeconds: 25, kind: 'mental', op: 'mul', digitsA: 3, digitsB: 3, count: 100 },
+  // Division
+  'div-2-1': { title: '2-digit ÷ 1-digit', icon: '➗', perQSeconds: 10, kind: 'mental', op: 'div', digitsA: 1, digitsB: 1, count: 100 },
+  'div-3-1': { title: '3-digit ÷ 1-digit', icon: '➗', perQSeconds: 12, kind: 'mental', op: 'div', digitsA: 2, digitsB: 1, count: 100 },
+  'div-3-2': { title: '3-digit ÷ 2-digit', icon: '➗', perQSeconds: 15, kind: 'mental', op: 'div', digitsA: 2, digitsB: 2, count: 100 },
+};
+
+export interface GenerateParams extends RangedParams {}
+
+export function generateQuiz(slug: string, params: GenerateParams = {}): CalcQ[] {
+  const meta = CHAPTER_META[slug];
+  if (!meta) return [];
+  if (meta.kind === 'ranged') {
+    switch (slug) {
+      case 'squares': return genSquares(params);
+      case 'sqroots': return genSquareRoots(params);
+      case 'cubes':   return genCubes(params);
+      case 'cbroots': return genCubeRoots(params);
+    }
+  }
+  if (meta.kind === 'percent') {
+    return slug === 'pct-conv' ? genPercentConversion() : genPercentCalculation();
+  }
+  if (meta.kind === 'mental' && meta.op && meta.digitsA && meta.digitsB) {
+    return genMental(meta.op, meta.digitsA, meta.digitsB, meta.count ?? 100);
   }
   return [];
 }
-
-export const CHAPTER_META: Record<string, { title: string; icon: string; perQSeconds: number }> = {
-  squares: { title: 'Squares (1 → 100)', icon: '🟦', perQSeconds: 10 },
-  sqroots: { title: 'Square Roots (√ up to 10 000)', icon: '√', perQSeconds: 10 },
-  cubes: { title: 'Cubes (1 → 20)', icon: '🧊', perQSeconds: 12 },
-  cbroots: { title: 'Cube Roots (∛ up to 8000)', icon: '∛', perQSeconds: 12 },
-  'pct-conv': { title: '% ↔ Fraction Conversion', icon: '％', perQSeconds: 12 },
-  'pct-calc': { title: '% / Decimal Multiplication', icon: '✖️', perQSeconds: 18 },
-};
