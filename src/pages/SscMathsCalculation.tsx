@@ -4,27 +4,12 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Timer } from 'lucide-react';
 
 const CHAPTERS = [
-  {
-    slug: 'squares',
-    icon: '🟦',
-    title: 'Squares & Square Roots',
-    desc: 'Squares and square roots up to 100 · rapid-fire MCQs with timer',
-    count: '200+ questions',
-  },
-  {
-    slug: 'cubes',
-    icon: '🧊',
-    title: 'Cubes & Cube Roots',
-    desc: 'Cubes and cube roots up to 20 · rapid-fire MCQs with timer',
-    count: '80+ questions',
-  },
-  {
-    slug: 'percentage',
-    icon: '％',
-    title: 'Percentage · Fraction Conversion',
-    desc: '33.33% of 90, 12.5% of 64, 11.11% of 90, 125% of 54 … 100+ mixed decimal % drills',
-    count: '150+ questions',
-  },
+  { slug: 'squares',  icon: '🟦', title: 'Squares (1 → 100)',            desc: 'Rapid-fire squares MCQs with timer',                     count: '~100 questions' },
+  { slug: 'sqroots',  icon: '√',  title: 'Square Roots (up to 10 000)',  desc: 'Perfect-square roots MCQs with timer',                   count: '~100 questions' },
+  { slug: 'cubes',    icon: '🧊', title: 'Cubes (1 → 20)',               desc: 'Rapid-fire cubes MCQs with timer',                       count: '~20 questions' },
+  { slug: 'cbroots',  icon: '∛',  title: 'Cube Roots (up to 8000)',      desc: 'Perfect-cube roots MCQs with timer',                     count: '~20 questions' },
+  { slug: 'pct-conv', icon: '％', title: '% ↔ Fraction Conversion',      desc: 'Convert 1/n ↔ decimal % (12.5%, 11.11%, 6.67% …)',        count: '~40 questions' },
+  { slug: 'pct-calc', icon: '✖️', title: '% / Decimal Multiplication',   desc: '33.33% of 90, 125% of 54, 88.88% of 45 … MCQ drills',    count: '180+ questions' },
 ];
 
 export default function SscMathsCalculation() {
