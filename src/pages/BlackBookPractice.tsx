@@ -218,7 +218,7 @@ export default function BlackBookPractice() {
           {...useHorizontalSwipe(async () => {
             if (!user) return;
             const res = await toggleBookmark(user.id, {
-              kind: 'question', subject: 'english', chapter: q.item.category, subcategory: q.item.subcategory ?? null,
+              kind: 'question', subject: 'english', chapter: q.item.category, subcategory: (q.item as any).subcategory ?? null,
               item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
             });
             toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1500 });
