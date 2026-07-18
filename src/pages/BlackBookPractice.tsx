@@ -9,6 +9,8 @@ import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
+import { toggleBookmark, useHorizontalSwipe } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 export default function BlackBookPractice() {
   const { category = 'mixed' } = useParams<{ category: BBCategory }>();
@@ -213,13 +215,22 @@ export default function BlackBookPractice() {
           <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
         <Card
-          className={`bg-white border-emerald-100 shadow-sm select-none ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
+          {...useHorizontalSwipe(async () => {
+            if (!user) return;
+            const res = await toggleBookmark(user.id, {
+              kind: 'question', subject: 'english', chapter: q.item.category, subcategory: (q.item as any).subcategory ?? null,
+              item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
+            });
+            toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1500 });
+          })}
+          className={`bg-white border-emerald-100 shadow-sm select-none touch-pan-y ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
           onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
         >
           <CardContent className="p-6 space-y-4">
             <div className="text-lg font-medium text-slate-900 flex items-center gap-2">
               {q.question}
               {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
+              <span className="ml-auto text-[10px] text-slate-400 hidden sm:inline">swipe ↔ to bookmark</span>
             </div>
 {(() => {
               const isIdiom = q.item.category === 'idiom';
@@ -254,30 +265,34 @@ export default function BlackBookPractice() {
               );
             })()}
             <div className="space-y-2">
-              {q.options.map((opt, idx) => {
-                const isCorrect = q.correct === idx;
-                const isPicked = picked === idx;
-                const show = picked !== null;
-                const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
-                const label = isFlipped ? hindiForOption(opt) : opt;
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      if (picked === null) { choose(idx); return; }
-                      const cur = new Set(revealed[i] || []);
-                      if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
-                      setRevealed({ ...revealed, [i]: cur });
-                    }}
-                    className={`w-full text-left p-3 rounded-md border transition-all ${
-                      show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
-                      show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
-                      'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
-                    } ${isFlipped ? 'italic' : ''}`}>
-                    <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
-                  </button>
-                );
-              })}
+              {q.options.map((opt, idx) => (
+                <OptionButton
+                  key={`${i}-${idx}`}
+                  opt={opt}
+                  idx={idx}
+                  isCorrect={q.correct === idx}
+                  isPicked={picked === idx}
+                  show={picked !== null}
+                  isFlipped={picked !== null && (flipAll[i] || !!revealed[i]?.has(idx))}
+                  flippedLabel={hindiForOption(opt)}
+                  onClick={() => {
+                    if (picked === null) { choose(idx); return; }
+                    const cur = new Set(revealed[i] || []);
+                    if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                    setRevealed({ ...revealed, [i]: cur });
+                  }}
+                  onSwipe={async () => {
+                    if (!user) return;
+                    const res = await toggleBookmark(user.id, {
+                      kind: 'option', subject: 'english', chapter: q.item.category,
+                      subcategory: (q.item as any).subcategory ?? null,
+                      item_ref: q.item.id, question_text: q.question,
+                      option_text: opt, correct_text: q.options[q.correct],
+                    });
+                    toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1500 });
+                  }}
+                />
+              ))}
             </div>
             {picked !== null && (
               <>
@@ -298,5 +313,28 @@ export default function BlackBookPractice() {
         </Card>
       </div>
     </div>
+  );
+}
+
+function OptionButton({
+  opt, idx, isCorrect, isPicked, show, isFlipped, flippedLabel, onClick, onSwipe,
+}: {
+  opt: string; idx: number; isCorrect: boolean; isPicked: boolean; show: boolean;
+  isFlipped: boolean; flippedLabel: string; onClick: () => void; onSwipe: () => void;
+}) {
+  const swipe = useHorizontalSwipe(onSwipe);
+  const label = isFlipped ? flippedLabel : opt;
+  return (
+    <button
+      {...swipe}
+      onClick={onClick}
+      className={`w-full text-left p-3 rounded-md border transition-all touch-pan-y ${
+        show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
+        show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
+        'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
+      } ${isFlipped ? 'italic' : ''}`}
+    >
+      <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
+    </button>
   );
 }

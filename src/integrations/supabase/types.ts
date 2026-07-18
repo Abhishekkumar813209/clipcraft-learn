@@ -864,6 +864,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_bookmarks: {
+        Row: {
+          chapter: string
+          correct_text: string | null
+          created_at: string
+          id: string
+          item_ref: string | null
+          kind: string
+          meta: Json | null
+          option_text: string | null
+          question_text: string
+          subcategory: string | null
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          chapter: string
+          correct_text?: string | null
+          created_at?: string
+          id?: string
+          item_ref?: string | null
+          kind: string
+          meta?: Json | null
+          option_text?: string | null
+          question_text: string
+          subcategory?: string | null
+          subject: string
+          user_id: string
+        }
+        Update: {
+          chapter?: string
+          correct_text?: string | null
+          created_at?: string
+          id?: string
+          item_ref?: string | null
+          kind?: string
+          meta?: Json | null
+          option_text?: string | null
+          question_text?: string
+          subcategory?: string | null
+          subject?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ssc_pos_spot_error: {
         Row: {
           correct_form: string | null
