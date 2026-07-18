@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { BookOpen, Grid3X3, Trophy, FileText, ArrowLeft, Sparkles, Search, Menu, History, Sprout, Calculator, Brain, Languages, Globe2 } from 'lucide-react';
+import { BookOpen, Grid3X3, Trophy, FileText, ArrowLeft, Sparkles, Search, Menu, History, Sprout, Calculator, Brain, Languages, Globe2, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { label: 'English Vocabulary', path: '/ssc/roots', icon: Sprout },
   { label: 'BB Browse', path: '/ssc/blackbook/browse', icon: Search },
   { label: 'BB History', path: '/ssc/blackbook/history', icon: History },
+  { label: 'Bookmarks', path: '/ssc/bookmarks', icon: Bookmark },
   { label: 'Maths', path: '/ssc/maths', icon: Calculator },
   { label: 'Reasoning', path: '/ssc/reasoning', icon: Brain },
   { label: 'English', path: '/ssc/english', icon: Languages },

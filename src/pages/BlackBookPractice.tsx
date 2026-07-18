@@ -9,6 +9,8 @@ import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
+import { toggleBookmark, useHorizontalSwipe } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 export default function BlackBookPractice() {
   const { category = 'mixed' } = useParams<{ category: BBCategory }>();
@@ -213,13 +215,22 @@ export default function BlackBookPractice() {
           <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
         </div>
         <Card
-          className={`bg-white border-emerald-100 shadow-sm select-none ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
+          {...useHorizontalSwipe(async () => {
+            if (!user) return;
+            const res = await toggleBookmark(user.id, {
+              kind: 'question', subject: 'english', chapter: q.item.category, subcategory: q.item.subcategory ?? null,
+              item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
+            });
+            toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1500 });
+          })}
+          className={`bg-white border-emerald-100 shadow-sm select-none touch-pan-y ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
           onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
         >
           <CardContent className="p-6 space-y-4">
             <div className="text-lg font-medium text-slate-900 flex items-center gap-2">
               {q.question}
               {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
+              <span className="ml-auto text-[10px] text-slate-400 hidden sm:inline">swipe ↔ to bookmark</span>
             </div>
 {(() => {
               const isIdiom = q.item.category === 'idiom';

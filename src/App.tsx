@@ -76,6 +76,7 @@ import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
 import SscMathsCalculation from "./pages/SscMathsCalculation";
 import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
+import SscBookmarks from "./pages/SscBookmarks";
 
 
 const queryClient = new QueryClient({
@@ -139,6 +140,7 @@ const App = () => (
               <Route path="maths/calculation/:chapter" element={<SscMathsCalcQuiz />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
+              <Route path="bookmarks" element={<SscBookmarks />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
