@@ -315,3 +315,26 @@ export default function BlackBookPractice() {
     </div>
   );
 }
+
+function OptionButton({
+  opt, idx, isCorrect, isPicked, show, isFlipped, flippedLabel, onClick, onSwipe,
+}: {
+  opt: string; idx: number; isCorrect: boolean; isPicked: boolean; show: boolean;
+  isFlipped: boolean; flippedLabel: string; onClick: () => void; onSwipe: () => void;
+}) {
+  const swipe = useHorizontalSwipe(onSwipe);
+  const label = isFlipped ? flippedLabel : opt;
+  return (
+    <button
+      {...swipe}
+      onClick={onClick}
+      className={`w-full text-left p-3 rounded-md border transition-all touch-pan-y ${
+        show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
+        show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
+        'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
+      } ${isFlipped ? 'italic' : ''}`}
+    >
+      <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
+    </button>
+  );
+}
