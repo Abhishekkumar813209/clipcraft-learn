@@ -2,17 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, Lightbulb, RotateCcw } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, Lightbulb, RotateCcw, Bookmark } from 'lucide-react';
 import { fetchSAItems, buildSAQuestionSet, SAMode, SASub, SAQuestion, SAItem } from '@/lib/synAntQuiz';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
+import { toggleBookmark } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
+
+type Diff = 'easy' | 'medium' | 'hard';
 
 export default function SscSynAntPractice() {
   const [sp] = useSearchParams();
   const mode = (sp.get('mode') || 'mixed') as SAMode;
   const sub = (sp.get('sub') || 'top_100') as SASub;
   const n = Number(sp.get('n')) || 20;
+  const diff = (['easy', 'medium', 'hard'].includes(sp.get('diff') || '') ? sp.get('diff') : 'easy') as Diff;
   const nav = useNavigate();
   const { user } = useAuth();
   const wordHindi = useWordHindi();
