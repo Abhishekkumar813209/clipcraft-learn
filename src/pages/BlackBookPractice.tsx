@@ -3,20 +3,24 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw, Lightbulb } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, RotateCcw, Lightbulb, Bookmark } from 'lucide-react';
 import { fetchBBItems, buildQuestionSet, BBCategory, BBItem, BBQuestion } from '@/lib/blackBookQuiz';
 import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
-import { toggleBookmark, useHorizontalSwipe } from '@/lib/bookmarks';
+import { toggleBookmark } from '@/lib/bookmarks';
 import { toast } from '@/hooks/use-toast';
+
+type Diff = 'easy' | 'medium' | 'hard';
 
 export default function BlackBookPractice() {
   const { category = 'mixed' } = useParams<{ category: BBCategory }>();
   const [searchParams] = useSearchParams();
   const subcategory = searchParams.get('sub') || undefined;
   const targetCount = Number(searchParams.get('n')) || 20;
+  const order = (searchParams.get('order') === 'serial' ? 'serial' : 'random') as 'serial' | 'random';
+  const diff = (['easy', 'medium', 'hard'].includes(searchParams.get('diff') || '') ? searchParams.get('diff') : 'easy') as Diff;
   const nav = useNavigate();
   const { user } = useAuth();
 
@@ -30,9 +34,10 @@ export default function BlackBookPractice() {
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [hintShown, setHintShown] = useState<Record<number, boolean>>({});
+  const [bookmarkedQ, setBookmarkedQ] = useState<Record<number, boolean>>({});
+  const [bookmarkedOpt, setBookmarkedOpt] = useState<Record<string, boolean>>({});
   const wordHindi = useWordHindi();
 
-  // Build item->meaning map. Prefer hinglish_meaning (already stored in DB) then hindi_meaning.
   const itemHindiMap = useMemo(() => {
     const m = new Map<string, string>();
     for (const it of items) {
@@ -53,11 +58,10 @@ export default function BlackBookPractice() {
     (async () => {
       const data = await fetchBBItems(category as BBCategory | 'mixed', subcategory);
       setItems(data);
-      const built = buildQuestionSet(data, targetCount);
+      const built = buildQuestionSet(data, targetCount, undefined, order);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
-      // create session
       if (user && built.length) {
         const { data: s } = await supabase.from('bb_practice_sessions' as never).insert({
           user_id: user.id, category, total: built.length, correct: 0,
@@ -66,8 +70,7 @@ export default function BlackBookPractice() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory, targetCount]);
-
+  }, [category, subcategory, targetCount, order]);
 
   const q = qs[i];
   const picked = picks[i];
@@ -107,6 +110,29 @@ export default function BlackBookPractice() {
     }
   }
 
+  async function bookmarkQuestion() {
+    if (!user || !q) return;
+    const res = await toggleBookmark(user.id, {
+      kind: 'question', subject: 'english', chapter: q.item.category,
+      subcategory: (q.item as any).subcategory ?? null,
+      item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
+    });
+    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(idx: number, opt: string) {
+    if (!user || !q) return;
+    const res = await toggleBookmark(user.id, {
+      kind: 'option', subject: 'english', chapter: q.item.category,
+      subcategory: (q.item as any).subcategory ?? null,
+      item_ref: q.item.id, question_text: q.question,
+      option_text: opt, correct_text: q.options[q.correct],
+    });
+    setBookmarkedOpt((m) => ({ ...m, [`${i}-${idx}`]: res === 'added' }));
+    toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
   async function finish() {
     if (user && sessionId) {
       const correct = picks.reduce((a, p, idx) => a + (p === qs[idx]?.correct ? 1 : 0), 0);
@@ -115,19 +141,15 @@ export default function BlackBookPractice() {
     setDone(true);
   }
 
-  function next() {
-    if (i + 1 >= qs.length) { finish(); return; }
-    setI(i + 1);
-  }
+  function next() { if (i + 1 >= qs.length) { finish(); return; } setI(i + 1); }
   function prev() { if (i > 0) setI(i - 1); }
 
   function restart() {
-    const built = buildQuestionSet(items, targetCount);
+    const built = buildQuestionSet(items, targetCount, undefined, order);
     setQs(built);
     setPicks(new Array(built.length).fill(null));
-    setI(0);
-    setDone(false);
-    setSessionId(null);
+    setI(0); setDone(false); setSessionId(null);
+    setHintShown({}); setFlipAll({}); setRevealed({}); setBookmarkedQ({}); setBookmarkedOpt({});
     if (user && built.length) {
       supabase.from('bb_practice_sessions' as never).insert({
         user_id: user.id, category, total: built.length, correct: 0,
@@ -207,92 +229,99 @@ export default function BlackBookPractice() {
     </div>
   );
 
+  const isIdiom = q.item.category === 'idiom';
+  const isSynAnt = q.item.category === 'syn_ant';
+  const hintText = isIdiom ? q.item.hint : isSynAnt ? hindiForOption(q.item.prompt || '') : null;
+  const hintAvailable = diff !== 'hard' && !!hintText && hintText !== '—';
+  const qBookmarked = !!bookmarkedQ[i];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav(-1)}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
-          <div className="text-sm text-slate-500">Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span></div>
+          <div className="text-sm text-slate-500">
+            Q {i + 1} / {qs.length} · Score <span className="text-emerald-700 font-semibold">{score}</span>
+            <span className="ml-2 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[10px] uppercase">{diff}</span>
+          </div>
         </div>
         <Card
-          {...useHorizontalSwipe(async () => {
-            if (!user) return;
-            const res = await toggleBookmark(user.id, {
-              kind: 'question', subject: 'english', chapter: q.item.category, subcategory: (q.item as any).subcategory ?? null,
-              item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
-            });
-            toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1500 });
-          })}
-          className={`bg-white border-emerald-100 shadow-sm select-none touch-pan-y ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
+          className={`bg-white border-emerald-100 shadow-sm select-none ${flipAll[i] ? 'ring-2 ring-amber-200' : ''}`}
           onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
         >
           <CardContent className="p-6 space-y-4">
-            <div className="text-lg font-medium text-slate-900 flex items-center gap-2">
-              {q.question}
-              {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
-              <span className="ml-auto text-[10px] text-slate-400 hidden sm:inline">swipe ↔ to bookmark</span>
+            <div className="flex items-start gap-2">
+              <div className="text-lg font-medium text-slate-900 flex-1">
+                {q.question}
+                {flipAll[i] && <span className="ml-2 text-xs text-amber-700 font-semibold">Hindi view</span>}
+              </div>
+              <Button
+                variant="ghost" size="sm"
+                className={`shrink-0 ${qBookmarked ? 'text-amber-600 hover:text-amber-700' : 'text-slate-400 hover:text-amber-600'}`}
+                onClick={bookmarkQuestion}
+                title="Bookmark question"
+              >
+                <Bookmark className={`w-4 h-4 ${qBookmarked ? 'fill-current' : ''}`} />
+              </Button>
             </div>
-{(() => {
-              const isIdiom = q.item.category === 'idiom';
-              const isSynAnt = q.item.category === 'syn_ant';
-              const hintText = isIdiom
-                ? q.item.hint
-                : isSynAnt
-                  ? hindiForOption(q.item.prompt || '')
-                  : null;
-              if (picked !== null || !hintText || hintText === '—') return null;
-              return (
-                <div>
-                  {hintShown[i] ? (
-                    <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
-                      <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
-                      <span>
-                        {isSynAnt && <span className="font-semibold not-italic mr-1">{q.item.prompt}:</span>}
-                        {hintText}
-                      </span>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-amber-200 text-amber-700 hover:bg-amber-50"
-                      onClick={() => setHintShown({ ...hintShown, [i]: true })}
-                    >
-                      <Lightbulb className="w-4 h-4 mr-1" />Show hint
-                    </Button>
-                  )}
-                </div>
-              );
-            })()}
+
+            {hintAvailable && picked === null && (
+              <div>
+                {hintShown[i] ? (
+                  <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
+                    <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
+                    <span>
+                      {isSynAnt && <span className="font-semibold not-italic mr-1">{q.item.prompt}:</span>}
+                      {hintText}
+                    </span>
+                  </div>
+                ) : (
+                  <Button variant="outline" size="sm" className="border-amber-200 text-amber-700 hover:bg-amber-50" onClick={() => setHintShown({ ...hintShown, [i]: true })}>
+                    <Lightbulb className="w-4 h-4 mr-1" />Show hint
+                  </Button>
+                )}
+              </div>
+            )}
+
             <div className="space-y-2">
-              {q.options.map((opt, idx) => (
-                <OptionButton
-                  key={`${i}-${idx}`}
-                  opt={opt}
-                  idx={idx}
-                  isCorrect={q.correct === idx}
-                  isPicked={picked === idx}
-                  show={picked !== null}
-                  isFlipped={picked !== null && (flipAll[i] || !!revealed[i]?.has(idx))}
-                  flippedLabel={hindiForOption(opt)}
-                  onClick={() => {
-                    if (picked === null) { choose(idx); return; }
-                    const cur = new Set(revealed[i] || []);
-                    if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
-                    setRevealed({ ...revealed, [i]: cur });
-                  }}
-                  onSwipe={async () => {
-                    if (!user) return;
-                    const res = await toggleBookmark(user.id, {
-                      kind: 'option', subject: 'english', chapter: q.item.category,
-                      subcategory: (q.item as any).subcategory ?? null,
-                      item_ref: q.item.id, question_text: q.question,
-                      option_text: opt, correct_text: q.options[q.correct],
-                    });
-                    toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1500 });
-                  }}
-                />
-              ))}
+              {q.options.map((opt, idx) => {
+                const show = picked !== null;
+                const isCorrect = q.correct === idx;
+                const isPicked = picked === idx;
+                const isFlipped = show && (flipAll[i] || !!revealed[i]?.has(idx));
+                const optKey = `${i}-${idx}`;
+                const optBook = !!bookmarkedOpt[optKey];
+                return (
+                  <div key={idx} className="flex items-stretch gap-2">
+                    <button
+                      onClick={() => {
+                        if (picked === null) { choose(idx); return; }
+                        const cur = new Set(revealed[i] || []);
+                        if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                        setRevealed({ ...revealed, [i]: cur });
+                      }}
+                      className={`flex-1 text-left p-3 rounded-md border transition-all ${
+                        show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
+                        show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
+                        'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
+                      } ${isFlipped ? 'italic' : ''}`}
+                    >
+                      <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>
+                      {isFlipped ? hindiForOption(opt) : opt}
+                    </button>
+                    <button
+                      onClick={() => bookmarkOption(idx, opt)}
+                      title="Bookmark option"
+                      className={`px-2 rounded-md border transition ${
+                        optBook ? 'bg-amber-50 border-amber-300 text-amber-600'
+                                 : 'bg-white border-slate-200 text-slate-400 hover:text-amber-600 hover:border-amber-300'
+                      }`}
+                    >
+                      <Bookmark className={`w-4 h-4 ${optBook ? 'fill-current' : ''}`} />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
             {picked !== null && (
               <>
@@ -313,28 +342,5 @@ export default function BlackBookPractice() {
         </Card>
       </div>
     </div>
-  );
-}
-
-function OptionButton({
-  opt, idx, isCorrect, isPicked, show, isFlipped, flippedLabel, onClick, onSwipe,
-}: {
-  opt: string; idx: number; isCorrect: boolean; isPicked: boolean; show: boolean;
-  isFlipped: boolean; flippedLabel: string; onClick: () => void; onSwipe: () => void;
-}) {
-  const swipe = useHorizontalSwipe(onSwipe);
-  const label = isFlipped ? flippedLabel : opt;
-  return (
-    <button
-      {...swipe}
-      onClick={onClick}
-      className={`w-full text-left p-3 rounded-md border transition-all touch-pan-y ${
-        show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
-        show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
-        'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60 text-slate-800'
-      } ${isFlipped ? 'italic' : ''}`}
-    >
-      <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>{label}
-    </button>
   );
 }
