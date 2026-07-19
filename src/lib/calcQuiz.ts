@@ -387,20 +387,20 @@ export const CHAPTER_META: Record<string, ChapterMeta> = {
   'pct-conv': { title: '% ↔ Fraction Conversion',    icon: '％',  perQSeconds: 12, kind: 'percent' },
   'pct-calc': { title: '% / Decimal Multiplication', icon: '✖️', perQSeconds: 18, kind: 'percent' },
 
-  // Addition
-  'add-2-2': { title: '2-digit + 2-digit', icon: '➕', perQSeconds: 8,  kind: 'mental', op: 'add', digitsA: 2, digitsB: 2, count: 100 },
-  'add-2-3': { title: '2-digit + 3-digit', icon: '➕', perQSeconds: 10, kind: 'mental', op: 'add', digitsA: 2, digitsB: 3, count: 100 },
-  'add-3-3': { title: '3-digit + 3-digit', icon: '➕', perQSeconds: 12, kind: 'mental', op: 'add', digitsA: 3, digitsB: 3, count: 100 },
-  // Subtraction
-  'sub-2-1': { title: '2-digit − 1-digit', icon: '➖', perQSeconds: 7,  kind: 'mental', op: 'sub', digitsA: 2, digitsB: 1, count: 100 },
-  'sub-2-2': { title: '2-digit − 2-digit', icon: '➖', perQSeconds: 8,  kind: 'mental', op: 'sub', digitsA: 2, digitsB: 2, count: 100 },
-  'sub-3-2': { title: '3-digit − 2-digit', icon: '➖', perQSeconds: 10, kind: 'mental', op: 'sub', digitsA: 3, digitsB: 2, count: 100 },
-  'sub-3-3': { title: '3-digit − 3-digit', icon: '➖', perQSeconds: 12, kind: 'mental', op: 'sub', digitsA: 3, digitsB: 3, count: 100 },
-  // Multiplication
-  'mul-2-1': { title: '2-digit × 1-digit', icon: '✖️', perQSeconds: 10, kind: 'mental', op: 'mul', digitsA: 2, digitsB: 1, count: 100 },
-  'mul-2-2': { title: '2-digit × 2-digit', icon: '✖️', perQSeconds: 15, kind: 'mental', op: 'mul', digitsA: 2, digitsB: 2, count: 100 },
-  'mul-3-2': { title: '3-digit × 2-digit', icon: '✖️', perQSeconds: 20, kind: 'mental', op: 'mul', digitsA: 3, digitsB: 2, count: 100 },
-  'mul-3-3': { title: '3-digit × 3-digit', icon: '✖️', perQSeconds: 25, kind: 'mental', op: 'mul', digitsA: 3, digitsB: 3, count: 100 },
+  // Addition (300 each)
+  'add-2-2': { title: '2-digit + 2-digit', icon: '➕', perQSeconds: 8,  kind: 'mental', op: 'add', digitsA: 2, digitsB: 2, count: 300 },
+  'add-2-3': { title: '2-digit + 3-digit', icon: '➕', perQSeconds: 10, kind: 'mental', op: 'add', digitsA: 2, digitsB: 3, count: 300 },
+  'add-3-3': { title: '3-digit + 3-digit', icon: '➕', perQSeconds: 12, kind: 'mental', op: 'add', digitsA: 3, digitsB: 3, count: 300 },
+  // Subtraction (300 each)
+  'sub-2-1': { title: '2-digit − 1-digit', icon: '➖', perQSeconds: 7,  kind: 'mental', op: 'sub', digitsA: 2, digitsB: 1, count: 300 },
+  'sub-2-2': { title: '2-digit − 2-digit', icon: '➖', perQSeconds: 8,  kind: 'mental', op: 'sub', digitsA: 2, digitsB: 2, count: 300 },
+  'sub-3-2': { title: '3-digit − 2-digit', icon: '➖', perQSeconds: 10, kind: 'mental', op: 'sub', digitsA: 3, digitsB: 2, count: 300 },
+  'sub-3-3': { title: '3-digit − 3-digit', icon: '➖', perQSeconds: 12, kind: 'mental', op: 'sub', digitsA: 3, digitsB: 3, count: 300 },
+  // Multiplication (300 each)
+  'mul-2-1': { title: '2-digit × 1-digit', icon: '✖️', perQSeconds: 10, kind: 'mental', op: 'mul', digitsA: 2, digitsB: 1, count: 300 },
+  'mul-2-2': { title: '2-digit × 2-digit', icon: '✖️', perQSeconds: 15, kind: 'mental', op: 'mul', digitsA: 2, digitsB: 2, count: 300 },
+  'mul-3-2': { title: '3-digit × 2-digit', icon: '✖️', perQSeconds: 20, kind: 'mental', op: 'mul', digitsA: 3, digitsB: 2, count: 300 },
+  'mul-3-3': { title: '3-digit × 3-digit', icon: '✖️', perQSeconds: 25, kind: 'mental', op: 'mul', digitsA: 3, digitsB: 3, count: 300 },
   // Division
   'div-2-1': { title: '2-digit ÷ 1-digit', icon: '➗', perQSeconds: 10, kind: 'mental', op: 'div', digitsA: 1, digitsB: 1, count: 100 },
   'div-3-1': { title: '3-digit ÷ 1-digit', icon: '➗', perQSeconds: 12, kind: 'mental', op: 'div', digitsA: 2, digitsB: 1, count: 100 },
