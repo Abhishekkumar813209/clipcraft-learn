@@ -241,7 +241,7 @@ export default function SscSynAntPractice() {
               {q.question}
               {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
             </div>
-            {picked === null && hintText && (
+            {picked === null && hintText && diff !== 'hard' && (
               hint[i] ? (
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
                   <Lightbulb className="w-4 h-4 mt-0.5 text-amber-600" />
