@@ -124,10 +124,18 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
   };
 }
 
-export function buildQuestionSet(items: BBItem[], count: number, ids?: string[]): BBQuestion[] {
+export function buildQuestionSet(
+  items: BBItem[],
+  count: number,
+  ids?: string[],
+  order: 'random' | 'serial' = 'random',
+): BBQuestion[] {
+  const sortedSerial = [...items].sort(
+    (a, b) => (a.serial_no ?? 999999) - (b.serial_no ?? 999999),
+  );
   const source = ids
     ? (ids.map((id) => items.find((i) => i.id === id)).filter(Boolean) as BBItem[])
-    : shuffle(items).slice(0, count);
+    : (order === 'serial' ? sortedSerial.slice(0, count) : shuffle(items).slice(0, count));
   const qs: BBQuestion[] = [];
   for (const it of source) {
     const q = buildQuestion(it, items);

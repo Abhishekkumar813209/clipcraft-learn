@@ -2,17 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, Lightbulb, RotateCcw } from 'lucide-react';
+import { Loader2, Trophy, ArrowLeft, ChevronLeft, ChevronRight, Check, X, Lightbulb, RotateCcw, Bookmark } from 'lucide-react';
 import { fetchSAItems, buildSAQuestionSet, SAMode, SASub, SAQuestion, SAItem } from '@/lib/synAntQuiz';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
+import { toggleBookmark } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
+
+type Diff = 'easy' | 'medium' | 'hard';
 
 export default function SscSynAntPractice() {
   const [sp] = useSearchParams();
   const mode = (sp.get('mode') || 'mixed') as SAMode;
   const sub = (sp.get('sub') || 'top_100') as SASub;
   const n = Number(sp.get('n')) || 20;
+  const diff = (['easy', 'medium', 'hard'].includes(sp.get('diff') || '') ? sp.get('diff') : 'easy') as Diff;
   const nav = useNavigate();
   const { user } = useAuth();
   const wordHindi = useWordHindi();
@@ -27,6 +32,8 @@ export default function SscSynAntPractice() {
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [bookmarkedQ, setBookmarkedQ] = useState<Record<number, boolean>>({});
+  const [bookmarkedOpt, setBookmarkedOpt] = useState<Record<string, boolean>>({});
 
   // Hinglish lookup: index every item's word AND its syn/ant tokens so any option can flip to Hindi.
   const itemHindiMap = useMemo(() => {
@@ -128,11 +135,34 @@ export default function SscSynAntPractice() {
     const built = buildSAQuestionSet(items, n);
     setQs(built); setPicks(new Array(built.length).fill(null));
     setI(0); setDone(false); setHint({}); setFlipAll({}); setRevealed({});
+    setBookmarkedQ({}); setBookmarkedOpt({});
     if (user && built.length) {
       supabase.from('bb_practice_sessions' as never).insert({
         user_id: user.id, category: 'syn_ant', total: built.length, correct: 0,
       } as never).select('id').single().then(({ data: s }) => { if (s) setSessionId((s as any).id); });
     }
+  }
+
+  async function bookmarkQuestion() {
+    if (!user || !q) return;
+    const res = await toggleBookmark(user.id, {
+      kind: 'question', subject: 'english', chapter: 'syn_ant',
+      subcategory: sub, item_ref: q.item.id, question_text: q.question,
+      correct_text: q.options[q.correct],
+    });
+    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(idx: number, opt: string) {
+    if (!user || !q) return;
+    const res = await toggleBookmark(user.id, {
+      kind: 'option', subject: 'english', chapter: 'syn_ant',
+      subcategory: sub, item_ref: q.item.id, question_text: q.question,
+      option_text: opt, correct_text: q.options[q.correct],
+    });
+    setBookmarkedOpt((m) => ({ ...m, [`${i}-${idx}`]: res === 'added' }));
+    toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-emerald-50"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>;
@@ -207,11 +237,21 @@ export default function SscSynAntPractice() {
           onDoubleClick={() => { if (picked !== null) setFlipAll({ ...flipAll, [i]: !flipAll[i] }); }}
         >
           <CardContent className="p-6 space-y-4">
-            <div className="text-lg font-medium flex items-center gap-2">
-              {q.question}
-              {flipAll[i] && <span className="text-xs text-amber-700 font-semibold">Hindi view</span>}
+            <div className="flex items-start gap-2">
+              <div className="text-lg font-medium flex-1">
+                {q.question}
+                {flipAll[i] && <span className="ml-2 text-xs text-amber-700 font-semibold">Hindi view</span>}
+              </div>
+              <Button
+                variant="ghost" size="sm"
+                className={`shrink-0 ${bookmarkedQ[i] ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}`}
+                onClick={bookmarkQuestion}
+                title="Bookmark question"
+              >
+                <Bookmark className={`w-4 h-4 ${bookmarkedQ[i] ? 'fill-current' : ''}`} />
+              </Button>
             </div>
-            {picked === null && hintText && (
+            {picked === null && hintText && diff !== 'hard' && (
               hint[i] ? (
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm italic text-amber-800 flex items-start gap-2">
                   <Lightbulb className="w-4 h-4 mt-0.5 text-amber-600" />
@@ -228,31 +268,43 @@ export default function SscSynAntPractice() {
                 const show = picked !== null;
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
-                // After picking: correct option auto-shows Hinglish inline; others reveal on tap.
                 const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
                 const optHindi = show ? hindiForOption(opt) : '';
+                const optKey = `${i}-${idx}`;
+                const optBook = !!bookmarkedOpt[optKey];
                 return (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      if (picked === null) { choose(idx); return; }
-                      const cur = new Set(revealed[i] || []);
-                      if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
-                      setRevealed({ ...revealed, [i]: cur });
-                    }}
-                    className={`w-full text-left p-3 rounded-md border transition-all ${
-                      show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
-                      show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
-                      'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60'
-                    }`}>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-semibold">{String.fromCharCode(65 + idx)}.</span>
-                      <span className={isFlipped ? 'italic' : ''}>{isFlipped ? optHindi : opt}</span>
-                    </div>
-                    {show && isCorrect && optHindi && optHindi !== '—' && !isFlipped && (
-                      <div className="text-xs italic text-emerald-700 mt-1 pl-6">→ {optHindi}</div>
-                    )}
-                  </button>
+                  <div key={idx} className="flex items-stretch gap-2">
+                    <button
+                      onClick={() => {
+                        if (picked === null) { choose(idx); return; }
+                        const cur = new Set(revealed[i] || []);
+                        if (cur.has(idx)) cur.delete(idx); else cur.add(idx);
+                        setRevealed({ ...revealed, [i]: cur });
+                      }}
+                      className={`flex-1 text-left p-3 rounded-md border transition-all ${
+                        show && isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-800' :
+                        show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
+                        'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/60'
+                      }`}>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-semibold">{String.fromCharCode(65 + idx)}.</span>
+                        <span className={isFlipped ? 'italic' : ''}>{isFlipped ? optHindi : opt}</span>
+                      </div>
+                      {show && isCorrect && optHindi && optHindi !== '—' && !isFlipped && (
+                        <div className="text-xs italic text-emerald-700 mt-1 pl-6">→ {optHindi}</div>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => bookmarkOption(idx, opt)}
+                      title="Bookmark option"
+                      className={`px-2 rounded-md border transition ${
+                        optBook ? 'bg-amber-50 border-amber-300 text-amber-600'
+                                 : 'bg-white border-slate-200 text-slate-400 hover:text-amber-600 hover:border-amber-300'
+                      }`}
+                    >
+                      <Bookmark className={`w-4 h-4 ${optBook ? 'fill-current' : ''}`} />
+                    </button>
+                  </div>
                 );
               })}
             </div>

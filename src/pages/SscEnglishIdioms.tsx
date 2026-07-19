@@ -38,6 +38,12 @@ export default function SscEnglishIdioms() {
   const [nMap, setNMap] = useState<Record<string, string>>(() =>
     Object.fromEntries(GROUPS.map((g) => [g.key, String(g.defaultQuiz)]))
   );
+  const [orderMap, setOrderMap] = useState<Record<string, 'random' | 'serial'>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, 'random' as const]))
+  );
+  const [diffMap, setDiffMap] = useState<Record<string, 'easy' | 'medium' | 'hard'>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, 'easy' as const]))
+  );
 
   useEffect(() => {
     supabase.from('ssc_black_book_items' as never)
@@ -133,13 +139,35 @@ export default function SscEnglishIdioms() {
                     <span className="text-slate-500">(default {g.defaultQuiz})</span>
                   </div>
 
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700">
+                    <span className="font-medium">Order:</span>
+                    {(['random', 'serial'] as const).map((o) => (
+                      <button
+                        key={o}
+                        onClick={() => setOrderMap((m) => ({ ...m, [g.key]: o }))}
+                        className={`px-2 py-1 rounded border ${orderMap[g.key] === o ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-white/70 border-emerald-200 text-emerald-700'}`}
+                      >{o}</button>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700">
+                    <span className="font-medium">Difficulty:</span>
+                    {(['easy', 'medium', 'hard'] as const).map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => setDiffMap((m) => ({ ...m, [g.key]: d }))}
+                        className={`px-2 py-1 rounded border ${diffMap[g.key] === d ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-white/70 border-emerald-200 text-emerald-700'}`}
+                      >{d}</button>
+                    ))}
+                    {diffMap[g.key] === 'hard' && <span className="text-[10px] text-rose-600">Hints hidden</span>}
+                  </div>
+
                   <div className="flex gap-2 pt-1">
                     <Link to={`/ssc/blackbook/browse/idiom?sub=${g.key}`} className="flex-1">
                       <Button size="sm" variant="outline" className="w-full bg-white/70 border-emerald-200 text-emerald-700 hover:bg-white">
                         <BookOpen className="w-4 h-4 mr-1" /> Browse
                       </Button>
                     </Link>
-                    <Link to={`/ssc/blackbook/practice/idiom?sub=${g.key}&n=${validN}`} className="flex-1">
+                    <Link to={`/ssc/blackbook/practice/idiom?sub=${g.key}&n=${validN}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}`} className="flex-1">
                       <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">
                         <Sparkles className="w-4 h-4 mr-1" /> Practice
                       </Button>
