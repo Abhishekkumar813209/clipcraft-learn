@@ -51,6 +51,12 @@ export default function SscEnglishSynAnt() {
   const [nMap, setNMap] = useState<Record<string, string>>(() =>
     Object.fromEntries(GROUPS.map((g) => [g.key, String(g.defaultQuiz)]))
   );
+  const [orderMap, setOrderMap] = useState<Record<string, 'random' | 'serial'>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, 'random' as const]))
+  );
+  const [diffMap, setDiffMap] = useState<Record<string, 'easy' | 'medium' | 'hard'>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, 'easy' as const]))
+  );
 
   useEffect(() => {
     supabase.from('ssc_syn_ant_items' as never).select('kind,subcategory')
