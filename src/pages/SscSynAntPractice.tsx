@@ -135,11 +135,34 @@ export default function SscSynAntPractice() {
     const built = buildSAQuestionSet(items, n);
     setQs(built); setPicks(new Array(built.length).fill(null));
     setI(0); setDone(false); setHint({}); setFlipAll({}); setRevealed({});
+    setBookmarkedQ({}); setBookmarkedOpt({});
     if (user && built.length) {
       supabase.from('bb_practice_sessions' as never).insert({
         user_id: user.id, category: 'syn_ant', total: built.length, correct: 0,
       } as never).select('id').single().then(({ data: s }) => { if (s) setSessionId((s as any).id); });
     }
+  }
+
+  async function bookmarkQuestion() {
+    if (!user || !q) return;
+    const res = await toggleBookmark(user.id, {
+      kind: 'question', subject: 'english', chapter: 'syn_ant',
+      subcategory: sub, item_ref: q.item.id, question_text: q.question,
+      correct_text: q.options[q.correct],
+    });
+    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(idx: number, opt: string) {
+    if (!user || !q) return;
+    const res = await toggleBookmark(user.id, {
+      kind: 'option', subject: 'english', chapter: 'syn_ant',
+      subcategory: sub, item_ref: q.item.id, question_text: q.question,
+      option_text: opt, correct_text: q.options[q.correct],
+    });
+    setBookmarkedOpt((m) => ({ ...m, [`${i}-${idx}`]: res === 'added' }));
+    toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-emerald-50"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>;
