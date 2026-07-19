@@ -134,84 +134,136 @@ export function genCubeRoots(p: RangedParams = {}): CalcQ[] {
   });
 }
 
-// ============ % ↔ FRACTION CONVERSION (200+ multiplied values) ============
-function reduce(a: number, b: number): [number, number] {
-  const g = (x: number, y: number): number => (y === 0 ? x : g(y, x % y));
-  const d = g(a, b);
-  return [a / d, b / d];
+// ============ % ↔ FRACTION ↔ DECIMAL CONVERSION (chart-based) ============
+// Source: user-supplied Fraction_Percentage_Chart.xlsx (50 canonical rows).
+interface ChartRow { frac: string; pct: number; dec: number; }
+const CHART: ChartRow[] = [
+  { frac: '1/1', pct: 100, dec: 1 },
+  { frac: '1/2', pct: 50, dec: 0.5 },
+  { frac: '1/3', pct: 33.33, dec: 0.3333 },
+  { frac: '1/4', pct: 25, dec: 0.25 },
+  { frac: '1/5', pct: 20, dec: 0.2 },
+  { frac: '1/6', pct: 16.66, dec: 0.1667 },
+  { frac: '1/7', pct: 14.28, dec: 0.1428 },
+  { frac: '1/8', pct: 12.5, dec: 0.125 },
+  { frac: '1/9', pct: 11.11, dec: 0.1111 },
+  { frac: '1/10', pct: 10, dec: 0.1 },
+  { frac: '1/11', pct: 9.09, dec: 0.0909 },
+  { frac: '1/12', pct: 8.33, dec: 0.0833 },
+  { frac: '1/13', pct: 7.69, dec: 0.0769 },
+  { frac: '1/14', pct: 7.14, dec: 0.0714 },
+  { frac: '1/15', pct: 6.66, dec: 0.0667 },
+  { frac: '1/16', pct: 6.25, dec: 0.0625 },
+  { frac: '1/17', pct: 5.88, dec: 0.0588 },
+  { frac: '1/18', pct: 5.55, dec: 0.0556 },
+  { frac: '1/19', pct: 5.26, dec: 0.0526 },
+  { frac: '1/20', pct: 5, dec: 0.05 },
+  { frac: '1/25', pct: 4, dec: 0.04 },
+  { frac: '1/50', pct: 2, dec: 0.02 },
+  { frac: '2/9', pct: 22.22, dec: 0.2222 },
+  { frac: '4/9', pct: 44.44, dec: 0.4444 },
+  { frac: '5/9', pct: 55.55, dec: 0.5555 },
+  { frac: '7/9', pct: 77.77, dec: 0.7777 },
+  { frac: '8/9', pct: 88.88, dec: 0.8888 },
+  { frac: '2/11', pct: 18.18, dec: 0.1818 },
+  { frac: '3/11', pct: 27.27, dec: 0.2727 },
+  { frac: '4/11', pct: 36.36, dec: 0.3636 },
+  { frac: '5/11', pct: 45.45, dec: 0.4545 },
+  { frac: '6/11', pct: 54.54, dec: 0.5454 },
+  { frac: '7/11', pct: 63.63, dec: 0.6363 },
+  { frac: '8/11', pct: 72.72, dec: 0.7272 },
+  { frac: '9/11', pct: 81.81, dec: 0.8181 },
+  { frac: '10/11', pct: 90.9, dec: 0.909 },
+  { frac: '3/8', pct: 37.5, dec: 0.375 },
+  { frac: '5/8', pct: 62.5, dec: 0.625 },
+  { frac: '7/8', pct: 87.5, dec: 0.875 },
+  { frac: '2/5', pct: 40, dec: 0.4 },
+  { frac: '3/5', pct: 60, dec: 0.6 },
+  { frac: '4/5', pct: 80, dec: 0.8 },
+  { frac: '3/4', pct: 75, dec: 0.75 },
+  { frac: '5/6', pct: 83.33, dec: 0.8333 },
+  { frac: '2/7', pct: 28.57, dec: 0.2857 },
+  { frac: '3/7', pct: 42.85, dec: 0.4285 },
+  { frac: '4/7', pct: 57.14, dec: 0.5714 },
+  { frac: '5/7', pct: 71.42, dec: 0.7142 },
+  { frac: '6/7', pct: 85.71, dec: 0.8571 },
+];
+
+function pickDistractorStrings(correct: string, pool: string[], n = 3): string[] {
+  const seen = new Set<string>([correct]);
+  const out: string[] = [];
+  for (const p of shuffle(pool)) {
+    if (out.length >= n) break;
+    if (seen.has(p)) continue;
+    seen.add(p);
+    out.push(p);
+  }
+  return out;
 }
 
 export function genPercentConversion(): CalcQ[] {
   const qs: CalcQ[] = [];
-  const seenReverse = new Set<string>();
-  const seenForward = new Set<string>();
+  const fracPool = CHART.map((r) => r.frac);
+  const pctPool = CHART.map((r) => `${r.pct}%`);
+  const decPool = CHART.map((r) => String(r.dec));
 
-  // build k/n across n=2..20, k=1..n (include >1 like 5/4=125%)
-  const items: { k: number; n: number; pct: number }[] = [];
-  for (let n = 2; n <= 20; n++) {
-    for (let k = 1; k <= 2 * n; k++) {
-      if (k === n) continue;
-      const [rk, rn] = reduce(k, n);
-      const pct = Math.round((k / n) * 10000) / 100;
-      items.push({ k: rk, n: rn, pct });
+  for (const r of CHART) {
+    // 1) Fraction → Percentage
+    {
+      const correct = `${r.pct}%`;
+      const dist = pickDistractorStrings(correct, pctPool);
+      const opts = shuffle([correct, ...dist]);
+      qs.push({
+        q: `${r.frac} as a percentage = ?`,
+        options: opts, correct: opts.indexOf(correct),
+        explain: `${r.frac} × 100 = ${r.pct}%`,
+      });
+    }
+    // 2) Percentage → Fraction
+    {
+      const correct = r.frac;
+      const dist = pickDistractorStrings(correct, fracPool);
+      const opts = shuffle([correct, ...dist]);
+      qs.push({
+        q: `${r.pct}% as a fraction = ?`,
+        options: opts, correct: opts.indexOf(correct),
+        explain: `${r.pct}% = ${r.frac}`,
+      });
+    }
+    // 3) Fraction → Decimal
+    {
+      const correct = String(r.dec);
+      const dist = pickDistractorStrings(correct, decPool);
+      const opts = shuffle([correct, ...dist]);
+      qs.push({
+        q: `${r.frac} as a decimal = ?`,
+        options: opts, correct: opts.indexOf(correct),
+        explain: `${r.frac} = ${r.dec}`,
+      });
+    }
+    // 4) Decimal → Percentage (and 5) Percentage → Decimal alternating for variety
+    {
+      const correct = `${r.pct}%`;
+      const dist = pickDistractorStrings(correct, pctPool);
+      const opts = shuffle([correct, ...dist]);
+      qs.push({
+        q: `${r.dec} as a percentage = ?`,
+        options: opts, correct: opts.indexOf(correct),
+        explain: `${r.dec} × 100 = ${r.pct}%`,
+      });
+    }
+    {
+      const correct = String(r.dec);
+      const dist = pickDistractorStrings(correct, decPool);
+      const opts = shuffle([correct, ...dist]);
+      qs.push({
+        q: `${r.pct}% as a decimal = ?`,
+        options: opts, correct: opts.indexOf(correct),
+        explain: `${r.pct}% = ${r.dec}`,
+      });
     }
   }
-
-  // forward: "k/n × 100 = ?%"
-  for (const it of items) {
-    const key = `f-${it.k}/${it.n}`;
-    if (seenForward.has(key)) continue;
-    seenForward.add(key);
-    const correct = it.pct;
-    const distractors = [
-      Math.round((it.k / (it.n + 1)) * 10000) / 100,
-      Math.round(((it.k + 1) / it.n) * 10000) / 100,
-      Math.round((it.k / Math.max(1, it.n - 1)) * 10000) / 100,
-    ].filter((d) => d > 0 && d !== correct);
-    const pool = new Set<string>([fmt(correct)]);
-    for (const d of distractors) pool.add(fmt(d));
-    while (pool.size < 4) pool.add(fmt(Math.round((correct + Math.random() * 20 - 10) * 100) / 100));
-    const arr = shuffle(Array.from(pool)).slice(0, 4);
-    if (!arr.includes(fmt(correct))) arr[0] = fmt(correct);
-    const shuffled = shuffle(arr);
-    qs.push({
-      q: `${it.k}/${it.n} × 100 = ? %`,
-      options: shuffled,
-      correct: shuffled.indexOf(fmt(correct)),
-      explain: `${it.k}/${it.n} = ${fmt(correct)}%`,
-    });
-  }
-
-  // reverse: "X% as a fraction = ?"
-  for (const it of items) {
-    const key = `r-${it.k}/${it.n}`;
-    if (seenReverse.has(key)) continue;
-    seenReverse.add(key);
-    const correctStr = `${it.k}/${it.n}`;
-    const distractors = new Set<string>([correctStr]);
-    const nearby = [
-      `${it.k}/${it.n + 1}`,
-      `${it.k + 1}/${it.n}`,
-      `${it.k}/${Math.max(1, it.n - 1)}`,
-      `${Math.max(1, it.k - 1)}/${it.n}`,
-    ];
-    for (const d of nearby) distractors.add(d);
-    while (distractors.size < 4) {
-      const d = `${1 + Math.floor(Math.random() * (it.n + 3))}/${2 + Math.floor(Math.random() * (it.n + 3))}`;
-      distractors.add(d);
-    }
-    const arr = shuffle(Array.from(distractors)).slice(0, 4);
-    if (!arr.includes(correctStr)) arr[0] = correctStr;
-    const shuffled = shuffle(arr);
-    qs.push({
-      q: `${fmt(it.pct)}% as a fraction = ?`,
-      options: shuffled,
-      correct: shuffled.indexOf(correctStr),
-      explain: `${fmt(it.pct)}% = ${correctStr}`,
-    });
-  }
-
-  return shuffle(qs).slice(0, 240);
+  return shuffle(qs);
 }
 
 // ============ % / DECIMAL MULTIPLICATION ============
