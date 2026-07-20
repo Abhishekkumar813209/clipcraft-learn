@@ -295,6 +295,103 @@ export function genPercentConversion(): CalcQ[] {
   return shuffle(qs);
 }
 
+// ============ FRACTION ↔ PERCENTAGE (chart-based) ============
+// Each row: a fraction and its equivalent % representations (decimal + optional mixed).
+// Decimal % and mixed-fraction % represent the SAME entity — never mix them as
+// distractors for the same fraction, and never use a same-row alt form as a
+// distractor for the other form.
+interface FPRow { frac: string; pcts: string[] } // pcts[0]=decimal, pcts[1]=mixed (if any)
+const FP: FPRow[] = [
+  { frac: '1/2', pcts: ['50%'] },
+  { frac: '1/3', pcts: ['33.33%', '33 1/3%'] },
+  { frac: '1/4', pcts: ['25%'] },
+  { frac: '1/5', pcts: ['20%'] },
+  { frac: '1/6', pcts: ['16.66%', '16 2/3%'] },
+  { frac: '1/7', pcts: ['14.28%', '14 2/7%'] },
+  { frac: '1/8', pcts: ['12.5%', '12 1/2%'] },
+  { frac: '1/9', pcts: ['11.11%', '11 1/9%'] },
+  { frac: '1/10', pcts: ['10%'] },
+  { frac: '1/11', pcts: ['9.09%', '9 1/11%'] },
+  { frac: '1/12', pcts: ['8.33%', '8 1/3%'] },
+  { frac: '1/13', pcts: ['7.69%', '7 9/13%'] },
+  { frac: '1/14', pcts: ['7.14%', '7 1/7%'] },
+  { frac: '1/15', pcts: ['6.66%', '6 2/3%'] },
+  { frac: '1/16', pcts: ['6.25%', '6 1/4%'] },
+  { frac: '1/17', pcts: ['5.88%', '5 15/17%'] },
+  { frac: '1/18', pcts: ['5.55%', '5 5/9%'] },
+  { frac: '1/19', pcts: ['5.26%', '5 5/19%'] },
+  { frac: '1/20', pcts: ['5%'] },
+  { frac: '1/25', pcts: ['4%'] },
+  { frac: '1/50', pcts: ['2%'] },
+  { frac: '2/9', pcts: ['22.22%', '22 2/9%'] },
+  { frac: '4/9', pcts: ['44.44%', '44 4/9%'] },
+  { frac: '5/9', pcts: ['55.55%', '55 5/9%'] },
+  { frac: '7/9', pcts: ['77.77%', '77 7/9%'] },
+  { frac: '8/9', pcts: ['88.88%', '88 8/9%'] },
+  { frac: '2/11', pcts: ['18.18%', '18 2/11%'] },
+  { frac: '3/11', pcts: ['27.27%', '27 3/11%'] },
+  { frac: '4/11', pcts: ['36.36%', '36 4/11%'] },
+  { frac: '5/11', pcts: ['45.45%', '45 5/11%'] },
+  { frac: '6/11', pcts: ['54.54%', '54 6/11%'] },
+  { frac: '7/11', pcts: ['63.63%', '63 7/11%'] },
+  { frac: '8/11', pcts: ['72.72%', '72 8/11%'] },
+  { frac: '9/11', pcts: ['81.81%', '81 9/11%'] },
+  { frac: '10/11', pcts: ['90.90%', '90 10/11%'] },
+  { frac: '3/8', pcts: ['37.5%', '37 1/2%'] },
+  { frac: '5/8', pcts: ['62.5%', '62 1/2%'] },
+  { frac: '7/8', pcts: ['87.5%', '87 1/2%'] },
+  { frac: '2/5', pcts: ['40%'] },
+  { frac: '3/5', pcts: ['60%'] },
+  { frac: '4/5', pcts: ['80%'] },
+  { frac: '3/4', pcts: ['75%'] },
+  { frac: '5/6', pcts: ['83.33%', '83 1/3%'] },
+  { frac: '2/7', pcts: ['28.57%', '28 4/7%'] },
+  { frac: '3/7', pcts: ['42.85%', '42 6/7%'] },
+  { frac: '4/7', pcts: ['57.14%', '57 1/7%'] },
+  { frac: '5/7', pcts: ['71.42%', '71 3/7%'] },
+  { frac: '6/7', pcts: ['85.71%', '85 5/7%'] },
+];
+
+export function genFractionPercent(): CalcQ[] {
+  const qs: CalcQ[] = [];
+  const pickPct = (row: FPRow) => row.pcts[Math.floor(Math.random() * row.pcts.length)];
+
+  // Fraction → Percentage
+  for (const row of FP) {
+    const correct = pickPct(row);
+    const pool: string[] = [];
+    for (const r of FP) if (r.frac !== row.frac) pool.push(pickPct(r));
+    const dist = pickDistractorStrings(correct, pool);
+    const opts = shuffle([correct, ...dist]);
+    const allForms = row.pcts.join(' = ');
+    qs.push({
+      q: `${row.frac} as a percentage = ?`,
+      options: opts,
+      correct: opts.indexOf(correct),
+      explain: `${row.frac} = ${allForms}`,
+    });
+  }
+
+  // Percentage → Fraction (ask with either decimal or mixed form)
+  for (const row of FP) {
+    for (const pctForm of row.pcts) {
+      const correct = row.frac;
+      const pool = FP.filter((r) => r.frac !== row.frac).map((r) => r.frac);
+      const dist = pickDistractorStrings(correct, pool);
+      const opts = shuffle([correct, ...dist]);
+      const allForms = row.pcts.join(' = ');
+      qs.push({
+        q: `${pctForm} as a fraction = ?`,
+        options: opts,
+        correct: opts.indexOf(correct),
+        explain: `${allForms} = ${row.frac}`,
+      });
+    }
+  }
+
+  return shuffle(qs);
+}
+
 // ============ % / DECIMAL MULTIPLICATION ============
 export function genPercentCalculation(): CalcQ[] {
   const qs: CalcQ[] = [];
@@ -414,6 +511,7 @@ export const CHAPTER_META: Record<string, ChapterMeta> = {
   cbroots:   { title: 'Cube Roots',    icon: '∛',  perQSeconds: 12, kind: 'ranged', minAllowed: 2, maxAllowed: 30,  defaultStart: 2, defaultEnd: 20 },
 
   'pct-conv': { title: 'Fraction ↔ Decimal & Mixed', icon: '½',  perQSeconds: 12, kind: 'percent' },
+  'pct-frac': { title: 'Fraction ↔ Percentage',      icon: '％', perQSeconds: 12, kind: 'percent' },
   'pct-calc': { title: '% / Decimal Multiplication', icon: '✖️', perQSeconds: 18, kind: 'percent' },
 
   // Addition (300 each)
@@ -450,7 +548,9 @@ export function generateQuiz(slug: string, params: GenerateParams = {}): CalcQ[]
     }
   }
   if (meta.kind === 'percent') {
-    return slug === 'pct-conv' ? genPercentConversion() : genPercentCalculation();
+    if (slug === 'pct-conv') return genPercentConversion();
+    if (slug === 'pct-frac') return genFractionPercent();
+    return genPercentCalculation();
   }
   if (meta.kind === 'mental' && meta.op && meta.digitsA && meta.digitsB) {
     return genMental(meta.op, meta.digitsA, meta.digitsB, meta.count ?? 100);
