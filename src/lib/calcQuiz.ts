@@ -189,17 +189,6 @@ const CHART: ChartRow[] = [
   { frac: '6/7', pct: 85.71, dec: 0.8571 },
 ];
 
-function pickDistractorStrings(correct: string, pool: string[], n = 3): string[] {
-  const seen = new Set<string>([correct]);
-  const out: string[] = [];
-  for (const p of shuffle(pool)) {
-    if (out.length >= n) break;
-    if (seen.has(p)) continue;
-    seen.add(p);
-    out.push(p);
-  }
-  return out;
-}
 
 // Standard mixed fractions (whole + proper fraction) → improper fraction.
 interface MixedRow { mixed: string; improper: string; }
