@@ -193,7 +193,7 @@ export default function SscEnglishOws() {
                         <BookOpen className="w-4 h-4 mr-1" /> Browse
                       </Button>
                     </Link>
-                    <Link to={`/ssc/blackbook/practice/ows?sub=${g.key}&n=${validN}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}`} className="flex-1">
+                    <Link to={`/ssc/blackbook/practice/ows?sub=${g.key}&n=${validN}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}${fromMap[g.key] ? `&from=${fromMap[g.key]}` : ''}${toMap[g.key] ? `&to=${toMap[g.key]}` : ''}`} className="flex-1">
                       <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">
                         <Sparkles className="w-4 h-4 mr-1" /> Practice
                       </Button>
