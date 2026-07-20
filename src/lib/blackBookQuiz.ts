@@ -33,7 +33,7 @@ export async function fetchBBItems(
   category?: BBCategory | 'mixed',
   subcategory?: string,
 ): Promise<BBItem[]> {
-  let q = supabase.from('ssc_black_book_items' as never).select('*');
+  let q = supabase.from('ssc_black_book_items' as never).select('*').limit(20000);
   if (category && category !== 'mixed') q = q.eq('category', category);
   if (subcategory) q = q.eq('subcategory', subcategory);
   const { data, error } = await q;
