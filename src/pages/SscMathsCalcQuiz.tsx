@@ -106,6 +106,7 @@ export default function SscMathsCalcQuiz() {
   // ---------- START SCREEN ----------
   if (!started) {
     const isRanged = meta.kind === 'ranged';
+    const showOrderOnly = chapter === 'pct-frac';
     return (
       <div className="p-6 max-w-2xl mx-auto space-y-6">
         <Button variant="ghost" size="sm" onClick={() => nav('/ssc/maths/calculation')} className="text-slate-700">
