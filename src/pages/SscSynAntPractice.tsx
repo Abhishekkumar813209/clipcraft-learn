@@ -68,7 +68,16 @@ export default function SscSynAntPractice() {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchSAItems(mode, sub);
+      const raw = await fetchSAItems(mode, sub);
+      const data = (fromSerial != null || toSerial != null)
+        ? raw.filter((it) => {
+            const s = it.serial_no;
+            if (s == null) return false;
+            if (fromSerial != null && s < fromSerial) return false;
+            if (toSerial != null && s > toSerial) return false;
+            return true;
+          })
+        : raw;
       setItems(data);
       const built = buildSAQuestionSet(data, n);
       setQs(built);
@@ -81,7 +90,7 @@ export default function SscSynAntPractice() {
         if (s) setSessionId((s as any).id);
       }
     })();
-  }, [mode, sub, n, user]);
+  }, [mode, sub, n, user, fromSerial, toSerial]);
 
   const q = qs[i];
   const picked = picks[i];
