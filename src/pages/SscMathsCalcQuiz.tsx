@@ -182,6 +182,9 @@ export default function SscMathsCalcQuiz() {
                       Medium: distractors share the unit-digit of the correct answer, so quick unit-digit prediction won't work.
                     </p>
             )}
+                </div>
+              </>
+            )}
 
             {showOrderOnly && (
               <div className="space-y-2">
@@ -201,9 +204,7 @@ export default function SscMathsCalcQuiz() {
                 <p className="text-xs text-slate-500">Serial: 1/2 → 1/3 → 1/4 … (grouped by fraction). Random: shuffled.</p>
               </div>
             )}
-                </div>
-              </>
-            )}
+
 
             <div className="space-y-2">
               <div className="text-sm font-medium text-slate-700">Number of questions</div>
