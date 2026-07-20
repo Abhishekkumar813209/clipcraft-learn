@@ -548,7 +548,9 @@ export function generateQuiz(slug: string, params: GenerateParams = {}): CalcQ[]
     }
   }
   if (meta.kind === 'percent') {
-    return slug === 'pct-conv' ? genPercentConversion() : genPercentCalculation();
+    if (slug === 'pct-conv') return genPercentConversion();
+    if (slug === 'pct-frac') return genFractionPercent();
+    return genPercentCalculation();
   }
   if (meta.kind === 'mental' && meta.op && meta.digitsA && meta.digitsB) {
     return genMental(meta.op, meta.digitsA, meta.digitsB, meta.count ?? 100);
