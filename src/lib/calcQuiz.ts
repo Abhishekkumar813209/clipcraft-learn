@@ -352,44 +352,44 @@ const FP: FPRow[] = [
   { frac: '6/7', pcts: ['85.71%', '85 5/7%'] },
 ];
 
-export function genFractionPercent(): CalcQ[] {
-  const qs: CalcQ[] = [];
+export function genFractionPercent(p: { mode?: Mode } = {}): CalcQ[] {
+  const { mode = 'serial' } = p;
   const pickPct = (row: FPRow) => row.pcts[Math.floor(Math.random() * row.pcts.length)];
 
-  // Fraction → Percentage
-  for (const row of FP) {
-    const correct = pickPct(row);
-    const pool: string[] = [];
-    for (const r of FP) if (r.frac !== row.frac) pool.push(pickPct(r));
-    const dist = pickDistractorStrings(correct, pool);
-    const opts = shuffle([correct, ...dist]);
+  const buildForRow = (row: FPRow): CalcQ[] => {
+    const out: CalcQ[] = [];
     const allForms = row.pcts.join(' = ');
-    qs.push({
-      q: `${row.frac} as a percentage = ?`,
-      options: opts,
-      correct: opts.indexOf(correct),
-      explain: `${row.frac} = ${allForms}`,
-    });
-  }
-
-  // Percentage → Fraction (ask with either decimal or mixed form)
-  for (const row of FP) {
+    // Fraction → Percentage
+    {
+      const correct = pickPct(row);
+      const pool: string[] = [];
+      for (const r of FP) if (r.frac !== row.frac) pool.push(pickPct(r));
+      const dist = pickDistractorStrings(correct, pool);
+      const opts = shuffle([correct, ...dist]);
+      out.push({
+        q: `${row.frac} as a percentage = ?`,
+        options: opts, correct: opts.indexOf(correct),
+        explain: `${row.frac} = ${allForms}`,
+      });
+    }
+    // Percentage → Fraction (one per available pct form)
     for (const pctForm of row.pcts) {
       const correct = row.frac;
       const pool = FP.filter((r) => r.frac !== row.frac).map((r) => r.frac);
       const dist = pickDistractorStrings(correct, pool);
       const opts = shuffle([correct, ...dist]);
-      const allForms = row.pcts.join(' = ');
-      qs.push({
+      out.push({
         q: `${pctForm} as a fraction = ?`,
-        options: opts,
-        correct: opts.indexOf(correct),
+        options: opts, correct: opts.indexOf(correct),
         explain: `${allForms} = ${row.frac}`,
       });
     }
-  }
+    return out;
+  };
 
-  return shuffle(qs);
+  const qs: CalcQ[] = [];
+  for (const row of FP) qs.push(...buildForRow(row));
+  return mode === 'random' ? shuffle(qs) : qs;
 }
 
 // ============ % / DECIMAL MULTIPLICATION ============
