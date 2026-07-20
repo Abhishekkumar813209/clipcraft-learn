@@ -21,6 +21,8 @@ export default function BlackBookPractice() {
   const targetCount = Number(searchParams.get('n')) || 20;
   const order = (searchParams.get('order') === 'serial' ? 'serial' : 'random') as 'serial' | 'random';
   const diff = (['easy', 'medium', 'hard'].includes(searchParams.get('diff') || '') ? searchParams.get('diff') : 'easy') as Diff;
+  const fromSerial = searchParams.get('from') ? Number(searchParams.get('from')) : null;
+  const toSerial = searchParams.get('to') ? Number(searchParams.get('to')) : null;
   const nav = useNavigate();
   const { user } = useAuth();
 
