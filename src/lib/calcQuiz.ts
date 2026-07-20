@@ -511,6 +511,7 @@ export const CHAPTER_META: Record<string, ChapterMeta> = {
   cbroots:   { title: 'Cube Roots',    icon: '∛',  perQSeconds: 12, kind: 'ranged', minAllowed: 2, maxAllowed: 30,  defaultStart: 2, defaultEnd: 20 },
 
   'pct-conv': { title: 'Fraction ↔ Decimal & Mixed', icon: '½',  perQSeconds: 12, kind: 'percent' },
+  'pct-frac': { title: 'Fraction ↔ Percentage',      icon: '％', perQSeconds: 12, kind: 'percent' },
   'pct-calc': { title: '% / Decimal Multiplication', icon: '✖️', perQSeconds: 18, kind: 'percent' },
 
   // Addition (300 each)
