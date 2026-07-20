@@ -201,36 +201,73 @@ function pickDistractorStrings(correct: string, pool: string[], n = 3): string[]
   return out;
 }
 
+// Standard mixed fractions (whole + proper fraction) → improper fraction.
+interface MixedRow { mixed: string; improper: string; }
+const MIXED: MixedRow[] = [
+  { mixed: '1 1/2', improper: '3/2' },
+  { mixed: '1 1/3', improper: '4/3' },
+  { mixed: '1 2/3', improper: '5/3' },
+  { mixed: '1 1/4', improper: '5/4' },
+  { mixed: '1 3/4', improper: '7/4' },
+  { mixed: '1 1/5', improper: '6/5' },
+  { mixed: '1 2/5', improper: '7/5' },
+  { mixed: '1 3/5', improper: '8/5' },
+  { mixed: '1 4/5', improper: '9/5' },
+  { mixed: '1 1/6', improper: '7/6' },
+  { mixed: '1 5/6', improper: '11/6' },
+  { mixed: '1 1/7', improper: '8/7' },
+  { mixed: '1 1/8', improper: '9/8' },
+  { mixed: '1 3/8', improper: '11/8' },
+  { mixed: '1 5/8', improper: '13/8' },
+  { mixed: '1 7/8', improper: '15/8' },
+  { mixed: '1 1/9', improper: '10/9' },
+  { mixed: '1 1/10', improper: '11/10' },
+  { mixed: '2 1/2', improper: '5/2' },
+  { mixed: '2 1/3', improper: '7/3' },
+  { mixed: '2 2/3', improper: '8/3' },
+  { mixed: '2 1/4', improper: '9/4' },
+  { mixed: '2 3/4', improper: '11/4' },
+  { mixed: '2 1/5', improper: '11/5' },
+  { mixed: '2 3/5', improper: '13/5' },
+  { mixed: '2 1/6', improper: '13/6' },
+  { mixed: '2 1/8', improper: '17/8' },
+  { mixed: '3 1/2', improper: '7/2' },
+  { mixed: '3 1/3', improper: '10/3' },
+  { mixed: '3 2/3', improper: '11/3' },
+  { mixed: '3 1/4', improper: '13/4' },
+  { mixed: '3 3/4', improper: '15/4' },
+  { mixed: '3 1/5', improper: '16/5' },
+  { mixed: '4 1/2', improper: '9/2' },
+  { mixed: '4 1/3', improper: '13/3' },
+  { mixed: '4 1/4', improper: '17/4' },
+  { mixed: '4 3/4', improper: '19/4' },
+  { mixed: '5 1/2', improper: '11/2' },
+  { mixed: '5 1/3', improper: '16/3' },
+  { mixed: '5 1/4', improper: '21/4' },
+];
+
+function pickDistractorStrings(correct: string, pool: string[], n = 3): string[] {
+  const seen = new Set<string>([correct]);
+  const out: string[] = [];
+  for (const p of shuffle(pool)) {
+    if (out.length >= n) break;
+    if (seen.has(p)) continue;
+    seen.add(p);
+    out.push(p);
+  }
+  return out;
+}
+
+// Only: Decimal ↔ Fraction, and Mixed → Improper Fraction (standard mixed only).
+// Percentage conversions are intentionally excluded.
 export function genPercentConversion(): CalcQ[] {
   const qs: CalcQ[] = [];
   const fracPool = CHART.map((r) => r.frac);
-  const pctPool = CHART.map((r) => `${r.pct}%`);
   const decPool = CHART.map((r) => String(r.dec));
+  const improperPool = MIXED.map((r) => r.improper);
 
   for (const r of CHART) {
-    // 1) Fraction → Percentage
-    {
-      const correct = `${r.pct}%`;
-      const dist = pickDistractorStrings(correct, pctPool);
-      const opts = shuffle([correct, ...dist]);
-      qs.push({
-        q: `${r.frac} as a percentage = ?`,
-        options: opts, correct: opts.indexOf(correct),
-        explain: `${r.frac} × 100 = ${r.pct}%`,
-      });
-    }
-    // 2) Percentage → Fraction
-    {
-      const correct = r.frac;
-      const dist = pickDistractorStrings(correct, fracPool);
-      const opts = shuffle([correct, ...dist]);
-      qs.push({
-        q: `${r.pct}% as a fraction = ?`,
-        options: opts, correct: opts.indexOf(correct),
-        explain: `${r.pct}% = ${r.frac}`,
-      });
-    }
-    // 3) Fraction → Decimal
+    // Fraction → Decimal
     {
       const correct = String(r.dec);
       const dist = pickDistractorStrings(correct, decPool);
@@ -241,28 +278,31 @@ export function genPercentConversion(): CalcQ[] {
         explain: `${r.frac} = ${r.dec}`,
       });
     }
-    // 4) Decimal → Percentage (and 5) Percentage → Decimal alternating for variety
+    // Decimal → Fraction
     {
-      const correct = `${r.pct}%`;
-      const dist = pickDistractorStrings(correct, pctPool);
+      const correct = r.frac;
+      const dist = pickDistractorStrings(correct, fracPool);
       const opts = shuffle([correct, ...dist]);
       qs.push({
-        q: `${r.dec} as a percentage = ?`,
+        q: `${r.dec} as a fraction = ?`,
         options: opts, correct: opts.indexOf(correct),
-        explain: `${r.dec} × 100 = ${r.pct}%`,
-      });
-    }
-    {
-      const correct = String(r.dec);
-      const dist = pickDistractorStrings(correct, decPool);
-      const opts = shuffle([correct, ...dist]);
-      qs.push({
-        q: `${r.pct}% as a decimal = ?`,
-        options: opts, correct: opts.indexOf(correct),
-        explain: `${r.pct}% = ${r.dec}`,
+        explain: `${r.dec} = ${r.frac}`,
       });
     }
   }
+
+  // Mixed → Improper Fraction (standard mixed only)
+  for (const m of MIXED) {
+    const correct = m.improper;
+    const dist = pickDistractorStrings(correct, improperPool);
+    const opts = shuffle([correct, ...dist]);
+    qs.push({
+      q: `Convert ${m.mixed} to an improper fraction = ?`,
+      options: opts, correct: opts.indexOf(correct),
+      explain: `${m.mixed} = ${m.improper}`,
+    });
+  }
+
   return shuffle(qs);
 }
 
