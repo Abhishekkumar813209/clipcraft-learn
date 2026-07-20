@@ -213,7 +213,7 @@ export default function SscEnglishSynAnt() {
                       </div>
 
                       <div className="pt-1">
-                        <Link to={`${g.href(validN)}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}`}>
+                        <Link to={`${g.href(validN)}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}${fromMap[g.key] ? `&from=${fromMap[g.key]}` : ''}${toMap[g.key] ? `&to=${toMap[g.key]}` : ''}`}>
                           <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">
                             <Sparkles className="w-4 h-4 mr-1" /> Practice
                           </Button>
