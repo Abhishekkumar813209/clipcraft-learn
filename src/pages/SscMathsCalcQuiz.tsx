@@ -93,6 +93,8 @@ export default function SscMathsCalcQuiz() {
       const s = Number(start) || (meta.defaultStart ?? 2);
       const e = Number(end)   || (meta.defaultEnd   ?? 20);
       setPool(generateQuiz(chapter, { start: s, end: e, mode, difficulty }));
+    } else if (chapter === 'pct-frac') {
+      setPool(generateQuiz(chapter, { mode }));
     } else {
       setPool(generateQuiz(chapter));
     }
