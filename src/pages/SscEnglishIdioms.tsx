@@ -36,7 +36,13 @@ export default function SscEnglishIdioms() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [prog, setProg] = useState<Record<string, Progress>>({});
   const [nMap, setNMap] = useState<Record<string, string>>(() =>
-    Object.fromEntries(GROUPS.map((g) => [g.key, String(g.defaultQuiz)]))
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
+  );
+  const [fromMap, setFromMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
+  );
+  const [toMap, setToMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
   );
   const [orderMap, setOrderMap] = useState<Record<string, 'random' | 'serial'>>(() =>
     Object.fromEntries(GROUPS.map((g) => [g.key, 'random' as const]))
