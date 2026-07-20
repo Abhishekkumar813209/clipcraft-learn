@@ -179,7 +179,26 @@ export default function SscMathsCalcQuiz() {
                     <p className="text-xs text-amber-700 bg-amber-50 rounded-md p-2">
                       Medium: distractors share the unit-digit of the correct answer, so quick unit-digit prediction won't work.
                     </p>
-                  )}
+            )}
+
+            {showOrderOnly && (
+              <div className="space-y-2">
+                <div className="text-sm font-medium text-slate-700">Order</div>
+                <div className="flex gap-2">
+                  {(['serial', 'random'] as Mode[]).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setMode(m)}
+                      className={cn(
+                        'px-3 py-1.5 rounded-full text-xs border transition capitalize',
+                        mode === m ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent',
+                      )}
+                    >{m}</button>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-500">Serial: 1/2 → 1/3 → 1/4 … (grouped by fraction). Random: shuffled.</p>
+              </div>
+            )}
                 </div>
               </>
             )}
