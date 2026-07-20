@@ -49,7 +49,13 @@ export default function SscEnglishSynAnt() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [prog, setProg] = useState<Progress>({ attempted: 0, correct: 0 });
   const [nMap, setNMap] = useState<Record<string, string>>(() =>
-    Object.fromEntries(GROUPS.map((g) => [g.key, String(g.defaultQuiz)]))
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
+  );
+  const [fromMap, setFromMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
+  );
+  const [toMap, setToMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
   );
   const [orderMap, setOrderMap] = useState<Record<string, 'random' | 'serial'>>(() =>
     Object.fromEntries(GROUPS.map((g) => [g.key, 'random' as const]))
