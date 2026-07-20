@@ -146,7 +146,12 @@ export default function SscEnglishSynAnt() {
               {GROUPS.filter((g) => g.section === sec.key).map((g) => {
                 const rawN = nMap[g.key] ?? '';
                 const parsedN = parseInt(rawN, 10);
-                const validN = Number.isFinite(parsedN) && parsedN > 0 ? parsedN : g.defaultQuiz;
+                const fromN = parseInt(fromMap[g.key] ?? '', 10);
+                const toN = parseInt(toMap[g.key] ?? '', 10);
+                const rangeSize = Number.isFinite(fromN) && Number.isFinite(toN) && toN >= fromN ? (toN - fromN + 1) : null;
+                const validN = Number.isFinite(parsedN) && parsedN > 0
+                  ? parsedN
+                  : (rangeSize ?? g.defaultQuiz);
                 return (
                   <Card key={g.key} className={`bg-gradient-to-br ${g.color} border-emerald-100 shadow-sm`}>
                     <CardContent className="p-5 space-y-3">

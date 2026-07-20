@@ -43,7 +43,7 @@ function splitList(s: string | null): string[] {
 }
 
 export async function fetchSAItems(mode: SAMode, sub: SASub): Promise<SAItem[]> {
-  let q = supabase.from('ssc_syn_ant_items' as never).select('*').eq('subcategory', sub);
+  let q = supabase.from('ssc_syn_ant_items' as never).select('*').eq('subcategory', sub).limit(20000);
   if (mode !== 'mixed') q = q.eq('kind', mode);
   const { data, error } = await q;
   if (error) throw error;
