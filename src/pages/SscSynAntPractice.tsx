@@ -18,6 +18,8 @@ export default function SscSynAntPractice() {
   const sub = (sp.get('sub') || 'top_100') as SASub;
   const n = Number(sp.get('n')) || 20;
   const diff = (['easy', 'medium', 'hard'].includes(sp.get('diff') || '') ? sp.get('diff') : 'easy') as Diff;
+  const fromSerial = sp.get('from') ? Number(sp.get('from')) : null;
+  const toSerial = sp.get('to') ? Number(sp.get('to')) : null;
   const nav = useNavigate();
   const { user } = useAuth();
   const wordHindi = useWordHindi();
@@ -66,7 +68,16 @@ export default function SscSynAntPractice() {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchSAItems(mode, sub);
+      const raw = await fetchSAItems(mode, sub);
+      const data = (fromSerial != null || toSerial != null)
+        ? raw.filter((it) => {
+            const s = it.serial_no;
+            if (s == null) return false;
+            if (fromSerial != null && s < fromSerial) return false;
+            if (toSerial != null && s > toSerial) return false;
+            return true;
+          })
+        : raw;
       setItems(data);
       const built = buildSAQuestionSet(data, n);
       setQs(built);
@@ -79,7 +90,7 @@ export default function SscSynAntPractice() {
         if (s) setSessionId((s as any).id);
       }
     })();
-  }, [mode, sub, n, user]);
+  }, [mode, sub, n, user, fromSerial, toSerial]);
 
   const q = qs[i];
   const picked = picks[i];

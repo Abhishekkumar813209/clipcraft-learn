@@ -49,7 +49,13 @@ export default function SscEnglishSynAnt() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [prog, setProg] = useState<Progress>({ attempted: 0, correct: 0 });
   const [nMap, setNMap] = useState<Record<string, string>>(() =>
-    Object.fromEntries(GROUPS.map((g) => [g.key, String(g.defaultQuiz)]))
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
+  );
+  const [fromMap, setFromMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
+  );
+  const [toMap, setToMap] = useState<Record<string, string>>(() =>
+    Object.fromEntries(GROUPS.map((g) => [g.key, '']))
   );
   const [orderMap, setOrderMap] = useState<Record<string, 'random' | 'serial'>>(() =>
     Object.fromEntries(GROUPS.map((g) => [g.key, 'random' as const]))
@@ -152,7 +158,7 @@ export default function SscEnglishSynAnt() {
                         <Badge className="bg-white/70 text-emerald-700 border border-emerald-200">{countFor(g)}</Badge>
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-slate-700">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700">
                         <label htmlFor={`n-${g.key}`}>Questions:</label>
                         <input
                           id={`n-${g.key}`}
@@ -163,7 +169,27 @@ export default function SscEnglishSynAnt() {
                           className="w-20 px-2 py-1 rounded border border-emerald-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                           placeholder={String(g.defaultQuiz)}
                         />
-                        <span className="text-slate-500">(default {g.defaultQuiz})</span>
+                        <span className="text-slate-500">default {g.defaultQuiz}</span>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700">
+                        <span className="font-medium">Range:</span>
+                        <input
+                          type="text" inputMode="numeric"
+                          value={fromMap[g.key] ?? ''}
+                          onChange={(e) => setFromMap((m) => ({ ...m, [g.key]: e.target.value.replace(/[^0-9]/g, '') }))}
+                          className="w-16 px-2 py-1 rounded border border-emerald-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          placeholder="from"
+                        />
+                        <span>→</span>
+                        <input
+                          type="text" inputMode="numeric"
+                          value={toMap[g.key] ?? ''}
+                          onChange={(e) => setToMap((m) => ({ ...m, [g.key]: e.target.value.replace(/[^0-9]/g, '') }))}
+                          className="w-16 px-2 py-1 rounded border border-emerald-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          placeholder="to"
+                        />
+                        <span className="text-slate-500">optional (serial no)</span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700">
@@ -187,7 +213,7 @@ export default function SscEnglishSynAnt() {
                       </div>
 
                       <div className="pt-1">
-                        <Link to={`${g.href(validN)}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}`}>
+                        <Link to={`${g.href(validN)}&order=${orderMap[g.key]}&diff=${diffMap[g.key]}${fromMap[g.key] ? `&from=${fromMap[g.key]}` : ''}${toMap[g.key] ? `&to=${toMap[g.key]}` : ''}`}>
                           <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">
                             <Sparkles className="w-4 h-4 mr-1" /> Practice
                           </Button>

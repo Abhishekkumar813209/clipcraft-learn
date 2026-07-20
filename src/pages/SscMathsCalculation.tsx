@@ -13,7 +13,7 @@ const POWERS: ChapterCard[] = [
 ];
 
 const PERCENT: ChapterCard[] = [
-  { slug: 'pct-conv', icon: '％', title: '% ↔ Fraction Conversion',    desc: '1/3=33.33%, 5/8=62.5%, 66.66% → ?', count: '240+ questions' },
+  { slug: 'pct-conv', icon: '½', title: 'Fraction ↔ Decimal & Mixed', desc: 'Dec→Frac, Frac→Dec, Mixed→Improper (standard mixed only)', count: '140+ questions' },
   { slug: 'pct-calc', icon: '✖️', title: '% / Decimal Multiplication', desc: '33.33% of 90, 125% of 54, 88.88% of 45', count: '200+ questions' },
 ];
 
