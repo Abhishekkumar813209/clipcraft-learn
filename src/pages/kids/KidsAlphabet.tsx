@@ -61,6 +61,16 @@ export default function KidsAlphabet() {
     }
   };
 
+  const undoSlot = (slotIndex: number) => {
+    if (won) return;
+    const letter = built[slotIndex];
+    if (!letter) return;
+    // Find which picked index produced this slot letter
+    const pickedIndex = picked[slotIndex];
+    const next = picked.filter((_, i) => i !== slotIndex);
+    setPicked(next);
+  };
+
   const nextWord = () => {
     setPicked([]);
     setWon(false);
