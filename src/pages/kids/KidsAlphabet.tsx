@@ -61,6 +61,14 @@ export default function KidsAlphabet() {
     }
   };
 
+  const undoSlot = (slotIndex: number) => {
+    if (won) return;
+    const letter = built[slotIndex];
+    if (!letter) return;
+    const next = picked.filter((_, i) => i !== slotIndex);
+    setPicked(next);
+  };
+
   const nextWord = () => {
     setPicked([]);
     setWon(false);
@@ -83,18 +91,21 @@ export default function KidsAlphabet() {
         {/* Slots */}
         <div className="flex justify-center gap-2 flex-wrap mb-6">
           {current.word.split('').map((_, i) => (
-            <div
+            <button
               key={i}
-              className={`w-14 h-14 rounded-2xl border-4 flex items-center justify-center text-2xl font-black ${
+              type="button"
+              onClick={() => undoSlot(i)}
+              disabled={won}
+              className={`w-14 h-14 rounded-2xl border-4 flex items-center justify-center text-2xl font-black transition-transform active:scale-90 ${
                 built[i]
                   ? won
-                    ? 'bg-green-200 border-green-400 text-green-800'
-                    : 'bg-pink-200 border-pink-400 text-pink-800'
+                    ? 'bg-green-200 border-green-400 text-green-800 cursor-default'
+                    : 'bg-pink-200 border-pink-400 text-pink-800 hover:scale-105'
                   : 'bg-white border-dashed border-slate-300'
               }`}
             >
               {built[i] || ''}
-            </div>
+            </button>
           ))}
         </div>
 
