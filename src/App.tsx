@@ -48,6 +48,10 @@ import RbiPyqSession from "./pages/RbiPyqSession";
 import HumorCoach from "./pages/HumorCoach";
 import ProductivityCoach from "./pages/ProductivityCoach";
 import GdPrep from "./pages/GdPrep";
+import KidsHub from "./pages/kids/KidsHub";
+import KidsAlphabet from "./pages/kids/KidsAlphabet";
+import KidsCounting from "./pages/kids/KidsCounting";
+import KidsNumberLine from "./pages/kids/KidsNumberLine";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminRoute } from "./components/AdminRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -173,6 +177,11 @@ const App = () => (
             <Route path="/humor" element={<ProtectedRoute><HumorCoach /></ProtectedRoute>} />
             <Route path="/productivity" element={<ProtectedRoute><ProductivityCoach /></ProtectedRoute>} />
             <Route path="/gd" element={<ProtectedRoute><GdPrep /></ProtectedRoute>} />
+            <Route path="/kids" element={<ProtectedRoute><KidsHub /></ProtectedRoute>} />
+            <Route path="/kids/alphabet" element={<ProtectedRoute><KidsAlphabet /></ProtectedRoute>} />
+            <Route path="/kids/counting" element={<ProtectedRoute><KidsCounting /></ProtectedRoute>} />
+            <Route path="/kids/numberline" element={<ProtectedRoute><KidsNumberLine /></ProtectedRoute>} />
+
             <Route path="/quiz/daily" element={<ProtectedRoute><DailyQuiz /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
               <Route index element={<AdminDashboard />} />
