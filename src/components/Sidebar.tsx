@@ -62,7 +62,7 @@ export function Sidebar() {
           <NavItem icon={Landmark} label="BPSC Prep" active={isActive('/bpsc')} onClick={() => navigate('/bpsc')} />
           <NavItem icon={Building2} label="RBI Grade B" active={isActive('/rbi')} onClick={() => navigate('/rbi')} />
           <NavItem icon={Timer} label="Productivity" active={isActive('/productivity')} onClick={() => navigate('/productivity')} />
-          <NavItem icon={MessageSquare} label="GD Prep" active={isActive('/gd')} onClick={() => navigate('/gd')} />
+          <NavItem icon={Baby} label="Kids Corner" active={isActive('/kids')} onClick={() => navigate('/kids')} />
         </nav>
 
         {/* Exams List */}
