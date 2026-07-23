@@ -272,11 +272,11 @@ export default function SscSynAntPractice() {
               </div>
               <Button
                 variant="ghost" size="sm"
-                className={`shrink-0 ${bookmarkedQ[i] ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}`}
+                className={`shrink-0 ${qRefs.has(q.item.id) ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}`}
                 onClick={bookmarkQuestion}
                 title="Bookmark question"
               >
-                <Bookmark className={`w-4 h-4 ${bookmarkedQ[i] ? 'fill-current' : ''}`} />
+                <Bookmark className={`w-4 h-4 ${qRefs.has(q.item.id) ? 'fill-current' : ''}`} />
               </Button>
             </div>
             {picked === null && hintText && diff !== 'hard' && (
