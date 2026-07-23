@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight, Play } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useBookmarks, BookmarkRow, CHAPTER_LABELS, SUBJECT_LABELS, BookmarkSubject } from '@/lib/bookmarks';
@@ -96,18 +96,33 @@ export default function SscBookmarks() {
                 const chOpen = openChapter[key] !== false;
                 const questions = items.filter((r) => r.kind === 'question');
                 const options = items.filter((r) => r.kind === 'option');
+                const uniqueQCount = new Set(questions.map((q) => q.item_ref || q.id)).size;
+                const practiceUrl =
+                  chapter === 'idiom' ? `/ssc/blackbook/practice/idiom?bookmarks=1&n=${Math.max(uniqueQCount, 1)}`
+                  : chapter === 'ows' ? `/ssc/blackbook/practice/ows?bookmarks=1&n=${Math.max(uniqueQCount, 1)}`
+                  : chapter === 'syn_ant' ? `/ssc/english/synant/practice?bookmarks=1&n=${Math.max(uniqueQCount, 1)}`
+                  : null;
                 return (
                   <div key={key} className="border border-emerald-100 rounded-lg bg-white/70">
-                    <button
-                      className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium text-slate-800"
-                      onClick={() => setOpenChapter((m) => ({ ...m, [key]: !chOpen }))}
-                    >
-                      <span className="flex items-center gap-2">
+                    <div className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium text-slate-800 gap-2">
+                      <button
+                        className="flex items-center gap-2 flex-1 text-left"
+                        onClick={() => setOpenChapter((m) => ({ ...m, [key]: !chOpen }))}
+                      >
                         {chOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                         {CHAPTER_LABELS[chapter] || chapter}
-                      </span>
-                      <span className="text-xs text-slate-500">{questions.length} Q · {options.length} options</span>
-                    </button>
+                        <span className="text-xs text-slate-500 ml-2">{uniqueQCount} Q · {options.length} options</span>
+                      </button>
+                      {practiceUrl && uniqueQCount > 0 && (
+                        <Button
+                          size="sm"
+                          className="h-7 bg-emerald-600 hover:bg-emerald-500 text-white"
+                          onClick={(e) => { e.stopPropagation(); nav(practiceUrl); }}
+                        >
+                          <Play className="w-3.5 h-3.5 mr-1" /> Practice
+                        </Button>
+                      )}
+                    </div>
                     {chOpen && (
                       <div className="px-4 pb-4 space-y-4">
                         {questions.length > 0 && (

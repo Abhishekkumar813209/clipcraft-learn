@@ -52,6 +52,28 @@ export async function toggleBookmark(userId: string, input: BookmarkInput): Prom
   return 'added';
 }
 
+// Fetch bookmarked item_refs + option keys for a user in a specific chapter.
+// Used by practice pages to show "already bookmarked" state and by the
+// bookmark-quiz mode to restrict question set to bookmarked items only.
+export async function fetchChapterBookmarks(userId: string, chapter: string): Promise<{
+  qRefs: Set<string>;
+  oKeys: Set<string>; // `${item_ref}||${option_text}`
+}> {
+  const { data } = await supabase
+    .from('ssc_bookmarks' as never)
+    .select('kind,item_ref,option_text')
+    .eq('user_id', userId)
+    .eq('chapter', chapter);
+  const qRefs = new Set<string>();
+  const oKeys = new Set<string>();
+  for (const r of (data as any[]) || []) {
+    if (!r.item_ref) continue;
+    if (r.kind === 'question') qRefs.add(r.item_ref);
+    else if (r.kind === 'option' && r.option_text) oKeys.add(`${r.item_ref}||${r.option_text}`);
+  }
+  return { qRefs, oKeys };
+}
+
 // Horizontal-swipe detector. Fires onSwipe on any horizontal drag > threshold px.
 export function useHorizontalSwipe(onSwipe: () => void, threshold = 60) {
   const startX = useRef<number | null>(null);

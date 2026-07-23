@@ -7,7 +7,7 @@ import { fetchSAItems, buildSAQuestionSet, SAMode, SASub, SAQuestion, SAItem } f
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
-import { toggleBookmark } from '@/lib/bookmarks';
+import { toggleBookmark, fetchChapterBookmarks } from '@/lib/bookmarks';
 import { toast } from '@/hooks/use-toast';
 
 type Diff = 'easy' | 'medium' | 'hard';
@@ -20,6 +20,7 @@ export default function SscSynAntPractice() {
   const diff = (['easy', 'medium', 'hard'].includes(sp.get('diff') || '') ? sp.get('diff') : 'easy') as Diff;
   const fromSerial = sp.get('from') ? Number(sp.get('from')) : null;
   const toSerial = sp.get('to') ? Number(sp.get('to')) : null;
+  const bookmarksOnly = sp.get('bookmarks') === '1';
   const nav = useNavigate();
   const { user } = useAuth();
   const wordHindi = useWordHindi();
@@ -34,8 +35,8 @@ export default function SscSynAntPractice() {
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [bookmarkedQ, setBookmarkedQ] = useState<Record<number, boolean>>({});
-  const [bookmarkedOpt, setBookmarkedOpt] = useState<Record<string, boolean>>({});
+  const [qRefs, setQRefs] = useState<Set<string>>(new Set());
+  const [oKeys, setOKeys] = useState<Set<string>>(new Set());
 
   // Hinglish lookup: index every item's word AND its syn/ant tokens so any option can flip to Hindi.
   const itemHindiMap = useMemo(() => {
@@ -68,18 +69,34 @@ export default function SscSynAntPractice() {
 
   useEffect(() => {
     (async () => {
-      const raw = await fetchSAItems(mode, sub);
-      const data = (fromSerial != null || toSerial != null)
-        ? raw.filter((it) => {
-            const s = it.serial_no;
-            if (s == null) return false;
-            if (fromSerial != null && s < fromSerial) return false;
-            if (toSerial != null && s > toSerial) return false;
-            return true;
+      // In bookmarks-only mode we want ALL syn/ant items (any sub) intersected with bookmarks.
+      const raw = bookmarksOnly
+        ? await fetchSAItems('mixed', 'top_100').then(async (a) => {
+            const b = await fetchSAItems('mixed', 'all_repeated');
+            return [...a, ...b];
           })
-        : raw;
+        : await fetchSAItems(mode, sub);
+      let bmRefs = new Set<string>();
+      let bmOKeys = new Set<string>();
+      if (user) {
+        const bm = await fetchChapterBookmarks(user.id, 'syn_ant');
+        bmRefs = bm.qRefs; bmOKeys = bm.oKeys;
+        setQRefs(bmRefs); setOKeys(bmOKeys);
+      }
+      let data = raw;
+      if (bookmarksOnly) {
+        data = raw.filter((it) => bmRefs.has(it.id));
+      } else if (fromSerial != null || toSerial != null) {
+        data = raw.filter((it) => {
+          const s = it.serial_no;
+          if (s == null) return false;
+          if (fromSerial != null && s < fromSerial) return false;
+          if (toSerial != null && s > toSerial) return false;
+          return true;
+        });
+      }
       setItems(data);
-      const built = buildSAQuestionSet(data, n);
+      const built = buildSAQuestionSet(data, bookmarksOnly ? Math.max(n, data.length) : n);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
@@ -90,7 +107,7 @@ export default function SscSynAntPractice() {
         if (s) setSessionId((s as any).id);
       }
     })();
-  }, [mode, sub, n, user, fromSerial, toSerial]);
+  }, [mode, sub, n, user, fromSerial, toSerial, bookmarksOnly]);
 
   const q = qs[i];
   const picked = picks[i];
@@ -146,7 +163,6 @@ export default function SscSynAntPractice() {
     const built = buildSAQuestionSet(items, n);
     setQs(built); setPicks(new Array(built.length).fill(null));
     setI(0); setDone(false); setHint({}); setFlipAll({}); setRevealed({});
-    setBookmarkedQ({}); setBookmarkedOpt({});
     if (user && built.length) {
       supabase.from('bb_practice_sessions' as never).insert({
         user_id: user.id, category: 'syn_ant', total: built.length, correct: 0,
@@ -161,7 +177,7 @@ export default function SscSynAntPractice() {
       subcategory: sub, item_ref: q.item.id, question_text: q.question,
       correct_text: q.options[q.correct],
     });
-    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    setQRefs((s) => { const nn = new Set(s); if (res === 'added') nn.add(q.item.id); else nn.delete(q.item.id); return nn; });
     toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
@@ -172,7 +188,8 @@ export default function SscSynAntPractice() {
       subcategory: sub, item_ref: q.item.id, question_text: q.question,
       option_text: opt, correct_text: q.options[q.correct],
     });
-    setBookmarkedOpt((m) => ({ ...m, [`${i}-${idx}`]: res === 'added' }));
+    const k = `${q.item.id}||${opt}`;
+    setOKeys((s) => { const nn = new Set(s); if (res === 'added') nn.add(k); else nn.delete(k); return nn; });
     toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
@@ -255,11 +272,11 @@ export default function SscSynAntPractice() {
               </div>
               <Button
                 variant="ghost" size="sm"
-                className={`shrink-0 ${bookmarkedQ[i] ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}`}
+                className={`shrink-0 ${qRefs.has(q.item.id) ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}`}
                 onClick={bookmarkQuestion}
                 title="Bookmark question"
               >
-                <Bookmark className={`w-4 h-4 ${bookmarkedQ[i] ? 'fill-current' : ''}`} />
+                <Bookmark className={`w-4 h-4 ${qRefs.has(q.item.id) ? 'fill-current' : ''}`} />
               </Button>
             </div>
             {picked === null && hintText && diff !== 'hard' && (
@@ -281,8 +298,8 @@ export default function SscSynAntPractice() {
                 const isPicked = picked === idx;
                 const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
                 const optHindi = show ? hindiForOption(opt) : '';
-                const optKey = `${i}-${idx}`;
-                const optBook = !!bookmarkedOpt[optKey];
+                const optKey = `${q.item.id}||${opt}`;
+                const optBook = oKeys.has(optKey);
                 return (
                   <div key={idx} className="flex items-stretch gap-2">
                     <button

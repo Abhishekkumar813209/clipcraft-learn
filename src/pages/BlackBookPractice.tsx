@@ -9,7 +9,7 @@ import { BlackBookExplanation } from '@/components/BlackBookExplanation';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
-import { toggleBookmark } from '@/lib/bookmarks';
+import { toggleBookmark, fetchChapterBookmarks } from '@/lib/bookmarks';
 import { toast } from '@/hooks/use-toast';
 
 type Diff = 'easy' | 'medium' | 'hard';
@@ -23,6 +23,7 @@ export default function BlackBookPractice() {
   const diff = (['easy', 'medium', 'hard'].includes(searchParams.get('diff') || '') ? searchParams.get('diff') : 'easy') as Diff;
   const fromSerial = searchParams.get('from') ? Number(searchParams.get('from')) : null;
   const toSerial = searchParams.get('to') ? Number(searchParams.get('to')) : null;
+  const bookmarksOnly = searchParams.get('bookmarks') === '1';
   const nav = useNavigate();
   const { user } = useAuth();
 
@@ -36,8 +37,8 @@ export default function BlackBookPractice() {
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [hintShown, setHintShown] = useState<Record<number, boolean>>({});
-  const [bookmarkedQ, setBookmarkedQ] = useState<Record<number, boolean>>({});
-  const [bookmarkedOpt, setBookmarkedOpt] = useState<Record<string, boolean>>({});
+  const [qRefs, setQRefs] = useState<Set<string>>(new Set());
+  const [oKeys, setOKeys] = useState<Set<string>>(new Set());
   const wordHindi = useWordHindi();
 
   const itemHindiMap = useMemo(() => {
@@ -58,18 +59,31 @@ export default function BlackBookPractice() {
 
   useEffect(() => {
     (async () => {
-      const raw = await fetchBBItems(category as BBCategory | 'mixed', subcategory);
-      const data = (fromSerial != null || toSerial != null)
-        ? raw.filter((it) => {
-            const s = it.serial_no;
-            if (s == null) return false;
-            if (fromSerial != null && s < fromSerial) return false;
-            if (toSerial != null && s > toSerial) return false;
-            return true;
-          })
-        : raw;
+      const raw = await fetchBBItems(category as BBCategory | 'mixed', bookmarksOnly ? undefined : subcategory);
+      let bmRefs = new Set<string>();
+      let bmOKeys = new Set<string>();
+      if (user) {
+        const cat = category === 'mixed' ? null : category;
+        if (cat) {
+          const bm = await fetchChapterBookmarks(user.id, cat);
+          bmRefs = bm.qRefs; bmOKeys = bm.oKeys;
+          setQRefs(bmRefs); setOKeys(bmOKeys);
+        }
+      }
+      let data = raw;
+      if (bookmarksOnly) {
+        data = raw.filter((it) => bmRefs.has(it.id));
+      } else if (fromSerial != null || toSerial != null) {
+        data = raw.filter((it) => {
+          const s = it.serial_no;
+          if (s == null) return false;
+          if (fromSerial != null && s < fromSerial) return false;
+          if (toSerial != null && s > toSerial) return false;
+          return true;
+        });
+      }
       setItems(data);
-      const built = buildQuestionSet(data, targetCount, undefined, order);
+      const built = buildQuestionSet(data, bookmarksOnly ? Math.max(targetCount, data.length) : targetCount, undefined, order);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
@@ -81,7 +95,7 @@ export default function BlackBookPractice() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory, targetCount, order, fromSerial, toSerial]);
+  }, [category, subcategory, targetCount, order, fromSerial, toSerial, bookmarksOnly]);
 
   const q = qs[i];
   const picked = picks[i];
@@ -128,7 +142,7 @@ export default function BlackBookPractice() {
       subcategory: (q.item as any).subcategory ?? null,
       item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
     });
-    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    setQRefs((s) => { const n = new Set(s); if (res === 'added') n.add(q.item.id); else n.delete(q.item.id); return n; });
     toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
@@ -140,7 +154,8 @@ export default function BlackBookPractice() {
       item_ref: q.item.id, question_text: q.question,
       option_text: opt, correct_text: q.options[q.correct],
     });
-    setBookmarkedOpt((m) => ({ ...m, [`${i}-${idx}`]: res === 'added' }));
+    const k = `${q.item.id}||${opt}`;
+    setOKeys((s) => { const n = new Set(s); if (res === 'added') n.add(k); else n.delete(k); return n; });
     toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
@@ -160,7 +175,7 @@ export default function BlackBookPractice() {
     setQs(built);
     setPicks(new Array(built.length).fill(null));
     setI(0); setDone(false); setSessionId(null);
-    setHintShown({}); setFlipAll({}); setRevealed({}); setBookmarkedQ({}); setBookmarkedOpt({});
+    setHintShown({}); setFlipAll({}); setRevealed({});
     if (user && built.length) {
       supabase.from('bb_practice_sessions' as never).insert({
         user_id: user.id, category, total: built.length, correct: 0,
@@ -244,7 +259,7 @@ export default function BlackBookPractice() {
   const isSynAnt = q.item.category === 'syn_ant';
   const hintText = isIdiom ? q.item.hint : isSynAnt ? hindiForOption(q.item.prompt || '') : null;
   const hintAvailable = diff !== 'hard' && !!hintText && hintText !== '—';
-  const qBookmarked = !!bookmarkedQ[i];
+  const qBookmarked = qRefs.has(q.item.id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
@@ -300,8 +315,8 @@ export default function BlackBookPractice() {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const isFlipped = show && (flipAll[i] || !!revealed[i]?.has(idx));
-                const optKey = `${i}-${idx}`;
-                const optBook = !!bookmarkedOpt[optKey];
+                const optKey = `${q.item.id}||${opt}`;
+                const optBook = oKeys.has(optKey);
                 return (
                   <div key={idx} className="flex items-stretch gap-2">
                     <button
