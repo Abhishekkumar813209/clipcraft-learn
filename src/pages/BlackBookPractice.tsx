@@ -37,8 +37,8 @@ export default function BlackBookPractice() {
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [hintShown, setHintShown] = useState<Record<number, boolean>>({});
-  const [bookmarkedQ, setBookmarkedQ] = useState<Record<number, boolean>>({});
-  const [bookmarkedOpt, setBookmarkedOpt] = useState<Record<string, boolean>>({});
+  const [qRefs, setQRefs] = useState<Set<string>>(new Set());
+  const [oKeys, setOKeys] = useState<Set<string>>(new Set());
   const wordHindi = useWordHindi();
 
   const itemHindiMap = useMemo(() => {
