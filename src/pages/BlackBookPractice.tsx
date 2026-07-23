@@ -59,18 +59,31 @@ export default function BlackBookPractice() {
 
   useEffect(() => {
     (async () => {
-      const raw = await fetchBBItems(category as BBCategory | 'mixed', subcategory);
-      const data = (fromSerial != null || toSerial != null)
-        ? raw.filter((it) => {
-            const s = it.serial_no;
-            if (s == null) return false;
-            if (fromSerial != null && s < fromSerial) return false;
-            if (toSerial != null && s > toSerial) return false;
-            return true;
-          })
-        : raw;
+      const raw = await fetchBBItems(category as BBCategory | 'mixed', bookmarksOnly ? undefined : subcategory);
+      let bmRefs = new Set<string>();
+      let bmOKeys = new Set<string>();
+      if (user) {
+        const cat = category === 'mixed' ? null : category;
+        if (cat) {
+          const bm = await fetchChapterBookmarks(user.id, cat);
+          bmRefs = bm.qRefs; bmOKeys = bm.oKeys;
+          setQRefs(bmRefs); setOKeys(bmOKeys);
+        }
+      }
+      let data = raw;
+      if (bookmarksOnly) {
+        data = raw.filter((it) => bmRefs.has(it.id));
+      } else if (fromSerial != null || toSerial != null) {
+        data = raw.filter((it) => {
+          const s = it.serial_no;
+          if (s == null) return false;
+          if (fromSerial != null && s < fromSerial) return false;
+          if (toSerial != null && s > toSerial) return false;
+          return true;
+        });
+      }
       setItems(data);
-      const built = buildQuestionSet(data, targetCount, undefined, order);
+      const built = buildQuestionSet(data, bookmarksOnly ? Math.max(targetCount, data.length) : targetCount, undefined, order);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
@@ -82,7 +95,7 @@ export default function BlackBookPractice() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory, targetCount, order, fromSerial, toSerial]);
+  }, [category, subcategory, targetCount, order, fromSerial, toSerial, bookmarksOnly]);
 
   const q = qs[i];
   const picked = picks[i];
