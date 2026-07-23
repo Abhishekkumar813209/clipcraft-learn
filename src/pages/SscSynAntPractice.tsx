@@ -177,7 +177,7 @@ export default function SscSynAntPractice() {
       subcategory: sub, item_ref: q.item.id, question_text: q.question,
       correct_text: q.options[q.correct],
     });
-    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    setQRefs((s) => { const nn = new Set(s); if (res === 'added') nn.add(q.item.id); else nn.delete(q.item.id); return nn; });
     toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
