@@ -1,13 +1,15 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { BookOpen, Grid3X3, Trophy, FileText, ArrowLeft, Sparkles, Search, Menu, History, Sprout, Calculator, Brain, Languages, Globe2, Bookmark } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { BookOpen, Grid3X3, Trophy, FileText, ArrowLeft, Sparkles, Search, Menu, History, Sprout, Calculator, Brain, Languages, Globe2, Bookmark, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { describeSscRoute, recordSscVisit } from '@/lib/sscHistory';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/ssc', icon: BookOpen },
   { label: 'Practice', path: '/ssc/practice', icon: Grid3X3 },
+  { label: 'Recent Practice', path: '/ssc/history', icon: Clock },
   { label: 'BB Practice', path: '/ssc/blackbook', icon: Sparkles },
   { label: 'English Vocabulary', path: '/ssc/roots', icon: Sprout },
   { label: 'BB Browse', path: '/ssc/blackbook/browse', icon: Search },
