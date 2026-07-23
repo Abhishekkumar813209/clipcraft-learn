@@ -20,6 +20,7 @@ export default function SscSynAntPractice() {
   const diff = (['easy', 'medium', 'hard'].includes(sp.get('diff') || '') ? sp.get('diff') : 'easy') as Diff;
   const fromSerial = sp.get('from') ? Number(sp.get('from')) : null;
   const toSerial = sp.get('to') ? Number(sp.get('to')) : null;
+  const bookmarksOnly = sp.get('bookmarks') === '1';
   const nav = useNavigate();
   const { user } = useAuth();
   const wordHindi = useWordHindi();
