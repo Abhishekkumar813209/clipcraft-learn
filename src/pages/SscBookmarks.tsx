@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight, Play } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useBookmarks, BookmarkRow, CHAPTER_LABELS, SUBJECT_LABELS, BookmarkSubject } from '@/lib/bookmarks';
