@@ -146,6 +146,7 @@ const App = () => (
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
               <Route path="bookmarks" element={<SscBookmarks />} />
+              <Route path="history" element={<SscHistory />} />
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
