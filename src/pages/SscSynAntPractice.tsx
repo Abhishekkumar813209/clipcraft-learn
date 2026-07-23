@@ -163,7 +163,6 @@ export default function SscSynAntPractice() {
     const built = buildSAQuestionSet(items, n);
     setQs(built); setPicks(new Array(built.length).fill(null));
     setI(0); setDone(false); setHint({}); setFlipAll({}); setRevealed({});
-    setBookmarkedQ({}); setBookmarkedOpt({});
     if (user && built.length) {
       supabase.from('bb_practice_sessions' as never).insert({
         user_id: user.id, category: 'syn_ant', total: built.length, correct: 0,
