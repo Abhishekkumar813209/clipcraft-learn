@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight, Play } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight, Play, CheckSquare } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useBookmarks, BookmarkRow, CHAPTER_LABELS, SUBJECT_LABELS, BookmarkSubject } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 export default function SscBookmarks() {
   const nav = useNavigate();
@@ -14,6 +16,30 @@ export default function SscBookmarks() {
   const { rows, loading, reload } = useBookmarks(user?.id);
   const [openSubject, setOpenSubject] = useState<Record<string, boolean>>({ english: true, maths: true });
   const [openChapter, setOpenChapter] = useState<Record<string, boolean>>({});
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
+
+  const toggleSel = (id: string) => setSelected((s) => {
+    const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n;
+  });
+  const selectAll = (ids: string[]) => setSelected((s) => {
+    const n = new Set(s); ids.forEach((id) => n.add(id)); return n;
+  });
+  const clearSelIn = (ids: string[]) => setSelected((s) => {
+    const n = new Set(s); ids.forEach((id) => n.delete(id)); return n;
+  });
+
+  async function removeSelected() {
+    if (!selected.size) return;
+    setBusy(true);
+    const ids = Array.from(selected);
+    const { error } = await supabase.from('ssc_bookmarks' as never).delete().in('id', ids);
+    setBusy(false);
+    if (error) { toast({ title: 'Delete failed', description: error.message, variant: 'destructive' }); return; }
+    toast({ title: `Removed ${ids.length} bookmark${ids.length > 1 ? 's' : ''}` });
+    setSelected(new Set());
+    reload();
+  }
 
   const bySubject = useMemo(() => {
     const map: Record<string, BookmarkRow[]> = {};
@@ -45,11 +71,42 @@ export default function SscBookmarks() {
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
 
-        <div className="flex items-center gap-3">
-          <Bookmark className="w-8 h-8 text-emerald-600" />
-          <div>
-            <h1 className="text-3xl font-bold">Bookmarks</h1>
-            <p className="text-sm text-slate-500">Swipe questions or options horizontally in practice to save them here</p>
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <Bookmark className="w-8 h-8 text-emerald-600" />
+            <div>
+              <h1 className="text-3xl font-bold">Bookmarks</h1>
+              <p className="text-sm text-slate-500">Tick multiple to unbookmark in one go, or use the Practice button per chapter.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              onClick={() => selectAll(rows.map((r) => r.id))}
+              disabled={!rows.length}
+            >
+              <CheckSquare className="w-4 h-4 mr-1" /> Select all
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-slate-200"
+              onClick={() => setSelected(new Set())}
+              disabled={!selected.size}
+            >
+              Clear
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={removeSelected}
+              disabled={!selected.size || busy}
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Unbookmark{selected.size ? ` (${selected.size})` : ''}
+            </Button>
           </div>
         </div>
 
@@ -125,6 +182,12 @@ export default function SscBookmarks() {
                     </div>
                     {chOpen && (
                       <div className="px-4 pb-4 space-y-4">
+                        {(questions.length > 0 || options.length > 0) && (
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-700 hover:bg-emerald-50" onClick={() => selectAll(items.map((x) => x.id))}>Select chapter</Button>
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-slate-500 hover:bg-slate-50" onClick={() => clearSelIn(items.map((x) => x.id))}>Deselect</Button>
+                          </div>
+                        )}
                         {questions.length > 0 && (
                           <div>
                             <div className="flex items-center gap-1.5 text-xs text-slate-500 uppercase tracking-wider mb-2">
@@ -132,11 +195,14 @@ export default function SscBookmarks() {
                             </div>
                             <div className="grid sm:grid-cols-2 gap-2">
                               {questions.map((r) => (
-                                <Card key={r.id} className="border-emerald-200 bg-white">
+                                <Card key={r.id} className={`border-emerald-200 bg-white ${selected.has(r.id) ? 'ring-2 ring-rose-300' : ''}`}>
                                   <CardContent className="p-3 space-y-1.5">
-                                    <div className="text-sm text-slate-800">{r.question_text}</div>
+                                    <div className="flex items-start gap-2">
+                                      <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleSel(r.id)} className="mt-0.5" />
+                                      <div className="flex-1 text-sm text-slate-800">{r.question_text}</div>
+                                    </div>
                                     {r.correct_text && (
-                                      <div className="text-xs text-emerald-700">✓ {r.correct_text}</div>
+                                      <div className="text-xs text-emerald-700 pl-6">✓ {r.correct_text}</div>
                                     )}
                                     <div className="flex justify-end">
                                       <Button size="sm" variant="ghost" className="h-7 text-rose-600 hover:bg-rose-50" onClick={() => remove(r.id)}>
@@ -156,10 +222,13 @@ export default function SscBookmarks() {
                             </div>
                             <div className="grid sm:grid-cols-2 gap-2">
                               {options.map((r) => (
-                                <Card key={r.id} className="border-teal-200 bg-white">
+                                <Card key={r.id} className={`border-teal-200 bg-white ${selected.has(r.id) ? 'ring-2 ring-rose-300' : ''}`}>
                                   <CardContent className="p-3 space-y-1.5">
-                                    <div className="text-xs text-slate-500">{r.question_text}</div>
-                                    <div className="text-sm font-medium text-teal-800">→ {r.option_text}</div>
+                                    <div className="flex items-start gap-2">
+                                      <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleSel(r.id)} className="mt-0.5" />
+                                      <div className="flex-1 text-xs text-slate-500">{r.question_text}</div>
+                                    </div>
+                                    <div className="text-sm font-medium text-teal-800 pl-6">→ {r.option_text}</div>
                                     <div className="flex justify-end">
                                       <Button size="sm" variant="ghost" className="h-7 text-rose-600 hover:bg-rose-50" onClick={() => remove(r.id)}>
                                         <Trash2 className="w-3.5 h-3.5" />

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Timer, RefreshCw, CheckCircle2, XCircle, Play } from 'lucide-react';
 import { CHAPTER_META, generateQuiz, type CalcQ, type Mode, type Difficulty } from '@/lib/calcQuiz';
 import { cn } from '@/lib/utils';
+import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 
 export default function SscMathsCalcQuiz() {
   const nav = useNavigate();
@@ -21,7 +22,7 @@ export default function SscMathsCalcQuiz() {
   const [n, setN] = useState<string>('20');
   const [started, setStarted] = useState(false);
   const [i, setI] = useState(0);
-  const [picked, setPicked] = useState<number | null>(null);
+  const [picksArr, setPicksArr] = useState<(number | null)[]>([]);
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [qElapsed, setQElapsed] = useState(0);
@@ -29,6 +30,7 @@ export default function SscMathsCalcQuiz() {
   const [done, setDone] = useState(false);
   const qStartRef = useRef<number>(Date.now());
   const totalStartRef = useRef<number>(Date.now());
+  const picked = picksArr[i] ?? null;
 
   // regenerate pool on chapter or config change (before start)
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function SscMathsCalcQuiz() {
     setStarted(true);
     setDone(false);
     setI(0);
-    setPicked(null);
+    setPicksArr(new Array(nNum).fill(null));
     setCorrectCount(0);
     setWrongCount(0);
     setQElapsed(0);
@@ -77,7 +79,10 @@ export default function SscMathsCalcQuiz() {
 
   const pick = (idx: number) => {
     if (picked !== null) return;
-    setPicked(idx);
+    const next = [...picksArr];
+    while (next.length < active.length) next.push(null);
+    next[i] = idx;
+    setPicksArr(next);
     if (idx === q.correct) setCorrectCount((c) => c + 1);
     else setWrongCount((c) => c + 1);
   };
@@ -85,7 +90,6 @@ export default function SscMathsCalcQuiz() {
   const next = () => {
     if (i + 1 >= active.length) { setDone(true); return; }
     setI(i + 1);
-    setPicked(null);
   };
 
   const reshuffle = () => {
@@ -286,8 +290,15 @@ export default function SscMathsCalcQuiz() {
   // ---------- QUIZ SCREEN ----------
   if (!q) return <div className="p-6">Loading…</div>;
 
+  const navStatuses: QStatus[] = active.map((qq, idx) => {
+    const p = picksArr[idx];
+    if (p == null) return 'unattempted';
+    return p === qq.correct ? 'correct' : 'wrong';
+  });
+
   return (
     <div className="p-4 sm:p-6 max-w-2xl mx-auto space-y-4">
+      <QuestionNavigator total={active.length} current={i} statuses={navStatuses} onSelect={setI} />
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => setStarted(false)} className="text-slate-700">
           <ArrowLeft className="w-4 h-4 mr-1" />Exit

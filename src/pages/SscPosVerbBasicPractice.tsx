@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ChevronLeft, ChevronRight, Check, X, Lightbulb, Loader2, Sparkles, Trophy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 
 type Practice = {
   full_sentence: string;
@@ -216,8 +217,15 @@ export default function SscPosVerbBasicPractice() {
 
   // MAIN VIEW
   const options: [L, string][] = [['A', q.part_a], ['B', q.part_b], ['C', q.part_c], ['D', q.part_d]];
+  const navStatuses: QStatus[] = rows.map((r, idx) => {
+    const p = picks[idx];
+    if (p == null) return 'unattempted';
+    return p === r.error_in ? 'correct' : 'wrong';
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6">
+      <QuestionNavigator total={rows.length} current={i} statuses={navStatuses} onSelect={setI} />
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-white" onClick={() => nav(-1)}>
