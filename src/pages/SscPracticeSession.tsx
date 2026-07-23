@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 
 const TIMER_SECONDS = 30;
 
@@ -28,6 +29,11 @@ export default function SscPracticeSession() {
   const [timer, setTimer] = useState(TIMER_SECONDS);
   const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0, totalTime: 0 });
   const [finished, setFinished] = useState(false);
+  const [picksArr, setPicksArr] = useState<(number | null)[]>([]);
+
+  useEffect(() => {
+    if (shuffled.length) setPicksArr(new Array(shuffled.length).fill(null));
+  }, [shuffled.length]);
 
   const current: SscQuestion | undefined = shuffled[idx];
   const meta = TOPIC_META[topic as SscTopic];
@@ -49,13 +55,24 @@ export default function SscPracticeSession() {
     const timeTaken = TIMER_SECONDS - timer;
     setSelected(optionIdx);
     setShowResult(true);
+    setPicksArr((prev) => {
+      const nn = [...prev]; nn[idx] = optionIdx; return nn;
+    });
     setSessionStats((s) => ({
       correct: s.correct + (isCorrect ? 1 : 0),
       wrong: s.wrong + (isCorrect ? 0 : 1),
       totalTime: s.totalTime + timeTaken,
     }));
     submitAnswer.mutate({ questionId: current.id, isCorrect, timeTaken });
-  }, [showResult, current, timer, submitAnswer]);
+  }, [showResult, current, timer, submitAnswer, idx]);
+
+  const jumpTo = (n: number) => {
+    setIdx(n);
+    const p = picksArr[n];
+    setSelected(p);
+    setShowResult(p != null);
+    setTimer(TIMER_SECONDS);
+  };
 
   const nextQuestion = () => {
     if (idx + 1 >= shuffled.length) {
