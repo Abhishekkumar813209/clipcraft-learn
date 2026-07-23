@@ -79,7 +79,19 @@ function SidebarContent({ onNavigate }: { onNavigate: (path: string) => void }) 
 
 export default function SscLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const info = describeSscRoute(location.pathname, location.search);
+    if (info) {
+      recordSscVisit({
+        url: location.pathname + location.search,
+        label: info.label,
+        section: info.section,
+      });
+    }
+  }, [location.pathname, location.search]);
 
   const handleNav = (path: string) => {
     navigate(path);
