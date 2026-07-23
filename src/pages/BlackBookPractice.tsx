@@ -259,7 +259,7 @@ export default function BlackBookPractice() {
   const isSynAnt = q.item.category === 'syn_ant';
   const hintText = isIdiom ? q.item.hint : isSynAnt ? hindiForOption(q.item.prompt || '') : null;
   const hintAvailable = diff !== 'hard' && !!hintText && hintText !== '—';
-  const qBookmarked = !!bookmarkedQ[i];
+  const qBookmarked = qRefs.has(q.item.id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 text-slate-900 p-6">
