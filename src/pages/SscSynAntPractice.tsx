@@ -35,8 +35,8 @@ export default function SscSynAntPractice() {
   const [flipAll, setFlipAll] = useState<Record<number, boolean>>({});
   const [revealed, setRevealed] = useState<Record<number, Set<number>>>({});
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [bookmarkedQ, setBookmarkedQ] = useState<Record<number, boolean>>({});
-  const [bookmarkedOpt, setBookmarkedOpt] = useState<Record<string, boolean>>({});
+  const [qRefs, setQRefs] = useState<Set<string>>(new Set());
+  const [oKeys, setOKeys] = useState<Set<string>>(new Set());
 
   // Hinglish lookup: index every item's word AND its syn/ant tokens so any option can flip to Hindi.
   const itemHindiMap = useMemo(() => {
