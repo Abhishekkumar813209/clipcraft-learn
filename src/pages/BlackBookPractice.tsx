@@ -154,7 +154,8 @@ export default function BlackBookPractice() {
       item_ref: q.item.id, question_text: q.question,
       option_text: opt, correct_text: q.options[q.correct],
     });
-    setBookmarkedOpt((m) => ({ ...m, [`${i}-${idx}`]: res === 'added' }));
+    const k = `${q.item.id}||${opt}`;
+    setOKeys((s) => { const n = new Set(s); if (res === 'added') n.add(k); else n.delete(k); return n; });
     toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
