@@ -23,6 +23,7 @@ export default function BlackBookPractice() {
   const diff = (['easy', 'medium', 'hard'].includes(searchParams.get('diff') || '') ? searchParams.get('diff') : 'easy') as Diff;
   const fromSerial = searchParams.get('from') ? Number(searchParams.get('from')) : null;
   const toSerial = searchParams.get('to') ? Number(searchParams.get('to')) : null;
+  const bookmarksOnly = searchParams.get('bookmarks') === '1';
   const nav = useNavigate();
   const { user } = useAuth();
 
