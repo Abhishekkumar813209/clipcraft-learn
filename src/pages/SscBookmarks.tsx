@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight, Play } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowLeft, Bookmark, Trash2, HelpCircle, ListChecks, ChevronDown, ChevronRight, Play, CheckSquare } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useBookmarks, BookmarkRow, CHAPTER_LABELS, SUBJECT_LABELS, BookmarkSubject } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 export default function SscBookmarks() {
   const nav = useNavigate();
@@ -14,6 +16,30 @@ export default function SscBookmarks() {
   const { rows, loading, reload } = useBookmarks(user?.id);
   const [openSubject, setOpenSubject] = useState<Record<string, boolean>>({ english: true, maths: true });
   const [openChapter, setOpenChapter] = useState<Record<string, boolean>>({});
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
+
+  const toggleSel = (id: string) => setSelected((s) => {
+    const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n;
+  });
+  const selectAll = (ids: string[]) => setSelected((s) => {
+    const n = new Set(s); ids.forEach((id) => n.add(id)); return n;
+  });
+  const clearSelIn = (ids: string[]) => setSelected((s) => {
+    const n = new Set(s); ids.forEach((id) => n.delete(id)); return n;
+  });
+
+  async function removeSelected() {
+    if (!selected.size) return;
+    setBusy(true);
+    const ids = Array.from(selected);
+    const { error } = await supabase.from('ssc_bookmarks' as never).delete().in('id', ids);
+    setBusy(false);
+    if (error) { toast({ title: 'Delete failed', description: error.message, variant: 'destructive' }); return; }
+    toast({ title: `Removed ${ids.length} bookmark${ids.length > 1 ? 's' : ''}` });
+    setSelected(new Set());
+    reload();
+  }
 
   const bySubject = useMemo(() => {
     const map: Record<string, BookmarkRow[]> = {};
