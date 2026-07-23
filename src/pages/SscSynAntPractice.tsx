@@ -69,18 +69,34 @@ export default function SscSynAntPractice() {
 
   useEffect(() => {
     (async () => {
-      const raw = await fetchSAItems(mode, sub);
-      const data = (fromSerial != null || toSerial != null)
-        ? raw.filter((it) => {
-            const s = it.serial_no;
-            if (s == null) return false;
-            if (fromSerial != null && s < fromSerial) return false;
-            if (toSerial != null && s > toSerial) return false;
-            return true;
+      // In bookmarks-only mode we want ALL syn/ant items (any sub) intersected with bookmarks.
+      const raw = bookmarksOnly
+        ? await fetchSAItems('mixed', 'top_100').then(async (a) => {
+            const b = await fetchSAItems('mixed', 'all_repeated');
+            return [...a, ...b];
           })
-        : raw;
+        : await fetchSAItems(mode, sub);
+      let bmRefs = new Set<string>();
+      let bmOKeys = new Set<string>();
+      if (user) {
+        const bm = await fetchChapterBookmarks(user.id, 'syn_ant');
+        bmRefs = bm.qRefs; bmOKeys = bm.oKeys;
+        setQRefs(bmRefs); setOKeys(bmOKeys);
+      }
+      let data = raw;
+      if (bookmarksOnly) {
+        data = raw.filter((it) => bmRefs.has(it.id));
+      } else if (fromSerial != null || toSerial != null) {
+        data = raw.filter((it) => {
+          const s = it.serial_no;
+          if (s == null) return false;
+          if (fromSerial != null && s < fromSerial) return false;
+          if (toSerial != null && s > toSerial) return false;
+          return true;
+        });
+      }
       setItems(data);
-      const built = buildSAQuestionSet(data, n);
+      const built = buildSAQuestionSet(data, bookmarksOnly ? Math.max(n, data.length) : n);
       setQs(built);
       setPicks(new Array(built.length).fill(null));
       setLoading(false);
@@ -91,7 +107,7 @@ export default function SscSynAntPractice() {
         if (s) setSessionId((s as any).id);
       }
     })();
-  }, [mode, sub, n, user, fromSerial, toSerial]);
+  }, [mode, sub, n, user, fromSerial, toSerial, bookmarksOnly]);
 
   const q = qs[i];
   const picked = picks[i];
