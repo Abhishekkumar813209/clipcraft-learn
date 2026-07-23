@@ -142,7 +142,7 @@ export default function BlackBookPractice() {
       subcategory: (q.item as any).subcategory ?? null,
       item_ref: q.item.id, question_text: q.question, correct_text: q.options[q.correct],
     });
-    setBookmarkedQ((m) => ({ ...m, [i]: res === 'added' }));
+    setQRefs((s) => { const n = new Set(s); if (res === 'added') n.add(q.item.id); else n.delete(q.item.id); return n; });
     toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }
 
