@@ -71,11 +71,42 @@ export default function SscBookmarks() {
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
 
-        <div className="flex items-center gap-3">
-          <Bookmark className="w-8 h-8 text-emerald-600" />
-          <div>
-            <h1 className="text-3xl font-bold">Bookmarks</h1>
-            <p className="text-sm text-slate-500">Swipe questions or options horizontally in practice to save them here</p>
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <Bookmark className="w-8 h-8 text-emerald-600" />
+            <div>
+              <h1 className="text-3xl font-bold">Bookmarks</h1>
+              <p className="text-sm text-slate-500">Tick multiple to unbookmark in one go, or use the Practice button per chapter.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              onClick={() => selectAll(rows.map((r) => r.id))}
+              disabled={!rows.length}
+            >
+              <CheckSquare className="w-4 h-4 mr-1" /> Select all
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-slate-200"
+              onClick={() => setSelected(new Set())}
+              disabled={!selected.size}
+            >
+              Clear
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={removeSelected}
+              disabled={!selected.size || busy}
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Unbookmark{selected.size ? ` (${selected.size})` : ''}
+            </Button>
           </div>
         </div>
 
@@ -151,6 +182,12 @@ export default function SscBookmarks() {
                     </div>
                     {chOpen && (
                       <div className="px-4 pb-4 space-y-4">
+                        {(questions.length > 0 || options.length > 0) && (
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-700 hover:bg-emerald-50" onClick={() => selectAll(items.map((x) => x.id))}>Select chapter</Button>
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-slate-500 hover:bg-slate-50" onClick={() => clearSelIn(items.map((x) => x.id))}>Deselect</Button>
+                          </div>
+                        )}
                         {questions.length > 0 && (
                           <div>
                             <div className="flex items-center gap-1.5 text-xs text-slate-500 uppercase tracking-wider mb-2">
@@ -158,11 +195,14 @@ export default function SscBookmarks() {
                             </div>
                             <div className="grid sm:grid-cols-2 gap-2">
                               {questions.map((r) => (
-                                <Card key={r.id} className="border-emerald-200 bg-white">
+                                <Card key={r.id} className={`border-emerald-200 bg-white ${selected.has(r.id) ? 'ring-2 ring-rose-300' : ''}`}>
                                   <CardContent className="p-3 space-y-1.5">
-                                    <div className="text-sm text-slate-800">{r.question_text}</div>
+                                    <div className="flex items-start gap-2">
+                                      <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleSel(r.id)} className="mt-0.5" />
+                                      <div className="flex-1 text-sm text-slate-800">{r.question_text}</div>
+                                    </div>
                                     {r.correct_text && (
-                                      <div className="text-xs text-emerald-700">✓ {r.correct_text}</div>
+                                      <div className="text-xs text-emerald-700 pl-6">✓ {r.correct_text}</div>
                                     )}
                                     <div className="flex justify-end">
                                       <Button size="sm" variant="ghost" className="h-7 text-rose-600 hover:bg-rose-50" onClick={() => remove(r.id)}>
@@ -182,10 +222,13 @@ export default function SscBookmarks() {
                             </div>
                             <div className="grid sm:grid-cols-2 gap-2">
                               {options.map((r) => (
-                                <Card key={r.id} className="border-teal-200 bg-white">
+                                <Card key={r.id} className={`border-teal-200 bg-white ${selected.has(r.id) ? 'ring-2 ring-rose-300' : ''}`}>
                                   <CardContent className="p-3 space-y-1.5">
-                                    <div className="text-xs text-slate-500">{r.question_text}</div>
-                                    <div className="text-sm font-medium text-teal-800">→ {r.option_text}</div>
+                                    <div className="flex items-start gap-2">
+                                      <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleSel(r.id)} className="mt-0.5" />
+                                      <div className="flex-1 text-xs text-slate-500">{r.question_text}</div>
+                                    </div>
+                                    <div className="text-sm font-medium text-teal-800 pl-6">→ {r.option_text}</div>
                                     <div className="flex justify-end">
                                       <Button size="sm" variant="ghost" className="h-7 text-rose-600 hover:bg-rose-50" onClick={() => remove(r.id)}>
                                         <Trash2 className="w-3.5 h-3.5" />
