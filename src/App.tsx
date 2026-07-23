@@ -81,6 +81,7 @@ import SscSynAntPractice from "./pages/SscSynAntPractice";
 import SscMathsCalculation from "./pages/SscMathsCalculation";
 import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
 import SscBookmarks from "./pages/SscBookmarks";
+import SscHistory from "./pages/SscHistory";
 
 
 const queryClient = new QueryClient({
