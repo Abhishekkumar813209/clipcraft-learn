@@ -141,8 +141,15 @@ export default function SscPracticeSession() {
     );
   }
 
+  const navStatuses: QStatus[] = shuffled.map((qq, ii) => {
+    const p = picksArr[ii];
+    if (p == null) return 'unattempted';
+    return p === qq.correct_option ? 'correct' : 'wrong';
+  });
+
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-6">
+      <QuestionNavigator total={shuffled.length} current={idx} statuses={navStatuses} onSelect={jumpTo} />
       {/* Header */}
       <div className="flex items-center justify-between">
         <button onClick={() => navigate('/ssc/practice')} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
