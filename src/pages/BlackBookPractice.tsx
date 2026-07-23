@@ -315,8 +315,8 @@ export default function BlackBookPractice() {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const isFlipped = show && (flipAll[i] || !!revealed[i]?.has(idx));
-                const optKey = `${i}-${idx}`;
-                const optBook = !!bookmarkedOpt[optKey];
+                const optKey = `${q.item.id}||${opt}`;
+                const optBook = oKeys.has(optKey);
                 return (
                   <div key={idx} className="flex items-stretch gap-2">
                     <button
