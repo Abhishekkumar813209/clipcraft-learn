@@ -7,7 +7,7 @@ import { fetchSAItems, buildSAQuestionSet, SAMode, SASub, SAQuestion, SAItem } f
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWordHindi, lookupHindi } from '@/lib/wordHindi';
-import { toggleBookmark } from '@/lib/bookmarks';
+import { toggleBookmark, fetchChapterBookmarks } from '@/lib/bookmarks';
 import { toast } from '@/hooks/use-toast';
 
 type Diff = 'easy' | 'medium' | 'hard';
