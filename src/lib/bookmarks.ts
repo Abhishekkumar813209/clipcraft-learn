@@ -23,16 +23,16 @@ export interface BookmarkRow extends BookmarkInput {
 }
 
 export async function toggleBookmark(userId: string, input: BookmarkInput): Promise<'added' | 'removed'> {
-  // Look up existing dedupe
-  const { data: existing } = await supabase
+  // Look up existing dedupe (NULL-safe for item_ref / option_text)
+  let q = supabase
     .from('ssc_bookmarks' as never)
     .select('id')
     .eq('user_id', userId)
     .eq('kind', input.kind)
-    .eq('chapter', input.chapter)
-    .eq('item_ref', input.item_ref || '')
-    .eq('option_text', input.option_text || '')
-    .maybeSingle();
+    .eq('chapter', input.chapter);
+  q = input.item_ref ? q.eq('item_ref', input.item_ref) : q.is('item_ref', null as never);
+  q = input.option_text ? q.eq('option_text', input.option_text) : q.is('option_text', null as never);
+  const { data: existing } = await q.maybeSingle();
   if (existing) {
     await supabase.from('ssc_bookmarks' as never).delete().eq('id', (existing as any).id);
     return 'removed';
@@ -43,7 +43,7 @@ export async function toggleBookmark(userId: string, input: BookmarkInput): Prom
     subject: input.subject,
     chapter: input.chapter,
     subcategory: input.subcategory || null,
-    item_ref: input.item_ref || '',
+    item_ref: input.item_ref || null,
     question_text: input.question_text,
     option_text: input.option_text || null,
     correct_text: input.correct_text || null,
