@@ -40,7 +40,7 @@ export function QuestionNavigator(props: QuestionNavigatorProps) {
       <SheetTrigger asChild>
         <Button
           size="icon"
-          className="fixed right-4 top-1/2 -translate-y-1/2 z-40 rounded-full h-11 w-11 shadow-lg bg-slate-900 hover:bg-slate-800 text-white"
+          className="fixed right-3 top-3 z-40 rounded-full h-10 w-10 shadow-lg bg-slate-900 hover:bg-slate-800 text-white"
           title="Question navigator"
         >
           <LayoutGrid className="w-4 h-4" />
