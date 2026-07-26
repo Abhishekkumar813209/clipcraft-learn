@@ -1,14 +1,19 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Grid3X3, FileText, ArrowLeft, Library } from 'lucide-react';
+import { BookOpen, Grid3X3, FileText, ArrowLeft, Library, Calculator, Brain, Languages, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/rbi', icon: BookOpen },
+  { label: 'Maths', path: '/rbi/practice/quant', icon: Calculator },
+  { label: 'English', path: '/rbi/english', icon: Languages },
+  { label: 'Reasoning', path: '/rbi/practice/reasoning', icon: Brain },
+  { label: 'Banking Awareness', path: '/rbi/practice/ga', icon: Landmark },
   { label: 'Practice', path: '/rbi/practice', icon: Grid3X3 },
   { label: 'PYQ Bank', path: '/rbi/pyq', icon: Library },
   { label: 'Mock Test', path: '/rbi/mock', icon: FileText, disabled: true },
 ];
+
 
 export default function RbiLayout() {
   const navigate = useNavigate();
@@ -16,8 +21,10 @@ export default function RbiLayout() {
 
   const isActive = (path: string) => {
     if (path === '/rbi') return location.pathname === '/rbi';
+    if (path === '/rbi/practice') return location.pathname === '/rbi/practice';
     return location.pathname.startsWith(path);
   };
+
 
   return (
     <div className="flex h-screen bg-background">
