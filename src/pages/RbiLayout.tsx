@@ -21,8 +21,10 @@ export default function RbiLayout() {
 
   const isActive = (path: string) => {
     if (path === '/rbi') return location.pathname === '/rbi';
+    if (path === '/rbi/practice') return location.pathname === '/rbi/practice';
     return location.pathname.startsWith(path);
   };
+
 
   return (
     <div className="flex h-screen bg-background">
