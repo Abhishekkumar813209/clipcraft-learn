@@ -7,21 +7,18 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { describeSscRoute, recordSscVisit } from '@/lib/sscHistory';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', path: '/ssc', icon: BookOpen },
-  { label: 'Practice', path: '/ssc/practice', icon: Grid3X3 },
-  { label: 'Recent Practice', path: '/ssc/history', icon: Clock },
-  { label: 'BB Practice', path: '/ssc/blackbook', icon: Sparkles },
-  { label: 'English Vocabulary', path: '/ssc/roots', icon: Sprout },
-  { label: 'BB Browse', path: '/ssc/blackbook/browse', icon: Search },
-  { label: 'BB History', path: '/ssc/blackbook/history', icon: History },
-  { label: 'Bookmarks', path: '/ssc/bookmarks', icon: Bookmark },
   { label: 'Maths', path: '/ssc/maths', icon: Calculator },
   { label: 'Reasoning', path: '/ssc/reasoning', icon: Brain },
   { label: 'English', path: '/ssc/english', icon: Languages },
   { label: 'GK / GS', path: '/ssc/gk', icon: Globe2 },
-  { label: 'PYQ Mode', path: '/ssc/pyq', icon: Trophy, disabled: true },
-  { label: 'Mock Test', path: '/ssc/mock', icon: FileText, disabled: true },
+  { label: 'Bookmarks', path: '/ssc/bookmarks', icon: Bookmark },
+  { label: 'Test History', path: '/ssc/blackbook/history', icon: History },
+  { label: 'Continue where left', path: '/ssc/history', icon: Clock },
+  { label: 'BB Practice', path: '/ssc/blackbook', icon: Sparkles },
+  { label: 'English Vocabulary', path: '/ssc/roots', icon: Sprout },
+  { label: 'BB Browse', path: '/ssc/blackbook/browse', icon: Search },
 ];
+
 
 function SidebarContent({ onNavigate }: { onNavigate: (path: string) => void }) {
   const location = useLocation();
