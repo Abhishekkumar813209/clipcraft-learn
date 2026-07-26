@@ -171,7 +171,11 @@ const App = () => (
               <Route index element={<RbiDashboard />} />
               <Route path="practice" element={<RbiPractice />} />
               <Route path="practice/:topic" element={<RbiPracticeSession />} />
+              <Route path="english" element={<RbiEnglish />} />
+              <Route path="english/vocab" element={<RbiEnglishVocab />} />
+              <Route path="english/vocab/practice" element={<RbiVocabPractice />} />
               <Route path="pyq" element={<RbiPyqPractice />} />
+
               <Route path="pyq/upload" element={<RbiPyqUpload />} />
               <Route path="pyq/analysis" element={<RbiPyqAnalysis />} />
               <Route path="pyq/practice" element={<RbiPyqSession />} />
