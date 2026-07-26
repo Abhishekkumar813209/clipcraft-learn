@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { describeSscRoute, recordSscVisit } from '@/lib/sscHistory';
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { label: string; path: string; icon: typeof Calculator; disabled?: boolean }[] = [
   { label: 'Maths', path: '/ssc/maths', icon: Calculator },
   { label: 'Reasoning', path: '/ssc/reasoning', icon: Brain },
   { label: 'English', path: '/ssc/english', icon: Languages },
