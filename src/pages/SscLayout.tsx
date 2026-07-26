@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { BookOpen, Grid3X3, Trophy, FileText, ArrowLeft, Sparkles, Search, Menu, History, Sprout, Calculator, Brain, Languages, Globe2, Bookmark, Clock } from 'lucide-react';
+import { ArrowLeft, Sparkles, Search, Menu, History, Sprout, Calculator, Brain, Languages, Globe2, Bookmark, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
