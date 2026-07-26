@@ -729,6 +729,42 @@ export type Database = {
         }
         Relationships: []
       }
+      rbi_vocab_words: {
+        Row: {
+          created_at: string
+          example: string | null
+          hinglish_meaning: string | null
+          id: string
+          meaning: string
+          root_meaning: string
+          root_word: string
+          serial_no: number
+          word: string
+        }
+        Insert: {
+          created_at?: string
+          example?: string | null
+          hinglish_meaning?: string | null
+          id?: string
+          meaning: string
+          root_meaning: string
+          root_word: string
+          serial_no: number
+          word: string
+        }
+        Update: {
+          created_at?: string
+          example?: string | null
+          hinglish_meaning?: string | null
+          id?: string
+          meaning?: string
+          root_meaning?: string
+          root_word?: string
+          serial_no?: number
+          word?: string
+        }
+        Relationships: []
+      }
       root_practice_attempts: {
         Row: {
           correct_index: number
