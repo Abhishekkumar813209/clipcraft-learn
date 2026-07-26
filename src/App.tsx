@@ -40,6 +40,10 @@ import BpscPyqSession from "./pages/BpscPyqSession";
 import RbiLayout from "./pages/RbiLayout";
 import RbiDashboard from "./pages/RbiDashboard";
 import RbiPractice from "./pages/RbiPractice";
+import RbiEnglish from "./pages/RbiEnglish";
+import RbiEnglishVocab from "./pages/RbiEnglishVocab";
+import RbiVocabPractice from "./pages/RbiVocabPractice";
+
 import RbiPracticeSession from "./pages/RbiPracticeSession";
 import RbiPyqPractice from "./pages/RbiPyqPractice";
 import RbiPyqUpload from "./pages/RbiPyqUpload";
