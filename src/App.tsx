@@ -86,6 +86,9 @@ import SscMathsCalculation from "./pages/SscMathsCalculation";
 import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
 import SscBookmarks from "./pages/SscBookmarks";
 import SscHistory from "./pages/SscHistory";
+import UpscLayout from "./pages/upsc/UpscLayout";
+import UpscHistory from "./pages/upsc/UpscHistory";
+import UpscHistoryPractice from "./pages/upsc/UpscHistoryPractice";
 
 
 const queryClient = new QueryClient({
