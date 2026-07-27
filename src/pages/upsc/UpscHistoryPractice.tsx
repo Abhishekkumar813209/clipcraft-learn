@@ -230,7 +230,7 @@ export default function UpscHistoryPractice() {
               </p>
             )}
 
-            {answered && showAll[idx] && (
+            {answered && (
               <div className="space-y-3 pt-1">
                 {q.explanation_hinglish && (
                   <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm leading-relaxed whitespace-pre-line">
