@@ -57,6 +57,7 @@ export function Sidebar() {
           <NavItem icon={FileText} label="PDF Reader" active={isActive('/pdf')} onClick={() => navigate('/pdf')} />
           <NavItem icon={Brain} label="My Quizzes" active={isActive('/quizzes')} onClick={() => navigate('/quizzes')} />
           <NavItem icon={Trophy} label="UPSC Motivation" active={isActive('/upsc')} onClick={() => navigate('/upsc')} />
+          <NavItem icon={Landmark} label="UPSC Prep" active={isActive('/upsc/history')} onClick={() => navigate('/upsc/history')} />
           <NavItem icon={Languages} label="SSC" active={isActive('/ssc')} onClick={() => navigate('/ssc')} />
           <NavItem icon={Briefcase} label="TCS NQT" active={isActive('/nqt')} onClick={() => navigate('/nqt')} />
           <NavItem icon={Landmark} label="BPSC Prep" active={isActive('/bpsc')} onClick={() => navigate('/bpsc')} />

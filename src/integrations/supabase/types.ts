@@ -1355,6 +1355,96 @@ export type Database = {
           },
         ]
       }
+      upsc_questions: {
+        Row: {
+          chapter_name: string
+          chapter_no: number
+          correct_option: string
+          created_at: string
+          explanation_hinglish: string | null
+          global_serial: number
+          hint_hinglish: string | null
+          id: string
+          list_i: string | null
+          list_ii: string | null
+          ncert_extra: string | null
+          ncert_source: string | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          q_type: string
+          question_text: string
+          serial_no: number
+          statements: string | null
+          subject: string
+          topic_tag: string | null
+          updated_at: string
+          why_a: string | null
+          why_b: string | null
+          why_c: string | null
+          why_d: string | null
+        }
+        Insert: {
+          chapter_name: string
+          chapter_no: number
+          correct_option: string
+          created_at?: string
+          explanation_hinglish?: string | null
+          global_serial: number
+          hint_hinglish?: string | null
+          id?: string
+          list_i?: string | null
+          list_ii?: string | null
+          ncert_extra?: string | null
+          ncert_source?: string | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          q_type?: string
+          question_text: string
+          serial_no: number
+          statements?: string | null
+          subject?: string
+          topic_tag?: string | null
+          updated_at?: string
+          why_a?: string | null
+          why_b?: string | null
+          why_c?: string | null
+          why_d?: string | null
+        }
+        Update: {
+          chapter_name?: string
+          chapter_no?: number
+          correct_option?: string
+          created_at?: string
+          explanation_hinglish?: string | null
+          global_serial?: number
+          hint_hinglish?: string | null
+          id?: string
+          list_i?: string | null
+          list_ii?: string | null
+          ncert_extra?: string | null
+          ncert_source?: string | null
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          q_type?: string
+          question_text?: string
+          serial_no?: number
+          statements?: string | null
+          subject?: string
+          topic_tag?: string | null
+          updated_at?: string
+          why_a?: string | null
+          why_b?: string | null
+          why_c?: string | null
+          why_d?: string | null
+        }
+        Relationships: []
+      }
       videos: {
         Row: {
           channel_name: string | null

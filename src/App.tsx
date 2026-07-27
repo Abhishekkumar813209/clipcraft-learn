@@ -86,6 +86,9 @@ import SscMathsCalculation from "./pages/SscMathsCalculation";
 import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
 import SscBookmarks from "./pages/SscBookmarks";
 import SscHistory from "./pages/SscHistory";
+import UpscLayout from "./pages/upsc/UpscLayout";
+import UpscHistory from "./pages/upsc/UpscHistory";
+import UpscHistoryPractice from "./pages/upsc/UpscHistoryPractice";
 
 
 const queryClient = new QueryClient({
@@ -154,6 +157,10 @@ const App = () => (
 
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
+            </Route>
+            <Route path="/upsc" element={<ProtectedRoute><UpscLayout /></ProtectedRoute>}>
+              <Route path="history" element={<UpscHistory />} />
+              <Route path="history/practice" element={<UpscHistoryPractice />} />
             </Route>
             <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />

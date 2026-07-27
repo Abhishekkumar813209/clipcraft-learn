@@ -1,33 +1,45 @@
 ## Goal
-UPSC extraction template aur prompt ko chhota karna — 3 columns hata ke fresh downloadable files dena.
+Chapter 1 (Sources of Ancient History, 38 questions) database me daalna aur UPSC practice module banana — SSC English jaisa hi feel, par per-option "kyu sahi / kyu galat" reveal ke saath.
 
-## Columns hatane hain
-- `ncert_refs` (chapter-level reference list)
-- `explanation_en` (PDF ka original English "Exp." text)
-- `exam_tags` (past-exam tags)
+## Verified facts
+- Uploaded sheet `questions`: 38 rows, exactly 22 columns of the v2 template (chapter_no … hint_hinglish). Ch-1 me sirf `mcq` + `statement` type rows hain, `list_i/list_ii` khaali.
+- Abhi database me koi `upsc_*` table nahi hai (schema list me sirf ssc/rbi/bpsc/admin tables).
+- `/upsc` route abhi `UpscMotivation` page pe jaata hai (App.tsx line 120) — wo untouched rahega, naya module alag prefix pe.
 
-`ncert_source` (per-question bracketed reference) aur `ncert_extra` (Hinglish background) rahenge.
+## Database (new)
+`public.upsc_questions` — ek hi flat table, sheet ke 22 columns + do extras:
+- `global_serial` (int, unique) — poori history book ka continuous number, chapter_no → serial_no order se assign. Isi se "1–1000 ek saath practice" chalega, chahe multiple chapters aa jayein.
+- `subject` ('ancient_history') — future me medieval/modern add karne ke liye.
+- RLS: sabhi logged-in users read kar sakte hain; sirf admin (existing `is_admin()`) insert/update/delete.
+- Grants: `authenticated` ko read, `service_role` ko full.
 
-## Final column order (22)
-```text
-chapter_no, chapter_name, topic_tag, serial_no, q_type,
-question_text, statements, list_i, list_ii,
-option_a, option_b, option_c, option_d, correct_option,
-ncert_source, explanation_hinglish,
-why_a, why_b, why_c, why_d, ncert_extra, hint_hinglish
-```
+Chapter 1 ki 38 rows insert ho jaayengi (global_serial 1–38).
 
-## Deliverables
-1. `upsc_mcq_sample_template_v2.xlsx`
-   - Sheet `questions` — wahi 5 sample rows (mcq, statement, match, assertion, multi_select) naye 22-column layout me, header styling + column widths + wrap intact.
-   - Sheet `README` — har column ka rule, updated list ke hisaab se.
-2. `upsc_pdf_to_excel_prompt_v2.md`
-   - Column list 25 → 22, numbering re-flow.
-   - Rule 8 (exam_tags) aur rule 9 (explanation_en) delete.
-   - `explanation_hinglish` rule ab self-sufficient: PDF ke English "Exp." ko padh kar seedha Hinglish me richer version likhna (English column output me nahi jayega).
-   - Rule 14 se `ncert_refs` ka mention hata.
-   - "Do NOT add a difficulty column" ke saath "Do NOT add exam_tags / explanation_en / ncert_refs" bhi.
-   - Quality-check checklist updated column count ke saath.
+## Practice UX
+Routes:
+- `/upsc/history` — chapter cards (Ch 1 · 38 Qs) + ek "All chapters" card.
+- `/upsc/history/practice` — setup screen, SSC wale pattern jaisa:
+  - Serial range: From / To plain text boxes (spinner nahi, khaali chhodne pe full range)
+  - Chapter filter: All / specific chapter
+  - Order: Serial ya Random
+  - Count: text box, default = range size
+
+Question screen:
+- Question text; `statement` type ke liye statements block bullet-wise render.
+- **Hint** button → `hint_hinglish` (Hinglish), answer se pehle available.
+- Answer mark karne ke baad:
+  - **Kisi bhi option pe click** → sirf us option ka reason khulta hai (`why_a`/`why_b`/`why_c`/`why_d`).
+  - **Double-click (question card pe)** → charon options ke reasons ek saath expand, plus `explanation_hinglish`, `ncert_source` aur `ncert_extra` ka detail card.
+- Top-right QuestionNavigator (existing component) — correct/wrong/bookmarked/unattempted colors + jump.
+- Bookmarking existing `ssc_bookmarks` table me `subject='gk'`-style ki jagah naye chapter key `upsc_ancient_history` ke saath (bookmarks tab me alag section dikhega).
+
+## Sidebar
+Sidebar me UPSC exam entry ke andar: Ancient History (active), Medieval / Modern / Polity placeholders.
+
+## Technical notes
+- Import ek migration ke baad `insert` tool se hoga (38 rows), text as-is; koi AI call nahi.
+- Naye files: `src/pages/upsc/UpscLayout.tsx`, `UpscHistory.tsx`, `UpscHistorySetup.tsx`, `UpscHistoryPractice.tsx`, `src/lib/upscQuiz.ts`.
+- Aage ke chapters: wahi 22-column sheet upload karo, `global_serial` automatically aage se continue karke append kar dunga.
 
 ## Verification
-Generated xlsx ko padh kar column order + row count confirm karunga, aur dono files artifact ke roop me dunga.
+Insert ke baad row count + global_serial continuity query se check karunga, aur practice page ko browser me chala kar range/hint/option-reveal confirm karunga.
