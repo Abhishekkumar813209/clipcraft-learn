@@ -158,6 +158,10 @@ const App = () => (
               <Route path="duel/new" element={<BlackBookDuelNew />} />
               <Route path="duel/:id" element={<BlackBookDuel />} />
             </Route>
+            <Route path="/upsc" element={<ProtectedRoute><UpscLayout /></ProtectedRoute>}>
+              <Route path="history" element={<UpscHistory />} />
+              <Route path="history/practice" element={<UpscHistoryPractice />} />
+            </Route>
             <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />
               <Route path="practice" element={<NqtPractice />} />
