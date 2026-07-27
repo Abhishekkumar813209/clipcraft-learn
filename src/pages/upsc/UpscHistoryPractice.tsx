@@ -151,8 +151,19 @@ export default function UpscHistoryPractice() {
             <p className="text-base font-medium leading-relaxed whitespace-pre-line">{q.question_text}</p>
 
             {q.statements && (
-              <div className="rounded-lg bg-amber-50/70 border border-amber-100 p-3 text-sm whitespace-pre-line">
-                {q.statements}
+              <div className="rounded-lg bg-amber-50/70 border border-amber-100 p-3 text-sm space-y-2">
+                {q.statements
+                  .split(/\|\||\n/)
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+                  .map((s, i, arr) => (
+                    <div key={i} className="flex gap-2">
+                      {arr.length > 1 && (
+                        <span className="font-semibold text-amber-800 shrink-0">Statement {i + 1}:</span>
+                      )}
+                      <span className="leading-relaxed">{s.replace(/^\s*\d+[.)]\s*/, '')}</span>
+                    </div>
+                  ))}
               </div>
             )}
             {(q.list_i || q.list_ii) && (
@@ -219,7 +230,7 @@ export default function UpscHistoryPractice() {
               </p>
             )}
 
-            {answered && showAll[idx] && (
+            {answered && (
               <div className="space-y-3 pt-1">
                 {q.explanation_hinglish && (
                   <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm leading-relaxed whitespace-pre-line">
