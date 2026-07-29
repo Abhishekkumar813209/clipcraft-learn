@@ -1,22 +1,23 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { ArrowLeft, Menu, Landmark, Scroll, Flag, Scale, Bookmark } from 'lucide-react';
+import { ArrowLeft, Menu, Landmark, Scroll, Globe, Scale, TrendingUp, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const NAV_ITEMS: { label: string; path: string; icon: typeof Landmark; disabled?: boolean }[] = [
-  { label: 'Ancient History', path: '/upsc/history', icon: Landmark },
-  { label: 'Medieval History', path: '/upsc/medieval', icon: Scroll, disabled: true },
-  { label: 'Modern History', path: '/upsc/modern', icon: Flag, disabled: true },
-  { label: 'Polity', path: '/upsc/polity', icon: Scale, disabled: true },
+  { label: 'All Subjects', path: '/upsc', icon: Landmark },
+  { label: 'History', path: '/upsc/history', icon: Scroll },
+  { label: 'Geography', path: '/upsc/geography', icon: Globe },
+  { label: 'Polity', path: '/upsc/polity', icon: Scale },
+  { label: 'Economy', path: '/upsc/economy', icon: TrendingUp },
   { label: 'Bookmarks', path: '/ssc/bookmarks', icon: Bookmark },
 ];
 
 function SidebarBody({ onNavigate }: { onNavigate: (path: string) => void }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const isActive = (path: string) => location.pathname.startsWith(path);
+  const isActive = (path: string) => (path === '/upsc' ? location.pathname === '/upsc' : location.pathname.startsWith(path));
   return (
     <div className="flex flex-col h-full">
       <div className="p-5 border-b border-border">

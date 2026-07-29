@@ -87,8 +87,9 @@ import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
 import SscBookmarks from "./pages/SscBookmarks";
 import SscHistory from "./pages/SscHistory";
 import UpscLayout from "./pages/upsc/UpscLayout";
-import UpscHistory from "./pages/upsc/UpscHistory";
-import UpscHistoryPractice from "./pages/upsc/UpscHistoryPractice";
+import UpscHome from "./pages/upsc/UpscHome";
+import UpscSubjectPage from "./pages/upsc/UpscSubjectPage";
+import UpscPractice from "./pages/upsc/UpscPractice";
 
 
 const queryClient = new QueryClient({
@@ -159,8 +160,9 @@ const App = () => (
               <Route path="duel/:id" element={<BlackBookDuel />} />
             </Route>
             <Route path="/upsc" element={<ProtectedRoute><UpscLayout /></ProtectedRoute>}>
-              <Route path="history" element={<UpscHistory />} />
-              <Route path="history/practice" element={<UpscHistoryPractice />} />
+              <Route index element={<UpscHome />} />
+              <Route path=":subject" element={<UpscSubjectPage />} />
+              <Route path=":subject/practice" element={<UpscPractice />} />
             </Route>
             <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />
