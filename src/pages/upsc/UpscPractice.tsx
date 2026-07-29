@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,15 +11,18 @@ import { toggleBookmark, fetchChapterBookmarks } from '@/lib/bookmarks';
 import {
   fetchUpscQuestions, UpscQuestion, OPTION_KEYS, OptionKey, optionText, optionWhy,
 } from '@/lib/upscQuiz';
+import { getUpscSubject } from '@/lib/upscSubjects';
 
-const CHAPTER_KEY = 'upsc_ancient_history';
 const num = (v: string | null) => {
   const n = parseInt(v ?? '', 10);
   return Number.isFinite(n) && n > 0 ? n : null;
 };
 
-export default function UpscHistoryPractice() {
+export default function UpscPractice() {
   const nav = useNavigate();
+  const { subject: slug } = useParams();
+  const cfg = getUpscSubject(slug);
+  const CHAPTER_KEY = `upsc_${cfg.subject}`;
   const { user } = useAuth();
   const [sp] = useSearchParams();
 
@@ -35,18 +38,19 @@ export default function UpscHistoryPractice() {
   useEffect(() => {
     setLoading(true);
     fetchUpscQuestions({
+      subject: cfg.subject,
       chapter: num(sp.get('chapter')),
       from: num(sp.get('from')),
       to: num(sp.get('to')),
       count: num(sp.get('n')),
       order: sp.get('order') === 'random' ? 'random' : 'serial',
     }).then((r) => { setRows(r); setIdx(0); setLoading(false); });
-  }, [sp]);
+  }, [sp, cfg.subject]);
 
   useEffect(() => {
     if (!user) return;
     fetchChapterBookmarks(user.id, CHAPTER_KEY).then(({ qRefs }) => setMarks(new Set(qRefs)));
-  }, [user]);
+  }, [user, CHAPTER_KEY]);
 
   const q = rows[idx];
   const chosen = q ? picked[idx] : undefined;
@@ -102,7 +106,7 @@ export default function UpscHistoryPractice() {
     return (
       <div className="p-8 space-y-4">
         <p className="text-slate-600">Is range me koi question nahi mila.</p>
-        <Button onClick={() => nav('/upsc/history')} variant="outline"><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
+        <Button onClick={() => nav(`/upsc/${cfg.slug}`)} variant="outline"><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
       </div>
     );
   }
@@ -119,11 +123,11 @@ export default function UpscHistoryPractice() {
         statuses={statuses}
         bookmarked={bookmarkedFlags}
         onSelect={setIdx}
-        title="Ancient History"
+        title={cfg.label}
       />
       <div className="max-w-3xl mx-auto space-y-4 pt-2">
         <div className="flex items-center justify-between gap-2 pr-12">
-          <Button variant="ghost" size="sm" className="text-slate-700" onClick={() => nav('/upsc/history')}>
+          <Button variant="ghost" size="sm" className="text-slate-700" onClick={() => nav(`/upsc/${cfg.slug}`)}>
             <ArrowLeft className="w-4 h-4 mr-1" /> Back
           </Button>
           <div className="text-xs text-slate-500">
