@@ -84,6 +84,8 @@ import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
 import SscMathsCalculation from "./pages/SscMathsCalculation";
 import SscMathsCalcQuiz from "./pages/SscMathsCalcQuiz";
+import SscMathsTopicHub from "./pages/SscMathsTopicHub";
+import SscMathsTrainer from "./pages/SscMathsTrainer";
 import SscBookmarks from "./pages/SscBookmarks";
 import SscHistory from "./pages/SscHistory";
 import UpscLayout from "./pages/upsc/UpscLayout";
@@ -151,6 +153,8 @@ const App = () => (
               <Route path="maths" element={<SscSubject />} />
               <Route path="maths/calculation" element={<SscMathsCalculation />} />
               <Route path="maths/calculation/:chapter" element={<SscMathsCalcQuiz />} />
+              <Route path="maths/:topic" element={<SscMathsTopicHub />} />
+              <Route path="maths/:topic/trainer/:slug" element={<SscMathsTrainer />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
               <Route path="bookmarks" element={<SscBookmarks />} />
