@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Discount Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Discount (बट्टा) Class Notes</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'buy get free', 'successive', 'marked price', 'profit', 'scheme'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="free">Buy-Get-Free</button>
+      <button data-filter="succ">Successive D</button>
+      <button data-filter="ratio">Ratio Method</button>
+      <button data-filter="basic">MP-SP-D%</button>
+      <button data-filter="scheme">Scheme Compare</button>
+      <button data-filter="profit">D + Profit</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="free" data-kw="buy x get y free muft scheme bangles shirts chudiyan discount percent y/(x+y) खरीदें मुफ्त छूट">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>"Buy x get y free" → D% = y/(x+y)</h3>
+      <p class="trigger">Trigger: "x vastu khareedne par y vastu muft" / "buy 3 get 2 free" — seedha discount % poocha jaaye.</p>
+      <div class="example">
+        <b>Q1:</b> Buy 7 get 2 free → 2/9×100 = <span class="ans">22²⁄₉%</span>
+        <span class="q2"><b>Q2:</b> Buy 3 get 2 free → 2/5×100 = <span class="ans">40%</span></span>
+        <br><b>Q3:</b> 24 bangles par 6 free → 6/30×100 = <span class="ans">20%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="free" data-kw="buy get free compare scheme A B maximum discount which better dono yojana tulna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Do "Buy-Get-Free" schemes mein kaunsi badi?</h3>
+      <p class="trigger">Trigger: "Scheme A: buy 3 get 4 free, Scheme B: buy 5 get 6 free — kis scheme mein discount% maximum?"</p>
+      <div class="example">
+        <b>Q4:</b> A = 4/7×100 = 57¹⁄₇%, B = 6/11×100 = 54⁶⁄₁₁% → <span class="ans">Scheme A</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="free" data-kw="buy get free plus additional discount extra off combine single equivalent 11 get 3 free 12.5% ratio MP SP">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Buy-Get-Free + upar se aur % off → single D%</h3>
+      <p class="trigger">Trigger: "buy x get y free + z% additional discount" — equivalent single discount poocha jaaye. Free wale ko fraction bana ke ratio chain karo.</p>
+      <div class="example">
+        <b>Q7:</b> Buy 11 get 3 free (14:11) + 12.5% (8:7) → MP:SP = 16:11 → 5/16×100 = <span class="ans">31.25%</span>
+        <span class="q2"><b>Q(HW):</b> Buy 3 get 2 free (5:3) + 20% (5:4) + 25% (4:3) → 25:9 → <span class="ans">64%</span></span>
+        <br><b>Q(HW):</b> Buy 4 get 3 free (7:4→5:4 chain) → 25:14 → <span class="ans">44%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="succ" data-kw="two successive discounts equal single discount 10% 10% 25% 25% formula a+b-ab/100 kramik chhut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Do successive discount → single equivalent (a+b−ab/100)</h3>
+      <p class="trigger">Trigger: "x% ki do/do alag kramik chhut dena kitne % ki ek chhut ke barabar hai?"</p>
+      <div class="example">
+        <b>Q5:</b> 10%+10% → 20−1 = <span class="ans">19%</span>
+        <span class="q2"><b>Q6:</b> 25%+25% → 50−6.25 = <span class="ans">43.75%</span></span>
+        <br><b>Q9:</b> 9%+17% → 26−1.53 = <span class="ans">24.47%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="succ" data-kw="three successive discounts 12 18 25 single equivalent formula abc/10000 teen kramik chhut 20 35 10">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Teen successive discounts → single D%</h3>
+      <p class="trigger">Trigger: "12%, 18% aur 25% ki teen kramik chhut ke barabar single discount?" — (a+b+c) − (ab+bc+ca)/100 + abc/10000.</p>
+      <div class="example">
+        <b>Q12:</b> 12,18,25 → step-wise: 12+18−2.16 = 24.84; 24.84+25−6.21 = <span class="ans">45.88%</span>
+        <span class="q2"><b>Q14:</b> 20,35,10 → 65 − (7+3.5+2) + 0.7 = <span class="ans">53.2%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="ratio method MP SP fraction 10% = 1/10 chain multiply column method 100:81 unit">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Ratio Method: har discount ko fraction bana ke MP:SP chain</h3>
+      <p class="trigger">Trigger: discount values aise ho jo aasan fraction bane (10%=1/10, 20%=1/5, 12.5%=1/8, 25%=1/4) — formula ki jagah column chain karo.</p>
+      <div class="example">
+        <b>Ex:</b> 10%+10% → MP:SP = 10:9 × 10:9 = 100:81 → D = 19/100 = <span class="ans">19%</span>
+        <span class="q2"><b>Ex:</b> 20%+20% → 5:4 × 5:4 = 25:16 → 9/25 = <span class="ans">36%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="find discount percent MP SP given 3800 3496 marked price selling price D% = D/MP x 100 chhut pratishat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>MP aur SP diya → D% nikalo</h3>
+      <p class="trigger">Trigger: "vastu ka ankit mulya Rs A hai, becha Rs B mein — chhut pratishat kya hai?"</p>
+      <div class="example">
+        <b>Q15:</b> MP=3800, SP=3496 → D=304 → 304/3800×100 = <span class="ans">8%</span>
+        <span class="q2"><b>Ex:</b> MP=900, discount Rs 135 → 135/900×100 = <span class="ans">15%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="find marked price from SP and discount reverse MP = SP x 100/(100-D) 87500 44% 1554 26% ankit mulya nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>SP + D% diya → MP (reverse)</h3>
+      <p class="trigger">Trigger: "D% chhut ke baad vastu Rs X mein bikti hai, ankit mulya kya hai?" → MP = SP×100/(100−D).</p>
+      <div class="example">
+        <b>Q16:</b> SP=87500, D=44% → 87500×100/56 = <span class="ans">₹1,56,250</span>
+        <span class="q2"><b>Q17:</b> SP=1554, D=26% → 1554×100/74 = <span class="ans">₹2,100</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="find SP from MP and discount 1940 15% 600 20% payment amount kitna bhugtan karna hoga customer pays">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>MP + D% (ya kai D%) diya → customer kitna dega?</h3>
+      <p class="trigger">Trigger: "printed/marked price Rs X hai, dealer 10% aur 5% ki chhut deta hai — grahak ko kitna bhugtan karna hoga?"</p>
+      <div class="example">
+        <b>Q18:</b> MP=1940, D=15% → 1940×85/100 = <span class="ans">₹1,649</span>
+        <span class="q2"><b>Q22:</b> 57200×90/100×95/100 = <span class="ans">₹48,906</span></span>
+        <br><b>Q23:</b> online 10% + credit card 5% → 60000×90/100×95/100 = <span class="ans">₹51,300</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="same article different discount new SP proportion 716 10.5% 6.5% agar itni chhut di jaye to kitne me beche">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>D badal gaya → naya SP (same MP proportion)</h3>
+      <p class="trigger">Trigger: "d₁% chhut dekar Rs X mein becha; agar d₂% chhut di jaye to kitne mein bechna chahiye?" → SP₂ = SP₁×(100−d₂)/(100−d₁).</p>
+      <div class="example">
+        <b>Q24:</b> 716 × 93.5/89.5 = <span class="ans">₹748</span>
+        <span class="q2"><b>Ex:</b> Loss 10% par SP=180 → loss 20% par 180×80/90 = <span class="ans">160</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="find MP from SP after three successive discounts 2592 10 20 25 4800 697.68 credit card x value reverse chain">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Kai successive discounts ke baad SP diya → MP (ulta chain)</h3>
+      <p class="trigger">Trigger: "10%, 20%, 25% ki teen chhut ke baad SP Rs X hai, MP batao" / "x ka maan gyaat karo" — x × har fraction = SP.</p>
+      <div class="example">
+        <b>Q25:</b> x×9/10×8/10×3/4 = 2592 → <span class="ans">MP = ₹4,800</span>
+        <span class="q2"><b>Q26:</b> x×85/100×90/100×95/100 = 697.68 → <span class="ans">x = 960</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="scheme" data-kw="sum same rule which scheme maximum discount minimum SP compare 5+5 10 8+2 15 15 25 5 30 difference product">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Sum Same → jinka difference zyada, discount utna kam</h3>
+      <p class="trigger">Trigger: "in mein se kaunsi scheme par maximum discount / maximum selling price milegi?" jab sabhi options ka % ka sum barabar ho.</p>
+      <div class="example">
+        <b>Q27:</b> (5,5)diff0, (10,0)diff10, (8,2)diff6 → sabse kam diff = max discount → <span class="ans">5% + 5%</span>
+        <span class="q2"><b>Q28:</b> (15,15)0, (25,5)20, (20,10)10, (30)30 → SP maximum = sabse bada diff → <span class="ans">Scheme IV (30%)</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="scheme" data-kw="way A way B which is better cheaper amount paid buyer benefit dono tarike tulna 21168 21280">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Way A vs Way B → kaunsa sasta + kitna dena hoga</h3>
+      <p class="trigger">Trigger: "customer do tarike se kharid sakta hai (A: ek set of discounts, B: dusra set) — konsa faydemand aur kitne rupaye lagenge?"</p>
+      <div class="example">
+        <b>Q29:</b> A ka net = 24%, B ka net thoda zyada → dono ke net D% nikalo, jiska D% bada wahi sasta → <span class="ans">Way B, ₹21,168</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="succ" data-kw="equal x% x% two successive total 57.75% find x 2D 1D square root ratio 400 169 20 13 barabar chhut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>x%, x% barabar chhut se total D% diya → x nikalo</h3>
+      <p class="trigger">Trigger: "do barabar (x% each) kramik chhut milkar 57.75%/36% ki ek chhut ke barabar hai — x kya hai?" → 2D ratio ka square-root lo.</p>
+      <div class="example">
+        <b>Q:</b> total 57.75% → MP:SP = 400:169 → root = 20:13 → D = 7/20×100 = <span class="ans">35%</span>
+        <span class="q2"><b>Q:</b> total 36% → 100:64 → 10:8 → <span class="ans">20%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="succ" data-kw="find third unknown discount x% when total given 10 25 x 40 percent teesri chhut nikalo missing discount">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Do discount + ek unknown x%, total diya → x?</h3>
+      <p class="trigger">Trigger: "10% aur 25% ke saath ek aur chhut di gayi, kul chhut 40% ho gayi — teesri chhut kitni?" → ratio chain karke bache hue part se x nikalo.</p>
+      <div class="example">
+        <b>Q:</b> 10%(10:9) × 25%(4:3) → 40:27; total 40% → 100:60 = 40:24 → x = 3/27×100 = <span class="ans">11¹⁄₉%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="profit" data-kw="discount and profit MP CP ratio formula 100+P/100-D markup profit percent chhut ke baad labh">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Master formula: MP/CP = (100 ± P/L)/(100 − D)</h3>
+      <p class="trigger">Trigger: "x% chhut dene ke baad bhi y% labh" — MP:CP, D%, P% mein se koi do diye ho, teesra poocha jaaye.</p>
+      <div class="example">
+        <b>Q52:</b> D=10%, P=20% → MP/CP = 120/90 = <span class="ans">4 : 3</span>
+        <span class="q2"><b>Q53:</b> D=12.5%, P=20% → 120/87.5 → CP:MP = <span class="ans">35 : 48</span></span>
+        <br><b>Q55:</b> D=30%, P=20% → 120/70 → markup = 5/7×100 = <span class="ans">71³⁄₇%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="profit" data-kw="MP SP CP three column chain method discount profit rupees gain 30.90 marked price nearest 80 profit CP ratio 4:7">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>MP → SP → CP teen column chain (profit Rs mein diya)</h3>
+      <p class="trigger">Trigger: "x% chhut, y% labh, aur ek vastu par Rs Z ka laabh hua — MP/CP nikalo" ya "CP:MP = 4:7 diya + 20% discount + profit Rs 80".</p>
+      <div class="example">
+        <b>Q49:</b> D=28%, P=30% → MP:SP:CP = 325:234:180 → P=54u = 30.90 → MP = <span class="ans">≈ ₹186</span>
+        <span class="q2"><b>Q50:</b> CP:MP = 4:7 → 70x−20% = 56x, P = 16x = 80 → CP = 40x = <span class="ans">₹200</span></span>
+        <br><b>Q51:</b> MP=1000, D=20% → SP=800, P=300 → CP=500 → <span class="ans">60%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="profit" data-kw="markup percent no profit no loss maximum discount 28% marked up 21.875 break even adhiktam chhut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Markup diya, na labh na haani → maximum discount?</h3>
+      <p class="trigger">Trigger: "vyapari ne m% badha kar mulya ankit kiya, bina laabh-haani bechne ke liye adhiktam kitni chhut de sakta hai?" → m/(100+m)×100.</p>
+      <div class="example">
+        <b>Q54:</b> markup 28% → CP=100, MP=128 → 28/128×100 = <span class="ans">21.875%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="profit" data-kw="two discounts then profit CP MP given 150 10% 20% find profit percent extra discount second discount labh pratishat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>CP & MP diye + do discount → final profit/loss %</h3>
+      <p class="trigger">Trigger: "CP=100, MP=150, pehle 10% fir 20% chhut — laabh/haani % kya?" — SP nikaal ke CP se compare karo.</p>
+      <div class="example">
+        <b>Q:</b> 150×9/10×8/10 = 108 → CP=100 → <span class="ans">P = 8%</span>
+        <span class="q2"><b>Q:</b> MP=1200, CP=750, −20% then −x% → SP=710.4 → 249.6 par gin ke <span class="ans">L = 2.4%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="profit" data-kw="D1 P1 given find P2 for new discount 20% 10% profit 23.75 ratio constant CP fixed alag chhut par naya labh">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>D₁ par P₁ diya → D₂ par naya P₂?</h3>
+      <p class="trigger">Trigger: "20% chhut par 10% laabh milta hai, agar sirf 10% chhut de to laabh kitna?" → MP/CP fix rakh ke dono taraf formula lagao.</p>
+      <div class="example">
+        <b>Q:</b> MP/CP = 110/80; ab D=10% → P = (110×90/80) − 100 → <span class="ans">23.75%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="succ" data-kw="discount plus increase in price successive mixed sign 5 20 20 36 39.2 net effect combined percent MP badhaya">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Discount + price-increase mix (sign ka khel)</h3>
+      <p class="trigger">Trigger: "pehle MP x% badhaya, fir y% aur z% chhut di — net kitna % increase/decrease?" — sign ke saath a+b−ab/100 lagao.</p>
+      <div class="example">
+        <b>Q:</b> 20% & 20% chhut → 36%; ab 5% aur 36% → 5+36−1.8 = <span class="ans">39.2% net discount</span>
+        <span class="q2"><b>Q:</b> +60% markup, −20%, −x% → chain se final SP nikaal kar CP se compare → <span class="ans">2.4% loss</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="nD to 1D 2D 3D 1000 729 900 810 same rate repeated discount cube root square root har baar same chhut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Same % baar-baar (2D/3D) → root nikaal ke 1D</h3>
+      <p class="trigger">Trigger: "MP=1000, teen barabar chhut ke baad SP=729 — ek/do chhut ke baad SP kya hoga?" → 729/1000 = (9/10)³ → 1D = 10%.</p>
+      <div class="example">
+        <b>Q:</b> 3D: 1000→729 → ratio 9/10 → 1D SP = <span class="ans">900</span>, 2D SP = <span class="ans">810</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>22 patterns ab tak</b> (Discount Class Notes, page 1–132 tak ke questions). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Ages Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Ages (आयु) · Class Notes p.1–27</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'ratio', 'father son', 'average', 'sum', 'marriage'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="ratio">Ratio Shift</button>
+      <button data-filter="times">Times/Guna</button>
+      <button data-filter="sumdiff">Sum &amp; Difference</button>
+      <button data-filter="average">Average</button>
+      <button data-filter="third">Third Person</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="ratio" data-kw="present ratio after years hence future ratio unit method वर्तमान आयु अनुपात वर्ष बाद mother daughter father son A B cross multiply unit">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Present ratio + "n saal baad" ratio → unit nikaalo</h3>
+      <p class="trigger">Trigger: "vartaman aayu ka anupat a:b hai, n varsh baad anupat c:d ho jayega" — dono ratio ko cross-multiply karke 1 unit = kitne saal.</p>
+      <div class="example">
+        <b>Q2:</b> M:D = 7:1, 5 yr baad 4:1 → 7x+5=4(x+5) → x=5 → diff 6x = <span class="ans">30 yrs</span>
+        <span class="q2"><b>Q5:</b> A:B=3:5, 5 yr baad 13:20 → 1 unit=7y → B=5×7 = <span class="ans">35 yrs</span></span>
+        <br><b>Q14:</b> F:S=15:8, 6 yr pehle 13:6 → 1 unit=3y → F=15×3 = <span class="ans">45 yrs</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="past ratio present ratio years ago eight years ago sum of ages after years वर्ष पूर्व अनुपात वर्तमान अनुपात">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>"x saal pehle" ratio + present ratio → aage ka poocha</h3>
+      <p class="trigger">Trigger: "x varsh pehle anupat a:b tha, vartaman anupat c:d hai — n varsh baad aayu ka yog/anupat?"</p>
+      <div class="example">
+        <b>Q6:</b> 8y pehle 5:4, present 6:5 → 1 unit=8y → A=48,B=40 → 7y baad sum = <span class="ans">102</span>
+        <span class="q2"><b>Q10:</b> present 3:4, 4y pehle 5:7 → 1 unit=8y → 24,32 → 4y baad 28:36 = <span class="ans">7:9</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="past ratio future ratio years ago years hence both sides double shift 10 years from now A B ratio पहले बाद दोनों">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Dono ratio past/future ke (present diya hi nahi)</h3>
+      <p class="trigger">Trigger: "x varsh pehle anupat a:b tha, y varsh baad anupat c:d hoga — ab se n varsh baad ka anupat?" — timeline pe teen point banao.</p>
+      <div class="example">
+        <b>Q17:</b> 5y pehle 3:4, 5y baad 4:5 → 1 unit=5y → present 20:25 → 10y baad = <span class="ans">9:11</span>
+        <span class="q2"><b>Q19:</b> 1y pehle 4:3, 3y baad 6:5 → 1 unit=2y → 9y baad = <span class="ans">9:8</span></span>
+        <br><b>Q16:</b> 8y pehle 2:3, 4y pehle 5:7 → gap 4y → 8y baad = <span class="ans">4:5</span>
+        <br><b>Q8:</b> 10y pehle 1:3, 5y baad 2:3 → present = <span class="ans">3:5</span> · <b>Q9:</b> present 1:2, 5y pehle 1:3 → 5y baad = <span class="ans">3:5</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="times" data-kw="five times three times as old as twice guna older than present age seven years from now बड़ा गुना">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>"A, B ka x guna hai; n saal baad y guna hoga"</h3>
+      <p class="trigger">Trigger: "aaj x times hai, n varsh baad y times ho jayega" — ratio x:1 aur y:1 dono likh ke unit method, ya seedha equation.</p>
+      <div class="example">
+        <b>Q1:</b> R=5S; 7y baad 5x+7=3(x+7) → x=7 → Rahim = <span class="ans">35 yrs</span>
+        <span class="q2"><b>Q18:</b> R:S=3:1, 2y baad 2:1 → 1 unit=2y → Ramesh = <span class="ans">6 yrs</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="times" data-kw="seven years ago seven times three years from now three times mother daughter dono taraf shift past future multiple">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>"Pehle x guna thi, baad me y guna hogi" (dono side guna)</h3>
+      <p class="trigger">Trigger: "saat saal pehle main tumse 7 guna badi thi, teen saal baad 3 guna hongi" — past aur future dono me multiple diya ho.</p>
+      <div class="example">
+        <b>Q7:</b> 7y pehle 7:1, 3y baad 3:1 → gap 10y → 2 unit=10y → M=42, D=12 → <span class="ans">42; 12</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sumdiff" data-kw="difference between ages constant 15 years father son younger than 6 years younger antar अंतर difference fixed">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Umr ka ANTAR fixed diya ho</h3>
+      <p class="trigger">Trigger: "pita aur putra ki aayu me 15 varsh ka antar hai" / "X, Y se 6 varsh chhota hai" — difference kabhi nahi badalta, wahi 1 unit ka base hai.</p>
+      <div class="example">
+        <b>Q4:</b> diff=15; 5y pehle F=2S → S−5=15 → S=20, F=35 → <span class="ans">35 &amp; 20 yrs</span>
+        <span class="q2"><b>Q12:</b> S:P=2:3, diff 1 unit=6y → 12,18 → 6y baad = <span class="ans">3:4</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sumdiff" data-kw="sum of present ages 44 52 total yog fraction one fourth after four years ratio son father योग">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Aayu ka YOG diya ho (sum = fixed)</h3>
+      <p class="trigger">Trigger: "unki vartaman aayu ka yog 44/52 varsh hai" — ratio ho toh total units baant do, warna S = Sum − F rakh ke equation.</p>
+      <div class="example">
+        <b>Q13:</b> 3:8, sum=44 → 11 unit=44 → 1 unit=4 → diff 5 unit = <span class="ans">20 yrs</span>
+        <span class="q2"><b>Q23:</b> F+S=52; 4y baad S=¼F → F=44,S=8 → 10y baad 18:54 = <span class="ans">1:3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="average" data-kw="average of ages 32 36 six years ago new person joins shyam average change औसत formula new old increase decrease">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Average wale age question (naya banda join)</h3>
+      <p class="trigger">Trigger: "x varsh pehle teen logo ki aayu ka ausat A tha, ab ek aur judne par chaaro ka ausat B hai" — pehle sabki age ko present pe laao (+x each), phir total ka antar.</p>
+      <div class="example">
+        <b>Q15:</b> 6y pehle avg 32 → ab avg 38, sum=114; 4 logo ka sum=144 → S = <span class="ans">30 yrs</span><br>
+        Shortcut: New = Old ± change×members = 38 − 2×4 = <span class="ans">30</span>
+        <span class="q2"><b>Q11:</b> m:S=5:3, avg 32 → sum 64 → 8 unit=64 → 40,24 → 6y baad = <span class="ans">23:15</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="third" data-kw="C is 10 years younger than B D is 8 years less than A third person fourth person sum of present ages tisra vyakti">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>A-B solve karke tisra/chautha banda (C, D) nikaalo</h3>
+      <p class="trigger">Trigger: "...yadi vartaman me C, B se 10 varsh chhota hai / D, A se 8 varsh kam hai" — pehle A,B solve karo, phir sirf minus.</p>
+      <div class="example">
+        <b>Q21:</b> 5y pehle 4:5, 5y baad 6:7 → A=25,B=30 → C=20 → A:C = <span class="ans">5:4</span>
+        <span class="q2"><b>Q22:</b> 8y pehle 5:7, 8y baad 9:11 → A=28,B=36 → C=23,D=20 → sum = <span class="ans">43</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="marriage time ratio how many years ago married husband wife shaadi kitne saal pehle back calculate 4:3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>"Shaadi ke waqt ratio a:b tha → kitne saal pehle?"</h3>
+      <p class="trigger">Trigger: "shaadi ke samay unki aayu ka anupat 4:3 tha, kitne varsh pehle shaadi hui?" — present nikaal ke peeche ki taraf t saal ghatao aur ratio match karao.</p>
+      <div class="example">
+        <b>Q20:</b> present 5:4, 6y baad 6:5 → 1 unit=6y → 30,24; (30−t):(24−t)=4:3 → t = <span class="ans">6 yrs</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>10 patterns ab tak.</b> (Ages Class Notes, page 1–27 · Q1–Q23 cover). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Ratio Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Ratio (अनुपात) Class Notes</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search patterns...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic Ratio</button>
+      <button data-filter="chain">Chain a:b:c</button>
+      <button data-filter="algebra">Algebra Ratio</button>
+      <button data-filter="share">Share/Division</button>
+      <button data-filter="coins">Coins</button>
+      <button data-filter="addsub">Add/Subtract</button>
+      <button data-filter="pctratio">% on Ratio</button>
+      <button data-filter="income">Income-Exp</button>
+      <button data-filter="mix">Group/Mix</button>
+      <button data-filter="propn">Proportional</button>
+      <button data-filter="types">Ratio Types</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+    <!-- ===== Page 74 ===== -->
+<article class="card" data-cat="basic" data-kw="one part given total nikalo unitary bag black white tablet covers anupat ek hissa 450 basic ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Ratio diya, ek part ki value di → dusra part?</h3>
+      <p class="trigger">Trigger: "A aur B ka anupat a:b hai, agar B = N hai to A kitna?" — sirf ek hi quantity ki value di hoti hai.</p>
+      <div class="example">
+        <b>Q1:</b> Black:White = 5:9, White=450 → 1 unit=450/9=50 → Black=5×50 = <span class="ans">250</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="share" data-kw="sum divided among A B C share ratio 2002 total amount rashi vibhajit hissa 3:4:6">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Total amount a:b:c mein baanta → kisi ek ka share</h3>
+      <p class="trigger">Trigger: "₹X ko A, B, C mein a:b:c ke anupat mein baanta gaya, B ka hissa?" — Total × (apna part ÷ sum of parts).</p>
+      <div class="example">
+        <b>Q2:</b> 2002 in 3:4:6 → sum=13 → B = 2002×4/13 = <span class="ans">₹616</span>
+        <span class="q2"><b>Q24 type:</b> A ka part ÷ total parts hi hamesha lagega — sum of parts pehle nikaalo.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="expression 2x+4y x+4y value put direct substitute ratio x:y linear same degree homogeneous">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>x:y diya → (px+qy):(rx+sy) ki value</h3>
+      <p class="trigger">Trigger: "x : y = a : b hai, to (2x+4y) : (x+4y) ka maan?" — dono taraf ek hi degree hai, seedha values rakh do (k cancel ho jata hai).</p>
+      <div class="example">
+        <b>Q3:</b> x:y=1:2 → (2+8):(1+8) = <span class="ans">10 : 9</span>
+        <span class="q2"><b>Q4:</b> a:b=2:3 → (10+9):(12−6) = <span class="ans">19 : 6</span></span>
+        <br><b>Warning:</b> agar degree mismatch ho (x + y²) → <span class="ans">Cannot be determined</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="equation given find ratio cross multiply 5x+2y 10x+3y then squares x2 y2 value nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Pehle ratio nikaalo (cross-multiply), phir expression solve</h3>
+      <p class="trigger">Trigger: "(5x+2y) : (10x+3y) = 5 : 9, to (2x²+3y²) : (4x²+9y²) = ?" — ratio directly nahi diya, equation se banana padega.</p>
+      <div class="example">
+        <b>Q5:</b> 45x+18y=50x+15y → 3y=5x → x:y=3:5<br>
+        (2×9+3×25):(4×9+9×25) = 93:261 = <span class="ans">31 : 87</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="compare fractions smallest largest ratio 3:4 1:2 2:5 1:3 LCM percent method difference method chhota bada">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Kaun sa ratio sabse chhota/bada?</h3>
+      <p class="trigger">Trigger: "nimnalikhit mein se kaun sa anupat sabse chhota hai — 3:4, 1:2, 2:5, 1:3?"</p>
+      <div class="example">
+        <b>Q6:</b> % method: 75%, 50%, 40%, 33.33% → <span class="ans">1 : 3</span>
+        <span class="q2"><b>Q6 (m-2):</b> LCM 60 → 45/60, 30/60, 24/60, 20/60 → <span class="ans">1 : 3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="a:b b:c combine chain link common term multiply cross a:b:c x y z w four terms reverse c:b">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>a:b aur b:c diya → a:b:c (chain jodna)</h3>
+      <p class="trigger">Trigger: "a:b = _ aur b:c = _ hai, to a:b:c?" — common term ko cross multiply karke barabar karo. Agar c:b ulta diya ho to pehle seedha karo.</p>
+      <div class="example">
+        <b>Q7:</b> a:b=2:3, b:c=6:8 → 4:6:8 = <span class="ans">2 : 3 : 4</span>
+        <span class="q2"><b>Q8:</b> a:b=5:8, c:b=4:3 → b common (8,3) → <span class="ans">15 : 24 : 32</span></span>
+        <br><b>Q18:</b> x:y=6:5, y:z=9:4, z:w=2:3 → 54:45:20:30 → x:z:w = <span class="ans">27 : 10 : 15</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="2a=3b=4c equal products LCM inverse reciprocal 3x=5y=4z x:y:z barabar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>2a = 3b = 4c type → LCM ÷ coefficient</h3>
+      <p class="trigger">Trigger: "3x = 5y = 4z hai, to x : y : z?" ya "X ke hisse ka 2 guna = Y ke 3 guna = Z ke 4 guna".</p>
+      <div class="example">
+        <b>Q9:</b> 3x=5y=4z → LCM 60 → 20:12:15 = <span class="ans">20 : 12 : 15</span>
+        <span class="q2"><b>Q26:</b> 2X=3Y=4Z, total 13000 → 6:4:3 → Y = 13000×4/13 = <span class="ans">₹4000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="share" data-kw="difference between shares 214 chain a:b b:c total x amount nikalo unit value diff A and C">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Chain banao → difference di hai → total nikaalo</h3>
+      <p class="trigger">Trigger: "A:B = _ , B:C = _ , A aur C ke hisse ka antar ₹D hai, to total kitna?" — units mein difference ko match karao.</p>
+      <div class="example">
+        <b>Q10:</b> 7:12 & 8:5 → 56:96:60, sum=212... diff A−C=4 unit=214? → 214/4×212 = <span class="ans">₹11342</span>
+        <span class="q2"><b>Q21:</b> B:C=3:5, C:A=4:9 → A:C:B=45:20:12, total 77u=2310 → 1u=30 → A−C=25u = <span class="ans">₹750</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="fraction ratio decimal 0.1:0.3 4/5:5/6:9/10 LCM whole number convert bhinn anupat smallest greatest difference 12">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Ratio fraction/decimal mein diya → LCM se whole banao</h3>
+      <p class="trigger">Trigger: "teen sankhyaayein 4/5 : 5/6 : 9/10 ke anupat mein hain" ya "0.1 : 0.3" — pehle saaf integer ratio banao.</p>
+      <div class="example">
+        <b>Q11:</b> 4/5:5/6:9/10 ×LCM30 → 24:25:27; bada−chhota=3u=12 → 1u=4 → middle = <span class="ans">100</span>
+        <span class="q2"><b>Basic:</b> 1/2 : 1/4 : 1/5 ×20 → <span class="ans">10 : 5 : 4</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="P+Q Q+R R+P sum of pairs ratio banao P:Q:R 10:11:12 pairwise jodna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>P:Q:R nikaal ke pairs ka ratio (P+Q : Q+R : R+P)</h3>
+      <p class="trigger">Trigger: "P:Q = _ aur Q:R = _ hai, to P+Q : Q+R : R+P kya hoga?" — pehle 3-term chain, phir jod do.</p>
+      <div class="example">
+        <b>Q12:</b> P:Q:R = 10:11:12 → 21 : 23 : 22 = <span class="ans">21 : 23 : 22</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="a+b b+c c+a given sum total 27 individual values 2(a+b+c) reciprocal 1/a 1/b 1/c ulta">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>(a+b):(b+c):(c+a) diya + total diya → single values</h3>
+      <p class="trigger">Trigger: "(a+b) : (b+c) : (c+a) = 7:6:5 aur a+b+c = 27" — saare jod do to 2(a+b+c) milta hai, phir ghatate jao.</p>
+      <div class="example">
+        <b>Q13:</b> sum=18x → a+b+c=9x=27; c=9x−7x=2x, a=3x, b=4x<br>
+        1/a:1/b:1/c = 1/3:1/4:1/2 ×12 = <span class="ans">4 : 3 : 6</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="squares a2+b2 b2+c2 c2+a2 34 61 45 positive numbers b-a c-b c-a root nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Square wale pairs (a²+b²) : (b²+c²) : (c²+a²)</h3>
+      <p class="trigger">Trigger: "(a²+b²) : (b²+c²) : (c²+a²) = 34 : 61 : 45, to b−a : c−b : c−a?" — same jodne wala trick, last mein square root lo.</p>
+      <div class="example">
+        <b>Q14:</b> sum=140 → a²+b²+c²=70 → c²=36, a²=9, b²=25 → a=3,b=5,c=6<br>
+        2 : 1 : 3 = <span class="ans">2 : 1 : 3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="A/B B/C C/A division of ratio terms 2:3:4 fraction banao LCM 8:9:24">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>(A/B) : (B/C) : (C/A) type</h3>
+      <p class="trigger">Trigger: "A : B : C = 2 : 3 : 4 hai, to (A/B) : (B/C) : (C/A) ka maan?" — seedha values daal ke fractions, phir LCM.</p>
+      <div class="example">
+        <b>Q15:</b> 2/3 : 3/4 : 4/2 ×12 → <span class="ans">8 : 9 : 24</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pctratio" data-kw="seats increased 20% 40% 60% new ratio percent applied on each part maths english chemistry 6:4:7 badhi hui">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Har part par alag-alag % increase → naya ratio</h3>
+      <p class="trigger">Trigger: "seats/salary a:b:c hain, inme kramash: x%, y%, z% ki vridhi hui — naya anupat?" — har term par apna multiplier lagao.</p>
+      <div class="example">
+        <b>Q16:</b> 6:4:7 → 60:40:70 → +20%,+40%,+60% → 72:56:112 = <span class="ans">9 : 7 : 14</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="share" data-kw="two separate ratios linked price A:B C:D D=1300 C is 1500 more than B bridge value connect">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Do alag ratios, beech mein ek actual value ka pul</h3>
+      <p class="trigger">Trigger: "A aur B ka anupat _ , C aur D ka _ ; C, B se ₹1500 zyada hai aur D = ₹1300" — ek known value se dusri ratio kholo.</p>
+      <div class="example">
+        <b>Q19:</b> D=1300 → 13u=1300 → C=24×100=2400; B=2400−1500=900<br>
+        A:B=5:9 → A=900/9×5 = <span class="ans">₹500</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="share" data-kw="income ratio one-third half 4400 less equation banao P Q R 1:2 3:2 Q income nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Ratio + ek shart ka equation (1/3 income = 1/2 income − X)</h3>
+      <p class="trigger">Trigger: "P aur Q ki aay 1:2, Q aur R 3:2; P ki aay ka one-third, aadhe se ₹4400 kam hai" — chain banao phir equation solve.</p>
+      <div class="example">
+        <b>Q20:</b> P:Q:R = 3:6:4; P=3x → x = 3x/2 − 4400 → x=8800<br>
+        Q = 6×8800 = <span class="ans">₹52,800</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="share" data-kw="combined share A+D B+C 11:10 8:5 four people 6300 46800 C receives 1560 difference x-y units">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Combined share (A+D) : (B+C) → 4 logon ka bantwara</h3>
+      <p class="trigger">Trigger: "A aur D ke sanyukt hisse ka B aur C ke sanyukt hisse se anupat 11:10 hai" — total ko pehle do groups mein todo, phir andar break karo.</p>
+      <div class="example">
+        <b>Q22:</b> 21u=6300 → A+D=3300, B+C=3000; C=1560→B=1440; B:D=8:9→D=1620, A=1680 → A−B = <span class="ans">₹240</span>
+        <span class="q2"><b>Q23:</b> 13u=46800 → A+D=28800, B+C=18000; B:C=5:4 → B=10000,C=8000; A=18400,D=10400 → x−y = <span class="ans">₹6000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="a:(b+c) b:(c+a) c:(a+b) 5:7 7:9 total 12 parts trick sum constant find third">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>a : (b+c) type → total ko same banao</h3>
+      <p class="trigger">Trigger: "a : (b+c) = 5 : 7 aur b : (c+a) = 7 : 9 hai, to c : (a+b)?" — dono ka total (a+b+c) barabar karo, phir subtract.</p>
+      <div class="example">
+        <b>Q29:</b> total 12→×4=48 aur 16→×3=48 → a=20, b=21 → c=48−41=... c:(a+b) = <span class="ans">4 : 41</span>
+        <span class="q2"><b>Q30:</b> a:(b+c)=1:3 (total 4), c:(a+b)=5:7 (total 12) → a=3, c=5, b=4 → <span class="ans">1 : 2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="(a+b+c):d 17:3 (a+c+d):b 3:1 (a+b+d):c total same LCM find (b+c+d):a">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>(a+b+c) : d, (a+c+d) : b … → chautha nikaalo</h3>
+      <p class="trigger">Trigger: "(a+b+c):d = 17:3, (a+c+d):b = 3:1, (a+b+d):c = 3:2, to (b+c+d):a?" — sabka total 20 banao, phir har variable padh lo.</p>
+      <div class="example">
+        <b>Q31:</b> totals 20,20,20 → d=3, b=5, c=8, a=20−16=4<br>
+        (b+c+d):a = 16:4 = <span class="ans">4 : 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="p/q=r/s=t/u equal fractions weighted sum 4p+3r+7t coefficients cancel same ratio answer">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>p/q = r/s = t/u = a/b → weighted sum bhi wahi ratio</h3>
+      <p class="trigger">Trigger: "p/q = r/s = t/u = 2/5 hai, to (4p+3r+7t) : (4q+3s+7u)?" — coefficients cancel, answer wahi original ratio.</p>
+      <div class="example">
+        <b>Q27:</b> 2(4+3+7) : 5(4+3+7) = <span class="ans">2 : 5</span>
+        <span class="q2"><b>Q28:</b> a:b=c:d=e:f=1:2 → (pa+qc+re):(pb+qd+rf) = <span class="ans">1 : 2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="coins" data-kw="coins sikke rupees 2 1 50 paise denomination number ratio value ratio multiply total amount bag">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Coins: number ratio × denomination = value ratio</h3>
+      <p class="trigger">Trigger: "bag mein ₹2, ₹1 aur 50 paise ke sikkon ki sankhya ka anupat 3:4:5, kul rashi ₹250" — number wale ratio ko value ratio mein badlo.</p>
+      <div class="example">
+        <b>Q33:</b> no. 3:4:5 → value 6:4:2.5 = 12.5u = 250 → 1u=20 → ₹1 coins = 4×20 = <span class="ans">80</span>
+        <span class="q2"><b>Q34:</b> balance 80; 5:4:1 → value 10:20:10=40u=80 → 1u=2 → ₹5 coins = 4×2 = <span class="ans">8</span></span>
+        <br><b>Q35:</b> total coins 240 (2:3:5 → 10u=240, 1u=24) → value 10+30+100=140u → <span class="ans">₹3360</span>
+        <br><b>Q36:</b> value 10:35:60=105u=840 → 1u=8 → coins=(5+7+6)×8 = <span class="ans">144</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="both numbers increased by 40 added 5 ratio becomes 2:3 cross multiplication difference sum do sankhya jodne par">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Dono numbers mein same value jodo/ghatao → naya ratio</h3>
+      <p class="trigger">Trigger: "do sankhyaayein 9:16 ke anupat mein hain, dono mein 40 jodne par 2:3 ho jaata hai" — cross-multiplication se 1 unit nikaalo.</p>
+      <div class="example">
+        <b>Q37:</b> 9:16 & 2:3, +40 → 27x+120=32x+80 → x=8 → diff=7×8 = <span class="ans">56</span>
+        <span class="q2"><b>Q38:</b> 5:8 & 2:3, +5 → 1 unit=5 → sum=13×5 = <span class="ans">65</span></span>
+        <br><b>Q39:</b> cross-mult se 1u=... → sum=60×5 = <span class="ans">300</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="added 4 becomes 9:4 then subtract 5 from original find new ratio double condition do baar change">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Pehle jodne par ratio diya → phir ghatane par ratio poocha</h3>
+      <p class="trigger">Trigger: "5:2 hai, 4 jodne par 9:4 ho jaata hai; ab dono original numbers mein se 5 ghata do to ratio?" — do condition, pehle x nikaalo.</p>
+      <div class="example">
+        <b>Q40:</b> (5x+4)/(2x+4)=9/4 → x=4 → numbers 20,8 → (20−5):(8−5) = 15:3 = <span class="ans">5 : 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="boys girls -40 +40 transfer one decreases other increases parrot pigeon sparrow left joined opposite sign">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>Ek mein minus, dusre mein plus (transfer type)</h3>
+      <p class="trigger">Trigger: "B:G = 3:2, 40 ladke chale gaye aur 40 ladkiyan aa gayi to 2:3 ho gaya" — signs opposite, difference method turant lagao.</p>
+      <div class="example">
+        <b>Q41:</b> 3:2 → 2:3 with −40/+40 → 5u=40... 1u=40 → boys=3×40 = <span class="ans">120</span>
+        <span class="q2"><b>Q42:</b> Parrot:Pigeon 7:9, −8/+6 → 1:4 → 19x=38 → Pa=6, Sparrow=10 → <span class="ans">3 : 5</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="only one number changed science english marks add x to one term 2:13 becomes 25:26 single side change">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Sirf EK term mein change (dusra jaisa ka taisa)</h3>
+      <p class="trigger">Trigger: "Science aur English ke marks ka anupat 2:13 hai, Science mein x badhne par 25:26 ho gaya" — jo term same hai usse unit match karo.</p>
+      <div class="example">
+        <b>Q43:</b> 2:13 → ×2 → 4:26; ab 25:26 → change = 21 units on Science<br>
+        base match karke x nikaalo → <span class="ans">x = 120</span>
+        <span class="q2"><b>Q44:</b> Anil:Kumud 19:17, 1u=2000 → Kumud=34000, +1000 → <span class="ans">₹35,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="three parts same number added to each 3:7:8 becomes 11:23:26 batches 2:3:5 +20 4:5:7 total students teen bhag">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <h3>Teen parts, har ek mein same number jud jaye</h3>
+      <p class="trigger">Trigger: "teen bhagon ka anupat 2:3:5 hai, har ek mein 20 badhne par 4:5:7 ho jata hai — pehle kul kitne?" — koi bhi do terms ka equation banao.</p>
+      <div class="example">
+        <b>Q47:</b> 2:3:5 → 4:5:7 (+20 each) → 2u=20 → 1u=10 → total=10×10 = <span class="ans">100</span>
+        <span class="q2"><b>Q46:</b> 3:7:8 → 11:23:26 (+6 each) → (3x+6)/(7x+6)=11/23 → x=9 → total=18×9 = <span class="ans">162</span></span>
+        <br><b>Q25:</b> 5:7:9 of 10500 (1u=500), sabko +500 → 3000:4000:5000 = <span class="ans">3 : 4 : 5</span>
+      </div>
+    </article>
+
+    <!-- ===== Page 141 ===== -->
+<article class="card" data-cat="income" data-kw="income expenditure savings ratio I=E+S salary vyay bachat aay saving find ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>I = E + S base table (savings/expenditure ratio)</h3>
+      <p class="trigger">Trigger: "salary Rs X, expenditure Rs Y — savings ka ratio nikalo" / E:S diya hai, teesra maango.</p>
+      <div class="example">
+        <b>Q48:</b> Avinash 50000−18000=32000; Radha 60000−24000=36000 → <span class="ans">9 : 8</span>
+        <span class="q2"><b>Q51:</b> I:E=4:7, E ratio 6:5, J: 2800−400=2400 exp → 1u=400 → N: I=4900, E=2000 → S=<span class="ans">₹2,900</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="expenditure savings increase fraction of income new ratio same income badh gayi bachat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>E:S diya, ek part income ke fraction se badha → naya ratio</h3>
+      <p class="trigger">Trigger: "expenditure aur savings 4:3, savings income ke 1/5 se badh gayi, income same" — naya E:S poocha jaaye.</p>
+      <div class="example">
+        <b>Q49:</b> I=70, E=40, S=30; +1/5 of 70=14 → S=44, E=40−14=26 → 26:44 = <span class="ans">13 : 22</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="expenditure increases savings same income increases by rs 300 initial expenditure unit method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Income Rs N badhi, savings same → initial expenditure</h3>
+      <p class="trigger">Trigger: "E:S = 4:3, expenditure initial savings ka 1/4 badha, income Rs 300 badhi, savings same" — initial value poocha jaaye.</p>
+      <div class="example">
+        <b>Q50:</b> I=70x, E=40x, S=30x; ΔE=30x×1/4=7.5x=300 → x=40 → E=40×40 = <span class="ans">₹1,600</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="two persons income ratio savings ratio equal expenditure each saves same amount cross multiplication A B anand bharath">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Do log: I ratio + E ratio + equal saving (ya equal exp) → cross method</h3>
+      <p class="trigger">Trigger: "A aur B ki income a:b, expense c:d, dono ki saving Rs S equal / dono ka kharcha Rs E equal" — income ya saving poocha jaaye.</p>
+      <div class="example">
+        <b>Q52:</b> I 3:5, E 1:3, each saves 10000 → (3x−10000)/(5x−10000)=1/3 → x=5000 → Bharat=<span class="ans">₹25,000</span>
+        <span class="q2"><b>Q53:</b> I 4:5, S 14:19, E=1200 each → (4x−1200)/(5x−1200)=14/19 → x=1000 → diff=<span class="ans">₹1,000</span></span>
+        <br><b>Q54:</b> I 7:6, S 5:4, E=1000 each → x=500 → <span class="ans">A=3500, B=3000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="expenditure fraction of own income difference between expenditures find income 5/12 7/15 LCM unit">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Har banda apni income ka fraction kharch → exp ka difference diya</h3>
+      <p class="trigger">Trigger: "A ka exp uski income ka 5/12, B ka 7/15, dono ke exp ka antar Rs 4500" — income poocha jaaye.</p>
+      <div class="example">
+        <b>Q55:</b> I=4x:3x → E=5x/3 aur 7x/5 → diff=4x/15=4500 → x=16875... unit method: x=60 base → I(B)=3×60 → scale → <span class="ans">₹50,625</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="income of A is 2/3 of B expenditure 3/4 one third of income equals expenditure savings ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>"A ki income B ki 2/3, exp 3/4" → savings ratio</h3>
+      <p class="trigger">Trigger: fraction relation di ho (income ka x/y, expenditure ka p/q) aur "1/3 of B's income = B's expenditure" jaisi link di ho.</p>
+      <div class="example">
+        <b>Q56:</b> I → 2:3, E → 3:4 with E_B = I_B/3 → units: I 2×3:3×3=6:9, E 3:5 → S = 6−3 : 9−5 → <span class="ans">3 : 4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="last year present year income increased ratio yearly growth 4/3 6/5 combined percentage two years 2020 2021">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Last year : Present year (dono ki growth alag)</h3>
+      <p class="trigger">Trigger: "pichle saal income ka ratio a:b tha, is saal A ki x% aur B ki y% badhi" — present ratio / value poochi jaaye.</p>
+      <div class="example">
+        <b>Q57:</b> LY 4x:3x → PY 4x×4/3 : 3x×6/5 → total ratio use karke = <span class="ans">20.52</span>
+        <span class="q2"><b>Q58:</b> 2020 → 20:16, 2021 → 20×5/4 : 16×3/2 = 25:24; 1u=14400 → <span class="ans">₹3,45,600</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="expenses ratio wheat vegetables oil prices increased percent total expense increase weighted average 12:8:5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Ratio ke items pe alag-alag % increase → total % increase</h3>
+      <p class="trigger">Trigger: "wheat, vegetables, oil pe kharcha 12:8:5, prices 50%, 25%, 40% badhe" — kul kharche mein % vriddhi poochi jaaye.</p>
+      <div class="example">
+        <b>Q64:</b> 1200,800,500 → inc 600+200+200=1000 on 2500 → <span class="ans">40%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="salaries ratio B C D E increased 20 30 40 50 percent increased salary given sum of original salaries unit">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Ratio + har ek pe alag % → ek ki NEW value se baaki nikalo</h3>
+      <p class="trigger">Trigger: "salaries 2:3:4:5, increase 20/30/40/50%, D ki BADHI HUI salary Rs 560" — original ka sum poocha jaaye.</p>
+      <div class="example">
+        <b>Q65:</b> D: 4u×140/100=560 → 4u=400 → 1u=100 → sum=(2+3+4+5)×100 = <span class="ans">₹1,400</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="propn" data-kw="price proportional to square of weight stone diamond broken two pieces loss percent k w2 patthar heera">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Price ∝ (weight)² → patthar toota, loss?</h3>
+      <p class="trigger">Trigger: "keemat vazan ke varg ke samanupati hai, patthar/heera a:b mein toot gaya" — loss ya total nayi keemat poochi jaaye.</p>
+      <div class="example">
+        <b>Q66:</b> 5:7 → (12)²=144 → 25+49=74 → loss=70/144 of 230400 = <span class="ans">₹1,12,000</span>
+        <span class="q2"><b>Q68:</b> 5:9 → 196 → 25+81=106 → loss%=90/196×100 = <span class="ans">45.92%</span></span>
+        <br><b>Q67:</b> 2:3 → 25 → 4+9=13 → new price=120000×13/25 = <span class="ans">₹62,400</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="propn" data-kw="x directly proportional y inversely proportional z constant k find value samanupati vyutkramanupati">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>x ∝ y aur x ∝ 1/z → constant nikaal ke naya value</h3>
+      <p class="trigger">Trigger: "x, y ke samanupati aur z ke vyutkramanupati hai; y=..., z=... par x=... , ab naya x?"</p>
+      <div class="example">
+        <b>Q80:</b> x=k·y/z → k=2.5×4.5/1.8=6.25... → x=(2.5/1.8×4.5 base)×4.2/1.25 = <span class="ans">21</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="pass fail success failure ratio 14 more students 3 less new ratio total candidates exam difference">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Pass:Fail ratio, kuch students add/minus → naya ratio</h3>
+      <p class="trigger">Trigger: "success:failure 5:2 tha, agar 14 fail aur hote toh 9:5 ho jaata" — total ya difference poocha jaaye.</p>
+      <div class="example">
+        <b>Q69:</b> 5x/(2x+14)=9/5 → 7x=126 → x=28 → total=7x=<span class="ans">196</span>
+        <span class="q2"><b>Q70:</b> (25x+1)/(4x−3)=22/3 → x=6 → diff=21x=<span class="ans">126</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="election four candidates ratio 2:3:4 total votes fourth candidate got votes remaining unit chunav">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Total mein se FIXED part hatao, bacha hua ratio mein baanto</h3>
+      <p class="trigger">Trigger: "kul 1,89,000 vote, chauthe candidate ko 18,000 mile, baaki teen ko 2:3:4 mein" — teeno ke vote poochein.</p>
+      <div class="example">
+        <b>Q71:</b> 189000−18000=171000; 9u=171000 → 1u=19000 → <span class="ans">38,000 / 57,000 / 76,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="men women blue red dress two variable x y ratio of group cross relation party hall total men to women">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Do-do group cross-linked (men-blue vs women-red) → 2 variable</h3>
+      <p class="trigger">Trigger: "blue ke men : red ki women = 3:7, red ke men : blue ki women = 2:1, blue:red = 35:76" — kul men:women poocha jaaye.</p>
+      <div class="example">
+        <b>Q72:</b> (3x+y)/(2y+4x)=35/76 → 6y=17x → y/x=17/6 → Men/Women=(18+34)/(17+42)= <span class="ans">52 : 59</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="whole surface earth land water northern southern hemisphere part from total remaining ratio bhumi jal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Poora − ek hissa = doosra hissa (equal-half trick)</h3>
+      <p class="trigger">Trigger: "poori prithvi par land:water 3:5, uttari golardh mein 7:9 — dakshini golardh mein?" — dono halves barabar hote hain.</p>
+      <div class="example">
+        <b>Q63:</b> Total 3:5 → 12:20 (32u); North 7:9 (16u) → South = 5:11 → <span class="ans">5 : 11</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="employees office A B male female ratio total employees within office scaling common term male ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Andar-bahar ke ratio jodna (office A/B, male-female)</h3>
+      <p class="trigger">Trigger: "A aur B ke total employees 2:3, A aur B ki females 1:2, A mein female:total 1:3" — males ka ratio poocha jaaye.</p>
+      <div class="example">
+        <b>Q62:</b> Total 6:9, F 2:4, M = 6−2 : 9−4 → <span class="ans">4 : 5</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="types" data-kw="compound ratio mixed ratio mishr anupat multiply fractions decimals 0.45 0.55">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Compound / Mixed Ratio (sab multiply)</h3>
+      <p class="trigger">Trigger: "1:2 aur 3:5 ka mishr anupat" — do/teen ratios ka compound ratio poocha jaaye, decimals ho toh pehle whole banao.</p>
+      <div class="example">
+        <b>Q73:</b> 1/2 × 3/5 = <span class="ans">3 : 10</span>
+        <span class="q2"><b>Q74:</b> 1/2 × 3/5 × 5/9 = <span class="ans">1 : 6</span></span>
+        <br><b>Q75:</b> 0.45:0.55=9:11; 1/9:4/5=5:36 → 9×5 : 11×36 = <span class="ans">5 : 44</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="types" data-kw="duplicate ratio varganupat sub duplicate square root triplicate ghananupat sub triplicate cube root inverse ratio pratilom">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Duplicate / Sub-duplicate / Triplicate / Sub-triplicate / Inverse</h3>
+      <p class="trigger">Trigger: "14:17 ka varganupat / 8:27 ka ghanmoolanupat / a:b ka pratilom anupat" — bas definition lagao, calculation nahi.</p>
+      <div class="example">
+        <b>Q76:</b> Duplicate 14:17 → <span class="ans">196 : 289</span>
+        <span class="q2"><b>Q:</b> Sub-triplicate 8:27 → ∛8:∛27 = <span class="ans">2 : 3</span></span>
+        <br><b>Q:</b> Inverse a:b → <span class="ans">b : a</span> &nbsp;|&nbsp; 1/0.11 : 4/1.3 → 130:44 → duplicate = <span class="ans">16900 : 5929</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="algebraic ratio expression x y z w equals 3:4:7 sum of first two equals third find value substitution">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Ratio 2:3:5 type → pehle do ka sum = teesra (algebra trick)</h3>
+      <p class="trigger">Trigger: "(x−2y+8z) : (y−3z+4w) : (4x+5z−7w) = 3:4:7" — koi expression ki value poochi jaaye.</p>
+      <div class="example">
+        <b>Q61:</b> 3+4=7 → (1st)+(2nd)=(3rd) → 11w=3x+y → 22w=6x+2y → (22w−17w)/w = <span class="ans">5</span>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <b>45 patterns — merged from pages 74, 141 (ascending order).</b>
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

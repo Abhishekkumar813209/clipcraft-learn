@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Pipe & Cistern Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Pipe &amp; Cistern (नल और टंकी)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'leak', 'alternate', 'outlet', 'clock', 'litre', 'bandar'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic LCM</button>
+      <button data-filter="leak">Leak/Risav</button>
+      <button data-filter="outlet">Outlet Pipe</button>
+      <button data-filter="clock">Clock Time</button>
+      <button data-filter="alt">Alternate</button>
+      <button data-filter="unknown">Unknown x</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="basic" data-kw="lcm efficiency both pipes opened together fill empty tank simultaneously nal tanki bharna dono ek saath total work basic">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Dono pipe ek saath → LCM/efficiency</h3>
+      <p class="trigger">Trigger: "A tank ko x ghante mein, B y ghante mein bhar sakta hai, dono ek saath khole jayein toh kitna time?"</p>
+      <div class="example">
+        <b>Q1:</b> A→18, B→24 → LCM 72, eff 4+3=7 → 72/7 = <span class="ans">10²⁄₇ hr</span>
+        <span class="q2"><b>Q2:</b> A→4, B→6 → 12, eff 3+2=5 → 12/5 = 2²⁄₅ hr = <span class="ans">2 hr 24 min</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="50 percent half tank part fill answer in minutes hours convert unit adha tanki bhaag percent capacity">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>"50% tank x ghante mein" + answer minutes mein</h3>
+      <p class="trigger">Trigger: ek pipe ka time poora tank ka nahi, "50%/⅓ bhaag bharta hai" diya ho — pehle full-tank time nikalo, aur answer "(in minutes)" poocha ho toh ×60.</p>
+      <div class="example">
+        <b>Q3:</b> A 50% in 6hr → full 12hr; B→18 → LCM 36, eff 3+2=5<br>
+        36/5 hr ×60 = <span class="ans">432 min</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="leak" data-kw="leak leakage bottom risav pipe alone fills more time empty full tank negative efficiency chhed tali">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Leak ki wajah se zyada time laga → leak akela kitne mein khali?</h3>
+      <p class="trigger">Trigger: "pipe tank ko x hr mein bharta hai, tali mein risav ki wajah se y hr mein bharta hai — leak akela full tank kitne mein khali karega?"</p>
+      <div class="example">
+        <b>Q4:</b> P→30, P+L→50 → LCM 150, eff 5 aur 3 → L=−2 → 150/2 = <span class="ans">75 hr</span>
+        <span class="q2"><b>Q5:</b> P→15, P+L→20 → 60; 4−3=1 → 60/1 = <span class="ans">60 hr</span></span>
+        <br><b>Q6:</b> P→11/2, P+L→33/4 → 33; 6−4=2 → t<sub>L</sub>=33/2; 30% → (33×30)/(2×100) = <span class="ans">99/20 hr</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="outlet" data-kw="inlet outlet emptying pipe khali karne wala negative efficiency three pipes all opened together P Q R A B C">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Filling + Emptying pipe saath mein (−ve efficiency)</h3>
+      <p class="trigger">Trigger: "ek pipe bharta hai, dusra bhari tanki khali karta hai, dono/teenon ek saath khole gaye" — outlet ki efficiency minus mein lo.</p>
+      <div class="example">
+        <b>Q8:</b> P→5, Q→10, R→−20 → LCM 20; 4+2−1=5 → 20/5 = <span class="ans">4 hr</span>
+        <span class="q2"><b>Q9:</b> A→12, B→18, C→−36 → 36; 3+2−1=4 → <span class="ans">9 min</span></span>
+        <br><b>Q7:</b> I→10, O→−20 → 20; 2−1=1 → 20 hr; 6:30 am +20 = <span class="ans">2:30 a.m. next day</span></b>
+      </div>
+    </article>
+
+    <article class="card" data-cat="clock" data-kw="opened at 6 am 8 am 10 am different times staggered start when will tank be full clock answer time kab bharegi">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Pipes alag-alag time par khule → tanki kab bharegi?</h3>
+      <p class="trigger">Trigger: "A 6 a.m., B 8 a.m., C 10 a.m. par khola gaya — tanki kab bhar jayegi?" → equation: 2A + 2(A+B) + t(A+B+C) = T.W.</p>
+      <div class="example">
+        <b>Q10:</b> 15,30,40 → 120; 8,4,3. 2×8+2×12+15t=120 → t=16/3=5hr20min → 10:00+5:20 = <span class="ans">3:20 p.m.</span>
+        <span class="q2"><b>Q11:</b> 30,40,60 → 120; 4,3,2. 1×4+2×7+9t=120 → t=34/3=11hr20min → 10:00 a.m.+11:20 = <span class="ans">9:20 p.m.</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="clock" data-kw="tank emptied when A closed B turned on after 2 hours emptying negative net khali kab hogi mixed operation">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Beech mein pipe badla → "tank kab EMPTY hoga?"</h3>
+      <p class="trigger">Trigger: "A aur C 9 a.m. par chalu, 2 ghante baad A band aur B chalu — tanki kab khali hogi?" → total work = 0 rakho.</p>
+      <div class="example">
+        <b>Q12:</b> A→1(10), B→2(5), C→5/4(−8) [T.W=10]<br>
+        2(10−8) + t(5−8) = 0 → 4=3t → t=1hr20min → 11:00 + 1:20 = <span class="ans">12:20 p.m.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unknown" data-kw="pipe C alone empty in x hours value of x find unknown efficiency all three opened tank full in given time">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Emptying pipe ka time "x" nikalna</h3>
+      <p class="trigger">Trigger: "C akela x minute mein khali karta hai, teenon saath khole toh tank T time mein bhar jata hai — x ka maan?" → C ki efficiency = combined − (A+B).</p>
+      <div class="example">
+        <b>Q14:</b> A→12, B→15, A+B+C→10 → 60; 5+4=9, combined=6 → C=−3 → 60/3 = <span class="ans">20 min</span>
+        <span class="q2"><b>Q15:</b> A→−20, B→−15, (A+B+C) ne 1/18 kaam 40 min mein → full 12 hr → −3−4=−7, net −5 → C=+2 → 60/2 = <span class="ans">30 hr</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unknown" data-kw="C closed at 2.30 pm tank full at 8.30 pm value of x timeline equation pipe band kar diya gaya partial time">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Beech mein C band → x (emptying time) nikalo</h3>
+      <p class="trigger">Trigger: "sab 10:30 a.m. par khule, C ko 2:30 p.m. par band kiya, tank 8:30 p.m. par full — x?" → timeline ko do slots mein todo.</p>
+      <div class="example">
+        <b>Q13:</b> A→16(3), B→24(2), T.W=48<br>
+        4(5+c) + 5×6 = 48 → 4c=−2 → c=−½ → t<sub>C</sub>=48÷½ = <span class="ans">96 hr</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="outlet" data-kw="pipe A closed after 10 hours remaining part filled B and C continue shesh bhaag kitne ghante baad">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Kuch der baad ek pipe band → baaki kaam kitne time mein?</h3>
+      <p class="trigger">Trigger: "teenon saath khule, 10 ghante baad A band — shesh bhaag kitne ghante mein bharega?" → (A+B+C)t₁ + (B+C)t₂ = T.W.</p>
+      <div class="example">
+        <b>Q26:</b> A16(15), B24(10), C40(−6), T.W=240<br>
+        19×10 + 4t = 240 → 4t=50 → <span class="ans">12½ hr</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unknown" data-kw="after how many minutes should B be closed so that tank is filled in 30 minutes outlet band karna kab">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>"B ko kitne min baad band karein taaki 30 min mein bhar jaye?"</h3>
+      <p class="trigger">Trigger: outlet B khula hai, fill karna fixed time mein hai — "B kab band karna hoga?" → (A−B)t + A(T−t) = T.W.</p>
+      <div class="example">
+        <b>Q24:</b> A→16(3), B→−24(2), T.W=48<br>
+        (3−2)t + 3(30−t) = 48 → 90−2t=48 → <span class="ans">t = 21 min</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alt" data-kw="alternately opened 1 hour each starting with pipe A cycle 2 days baari baari ek ek ghanta alternate">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Alternate 1-1 ghanta (A, B, A, B…) → cycle method</h3>
+      <p class="trigger">Trigger: "A se shuruat karte hue dono ko baari-baari 1-1 ghante ke liye khola jata hai" → 2 hr ka cycle work nikalo, multiply karo, bacha hua alag se.</p>
+      <div class="example">
+        <b>Q16:</b> A8(3),B12(2)→24; 2hr=5 → 8hr=20, +1hr(3)=23, bacha 1 unit A se ½hr → <span class="ans">9½ hr</span>
+        <span class="q2"><b>Q17:</b> A16(5),B20(4)→80; 2hr=9 → 16hr=72, +1hr=77, bacha 3/4 → <span class="ans">17¾ hr</span></span>
+        <br><b>Q18:</b> A10(8),B16(5)→80; 2hr=13 → 12hr=78, bacha 2/8 → <span class="ans">12¼ hr</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alt" data-kw="three pipes one by one for 1 minute each cycle emptying negative teen pipe baari se ek ek minute 167 min">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>3 pipes baari-baari 1-1 min (ek outlet bhi)</h3>
+      <p class="trigger">Trigger: "A, B, C ko bari-bari 1-1 minute ke liye khola jaye" — cycle 3 min ka, C ka minus lagao; last cycle se pehle hi tank full ho sakta hai, isliye peak check karo.</p>
+      <div class="example">
+        <b>Q21:</b> 20,30,−15 → 60; +3,+2,−4 → 3min=1 unit; 60−5=55 → 165min=55, +1min(+3)=58, +1min(+2)=60 → <span class="ans">167 min</span>
+        <span class="q2"><b>Q22:</b> 10,12,−12 → 60; +6,+5,−5 → 3min=6; 27min=54, +1min(+6)=60 → <span class="ans">28 min</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alt" data-kw="monkey climbs pole 100 meter slips back bandar khambha chadhna fisalna cycle same alternate logic 6m 4m">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Bandar–khambha (wahi alternate cycle logic)</h3>
+      <p class="trigger">Trigger: "bandar 100m khambhe par pehle minute x m chadhta hai, doosre minute y m fisalta hai" — cycle nikalo, aakhri chadhai alag jodo (fisalne ka mauka nahi milta).</p>
+      <div class="example">
+        <b>Q19:</b> 100m, +6/−4 → 2min=2m; 94min=94m, +1min(+6)=100 → <span class="ans">95 min</span>
+        <span class="q2"><b>Q20:</b> 60m, +5/−4 → 2min=1m; 110min=55m, +1min(+5)=60 → <span class="ans">111 min</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="leak" data-kw="leak closed after tank is 1/3 full 1/4 full two stage total time from beginning chhed band karna baad mein">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Tank 1/3 (ya 1/4) bharne ke baad leak band → total time</h3>
+      <p class="trigger">Trigger: "tanki 1/3 bhar jane ke baad chhed band kar diya gaya, shuru se kul kitna samay?" → T = (T.W×part)/(P−L) + (T.W×rest)/P.</p>
+      <div class="example">
+        <b>Q23:</b> P4(3), L6(−2), T.W=12 → (12×⅓)/1 + (12×⅔)/3 = 4 + 8/3 = <span class="ans">20/3 hr</span>
+        <span class="q2"><b>Q23b:</b> P10(2), L20(−1), T.W=20 → 20×¼/1 + (20×¾)/2 = 5+7.5 = <span class="ans">25/2 hr</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="leak" data-kw="due to leakage it took 1 hour 40 minutes more 48 minutes more extra time A and B together leak empty cistern SSC favourite">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>"Leak ki wajah se X time ZYADA laga" (A+B ke saath)</h3>
+      <p class="trigger">Trigger: "A aur B saath khole, leak ki wajah se 1 hr 40 min / 48 min zyada laga" → pehle t(A+B) nikalo, usme extra jodo, phir teeno ka LCM lekar leak ki eff nikalo.</p>
+      <div class="example">
+        <b>Q24:</b> A 12½, B 25 → t=25/3; +5/3 = 10 hr → LCM 50; 4+2=6, net 5 → L=−1 → <span class="ans">50 hr</span>
+        <span class="q2"><b>Q25:</b> A12,B18 → 36/5; +48/60 = 8 hr → 72; 6+4=10, net 9 → L=−1 → <span class="ans">72 hr</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="outlet" data-kw="A and B kept open for 7 hours 12 minutes then closed C opened tank empty in kitne time mein khali hoga 80 minutes more">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>A+B kuch der chale, phir band → sirf C se khali kitne mein?</h3>
+      <p class="trigger">Trigger: "A aur B ko t ghante khula rakha, phir band karke C khola — C ab tank kitne time mein khali karega?" → (A+B)t = C×t₂.</p>
+      <div class="example">
+        <b>Q28:</b> A72(5),B90(4),all→120(3),T.W=360 → C=−6; (9×12)=6t → <span class="ans">18 min</span>
+        <span class="q2"><b>Q32:</b> A10,B40 → t=8hr; +80min → 28/3 → 280; 28+7=35, net 30 → C=−5; 35×7=5t → <span class="ans">49 hr</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unknown" data-kw="pipe C empties 3 litres per minute capacity of tank in litres unit equal to litre kshamta capacity find">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Outlet ki speed litre/min di ho → tank ki capacity (litres)</h3>
+      <p class="trigger">Trigger: "C tank ko 3 litre/minute ki dar se khali karta hai… tank ki capacity (litre mein) kya hai?" → C ki unit-efficiency nikalo, phir 1 unit = ? litre.</p>
+      <div class="example">
+        <b>Q30:</b> A43.2(10), B108(4), all→54(8) → T.W=432; C = 8−14 = −6<br>
+        6 unit = 3 L → 1 unit = 0.5 L → 432 × 0.5 = <span class="ans">216 litres</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unknown" data-kw="A takes 5 hours less than B together 6 hours product sum formula quadratic B alone time kam samay leta hai">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>"A, B se 5 ghante KAM leta hai; saath mein 6 ghante"</h3>
+      <p class="trigger">Trigger: individual times diye hi nahi — sirf unka antar (x−5, x) aur combined time diya ho → t = (product)/(sum) laga ke option/trial se fit karo.</p>
+      <div class="example">
+        <b>Q31:</b> B=t, A=t−5, saath=6 → (10×15)/25 = 6 ✓ → A=10, <span class="ans">B = 15 hr</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>18 patterns ab tak.</b> (Pipe &amp; Cistern class notes, page 37 tak ke saare questions cover). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>
