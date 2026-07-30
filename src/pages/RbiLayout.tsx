@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard', path: '/rbi', icon: BookOpen },
   { label: 'Maths', path: '/rbi/practice/quant', icon: Calculator },
   { label: 'English', path: '/rbi/english', icon: Languages },
-  { label: 'Reasoning', path: '/rbi/practice/reasoning', icon: Brain },
+  { label: 'Reasoning', path: '/rbi/reasoning', icon: Brain },
   { label: 'Banking Awareness', path: '/rbi/practice/ga', icon: Landmark },
   { label: 'Practice', path: '/rbi/practice', icon: Grid3X3 },
   { label: 'PYQ Bank', path: '/rbi/pyq', icon: Library },
