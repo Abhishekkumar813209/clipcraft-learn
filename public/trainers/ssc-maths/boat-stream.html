@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Boat and Stream Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Boat &amp; Stream (Q1–Q26)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'ratio', 'downstream', 'to-fro', 'time ratio', 'still water'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic D/U</button>
+      <button data-filter="ratio">Time/Speed Ratio</button>
+      <button data-filter="tofro">Jaana-Aana (2Dx)</button>
+      <button data-filter="mixed">Mixed / Special</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="basic" data-kw="downstream upstream x+y x-y still water stream speed anuprawah urdhvaprawah swimmer 9 5 basic formula shaant jal dhara ki chaal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>x aur y diya → Down &amp; Up nikaalo</h3>
+      <p class="trigger">Trigger: "shaant jal mein naav/tairak ki chaal ... aur dhara ki chaal ... hai, dhara ke anukool/pratikool chaal gyaat karo" — seedha jod-ghatav.</p>
+      <div class="example">
+        Down = x+y, Up = x−y
+        <span class="q2"><b>Q1:</b> x=9, y=5 → Up=4 km/h, Down=<span class="ans">14 km/h</span></span>
+        <br>Practice: x=9,y=3 → D=12, U=6 · x=20,y=12 → D=32, U=8
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="downstream 32 upstream 28 find speed of boat in still water and stream half sum half difference D+U/2 D-U/2 30 2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Down &amp; Up diya → x aur y nikaalo</h3>
+      <p class="trigger">Trigger: "dhara ki disha mein chaal ... , vipreet disha mein ... — naav aur dhara ki chaal kya hai" — half sum / half difference.</p>
+      <div class="example">
+        x = (D+U)/2, y = (D−U)/2
+        <span class="q2"><b>Q2:</b> D=32, U=28 → x=<span class="ans">30 km/h</span>, y=<span class="ans">2 km/h</span></span>
+        <br>Practice: D=20,U=12 → x=16,y=4 · D=40,U=30 → x=35,y=5
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="48 minutes 12 km against stream speed 2 km/hr find boat still water distance/time unit conversion minute to hour 15 17 1 km 12 min 13 min river flow 5/13">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Distance/Time se ek chaal nikaalo → doosri find karo</h3>
+      <p class="trigger">Trigger: "naav X km, T minute mein dhara ke vipreet tay karti hai, dhara ki chaal ... hai to shaant jal ki chaal?" — pehle speed = D/T (hour mein convert), phir ±y.</p>
+      <div class="example">
+        <b>Q3:</b> U = 12×60/48 = 15, y=2 → x = 15+2 = <span class="ans">17 km/h</span>
+        <span class="q2"><b>Q4:</b> 1 km still = 12 min → x=5; river 13 min → U=60/13 → y = 5 − 60/13 = <span class="ans">5/13 km/h</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="time ratio inverse speed ratio 2 hours 2.5 hours downstream upstream stream 3 km/h still water 27 samay ka anupat chaal ka ulta anupat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Same distance, Down &amp; Up ka TIME diya → chaal ka ulta ratio</h3>
+      <p class="trigger">Trigger: "naav ek doori anukool 2 ghante mein, wapas 2½ ghante mein aati hai; dhara ki chaal ... to shaant jal ki chaal?" — Time ratio ulta karo = Speed ratio, phir x=(D+U)/2, y=(D−U)/2 units.</p>
+      <div class="example">
+        <b>Q5:</b> T → 2 : 5/2 = 4:5 ⇒ S → 5:4 → x:y = 9:1 → y=3 ⇒ x = 9×3 = <span class="ans">27 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="thrice as much time to row up than down ratio 3:1 speed of boat in still water and stream 2:1 one third the time 5 1/3 km/h 20/27 m/sec 18 km/h 6 km/h">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>"Up mein n guna samay lagta hai" → x : y ratio</h3>
+      <p class="trigger">Trigger: "naav ko dhara ke pratikool jaane mein anukool se n guna samay lagta hai" — T(D:U)=1:n ⇒ S(D:U)=n:1 ⇒ x:y = (n+1):(n−1).</p>
+      <div class="example">
+        <b>Q8:</b> n=3 → D:U = 3:1 → x:y = <span class="ans">2 : 1</span>
+        <span class="q2"><b>Q9:</b> x=5⅓, n=3 → x:y=2:1 → y=8/3 km/h = <span class="ans">20/27 m/s</span></span>
+        <br><b>Q11:</b> x=18, n=2 → x:y=3:1 → y = <span class="ans">6 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="speed of boat thrice speed of stream 48 km against stream 6 hours find still water 12 x=3y multiple ratio given">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>x = n×y diya + ek trip ka data → actual chaal</h3>
+      <p class="trigger">Trigger: "shaant jal mein naav ki chaal dhara ki chaal ka teen guna hai, 48 km pratikool jaane mein 6 ghante" — x=3k, y=k rakh ke Up = 2k = D/T.</p>
+      <div class="example">
+        <b>Q10:</b> x−y = 48/6 = 8 → 2k=8, k=4 → x = 3×4 = <span class="ans">12 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixed" data-kw="3 km upstream 1 hour 1 km downstream 12 min time to go 6 km in still water 1 hr 30 min swimmer lake 2 km 15 minute paper boat float 2.5 hours 10 km">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Do alag trips → x (ya y) nikaal ke naya samay/doori</h3>
+      <p class="trigger">Trigger: "naav 3 km pratikool 1 ghante mein aur 1 km anukool 12 min mein — shaant jal mein 6 km mein kitna samay?" / "paper boat kitni doori bahegi" (paper boat ki chaal = y).</p>
+      <div class="example">
+        <b>Q12:</b> U=3, D=5 → x=4 → t = 6/4 = <span class="ans">1 h 30 min</span>
+        <span class="q2"><b>Q13:</b> x = 2/(15/60) = 8, D = 4/(20/60) = 12 → y = 4 → paper boat 2½ h mein 4×2.5 = <span class="ans">10 km</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="tofro" data-kw="goes and returns total time 5 hours special concept 2Dx/(x^2-y^2)=t distance destination 21 km 4.8 km 7.5 km jaana aana kul samay">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Jaana + Aana kul samay T → 2Dx/(x²−y²) = T</h3>
+      <p class="trigger">Trigger: "gantavya tak jaane aur wapas aane mein kul T ghante lagte hain" — sabse zyada poocha jaane wala formula. D, x ya y kuch bhi poocha ja sakta hai.</p>
+      <div class="example">
+        <b>Q14:</b> x=10,y=4,T=5 → 2·D·10/84 = 5 → D = <span class="ans">21 km</span>
+        <span class="q2"><b>Q15:</b> x=5,y=3,T=3 → 10D/16 = 3 → D = <span class="ans">4.8 km</span></span>
+        <br><b>Q16:</b> x=15, D=20, T=4 → 600/(225−y²)=4 → y = <span class="ans">5√3</span>
+        <br><b>Q18:</b> x=6, y=1.5, T=8/3 → D = <span class="ans">7.5 km</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="tofro" data-kw="45 km go and come back total time 12 km/h 3 km/h 8 hours separate D/(x+y)+D/(x-y) 88 km downstream 24 km upstream 19 3 5.5 hours">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>x, y, doori diye → kul samay poocha</h3>
+      <p class="trigger">Trigger: "45 km jaakar wapas aata hai, kul samay?" ya "88 km anukool aur 24 km pratikool mein kul samay?" — alag-alag D/(x+y) + D/(x−y) jod do.</p>
+      <div class="example">
+        <b>Q17:</b> 45/15 + 45/9 = 3+5 = <span class="ans">8 hours</span>
+        <span class="q2"><b>Q20:</b> 88/22 + 24/16 = 4 + 1.5 = <span class="ans">5.5 hours</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="4 km with stream same time as 3 km against stream 48 km 14 hours speed of stream 1 km/h equal time distance ratio x=7y">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>"Utne hi samay mein a km down = b km up" → x : y</h3>
+      <p class="trigger">Trigger: "wo dhara ke saath 4 km utne hi samay mein tay karta hai jitne mein vipreet 3 km" — a/(x+y) = b/(x−y) ⇒ x:y = (a+b):(a−b). Phir 2Dx/(x²−y²)=T se k nikaalo.</p>
+      <div class="example">
+        <b>Q19:</b> 4:3 → x:y = 7:1 → 2×48×7k/(48k²)=14 → k=1 → y = <span class="ans">1 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixed" data-kw="same distance upstream 3 hours downstream time 14 km/h 2 km/h 2 hr 15 min distance constant time inversely proportional 12:16 3:4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Same distance: Up ka samay diya → Down ka samay</h3>
+      <p class="trigger">Trigger: "pratikool nishchit doori 3 ghante mein — anukool utni hi doori mein kitna samay?" — D constant ⇒ t ∝ 1/speed. Speed U:D = 12:16 = 3:4 ⇒ Time = 4:3.</p>
+      <div class="example">
+        <b>Q21:</b> x=14,y=2 → U=12,D=16 → t = 3 × 3/4 = 9/4 = <span class="ans">2 hr 15 min</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixed" data-kw="60 km downstream 4 hours still water 13 km/h 30 km upstream time 2 8/11 hours find y from downstream then upstream time">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Ek direction ka data + x diya → doosri direction ka samay</h3>
+      <p class="trigger">Trigger: "60 km anukool 4 ghante mein, shaant jal chaal 13 km/h — 30 km pratikool kitne samay mein?" — pehle y nikaalo, phir t = D/(x−y).</p>
+      <div class="example">
+        <b>Q22:</b> x+y = 60/4 = 15 → y=2 → t = 30/11 = <span class="ans">2 8⁄11 hours</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixed" data-kw="15 km downstream 8 km upstream 2 hours 20 km 12 km 2 h 50 min linear equations two variables 1/(x+y) 1/(x-y) 15 elimination">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do samikaran (a km down + b km up = T) → equations solve</h3>
+      <p class="trigger">Trigger: "2 ghante mein 15 km anukool aur 8 km pratikool; 2 gh 50 min mein 20 km + 12 km" — v = 1/(x+y), u = 1/(x−y) rakh ke elimination.</p>
+      <div class="example">
+        <b>Q23:</b> 15v+8u=2 ; 20v+12u=17/6 → v = 1/15 → Downstream speed = <span class="ans">15 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="downstream 150% more than upstream percentage ratio 5:2 80 km 50 km 8.2 hours downstream speed 25 pratishat adhik">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>"Down chaal, Up se x% adhik" → ratio bana ke solve</h3>
+      <p class="trigger">Trigger: "anukool chaal, pratikool chaal se 150% adhik hai" — 150% more ⇒ D:U = 250:100 = 5:2. Ab 5k, 2k rakh ke time equation.</p>
+      <div class="example">
+        <b>Q24:</b> 80/5k + 50/2k = 8.2 → 41/k = 8.2 → k=5 → Down = 5×5 = <span class="ans">25 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixed" data-kw="55 km upstream 5 hours 75 km downstream 3 hours 96 km still water time 5 hours 20 minutes x=18 y=4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Dono trips ka D &amp; T → x nikaal ke still water ka samay</h3>
+      <p class="trigger">Trigger: "55 km pratikool 5 ghante, 75 km anukool 3 ghante — 96 km shaant jal mein kitna samay?" — U aur D nikaalo, x=(D+U)/2, phir t = D/x.</p>
+      <div class="example">
+        <b>Q25:</b> U=11, D=25 → x=18 → t = 96/18 = 16/3 = <span class="ans">5 hr 20 min</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="tofro" data-kw="X Y points river P Q divide three equal parts time ratio 4:5 downstream speed to river current 10:3 geometry based boat stream">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Nadi par points (X, P, Q, Y) — doori ke tukde + time ratio</h3>
+      <p class="trigger">Trigger: "P aur Q rekha XY ko teen barabar bhaagon mein baantte hain, X→Q aur Y→Q ke samay ka anupat 4:5" — har segment ki doori D units maano, direction dekh ke (x+y)/(x−y) lagao.</p>
+      <div class="example">
+        <b>Q26:</b> (2D/(x+y)) ÷ (D/(x−y)) = 4/5 → 10x−10y = 4x+4y → x:y = 7:3 → Down:current = (7+3):3 = <span class="ans">10 : 3</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>16 patterns ab tak</b> (Boat &amp; Stream, Q1–Q26 / page 50 tak extract). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

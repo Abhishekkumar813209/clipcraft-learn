@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Profit &amp; Loss Trainer (Complete)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+
+  .secttl{ font-family:'Kalam',cursive; font-size:26px; margin:46px 0 14px 64px; color:var(--margin-red); }
+  .secttl .cnt{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:.08em; }
+  @media (max-width:640px){ .secttl{margin-left:36px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Profit &amp; Loss · Complete Pattern Trainer</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Sab files ek jagah — P13–59, Q30–59, Q62–83, 151–200, Q123–144. Kul 71 patterns, serial number ke saath.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'ratio', 'dishonest', 'milkman', 'discount', 'SP'...">
+    </div>
+  </header>
+
+<h2 class="secttl">Class Notes P13–59 · Q1–Q29 <span class="cnt">16 patterns</span></h2>
+<main class="grid">
+<article class="card" data-cat="basic" data-kw="gain loss in money rupees table bought sold difference sp minus cp लाभ हानि धन">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>CP aur SP dono diye → Gain/Loss (rupees mein)</h3>
+      <p class="method-pill">Gain = SP − CP</p>
+      <p class="trigger">Trigger: "itne mein khareeda, itne mein becha — laabh/haani (धन ke roop mein) nikaalo" — % nahi, seedha rupaya poocha jaaye.</p>
+      <div class="example">
+        <b>Q1:</b> CP=3000, SP=3200 → 3200−3000 = <span class="ans">Gain ₹200</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="basic" data-kw="loss percent profit percent cp sp book 625 550 प्रतिशत हानि formula divide by cp">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>CP &amp; SP diye → Loss% / Profit%</h3>
+      <p class="method-pill">P%/L% = (diff ÷ CP) × 100</p>
+      <p class="trigger">Trigger: dono values di ho aur "prati­shat haani/laabh" poocha jaaye — base hamesha <b>CP</b>.</p>
+      <div class="example">
+        <b>Q2:</b> CP=625, SP=550 → Loss=75 → 75/625×100 = <span class="ans">12%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="basic" data-kw="cp given profit percent find sp 100 wala method 6450 16 percent 7482 multiply 116 by 100 विक्रय मूल्य">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>CP + P%/L% diya → SP nikaalo</h3>
+      <p class="method-pill">SP = CP × (100 ± x)/100</p>
+      <p class="trigger">Trigger: "क्रय मूल्य ₹__ hai, x% laabh/haani par becha — vikray mulya?" — 100-wala method seedha lagta hai.</p>
+      <div class="example">
+        <b>Q5:</b> CP=6450, P=16% → 6450×116/100 = <span class="ans">₹7,482</span>
+        <span class="q2"><b>Base:</b> CP=100, P=20% → SP=120 · CP=600, P=20% → 600×6/5 = <span class="ans">₹720</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="reverse" data-kw="sp given find cp reverse 350 loss 30 percent 6000 40 percent 59620 8.4 percent 55000 लागत मूल्य">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>SP + P%/L% diya → CP nikaalo (ulta)</h3>
+      <p class="method-pill">CP = SP × 100 / (100 ± x)</p>
+      <p class="trigger">Trigger: "x% haani/laabh par ₹__ mein becha, lagat mulya kya tha?" — 100 upar, (100±x) neeche.</p>
+      <div class="example">
+        <b>Q3:</b> L=30%, SP=350 → 350×100/70 = <span class="ans">₹500</span>
+        <span class="q2"><b>Q4:</b> L=40%, SP=6000 → 6000×100/60 = <span class="ans">₹10,000</span></span>
+        <br><b>Q6:</b> P=8.4%, SP=59620 → 59620×1000/1084 = <span class="ans">₹55,000</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ratio" data-kw="fraction mixed percent 16 2/3 6 2/3 one sixth one fifteenth unit method 1600 1500 600 700 भिन्न">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Mixed % (16⅔%, 6⅔%, 12½%) → fraction/unit method</h3>
+      <p class="method-pill">x% = a/b → P:CP = a:b, SP = b±a</p>
+      <p class="trigger">Trigger: % fraction/mixed number mein ho — formula ki jagah fraction bana ke unit ratio se solve karo (calculation aadhi ho jaati hai).</p>
+      <div class="example">
+        <b>Q7:</b> P=6⅔%=1/15 → CP:SP=15:16; SP=1600 → 1600×15/16 = <span class="ans">₹1,500</span>
+        <span class="q2"><b>Ex:</b> CP=600, P=16⅔%=1/6 → 600×7/6 = <span class="ans">₹700</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ratio" data-kw="ratio cost price selling price 10:11 186:206 gain percent find profit से अनुपात 93 103 mts">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>CP : SP ratio diya → P% / L% nikaalo</h3>
+      <p class="method-pill">P% = (SP−CP)/CP × 100</p>
+      <p class="trigger">Trigger: "CP aur SP ka anupaat a : b hai, laabh prati­shat?" — pehle ratio ko simplify karo, phir diff/CP.</p>
+      <div class="example">
+        <b>Q8:</b> 10:11 → 1/10×100 = <span class="ans">10%</span>
+        <span class="q2"><b>Q9:</b> 186:206 = 93:103 → 10/93×100 = <span class="ans">10 70⁄93 %</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ratio" data-kw="profit percent given find ratio cp sp 20 percent 5:6 300 percent 1:4 loss 25 percent 4:3 अनुपात book sold">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>P%/L% diya → CP : SP ratio nikaalo (ulta)</h3>
+      <p class="method-pill">x% = a/b → CP:SP = b : (b±a)</p>
+      <p class="trigger">Trigger: "x% laabh/haani par becha, toh CP aur SP ka anupaat?" — % ko fraction banao, denominator = CP.</p>
+      <div class="example">
+        <b>Q10:</b> P=20%=1/5 → <span class="ans">5 : 6</span>
+        <span class="q2"><b>Q11:</b> P=300%=3/1 → <span class="ans">1 : 4</span></span>
+        <br><b>Q12:</b> L=25%=1/4 → <span class="ans">4 : 3</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spsp" data-kw="sold for lose 20 percent to gain 20 percent 450 675 355 605 402 822 810 loss se profit second selling price">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Ek SP par x% → doosra SP kitna ho y% ke liye</h3>
+      <p class="method-pill">SP₂ = SP₁ × (100±y)/(100±x)</p>
+      <p class="trigger">Trigger: "₹__ mein bechne par x% haani hoti hai, y% laabh ke liye kis daam par beche?" — CP nikaalne ki zaroorat hi nahi, seedha ratio.</p>
+      <div class="example">
+        <b>Q13:</b> L20%, SP=450 → P20% → 450×120/80 = <span class="ans">₹675</span>
+        <span class="q2"><b>Q14:</b> L29%, SP=355 → P21% → 355×121/71 = <span class="ans">₹605</span></span>
+        <br><b>Q15:</b> L33%, SP=402 → P37% → 402×137/67 = <span class="ans">₹822</span>
+        <br><b>Q16 (HW):</b> L10%, SP=810 → L20% → 810×80/90 = <span class="ans">₹720</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spsp" data-kw="fraction sp to sp 16 2/3 8 1/3 480 624 14 2/7 4800 3500 lcm unit 42 units mixed percent both sides">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>SP → SP jahan dono % fraction ho (LCM unit trick)</h3>
+      <p class="method-pill">dono % ko same denominator (LCM) par lao</p>
+      <p class="trigger">Trigger: same SP→SP question par % values 16⅔%, 8⅓%, 14²⁄₇% jaisi ho — CP ko common unit (12, 42...) maan lo, SP units seedha ratio de dete hain.</p>
+      <div class="example">
+        <b>Q17:</b> L=16⅔%=−2/12, G=8⅓%=+1/12 → CP=12 → SP 10 → 13<br>
+        480×13/10 = <span class="ans">₹624</span>
+        <span class="q2"><b>Ex:</b> P=14²⁄₇%=+6/42, L=16⅔%=−7/42 → CP=42 → SP 48 → 35<br>4800×35/48 = <span class="ans">₹3,500</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spsp" data-kw="same article sold 2200 2600 gain percentage 2070 1890 105 percent new profit percent proportion 110 percent">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Same article naye SP par → naya laabh %</h3>
+      <p class="method-pill">new% = (100+x)% × SP₂ ÷ SP₁</p>
+      <p class="trigger">Trigger: "₹__ bechne par x% laabh, agar ₹__ mein bechte toh laabh %?" — puraane SP ko (100+x)% maan lo, seedha proportion.</p>
+      <div class="example">
+        <b>Q18:</b> SP=2200→110%; SP=2600 → 110×2600/2200 = 130% → <span class="ans">30% profit</span>
+        <span class="q2"><b>Q19:</b> SP=2070→115%; SP=1890 → 115×1890/2070 = 105% → <span class="ans">5% gain</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="basic" data-kw="repair overhead expenses spent toy 1200 200 1680 profit percent total cost price transport मरम्मत खर्च">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Repair / kharcha jodkar CP → P%</h3>
+      <p class="method-pill">CP = purchase + repair/transport</p>
+      <p class="trigger">Trigger: "kharida ₹__ mein, marammat/transport par ₹__ kharch kiya, becha ₹__ mein" — trap: repair ko CP mein jodna bhool mat.</p>
+      <div class="example">
+        <b>Q20:</b> CP=1200+200=1400, SP=1680 → 280/1400×100 = <span class="ans">20%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="diff" data-kw="difference between cost price and selling price 360 2160 180 1080 profit 20 percent अंतर diff sp cp">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>CP aur SP ka difference diya → SP/CP nikaalo</h3>
+      <p class="method-pill">diff = P% → SP = diff × (100+P)/P</p>
+      <p class="trigger">Trigger: "CP aur SP ke beech ka antar ₹__ hai aur laabh x%" — antar hi profit hai, uske x% ko 100% tak scale karo.</p>
+      <div class="example">
+        <b>Q21:</b> diff=360, P=20% → 360×120/20 = <span class="ans">₹2,160 (SP)</span>
+        <span class="q2"><b>Q22:</b> diff=180, P=20% → 180×120/20 = <span class="ans">₹1,080 (SP)</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="diff" data-kw="difference between two selling prices profits 10 and 7 percent 6 rupees cp 200 sign rule p p minus l l minus p l plus 324 20 gain 16 loss 900">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do alag %-par SP ka difference diya → CP</h3>
+      <p class="method-pill">P&amp;P → ghatao · L&amp;L → ghatao · P&amp;L → jodo</p>
+      <p class="trigger">Trigger: "10% aur 7% laabh par SP ka antar ₹6" ya "SP ₹324 badhaye toh 16% haani ki jagah 20% laabh" — sign rule yaad rakho, diff% se CP nikalta hai.</p>
+      <div class="example">
+        <b>Q24:</b> 10%−7%=3% = ₹6 → CP = 6×100/3 = <span class="ans">₹200</span>
+        <span class="q2"><b>Q23:</b> 20% laabh + 16% haani = 36% = ₹324 → CP = 324×100/36 = <span class="ans">₹900</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="diff" data-kw="sold for rs 960 more would have gained 12 percent loss 18 percent 3840 profit percentage 20 percent two step cp then new sp">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>"₹N zyada milta toh y% laabh" → pehle CP, phir naya P%</h3>
+      <p class="method-pill">CP = N × 100/(x+y)% → phir naye SP par P%</p>
+      <p class="trigger">Trigger: 2-step question — "x% haani par becha, ₹N adhik mein bechta toh y% laabh; agar ₹M mein becha jaaye toh laabh %?"</p>
+      <div class="example">
+        <b>Q25:</b> 18%+12%=30% = ₹960 → CP = 960×100/30 = 3200<br>
+        SP=3840 → laabh=640 → 640/3200×100 = <span class="ans">20%</span>
+        <span class="q2"><b>Short:</b> 30%×3840/960 = 120% → <span class="ans">20% profit</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="diff" data-kw="sold 768 profit x percent 896 x plus 20 percent find x value 640 cp 128 difference 20 percent equal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>SP₁ → x%, SP₂ → (x+k)% → x ki value</h3>
+      <p class="method-pill">SP ka diff = k% of CP</p>
+      <p class="trigger">Trigger: "₹__ par laabh x%, ₹__ par (x+20)% — x kya hai?" — dono SP ka antar hi extra k% hai, usse CP milta hai.</p>
+      <div class="example">
+        <b>Q26:</b> 896−768 = 128 = 20% of CP → CP = 640<br>
+        x = (768−640)/640×100 = <span class="ans">20</span>
+        <span class="q2"><b>Variant:</b> CP=2000, SP 2400→x%, 2600→(x+10)% → 200=10% → <span class="ans">x=20%</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="xy" data-kw="cost price of 70 articles equal selling price of 40 articles profit percentage 75 7 sp 8 cp 14.3 28 oranges 24 barabar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>CP(x) = SP(y) → laabh %</h3>
+      <p class="method-pill">x·CP = y·SP → CP:SP = y:x → P% = (x−y)/y ×100</p>
+      <p class="trigger">Trigger: "x vastuon ka kray mulya, y vastuon ke vikray mulya ke barabar hai" — seedha ratio ulat kar CP:SP banao.</p>
+      <div class="example">
+        <b>Q27:</b> 70CP=40SP → CP:SP=4:7 → 3/4×100 = <span class="ans">75%</span>
+        <span class="q2"><b>Q28:</b> 7SP=8CP → CP:SP=7:8 → 1/7×100 = <span class="ans">14.3%</span></span>
+        <br><b>Q29:</b> 28CP=24SP → CP:SP=6:7 → 1/6×100 = <span class="ans">16⅔%</span>
+      </div>
+    </article>
+</main>
+<h2 class="secttl">Q30–Q59 <span class="cnt">14 patterns</span></h2>
+<main class="grid">
+<article class="card" data-cat="articlebase" data-kw="profit equal cost price of articles selling n articles gain loss CP base लाभ लागत मूल्य वस्तुओं बेचने पर हानि">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Profit/Loss = <i>n</i> articles ke <b>CP</b> ke barabar</h3>
+      <p class="trigger">Trigger: "By selling 14 articles a person loses the cost price of 2 articles" — jahan gain/loss kisi article ke LAGAT MULYA (CP) ke barabar ho.</p>
+      <div class="example">
+        <b>Q30:</b> CP=14, L=2 → L% = 2/14×100 = <span class="ans">14.3%</span>
+        <span class="q2"><b>Q31:</b> 2 article bech ke 5 article ka CP profit → CP=2, P=5 → 5/2×100 = <span class="ans">250%</span></span>
+        <br><b>Q(10 art):</b> CP=10, L=3 → 3/10×100 = <span class="ans">30%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="articlebase" data-kw="profit equal selling price of articles SP base gain loss cloth metre विक्रय मूल्य के बराबर लाभ hani">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Profit/Loss = <i>n</i> articles ke <b>SP</b> ke barabar</h3>
+      <p class="trigger">Trigger: "gains the selling price of 7 m of cloth" / "loss equal to the selling price of 8 articles" — yahan base SP hai, CP nikalna padta hai (CP = SP∓P/L).</p>
+      <div class="example">
+        <b>Q32:</b> SP=42, P=7 → CP=35 → 7/35×100 = <span class="ans">20%</span>
+        <span class="q2"><b>Q33:</b> SP=8, P=2 → CP=6 → 2/6×100 = <span class="ans">33⅓%</span></span>
+        <br><b>Q34:</b> SP=72, L=8 → CP=80 → 8/80×100 = <span class="ans">10%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="articlebase" data-kw="total cost price given find selling price 25 articles bought for 800 unit method कुल लागत बेचा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Article-profit diya + <b>total CP amount</b> diya → SP nikalo</h3>
+      <p class="trigger">Trigger: "25 articles bech ke 5 articles ke CP ke barabar profit, agar total ₹800 ka maal kharida to kitne mein becha?" — ratio ko unit maan ke amount se multiply.</p>
+      <div class="example">
+        <b>Q35:</b> CP=25u, P=5u → SP=30u<br>
+        25u = 800 → SP = 800×30/25 = <span class="ans">₹960</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="onsp" data-kw="profit percent calculated on selling price actual profit percent SP base conversion विक्रय मूल्य पर लाभ प्रतिशत वास्तविक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>Profit/Loss % <b>SP par</b> nikala → asli % kya?</h3>
+      <p class="trigger">Trigger: "calculates his profit % on Selling Price, according to him profit is 20%" — % ko fraction banao, denominator SP rakho, phir CP:SP ratio se actual %.</p>
+      <div class="example">
+        <b>Q36:</b> P=20% of SP = 1/5 → CP:SP = 4:5 → 1/4×100 = <span class="ans">25%</span>
+        <span class="q2"><b>Q37:</b> L=37.5% of SP = 3/8 → CP:SP = 11:8 → 3/11×100 = <span class="ans">300/11%</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="onsp" data-kw="cost price given profit as percentage of selling price actual profit amount cell phone gain calculated on SP find SP 2800 24500">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>% on SP + CP ka amount diya → actual profit / SP</h3>
+      <p class="trigger">Trigger: "CP ₹2800 hai, profit as a percentage of SP is 20%" ya "₹24500 mein khareeda, 12.5% gain calculated on SP" — CP:SP ratio bana ke amount daal do.</p>
+      <div class="example">
+        <b>Q38:</b> 20% on SP → CP:SP = 4:5, P=1u → 2800×1/4 = <span class="ans">₹700</span>
+        <span class="q2"><b>Q39:</b> 12.5% on SP → CP:SP = 7:8 → SP = 24500×8/7 = <span class="ans">₹28,000</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="onsp" data-kw="loses percent of its selling price then gain on cost price two step 800 640 double conversion हानि विक्रय मूल्य पर फिर क्रय मूल्य पर लाभ">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>SP par loss diya → CP nikalo → phir CP par x% gain wala naya SP</h3>
+      <p class="trigger">Trigger: "On selling for ₹800 a person loses 20% <b>of its selling price</b>. At what price should he sell to gain 25% <b>on its cost price</b>?" — do alag base, 2 step.</p>
+      <div class="example">
+        <b>Q40:</b> L=20% of SP → CP:SP=6:5 → CP=800×6/5=960 → 960×125/100 = <span class="ans">₹1200</span>
+        <span class="q2"><b>Q41:</b> L=15% of SP → CP:SP=23:20 → CP=640×23/20=736 → 736×115/100 = <span class="ans">₹846.40</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="onsp" data-kw="two friends one calculates on SP other on CP same selling price difference in actual profit neeraj deepak 100 दो दोस्त">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Do log: ek % <b>SP par</b>, doosra % <b>CP par</b>, SP same</h3>
+      <p class="trigger">Trigger: "Neeraj profit % SP par nikalta hai, Deepak CP par; dono 20% claim karte hain, actual profit ka difference ₹100, SP dono ka same" — SP equal karke ratio milao.</p>
+      <div class="example">
+        <b>Q42:</b> N → CP:SP = 4:5 (×6) = 24:30, D → 5:6 (×5) = 25:30<br>
+        P<sub>N</sub>=6, P<sub>D</sub>=5 → diff 1u = 100 → SP = 30u = <span class="ans">₹3000</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="butterfly" data-kw="butterfly concept profit is x times loss two selling prices ratio unit find cost price 3200 3000 titli">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>Butterfly: do SP diye, ek ka Profit = k × doosre ka Profit/Loss</h3>
+      <p class="trigger">Trigger: "₹3200 par profit, ₹3000 par mile profit ka 7/5 hai" / "₹480 par profit, ₹400 par loss initial profit ka 1/3" — CP beech mein rakho, ratio units se SP-difference divide karo.</p>
+      <div class="example">
+        <b>Q43:</b> P₁:P₂ = 7:5 → diff 2u = 3200−3000 = 200 → 1u=100 → CP = 3000−5u = <span class="ans">₹2500</span>
+        <span class="q2"><b>Q44:</b> L:P = 1:3 → 4u = 480−400 = 80 → 1u=20 → CP = 400+20 = <span class="ans">₹420</span></span>
+        <br><b>Q47:</b> L:P = 1:3 → 4u = 160 → 1u=40 → CP=840, P=120 → P% = <span class="ans">100/7%</span>
+        <br><b>Q46:</b> L:P = 1:4 → 5u = 490−455 = 35 → CP=462 → 462×125/100 = <span class="ans">₹577.50</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="butterfly" data-kw="profit equal to loss average of two selling prices CP mid point 832 448 845 955 barabar labh hani">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Profit = Loss (barabar) → CP = (SP₁+SP₂)/2</h3>
+      <p class="trigger">Trigger: "₹832 par jo profit hai wahi ₹448 par loss hai" — jab P aur L exactly equal ho, seedha dono SP ka average CP hai.</p>
+      <div class="example">
+        <b>Q45:</b> CP = (832+448)/2 = 640 → 10% loss par SP = 640×90/100 = <span class="ans">₹576</span>
+        <span class="q2"><b>Q49:</b> CP = (1280+1920)/2 = 1600 → 25% profit → <span class="ans">₹2000</span></span>
+        <br><b>Q50:</b> CP = (845+955)/2 = 900 → 6% profit → <span class="ans">₹954</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="butterfly" data-kw="gain is 20 percent more than loss decimal 246.80 216 220.75 unequal ratio profit loss percent nearest integer">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <h3>"Gain x% zyada hai loss se" → ratio bana ke CP, phir teesre SP par %</h3>
+      <p class="trigger">Trigger: "₹246.80 par gain, ₹216 par hue loss se 20% adhik hai; ab ₹220.75 par gain/loss %?" — L:P = 100:120 = 5:6.</p>
+      <div class="example">
+        <b>Q48:</b> L:P = 5:6 → 11u = 246.80−216 = 30.80 → 1u=2.8 → CP = 216+14 = 230<br>
+        220.75 par → loss 9.25/230×100 ≈ <span class="ans">Loss 4%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ratebase" data-kw="bought at 11 for 10 sold at 10 for 11 oranges apples rate per rupee cross multiply price article table gain loss percentage">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 27</p>
+      <h3>"a ke ₹x mein khareeda, b ke ₹y mein becha" → P/L%</h3>
+      <p class="trigger">Trigger: "bought at 11 for ₹10 and sold at 10 for ₹11" — Price/Article table banao, cross-multiply karke article count barabar karo, phir CP:SP.</p>
+      <div class="example">
+        <b>Q51:</b> CP 10×10 / SP 11×11 (110 articles) → 100:121 → <span class="ans">Gain 21%</span>
+        <span class="q2"><b>Q52:</b> 36 for ₹189 → 45 for ₹189 → CP:SP = 5:4 → <span class="ans">20% loss</span></span>
+        <br><b>Q53:</b> 25 for ₹250 (₹10/pc) → 30 for ₹390 (₹13/pc) → 10:13 → <span class="ans">30% profit</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ratebase" data-kw="thereby he loses 30 rupees find number of oranges sold total profit amount unit per article count 420 120 कितनी वस्तुएं">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 28</p>
+      <h3>Rate diya + total profit/loss ka <b>amount</b> diya → articles ki sankhya</h3>
+      <p class="trigger">Trigger: "7 for ₹11 khareeda, 2 for ₹3 becha, thereby he loses ₹30 — kitne oranges beche?" — pehle ₹1 loss par kitne article, phir scale karo.</p>
+      <div class="example">
+        <b>Q54:</b> CP 22 / SP 21 for 14 articles → ₹1 loss = 14 art → ₹30 → <span class="ans">420 articles</span>
+        <span class="q2"><b>Q55:</b> CP 5:SP 7 par 20 articles = ₹3 profit → ₹18 → <span class="ans">120 articles</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ratebase" data-kw="sold at X for rupees 2 find value of X gain 25 percent loss 14 2/7 unknown rate reverse apples trader">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 29</p>
+      <h3>Bechne ka rate unknown ("X for ₹2") → P/L% se X nikalo</h3>
+      <p class="trigger">Trigger: "bought at 15 for ₹8 and sold all at <b>X</b> for ₹2, thereby gains 25% — find X" — CP/article nikalo, P% laga ke SP/article, phir X = 2 ÷ SP.</p>
+      <div class="example">
+        <b>Q56:</b> CP = 8/15 per pc → ×125/100 = 2/3 → X = 2÷(2/3) = <span class="ans">3</span>
+        <span class="q2"><b>Q57:</b> CP = 7/9, L=14²⁄₇%=1/7 → SP = 2/3 → X = <span class="ans">3</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="mixture" data-kw="two different rates bought equal number sold all at single rate overall profit loss percent mixture dozen combined CP1 CP2 33 1/33">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 30</p>
+      <h3>Do alag rate par khareeda, sab ek hi rate par becha → overall %</h3>
+      <p class="trigger">Trigger: "kuch X for ₹a par aur kuch Y for ₹b par khareeda, phir saare ek hi rate par bech diye" — dono lots ke article barabar karo (LCM), total CP vs total SP.</p>
+      <div class="example">
+        <b>Q58:</b> Lots 5:4 &amp; 3:2 → equalize → total CP 11, SP 8+… → net <span class="ans">Loss 1/33×100 = 3¹⁄₃₃%</span>
+        <span class="q2"><b>Q59:</b> 72×6 &amp; 90×5 units mila ke → single rate SP → <span class="ans">₹316.80</span></span>
+      </div>
+    </article>
+</main>
+<h2 class="secttl">Q62–Q83 <span class="cnt">12 patterns</span></h2>
+<main class="grid">
+<article class="card" data-cat="samecp" data-kw="same cp equal cost price three articles each average concept overall profit loss percent barabar daam teen vastu 3000 6000 samaan lagat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 31</p>
+      <h3>Same CP par kai articles → simple average of P/L%</h3>
+      <p class="trigger">Trigger: "teen vastuon mein se PRATYEK ko ₹X mein khareeda" (CP same) aur alag-alag % par becha — overall P/L% poocha jaaye.</p>
+      <div class="example">
+        <b>Q62:</b> CP ₹3000 each; +10%, +5%, −15% → (10+5−15)/3 = <span class="ans">0 (no profit no loss)</span>
+        <span class="q2"><b>Q63:</b> CP ₹6000 each; +15%, +12%, −15% → (15+12−15)/3 = <span class="ans">4% profit</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="part" data-kw="weighted average parts ratio quantity pieces fraction one third two fifth damaged rotten hissa bhaag part wise overall profit percent 40 pieces bananas">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 32</p>
+      <h3>Alag-alag hisse alag % par → Weighted Average</h3>
+      <p class="trigger">Trigger: "kuch vastuen x% par, kuch y% par, baaki z% par bechi" — quantity/fraction ka ratio banao, phir avg = Σ(ratio×P/L%) ÷ Σratio.</p>
+      <div class="example">
+        <b>Q64:</b> 35:5 = 7:1; +20%, −10% → (140−10)/8 = <span class="ans">16.25%</span>
+        <span class="q2"><b>Q65:</b> 1/3 : 3/5 : rest → 5:9:1; 14%,17.5%,20% → 247.5/15 = <span class="ans">16.5%</span></span>
+        <br><b>Q70:</b> 1/2 @+20%, 1/4 @−20%, 1/4 @CP → (40−20+0)/4 = <span class="ans">5% profit</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="part" data-kw="rotten thrown away wasted damaged sad gaye phenk diye loss full 100 percent rotten bananas fruit merchant part sold negative 100">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 33</p>
+      <h3>Kuch maal sad gaya/phenk diya → uska P/L = −100%</h3>
+      <p class="trigger">Trigger: "1/5 kele sad gaye aur phenk diye, baaki ka itna % profit par becha" — kharaab wale hisse ko −100% maan ke weighted avg lagao.</p>
+      <div class="example">
+        <b>Q66:</b> 5:8:12 (rotten:15%:10%) → (5×−100 + 8×15 + 12×10)/25 = −260/25 = <span class="ans">10.4% loss</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="part" data-kw="find unknown percent remaining rest kis laabh par bechna chahiye neither gain nor loss target overall x percent reverse weighted average medicine apples 27 percent">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 34</p>
+      <h3>Overall % target diya → baaki hisse ka % (x) nikaalo</h3>
+      <p class="trigger">Trigger: "shesh vastuen KIS laabh par beche taaki na laabh na haani ho / kul x% profit ho" — x rakh ke weighted-avg equation solve karo.</p>
+      <div class="example">
+        <b>Q67:</b> 2:3, −35% &amp; x, overall 0 → (−70+3x)/5=0 → x = <span class="ans">23⅓%</span>
+        <span class="q2"><b>Q71:</b> 1:1:2:1, −10%,−5%,+15%,x; overall 27% → 135=15+x → x=120% → SP = 720×220/100 = <span class="ans">₹1584</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="part" data-kw="total profit amount rupees given find cost price CP 9300 3312 62000 21600 overall percent to value laabh rashi di hui kul lagat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 35</p>
+      <h3>Overall % nikaal ke Profit-amount se CP nikaalo</h3>
+      <p class="trigger">Trigger: "…is tarah ₹P ka laabh hua, vastu ka lagat mulya (CP) kya tha?" — pehle weighted avg P%, phir CP = P×100/avg%.</p>
+      <div class="example">
+        <b>Q68:</b> 80%:20% @ +20%,−5% → (80−5)/5 = 15%; 9300×100/15 = <span class="ans">₹62,000</span>
+        <span class="q2"><b>Q69:</b> 10:3:2 @ 25%,−20%,20% → 230/15 %; 3312×100×15/230 = <span class="ans">₹21,600</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="part" data-kw="alligation mixture how much quantity sold at 9 percent wheat 650 kg part rest overall 15 percent kitni matra allegation rule">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 36</p>
+      <h3>Overall % diya → kaunsa hissa kitna? (Alligation)</h3>
+      <p class="trigger">Trigger: "kuch hissa x% par, baaki y% par becha taaki KUL z% laabh mile — x% wali matra kitni?" — x aur (Total−x) ka equation ya seedha alligation.</p>
+      <div class="example">
+        <b>Q72:</b> 650kg, 9% &amp; 19%, overall 15% → 19−15 : 15−9 = 4:6 → 650×4/10 = <span class="ans">260 kg</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="samesp" data-kw="same selling price SP same each sold at rs each two articles ratio method CP SP table overall profit loss percent horses watches 1599 12600">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 37</p>
+      <h3>SP same, P% aur L% ALAG → Ratio table method</h3>
+      <p class="trigger">Trigger: "dono ko ₹X PRATYEK par becha, ek par p% laabh aur dusre par l% haani" — overall P/L% poocha jaaye.</p>
+      <div class="example">
+        <b>Q73:</b> +25%(4:5), −20%(5:4) → SP barabar karo: CP 16+25=41, SP 20+20=40 → <span class="ans">100/41% loss</span>
+        <span class="q2"><b>Formula:</b> P/L% = [100(x+y)+2xy] ÷ (200+x+y)</span>
+        <br><b>Q74:</b> +26%, −10% → (1600−520)/216 = <span class="ans">5% gain</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="samesp" data-kw="same sp equal percent profit loss x square by 100 shortcut always loss 20 percent 16 percent house shop one lakh each net result">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 38</p>
+      <h3>SP same aur P% = L% → hamesha loss = x²/100</h3>
+      <p class="trigger">Trigger: "dono ko SAME price par becha, ek par x% laabh aur dusre par UTNA HI x% haani" — result hamesha loss.</p>
+      <div class="example">
+        <b>Q77:</b> +20%/−20% → 20²/100 = <span class="ans">4% loss</span>
+        <span class="q2"><b>Q78:</b> +16%/−16% → 256/100 = <span class="ans">2.56% loss</span></span>
+        <br><b>Q79:</b> house/shop ₹1 lakh each, ±20% → 4% of 2 lakh… → <span class="ans">1/12 lakh loss</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="samesp" data-kw="total cost price together bought two items sum 57300 19500 48640 fridge washing machine find individual CP ratio cross multiply same selling price">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 39</p>
+      <h3>SP same + dono ka TOTAL CP diya → alag-alag CP nikaalo</h3>
+      <p class="trigger">Trigger: "dono cheezein milakar ₹T mein khareedi, ek p% laabh dusri l% haani par bechi aur DONO KA SP SAME hai" — kisi ek ka CP poocha jaaye.</p>
+      <div class="example">
+        <b>Q75:</b> CP<sub>F</sub>×115 = CP<sub>W</sub>×76 → F:W = 76:115 → 57300×115/191 = <span class="ans">₹34,500</span>
+        <span class="q2"><b>Q76:</b> 80:115 → CP<sub>I</sub>:CP<sub>II</sub> = 23:16 → 19500×16/39 = <span class="ans">₹8,000</span></span>
+        <br><b>Q80:</b> +28%/−24% → 128:76 → A:B = 19:32; total 48640×… → <span class="ans">₹19,000 &amp; ₹32,000</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="samesp" data-kw="no profit no loss overall net zero one sold at gain other at loss find loss percent 4000 each 25 percent gain 16.66 percent balance profit equals loss">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 40</p>
+      <h3>SP same + overall "no profit no loss" → dusre ka %?</h3>
+      <p class="trigger">Trigger: "dono ₹X each mein beche aur kul milakar na laabh na haani; ek par p% gain tha to dusre par kitne % ki haani?" — Profit = Loss set karo.</p>
+      <div class="example">
+        <b>Q81:</b> +25% → CP 3200, SP 4000 (gain 800); dusre ka CP = 8000−3200 = 4800, SP 4000 → loss 800/4800 = <span class="ans">16.66%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="samesp" data-kw="difference between selling price cost price amount ratio unit method 20 percent 1/5 CP SP table find value rupees 600 400 each same sp two articles">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 41</p>
+      <h3>SP same → ratio units se ACTUAL rupaye nikaalo</h3>
+      <p class="trigger">Trigger: SP same waale question mein % ki jagah "antar/kul rashi ₹D hai" diya ho — CP:SP table ke units ko diye gaye rupaye se equate karo.</p>
+      <div class="example">
+        <b>Q82:</b> 20%=1/5 → I: CP5:SP6, II: CP7:SP6 → CP total 12u, SP 12u… unit×diff = diya gaya amount → <span class="ans">₹400</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="cpsp" data-kw="cost price of one equals selling price of other CP1 = SP2 mobile gun munni 115 chain ratio link method overall profit amount and percent 20 30 gain">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 42</p>
+      <h3>Ek ka CP = dusre ka SP → ratio ko link karke jodo</h3>
+      <p class="trigger">Trigger: "usne paaya ki gun ka KRAY MULYA, mobile ke VIKRAY MULYA ke barabar hai" — dono ratio ko us common term par match karo.</p>
+      <div class="example">
+        <b>Q83:</b> Gun +20%→5:6, Mobile +30%→10:13; CP<sub>gun</sub>=SP<sub>mobile</sub> → 5×13 : 6×13 &amp; 10×5 : 13×5 → CP 115, SP 143<br>
+        Profit = 28 → 28/115×100 = <span class="ans">₹28, 24 8/23%</span>
+      </div>
+    </article>
+</main>
+<h2 class="secttl">Pages 151–200 · Q84–Q122 <span class="cnt">13 patterns</span></h2>
+<main class="grid">
+<article class="card" data-cat="two-item" data-kw="do vastu two items SP of first equals CP of second saree lehenga overall profit percent chain 84 85 दो वस्तु विक्रय मूल्य क्रय मूल्य बराबर">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 43</p>
+      <h3>SP₁ = CP₂ (do items ka chain) → overall P%</h3>
+      <p class="trigger">Trigger: "pehle item ka selling price doosre item ke cost price ke barabar hai" / "saree ka CP = lehenga ka SP" — dono par alag P/L% diya ho.</p>
+      <div class="example">
+        <b>Q84:</b> 20%=1/5 → 5:6, 10%=1/10 → 10:9. Chain jodo: CP 5×5=25… total CP 55, SP 54 → loss<br>
+        P%=1/55×100 = <span class="ans">Loss 40/11% = 3 7/11% (profit side option ke hisaab se)</span>
+        <span class="q2"><b>Q85:</b> Saree +10% → 10:11, Lehenga +25% → 4:5; CP(saree)=SP(lehenga) se link karo → total CP:SP = 6:7 → <span class="ans">16.66%</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="unitary" data-kw="ball pen oranges apples articles fans by selling n items for rs loses gains how many should be sold P1 Q1 formula 86 87 88 89 90 91 92 कितने बेचे संतरे सेब पंखे">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 44</p>
+      <h3>"N cheezein ₹X mein bechne par L% hani" → kitni beche?</h3>
+      <p class="trigger">Trigger: "By selling 90 ball pens for ₹160 loses 20%, ₹96 mein kitne beche ki 20% profit ho" — quantity aur price dono badal rahe hain.<br>Formula: P₁/(Q₁×(100±a)%) = P₂/(Q₂×(100±b)%)</p>
+      <div class="example">
+        <b>Q86:</b> 160/(90×80%) = 96/(x×120%) → <span class="ans">x = 36</span>
+        <span class="q2"><b>Q88:</b> 405/(36×75%) = 288/(x×120%) → <span class="ans">x = 16</span></span>
+        <br><b>Q89:</b> 1/(32×60%) = 1/(x×120%) → <span class="ans">x = 16</span>
+        <br><b>Q91:</b> 160/(70×80%) = 96/(x×120%) → <span class="ans">x = 28</span>
+        <br><b>Q92:</b> 11664/(18×90%) = 17424/(x×110%) → <span class="ans">x = 22</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="unitary" data-kw="at what price should he sell 100 apples profit 33 percent find profit percent if sold 3 for one rupee 87 90 reverse rate kitne mein beche लाभ प्रतिशत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 45</p>
+      <h3>Wahi formula, par ulta — price ya P% poocha jaaye</h3>
+      <p class="trigger">Trigger: "₹3 ke 7 seb khareede, 100 seb kitne mein beche ki 33% fayda ho" / "₹1 mein 4 cheez bechne par 4% loss, 3 bechta toh profit%?" — is baar x price ya x% hai, quantity nahi.</p>
+      <div class="example">
+        <b>Q87:</b> 3/(7×100%) = x/(100×133%) → <span class="ans">x = ₹57</span>
+        <span class="q2"><b>Q90:</b> 1/(4×96%) = 1/(3×(100+x)%) → 100+x = 128 → <span class="ans">28% profit</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="dishonest" data-kw="dishonest dealer sells at cost price uses 850 gm 960 gm 950 gm weight instead of 1 kg faulty scale gain percent 93 94 95 बेईमान दुकानदार कम तौलता है लागत मूल्य">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 46</p>
+      <h3>CP par bechta hai par kam tolta hai → P%</h3>
+      <p class="trigger">Trigger: "sells at cost price but uses 850 gm in place of 1 kg" — sirf weight ka dhokha, koi markup/discount nahi. CP:SP = (diya hua weight):1000.</p>
+      <div class="example">
+        <b>Q93:</b> CP:SP = 850:1000 = 17:20 → P% = 3/17×100 = <span class="ans">17 11/17%</span>
+        <span class="q2"><b>Q94:</b> 960:1000 = 24:25 → P% = 1/24×100 = <span class="ans">4 1/6%</span></span>
+        <br><b>Q95:</b> 950:1000 = 19:20 → P% = 1/19×100 = <span class="ans">5.26%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="dishonest" data-kw="uses 940 gm and sells at 4 percent profit markup 15 percent 920 gm less weight lighter weights 22 percent loss actual profit percentage 96 97 99 105 दो अनुपात गुणा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 47</p>
+      <h3>Kam weight + upar se profit/loss/markup bhi → do ratio multiply</h3>
+      <p class="trigger">Trigger: "940 gm use karta hai aur 4% profit par bechta hai" / "22% loss announce karta hai par 35% halka weight" — weight ratio × price ratio, dono multiply karke net nikalo.</p>
+      <div class="example">
+        <b>Q96:</b> 940:1000 (=47:50) × 100:104 → 47:52 → P% = 5/47×100 = <span class="ans">10.64%</span>
+        <span class="q2"><b>Q97:</b> 100:78 (22% loss) × 65:100 (35% light) → 5:6 → <span class="ans">20% profit</span></span>
+        <br><b>Q105:</b> 6¼% loss → 16:15, 12½% kam weight → 7:8 → 14:15 → <span class="ans">P% = 1/14×100 = 7 1/7%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="dishonest" data-kw="cheats both supplier and customer takes 20 percent more while buying gives 20 percent less while selling 1120 gm 880 gm net profit 98 102 खरीदते समय ज्यादा लेता बेचते समय कम देता">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 48</p>
+      <h3>Kharidte waqt zyada leta, bechte waqt kam deta (dono taraf dhokha)</h3>
+      <p class="trigger">Trigger: "buying par indicated weight se 20% zyada leta hai, selling par 20% kam deta hai" — do alag weight ratio banao aur multiply karo (markup/discount ho toh wo bhi jodo).</p>
+      <div class="example">
+        <b>Q98:</b> Buy 100:120 → 1000:1200, Sell 800:1000 → net CP:SP = 100:192 → <span class="ans">92% profit</span>
+        <span class="q2"><b>Q102:</b> 100:135 × 100:77 (23% disc) × 1120 buy × 880 sell → 1000:1323 → <span class="ans">32.3%</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="dishonest" data-kw="marks up 50 percent discount 20 percent faulty scale 900 gm for 1 kg net profit percentage rounded 101 अंकित मूल्य छूट दोषपूर्ण तराजू">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 49</p>
+      <h3>Markup + Discount + faulty weight (teen ratio chain)</h3>
+      <p class="trigger">Trigger: "MP par x% markup, phir y% discount, upar se 900 gm ko 1 kg dikhata hai" — teeno ratio ek saath multiply karo, seedha net CP:SP nikal aayega.</p>
+      <div class="example">
+        <b>Q101:</b> 100:150 × 100:80 × 900:1000 → 3:4 → P% = 1/3×100 = <span class="ans">33.33% ≈ 33</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="dishonest" data-kw="gains 25 percent how many grams does he give in 1 kg professes to sell at cost price 5 5/19 percent reverse weight find 103 104 कितने ग्राम देता है">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 50</p>
+      <h3>Reverse: P% diya hai → 1 kg ki jagah kitna gram deta hai?</h3>
+      <p class="trigger">Trigger: "cost price par bechta hai par 25% / 5 5/19% gain karta hai — 1 kg mein kitne gram deta hai?" — P% ko fraction banao, denominator = CP wala weight, numerator+denominator = 1000 gm.</p>
+      <div class="example">
+        <b>Q103:</b> 25% = 1/4 → CP 4 : P 1, 5 unit = 1000 gm → CP = 4×200 = <span class="ans">800 gm</span>
+        <span class="q2"><b>Q104:</b> 5 5/19% = 1/19 → 20 unit = 1000 gm → CP = 19×50 = <span class="ans">950 gm</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="had it been purchased at 10 percent less and sold at rs 5.75 more profit would be 30 percent find cost price 106 107 108 109 110 यदि 10% कम में खरीदा होता और ज्यादा में बेचा होता 100x table">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 51</p>
+      <h3>"x% kam mein khareedta aur ₹R zyada/kam mein bechta" → CP?</h3>
+      <p class="trigger">Trigger: "sold at 12% profit; agar 10% kam mein khareeda hota aur ₹5.75 zyada mein becha hota toh 30% profit hota" — CP=100x maan ke do rows (original & new) banao, SP ka difference = diya hua rupya.</p>
+      <div class="example">
+        <b>Q107:</b> CP 100x → SP 110x; naya CP 90x → SP 90x×125% = 112.5x; 2.5x = 3 → CP = 3×100/2.5 = <span class="ans">₹120</span>
+        <span class="q2"><b>Q108:</b> 100x→110x; 80x→112x; 2x = 1000 → <span class="ans">₹50,000</span></span>
+        <br><b>Q109:</b> 100x→115x; 75x→99x; 16x = 60 → <span class="ans">₹375</span>
+        <br><b>Q106:</b> 100x→112x; 90x→117x; 5x = 5.75 → <span class="ans">₹115</span>
+        <br><b>Q110:</b> 100x→112x; 88x→111.76x; diff = 9 → <span class="ans">₹3,750</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="cost price doubled selling price increased by 660 decreases cost price by 30 percent original selling price 111 112 दोगुना घटा दे मूल विक्रय मूल्य">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 52</p>
+      <h3>CP double / CP ghata + SP mein ₹R jod → original CP ya SP?</h3>
+      <p class="trigger">Trigger: "CP doubled and SP increased by Rs 660 → 20% profit" / "SP ₹144 badhaye aur CP 30% ghataye toh 20% profit" — wahi 2-row table, bas CP ka change multiply/percent dono ho sakta hai. Dhyan: answer CP maanga hai ya SP.</p>
+      <div class="example">
+        <b>Q111:</b> 100x→75x (25% loss); 200x→240x; 240x−75x = 165x = 660 → CP = <span class="ans">₹400</span>
+        <span class="q2"><b>Q112:</b> 100x→82x; 70x→84x; 84x−82x = 2x… original SP = 82x, 144×41/24 = <span class="ans">₹5,904</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="fixes selling price 25 percent above cost of production cost goes up 20 percent raises selling price 10 percent new profit percentage 113 उत्पादन लागत बढ़ जाती">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 53</p>
+      <h3>CP bhi x% badha, SP bhi y% badha → naya P%</h3>
+      <p class="trigger">Trigger: "SP CP se 25% upar fix karti hai; production cost 20% badh gayi aur SP 10% badha diya → ab profit%?" — koi rupya diya hi nahi, sirf % → naya CP aur naya SP alag-alag nikaalo.</p>
+      <div class="example">
+        <b>Q113:</b> 100x:125x → naya CP 120x, naya SP 137.5x → 17.5x/120x×100 = <span class="ans">14.6%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="purchased for 1000 less and sold for 400 less gain 40 percent rupees less both sides cross multiplication ratio 114 115 116 रुपये कम में खरीदती बेचती">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 54</p>
+      <h3>CP aur SP dono mein FIXED ₹ ka change → cross-multiplication ratio</h3>
+      <p class="trigger">Trigger: "₹1000 kam mein khareedti aur ₹400 kam mein bechti toh 40% profit hota" — dono taraf percent nahi, rupya hai. Dono cases ke CP:SP ratio likho aur units match karke solve karo.</p>
+      <div class="example">
+        <b>Q114:</b> 20% → 5:6, 40% → 5:7; −1000/−400 adjust → 5 unit = 5000 → CP = <span class="ans">₹5,000</span>
+        <span class="q2"><b>Q115:</b> 20% → 5:6, 30% → 10:13; −20/−20 → 5 unit = 60 → <span class="ans">₹60</span></span>
+        <br><b>Q116:</b> 25% → 4:5, 30% → 10:13; +900/+900 → <span class="ans">₹5,400</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="twoarticle" data-kw="two article case table book sold at profit loss difference between cost prices horses cows tables chairs simultaneous equations 117 118 119 120 121 122 दो वस्तु समीकरण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 55</p>
+      <h3>Two-Article Case: do cheezein, do profit/loss → equations banao</h3>
+      <p class="trigger">Trigger: "table par 12% loss aur book par 19% profit se ₹160 fayda; ulta karne par ₹40 nuksaan" — do items, do conditions. 100x aur 100y maan ke % wali do equations add/subtract karo.</p>
+      <div class="example">
+        <b>Q117:</b> −12x+19y = 160, +12x−16y = −40 → 3y = 120 → y = 40, x = 50 → diff = <span class="ans">₹1,000</span>
+        <span class="q2"><b>Q118:</b> −5%P+15%B = 7, +5%P+10%B = 13 → 25%B = 20 → B = 80, P = 100 → <span class="ans">80 &amp; 100</span></span>
+        <br><b>Q120:</b> 500x+900y = 15400, 50x+180y = 2080 → 300y = 1800 → 3 chairs = <span class="ans">₹1,800</span>
+        <br><b>Q121:</b> 500x+1000y = 10000, 75x−100y = 375 → horse = <span class="ans">₹1,100</span>, cow = ₹450
+        <br><b>Q122:</b> −13a+23b = 180, 23a−23b = −20.7 → 10a = 200.4 → <span class="ans">₹2,004</span>
+      </div>
+    </article>
+</main>
+<h2 class="secttl">Q123–Q144 <span class="cnt">16 patterns</span></h2>
+<main class="grid">
+<article class="card" data-cat="dishonest" data-kw="dishonest milkman beiman doodhwala water milk cost price gain mixture ratio pani milaata hai profit fraction">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 56</p>
+      <h3>Dishonest milkman: CP par bechta hai, paani milata hai → Mixture:Milk</h3>
+      <p class="trigger">Trigger: "sells milk at cost price but mixes water and gains x%" — mixture aur milk ka ratio poocha jaaye.</p>
+      <div class="example">
+        <b>Q123:</b> P=16⅔%=1/6 → water:milk = 1:6 → Mix:Milk = <span class="ans">7 : 6</span>
+        <span class="q2"><b>Q124:</b> P=14²⁄₇%=1/7 → water:milk=1:7 → Mix:Milk = <span class="ans">8 : 7</span></span>
+        <br><b>Basic:</b> P=25%=1/4 → milk:mix = 4:5 · P=10%=1/10 → milk:mix = 10:11
+      </div>
+    </article>
+
+<article class="card" data-cat="dishonest" data-kw="percentage of water in mixture pani ka pratishat dishonest milkman gain 25 percent water percent reverse">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 57</p>
+      <h3>Wahi milkman, par "water % in mixture" poocha</h3>
+      <p class="trigger">Trigger: "mixes water and gains x% — the percentage of WATER IN THE MIXTURE is?" — yahan answer ratio nahi, % hai.</p>
+      <div class="example">
+        <b>Q125:</b> P=25%=1/4 → water:milk = 1:4 → mixture = 5<br>
+        Water% = 1/5 × 100 = <span class="ans">20%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spcp" data-kw="charges rs more each mango profit 20 40 difference unit method selling price fruit seller 1 rupee zyada">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 58</p>
+      <h3>"Rs X aur zyada charge karta toh y% profit" → SP nikalo</h3>
+      <p class="trigger">Trigger: "20% profit hota hai, agar Rs 1 more charge kare toh 40% profit" — do profit% ka difference hi wo fixed rupya hai.</p>
+      <div class="example">
+        <b>Q126:</b> CP=100% → SP₁=120%, SP₂=140% → diff 20% = ₹1<br>
+        SP₁ = 120% = 120/20 × 1 = <span class="ans">₹6</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spcp" data-kw="profit equal to 25 percent of SP selling price ka percent profit 5 percent of CP plus 80 more tv equation let cp 400x">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 59</p>
+      <h3>Profit = SP ka x% ho jaaye toh (CP ka y% + ₹Z) zyada</h3>
+      <p class="trigger">Trigger: "sells at 25% profit; agar profit SP ke 25% ke barabar hota toh (5% of CP + ₹80) zyada milta" — CP ko 400x lo, dono profits ka diff = equation.</p>
+      <div class="example">
+        <b>Q127:</b> CP=400x, SP=500x, P=100x → naya P = 500x×1/4 = 125x<br>
+        Extra 25x = 5% of CP (20x) + 80 → 5x=80, x=16 → CP = <span class="ans">₹6,400</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spcp" data-kw="tea seller cost of ingredients increased new selling price new profit percent chai 9 rupee 10 rupee 50 percent 25 percent naya labh">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 60</p>
+      <h3>CP badha + SP badla → naya Profit%</h3>
+      <p class="trigger">Trigger: "pehle Rs9 pe 50% profit tha, ingredients cost 25% badhi, ab Rs10 mein bechta hai — ab profit% kya?" — purana CP nikalo, use badhao, naye SP se compare.</p>
+      <div class="example">
+        <b>Q128:</b> SP=9, P=50% → CP=6 → naya CP = 6×125/100 = 7.5<br>
+        CP:SP = 7.5:10 = 3:4 → P% = 1/3×100 = <span class="ans">33⅓%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spcp" data-kw="sold at certain price if sold at 70 percent of this price loss 10 percent original selling price profit percent assume sp 100x fraction 33.33 60 80 percent">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 61</p>
+      <h3>"SP ke x% par bechta toh y% loss" → original/naye SP par P%</h3>
+      <p class="trigger">Trigger: "an article is sold at a certain price; if sold at x% of this price there is y% loss" — SP ko convenient number maan lo, CP nikalo, phir poocha gaya SP lagao.</p>
+      <div class="example">
+        <b>Q129:</b> SP=100x → 70x par 10% loss → CP=70x×100/90=700x/9 → CP:SP=7:9 → P% = 2/7×100 = <span class="ans">200/7 %</span>
+        <span class="q2"><b>Q130:</b> SP=90 → 1/3 = 30 par 33⅓% loss → CP=45; naya SP=90×60%=54 → 45:54=100:120 → <span class="ans">20%</span></span>
+        <br><b>Q131:</b> same setup, naya SP = 90×80% = 72 → 45:72 = 100:160 → <span class="ans">60%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spcp" data-kw="overhauling maintenance repair kharch second hand motorbike cp plus expense sold rs 500 less profit percent naya labh pratishat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 62</p>
+      <h3>Repair/overhauling kharch CP mein jodo, phir SP se ₹X kam</h3>
+      <p class="trigger">Trigger: "kharida + overhauling/maintenance par kharch kiya, x% profit par becha; agar ₹500 kam mein bechta toh profit%?" — total CP = price + expense.</p>
+      <div class="example">
+        <b>Q132:</b> CP=22000+3000=25000 → SP=28000 → naya SP=27500<br>
+        P=2500 → 2500/25000×100 = <span class="ans">10%</span> (shortcut: 500/25000=2% → 12−2)
+      </div>
+    </article>
+
+<article class="card" data-cat="chain" data-kw="manufacturer wholesaler retailer customer chain successive profit loss packaging shipment 20 percent 50 percent multiply flow chart">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 63</p>
+      <h3>Manufacturer → Retailer → Customer (chain multiply)</h3>
+      <p class="trigger">Trigger: "manufacturing cost X tha, packaging par 20% kharch, manufacturer ne 50% profit, retailer ko 20% loss — customer ne kitne mein liya?" — sab factors seedha multiply.</p>
+      <div class="example">
+        <b>Q133:</b> 24000 × 120/100 × 150/100 × 80/100 = <span class="ans">₹34,560</span>
+        <span class="q2"><b>Q139:</b> 37800 × 108/100 × 96/100 = <span class="ans">₹39,191</span></span>
+        <br><b>Q140:</b> 600000 × 120/100 × 90/100 = <span class="ans">₹6,48,000</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="chain" data-kw="reverse chain customer pays actual cost of production find x manufacturer 10 percent wholesaler 15 percent retailer 25 percent 12650 ulta nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 64</p>
+      <h3>Chain ULTA: customer ne ₹X diya → original cost?</h3>
+      <p class="trigger">Trigger: "manufacturer 10%, wholesaler 15%, retailer 25% profit; customer pays Rs 12,650 — actual cost of production?" — x maan ke chain likho, divide karo.</p>
+      <div class="example">
+        <b>Q141:</b> x × 11/10 × 23/20 × 5/4 = 12650 → x = <span class="ans">₹8,000</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="multi" data-kw="table chair two articles overall gain percentage combined profit weighted average total cp total profit 4600 1800 10 percent 6 percent kul labh">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 65</p>
+      <h3>Do alag cheezein, alag profit% → Overall gain%</h3>
+      <p class="trigger">Trigger: "table ₹4600 par 10% gain, chair ₹1800 par 6% gain — overall gain%?" — total profit ÷ total CP.</p>
+      <div class="example">
+        <b>Q134:</b> P = 460 + 108 = 568; total CP = 6400 → 568/6400×100 = <span class="ans">8⅞%</span>
+        <span class="q2"><b>Q142:</b> CP ratio 3:5 → 300,500; +20%→+60, −10%→−50 → net +10 on 800 = <span class="ans">1.25% profit</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="multi" data-kw="cost prices ratio 4 5 difference in selling prices 480 difference in cost price unit method A B two articles antar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 66</p>
+      <h3>CP ratio diya + SP ka difference diya → CP difference</h3>
+      <p class="trigger">Trigger: "CP of A and B are in ratio 4:5, A par 10% aur B par 20% gain, SP ka antar ₹480 hai" — ratio ko units maan ke SP nikalo.</p>
+      <div class="example">
+        <b>Q135:</b> CP 400:500 → SP 440:600 → SP diff 160 units = ₹480 → 1 unit = ₹3<br>
+        CP diff = 100 units = <span class="ans">₹300</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="multi" data-kw="first shirt twice the selling price of second shirt SP ratio given not CP 8 percent profit 3 percent loss overall percentage reverse cp nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 67</p>
+      <h3>Ratio SP ka diya ho (CP ka nahi) → pehle CP nikalo</h3>
+      <p class="trigger">Trigger: "first shirt is sold at TWICE the SELLING price of second" — dhyan: ratio SP ka hai, isliye har item ka CP ulta nikaal ke phir overall%.</p>
+      <div class="example">
+        <b>Q136:</b> SP 194:97 → CP = 194×100/108 = 179.6, 97×100/97 = 100<br>
+        CP=279.6? → total CP 279.6, SP 291 → P% ≈ <span class="ans">4.07%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="alligation" data-kw="alligation perishable items 30 percent could not be sold went bad overall profit 19 percent above cost price each item mishran vidhi kharab">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 68</p>
+      <h3>Kuch maal barbaad (−100%) + baaki par x% → Alligation</h3>
+      <p class="trigger">Trigger: "30% items bik hi nahi paye/kharab ho gaye, phir bhi overall 19% profit — bache huye items kitne % upar beche?" — barbaad hisse ka profit = −100%.</p>
+      <div class="example">
+        <b>Q137:</b> 3 parts × (−100) + 7 parts × x = 10 × 19<br>
+        −300 + 7x = 190 → x = <span class="ans">70%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="unit" data-kw="mangoes rotten thrown away 300 mangoes 1100 sells remaining at 5 each profit 150 percentage thrown aam sade hue feke gaye per unit rate">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 69</p>
+      <h3>Kuch units feke gaye, baaki per-piece rate par beche → % thrown</h3>
+      <p class="trigger">Trigger: "300 aam ₹1100 mein, kuch sade nikle, baaki ₹5 each beche aur ₹150 profit" — SP total se bikne wale units count karo.</p>
+      <div class="example">
+        <b>Q138:</b> SP = 1100+150 = 1250 → bike = 1250/5 = 250 → thrown = 50<br>
+        50/300 × 100 = <span class="ans">16⅔%</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="unit" data-kw="boxes of grapes 2000 per box 20 kg damaged transport charges gain or loss angoor peti kharab per kg rate nikalo total cp sp">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 70</p>
+      <h3>Bulk boxes + kuch kg damage + transport charge → Gain/Loss</h3>
+      <p class="trigger">Trigger: "10 boxes @2000, har box 20kg, @2500/box becha par 10kg kharab, ₹1000 transport" — CP mein extra charge jodo, SP mein damage ghatao.</p>
+      <div class="example">
+        <b>Q144:</b> CP = 2000×10 + 1000 = 21,000<br>
+        Bacha maal = 190kg = 9.5 box → SP = 2500×9.5 = 23,750 → <span class="ans">Gain ₹2,750</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="spcp" data-kw="sold at twice the price gain percentage double SP 10 percent becomes book ankita dugne mulya par 120 percent shortcut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 71</p>
+      <h3>SP double kar diya → naya Gain%</h3>
+      <p class="trigger">Trigger: "10% gain hota hai; agar DOUBLE price par becha jaaye toh gain%?" — CP=100 fix, SP ko multiply karo.</p>
+      <div class="example">
+        <b>Q143:</b> CP=100, SP=110 → naya SP=220 → P=120 → <span class="ans">120%</span>
+      </div>
+    </article>
+</main>
+
+  <footer>
+    <b>Total 71 patterns.</b> Search box se koi bhi keyword dhoondh sakte ho — sabhi sections ek saath filter honge.
+  </footer>
+</div>
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  searchBox.addEventListener('input', () => {
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const kw = ((card.dataset.kw||'') + ' ' + card.textContent).toLowerCase();
+      card.classList.toggle('hidden', !(q === '' || kw.includes(q)));
+    });
+    document.querySelectorAll('main.grid').forEach(g => {
+      const any = Array.from(g.querySelectorAll('.card')).some(c => !c.classList.contains('hidden'));
+      g.classList.toggle('hidden', !any);
+      const t = g.previousElementSibling;
+      if (t && t.classList.contains('secttl')) t.classList.toggle('hidden', !any);
+    });
+  });
+</script>
+</body>
+</html>

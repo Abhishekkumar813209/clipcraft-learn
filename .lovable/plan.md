@@ -1,45 +1,51 @@
 ## Goal
-Chapter 1 (Sources of Ancient History, 38 questions) database me daalna aur UPSC practice module banana — SSC English jaisa hi feel, par per-option "kyu sahi / kyu galat" reveal ke saath.
 
-## Verified facts
-- Uploaded sheet `questions`: 38 rows, exactly 22 columns of the v2 template (chapter_no … hint_hinglish). Ch-1 me sirf `mcq` + `statement` type rows hain, `list_i/list_ii` khaali.
-- Abhi database me koi `upsc_*` table nahi hai (schema list me sirf ssc/rbi/bpsc/admin tables).
-- `/upsc` route abhi `UpscMotivation` page pe jaata hai (App.tsx line 120) — wo untouched rahega, naya module alag prefix pe.
+`/ssc/maths` ke har topic card par click karne se ab ek **topic hub** khulega jisme 2 cards honge:
 
-## Database (new)
-`public.upsc_questions` — ek hi flat table, sheet ke 22 columns + do extras:
-- `global_serial` (int, unique) — poori history book ka continuous number, chapter_no → serial_no order se assign. Isi se "1–1000 ek saath practice" chalega, chahe multiple chapters aa jayein.
-- `subject` ('ancient_history') — future me medieval/modern add karne ke liye.
-- RLS: sabhi logged-in users read kar sakte hain; sirf admin (existing `is_admin()`) insert/update/delete.
-- Grants: `authenticated` ko read, `service_role` ko full.
+1. **Practice Questions** — existing MCQ practice (`/ssc/practice/:topic`)
+2. **Pattern Trainer** — tumhara uploaded HTML file, website ke andar hi render hoga
 
-Chapter 1 ki 38 rows insert ho jaayengi (global_serial 1–38).
+## Upload guidance (tumhare sawaal ka jawaab)
 
-## Practice UX
-Routes:
-- `/upsc/history` — chapter cards (Ch 1 · 38 Qs) + ek "All chapters" card.
-- `/upsc/history/practice` — setup screen, SSC wale pattern jaisa:
-  - Serial range: From / To plain text boxes (spinner nahi, khaali chhodne pe full range)
-  - Chapter filter: All / specific chapter
-  - Order: Serial ya Random
-  - Count: text box, default = range size
+- **Chapter/topic-wise upload karo — ek HTML per chapter.** Yahi best hai: har file apne topic card ke neeche map ho jaayegi, aur agar ek topic ke multiple chapters hain (e.g. Percentage Part 1 / Part 2), to us topic ke hub me multiple trainer cards dikh jaayenge.
+- Ek hi giant merged file mat bhejo — usse na filtering hoti hai, na progress tracking.
+- Jo 9 files abhi upload ki hain unka mapping:
+  - percentage-p1-305 → Percentage
+  - profit-loss-complete → Profit & Loss
+  - time-and-work-merged → Time & Work
+  - average-merged → Average
+  - proportion-till-page50 → Ratio & Proportion
+  - time-speed-distance-merged → Time Speed Distance
+  - train-pattern-trainer-full → Time Speed Distance (Train chapter)
+  - boat-and-stream-50 → Time Speed Distance (Boat & Stream chapter)
+  - mixture-alligation-merged → **naya topic card** (Mixture & Alligation) banega
 
-Question screen:
-- Question text; `statement` type ke liye statements block bullet-wise render.
-- **Hint** button → `hint_hinglish` (Hinglish), answer se pehle available.
-- Answer mark karne ke baad:
-  - **Kisi bhi option pe click** → sirf us option ka reason khulta hai (`why_a`/`why_b`/`why_c`/`why_d`).
-  - **Double-click (question card pe)** → charon options ke reasons ek saath expand, plus `explanation_hinglish`, `ncert_source` aur `ncert_extra` ka detail card.
-- Top-right QuestionNavigator (existing component) — correct/wrong/bookmarked/unattempted colors + jump.
-- Bookmarking existing `ssc_bookmarks` table me `subject='gk'`-style ki jagah naye chapter key `upsc_ancient_history` ke saath (bookmarks tab me alag section dikhega).
+## Kaise render hoga
 
-## Sidebar
-Sidebar me UPSC exam entry ke andar: Ancient History (active), Medieval / Modern / Polity placeholders.
+- Har HTML file `public/trainers/ssc-maths/<slug>.html` me rakhi jaayegi (files self-contained hain — apna CSS/JS andar hi hai).
+- App ke andar ek full-height `<iframe>` me load hoga, upar ek slim header bar (back button + title + "Open full screen"), taaki trainer ka apna paper-style design bilkul waisa hi dikhe jaisa tumne banaya hai.
+- Mobile par bhi iframe full-width, scroll trainer ke andar.
 
-## Technical notes
-- Import ek migration ke baad `insert` tool se hoga (38 rows), text as-is; koi AI call nahi.
-- Naye files: `src/pages/upsc/UpscLayout.tsx`, `UpscHistory.tsx`, `UpscHistorySetup.tsx`, `UpscHistoryPractice.tsx`, `src/lib/upscQuiz.ts`.
-- Aage ke chapters: wahi 22-column sheet upload karo, `global_serial` automatically aage se continue karke append kar dunga.
+## Screens
 
-## Verification
-Insert ke baad row count + global_serial continuity query se check karunga, aur practice page ko browser me chala kar range/hint/option-reveal confirm karunga.
+```text
+/ssc/maths                 -> topic cards (jaisa abhi hai)
+/ssc/maths/:topic          -> NEW hub: [Practice Questions] [Pattern Trainer(s)]
+/ssc/maths/:topic/trainer/:slug -> NEW: iframe viewer
+```
+
+Agar kisi topic ka trainer nahi hai, uska trainer card "Coming soon" state me dikhega; agar questions 0 hain to questions card disabled dikhega.
+
+## Technical details
+
+- **New file** `src/data/mathsTrainers.ts` — registry: `{ topic, slug, title, subtitle, file }` ka array. Naye HTML aane par bas yahan ek entry + file drop.
+- **New page** `src/pages/SscMathsTopicHub.tsx` — topic ke liye 2 (ya zyada) cards, existing card design reuse.
+- **New page** `src/pages/SscMathsTrainer.tsx` — header + `<iframe src={/trainers/...} className="w-full h-[calc(100vh-56px)]" />`, sandbox `allow-scripts allow-same-origin`.
+- `src/types/ssc.ts` me `mixture_alligation` topic + TOPIC_META entry add.
+- `src/pages/SscSubject.tsx` — quant topics ka navigate target `/ssc/maths/:topic` (baaki subjects untouched).
+- `src/App.tsx` me 2 naye routes; `maths/calculation` routes pehle match hone chahiye (order maintain).
+- Koi DB change nahi; trainers pure static assets.
+
+## Next step
+
+Plan approve karo, main ye 9 files integrate kar dunga. Aage jo bhi naya chapter HTML bhejoge, ek-ek karke us topic ke neeche add hota jaayega.

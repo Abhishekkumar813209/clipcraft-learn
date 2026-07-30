@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Time-Speed-Distance Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Time, Speed &amp; Distance</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search patterns...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic S-D-T</button>
+      <button data-filter="unit">Unit Convert</button>
+      <button data-filter="ratio">Speed-Time Ratio</button>
+      <button data-filter="latearly">Late / Early</button>
+      <button data-filter="tofro">To &amp; Fro</button>
+      <button data-filter="parts">Journey in Parts</button>
+      <button data-filter="avg">Average Speed</button>
+      <button data-filter="stoppage">Stoppage</button>
+      <button data-filter="radha">Radha Concept</button>
+      <button data-filter="chase">Chor-Police</button>
+      <button data-filter="meet">Meeting/Relative</button>
+      <button data-filter="partly">Partly-Partly</button>
+      <button data-filter="bus">Bus &amp; Sound</button>
+      <button data-filter="series">AP / Multi-lag</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+    <!-- ===== Page 92 ===== -->
+<article class="card" data-cat="unit" data-kw="km/h m/s convert 5/18 18/5 difference of speeds unit rupantaran mps kmph मात्रक चाल अंतर">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>km/h ↔ m/s conversion (×5/18, ×18/5)</h3>
+      <p class="trigger">Trigger: "speed in metres per second / m/s mein batao" ya "unki chaal ka antar m/s mein" — units mismatch dikhe toh pehle convert.</p>
+      <div class="example">
+        <b>Q1:</b> 108−90 = 18 km/h → 18×5/18 = <span class="ans">5 m/s</span>
+        <span class="q2"><b>Q5:</b> 24 m/s = 24×18/5 = 86.4 km/h &gt; 99? nahi → statement <span class="ans">galat</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="speed distance time formula S=D/T basic direct 200m 24 sec 90 km 50 min train 11 second चाल दूरी समय">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Direct S = D/T formula (bas unit sambhalo)</h3>
+      <p class="trigger">Trigger: "X metre/km ko Y sec/min mein tay karta hai, chaal batao" ya "108 km/h se 11 sec mein kitni doori" — sirf ek hi step.</p>
+      <div class="example">
+        <b>Q2:</b> 200/24 m/s ×18/5 = <span class="ans">30 km/h</span>
+        <span class="q2"><b>Q3:</b> 90000 m ÷ 3000 s = <span class="ans">30 m/s</span></span>
+        <br><b>Q4:</b> 108×5/18×11 = <span class="ans">330 m</span>
+        <br><b>Q7:</b> 15 m/s = 54 km/h → 162/54 = <span class="ans">3 hr</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="speed time inverse ratio distance constant S∝1/T time saved 25% increase reduce speed anupat उल्टा अनुपात">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Distance same → Speed : Time ulta ratio</h3>
+      <p class="trigger">Trigger: "speed x% badha/ghata do, wahi doori — naya time / bachaya gaya samay kitna?" — D constant, ratio ulta karo.</p>
+      <div class="example">
+        <b>Q6:</b> t 50:20 → S 2:5 → 60×5/2 = <span class="ans">150 km/h</span>
+        <span class="q2"><b>Q9:</b> +25% → S 4:5, t 5:4 → 7.5 hr ka 1 unit=1.5 → saved <span class="ans">1 hr 30 min</span></span>
+        <br><b>Q15:</b> +25% → S 4:5; doori 3/4 → t = 50×(4/5)×(3/4) = <span class="ans">30 min</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="fraction of usual speed 60% 3/5 late by 36 min 2/5 reduce usual time present time deri sामान्य समय देरी">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>"Usual speed ka x% / x fraction" → late by t</h3>
+      <p class="trigger">Trigger: "apni sामान्य chaal ki 60% se chala toh 36 min late" ya "2/5 speed kam ki toh 3 ghante late" — % ko fraction bana ke S:T ulta, unit se time.</p>
+      <div class="example">
+        <b>Q11:</b> S 5:3 → t 3:5 → 2 unit=36 → usual = 3×18 = <span class="ans">54 min</span>
+        <span class="q2"><b>Q19:</b> 60% → t 3:5, 2 unit=100 min → usual = <span class="ans">2½ hr</span></span>
+        <br><b>Q13:</b> S 5:3 → t 3:5, 2 unit=3 hr → present = 5×1.5 = <span class="ans">7½ hr</span>
+        <br><b>Q10:</b> −25% → S 4:3, t 3:4 → late fraction = <span class="ans">1/3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="left late increased speed reached on time rajdhani shatabdi half distance 1/6 10% usual time nikalna देरी से निकली समय पर पहुँची">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Late chali par speed badha ke ON TIME pahunchi</h3>
+      <p class="trigger">Trigger: "train x min late nikli, chaal 10%/1/6 badha ke scheduled time pe pahunch gayi — usual time?" — bachaya gaya time = delay.</p>
+      <div class="example">
+        <b>Q12:</b> +10% → S 10:11, t 11:10 → 1 unit = 1.5 hr → usual = 11×1.5 = <span class="ans">16½ hr</span>
+        <span class="q2"><b>Q14:</b> aadhi doori pe +1/6 → S 6:7, t 7:6 → 1 unit=40 min → half=280 → total = <span class="ans">560 min</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="speed changed 24 to 40 km/h reach 1 hour early find distance 70 62 ratio unit hour early jaldi pahunchna doori">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Do speeds diye + time ka antar → Distance</h3>
+      <p class="trigger">Trigger: "24 km/h ki jagah 40 km/h se chale toh 1 ghanta pehle pahunchta hai — doori batao" — S ka ratio → t ka ulta ratio → unit = time diff.</p>
+      <div class="example">
+        <b>Q16:</b> S 24:40=3:5 → t 5:3, 2 unit=1 hr → t=2.5 → D = 24×2.5 = <span class="ans">60 km</span>
+        <span class="q2"><b>Q17:</b> S 70:62=35:31 → t 31:35, 4 unit=1 hr → D = 70×31/4 = <span class="ans">542.5 km</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="ratio of speeds 25% distance triple time person compare do vyakti anupat chaal 12:1 assume 100">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Do log, D aur T dono % mein → Speed ratio</h3>
+      <p class="trigger">Trigger: "dusra vyakti 25% doori teen guna samay mein tay karta hai — dono ki chaal ka anupat?" — value maan lo (D=100, t=1).</p>
+      <div class="example">
+        <b>Q18:</b> P1: 100/1 = 100; P2: 25/3 → 100 : 25/3 = <span class="ans">12 : 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="A takes 2 hours 30 minutes more than B doubles his speed 1 hour less 40 km time nikalna equation unit method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>"A, B se 2½ hr zyada; speed double kare toh 1 hr kam"</h3>
+      <p class="trigger">Trigger: do log same doori, ek apni speed double/half karta hai aur B se compare hota hai — A ka apna old:new ratio banao.</p>
+      <div class="example">
+        <b>Q20:</b> A: S 1:2 → t 2:1; (t<sub>B</sub>+2.5) : (t<sub>B</sub>−1) = 2:1 → 1 unit=3.5 → A = <span class="ans">7 hr</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="parts" data-kw="one-third distance 30 km/h remaining 40 km/h total 12 hours part wise journey equation t1+t2 doori ke hisse">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Journey ke hisse alag speed se → Total distance</h3>
+      <p class="trigger">Trigger: "one-third doori 30 km/h se, baaki 40 km/h se, kul 12 ghante" — t₁+t₂ = total ka equation banao.</p>
+      <div class="example">
+        <b>Q8:</b> D/3÷30 + 2D/3÷40 = 12 → D/90 + D/60 = 12 → 5D/180 = 12 → <span class="ans">D = 432 km</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="tofro" data-kw="goes at x comes back at y total time whole journey xy/(x+y) to and fro jaana aana kul samay doori nikalna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Jaana x, aana y, KUL time t → D = xy·t/(x+y)</h3>
+      <p class="trigger">Trigger: "15 km/h se gaya, 10 km/h se laut aaya, poori yatra mein 2 hr 30 min lage — doori?" — total time diya ho toh (x+y).</p>
+      <div class="example">
+        <b>Q21:</b> 15×10/25 × 2.5 = <span class="ans">15 km</span>
+        <span class="q2"><b>Q22:</b> x=11/2, y=4, t=19/4 → (22/(19/2))×19/4 = <span class="ans">11 km</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="latearly" data-kw="late by 10 min early by 5 min two speeds difference of time xy/(x-y) school office college doori deri jaldi sign rule">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Do speed, late/early diya → D = xy·t/|x−y|</h3>
+      <p class="trigger">Trigger: "10 km/h se 10 min late, 15 km/h se 5 min early" — sign rule: Late+Early = jodo, Late+Late (ya Early+Early) = ghatao.</p>
+      <div class="example">
+        <b>Q23:</b> t=10+5=15 min → (10×15/5)×15/60 = <span class="ans">7.5 km</span>
+        <span class="q2"><b>Q24:</b> dono late → t=25−10=15 → (40×50/10)×15/60 = <span class="ans">50 km</span></span>
+        <br><b>Q25:</b> t=5+4=9 → (24×30/6)×9/60=18 km → 18/27×60 = <span class="ans">40 min</span>
+        <br><b>Q26:</b> t=20−5=15 → D=12 km; actual t=40 min → speed = <span class="ans">18 km/h, 12 km</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="latearly" data-kw="decreases speed by 6 km/h 20 minutes late 2 km/h 5 minutes actual speed find S equation D=S(S-6) quadratic type-03">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Speed mein FIXED km/h ka change + time change → Actual speed</h3>
+      <p class="trigger">Trigger: "6 km/h kam kare toh 20 min late, 2 km/h kam kare toh 5 min late — asli chaal?" — D = S(S∓a)·t₁/a = S(S∓b)·t₂/b bana ke solve.</p>
+      <div class="example">
+        <b>Q27:</b> S(S−6)20/6 = S(S−2)5/2 → 4S−24 = 3S−6 → <span class="ans">S = 18 km/h</span>
+        <span class="q2"><b>Q28:</b> S(S−10)40/10 = S(S+15)10/15 → 6S−60 = S+15 → S=15 → D = <span class="ans">300 km</span></span>
+        <br><b>Q29:</b> S(S+10)/10 = (S+10)(S+20)/20 ×105/60 → S=60 → D = <span class="ans">420 km</span>
+        <br><b>Q30:</b> S(S+6)6/6 = S(S−6)10/3 → S=24 → D = <span class="ans">720 km</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="parts" data-kw="cycle and bus part distance 48 km 16 km/h 40 km/h train 240 km 30 55 find distance covered by one mode do sadhan">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do saadhan (cycle+bus / bus+train) → kis se kitni doori?</h3>
+      <p class="trigger">Trigger: "kuch doori cycle se, baaki bus se, total doori aur total samay diya — cycle wali doori?" — x aur (Total−x) ka time equation.</p>
+      <div class="example">
+        <b>Q31:</b> x/16 + (48−x)/40 = 2 → 3x = 64 → D<sub>cycle</sub> = <span class="ans">21⅓ km</span>
+        <span class="q2"><b>Q32:</b> x/30 + (240−x)/55 = 6 → x=108 → train = <span class="ans">132 km</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="average speed distance constant 2xy/(x+y) three speeds 3xyz harmonic same distance up down aausat chaal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Average speed jab DISTANCE constant → 2xy/(x+y)</h3>
+      <p class="trigger">Trigger: "same doori jaate waqt x, aate waqt y — average speed?" — 3 barabar hisse ho toh 3xyz/(xy+yz+zx).</p>
+      <div class="example">
+        2×20×30/50 = <span class="ans">24 km/h</span>
+        <span class="q2">2×45×80/125 = <span class="ans">57.6 km/h</span></span>
+        <br>Reverse: 2×60×x/(60+x) = 48 → <span class="ans">x = 40 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="average speed time constant S1+S2/2 equal time 10 min each same hours mean of speeds aausat samay nियत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Average speed jab TIME constant → speeds ka simple average</h3>
+      <p class="trigger">Trigger: "har part barabar samay tak chala (10-10 min / 2-2 ghante)" — tab sirf chaalon ka saral औसत.</p>
+      <div class="example">
+        29 &amp; 39 km/h barabar samay → (29+39)/2 = <span class="ans">34 km/h</span>
+        <span class="q2">10-10 min ke 3 part: 21 m/s(=12.6 km), 9 km, 10 km → 31.6 km / 0.5 hr = <span class="ans">63.2 km/h</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="average speed different distances different speeds ratio 250 350 total distance total time 96 124 105 mixed parts unequal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Alag-alag doori + alag speed → T.D / T.T (ratio se)</h3>
+      <p class="trigger">Trigger: "250 km 50 se, 350 km 70 se" — na D same na t same, seedha kul doori ÷ kul samay; diye gaye numbers ka ratio le sakte ho.</p>
+      <div class="example">
+        600 km ÷ (5+5) hr = <span class="ans">60 km/h</span>
+        <span class="q2">96/16 + 124/31 + 105/7 = 25 hr → 325/25 = <span class="ans">13 km/h</span></span>
+        <br>250,500,250 @ 25,40,50 → 1000 ÷ 27.5 = <span class="ans">36 4⁄11 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="average speed unknown time find y hours 8.5 km/h 20 km/h 4 km/h given average reverse equation unknown part">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Average speed diya, ek part ka time/speed poocha (reverse)</h3>
+      <p class="trigger">Trigger: "average speed itni hai, aakhri part kitne ghante chala?" — T.D = Avg × T.T ka equation bana ke unknown nikaalo.</p>
+      <div class="example">
+        4h@8.5 + 1.5h@20 + y@4, avg diya → 34+30+4y = 55+10y → <span class="ans">y = 1.5 hr</span>
+      </div>
+    </article>
+
+    <!-- ===== Page 173 ===== -->
+<article class="card" data-cat="stoppage" data-kw="stoppage thoharav ruk bus per hour minutes without with speed excluding including">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Stoppage: “prati ghanta kitne minute rukti hai?”</h3>
+      <p class="trigger">Trigger: “excluding stoppages speed X, including stoppages Y — bus prati ghante kitne minute rukti hai?”</p>
+      <div class="example">
+        <b>Q47:</b> 152 & 114 → diff 38 → (38/152)×60 = <span class="ans">15 min/hr</span>
+        <span class="q2"><b>Q48:</b> 40 & 32 → (8/40)×60 = <span class="ans">12 min</span><br><b>Q51:</b> 45 & 27 → (18/45)×60 = <span class="ans">24 min</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="stoppage" data-kw="stoppage number of stops kitne baar ruki 5 min each total time 1 hr 20 min sankhya">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Stoppage ki SANKHYA (kitni baar ruki?)</h3>
+      <p class="trigger">Trigger: “har baar N min rukti hai, X ghante Y min mein kitne stoppage?” — pehle total stoppage time, phir ÷ per-stop time.</p>
+      <div class="example">
+        <b>Q49:</b> 48 & 36 → (12/48)×80 = 20 min total → 20÷5 = <span class="ans">4 stoppages</span>
+        <span class="q2"><b>Q50:</b> 80 & 70 → (10/80)×120 = 15 min → 15÷3 = <span class="ans">5 stoppages</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="radha" data-kw="radha shyam meeting time root t1 t2 milne ka samay cross karne ke baad">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Radha Concept: meeting time = √(t₁×t₂)</h3>
+      <p class="trigger">Trigger: “dono ek hi samay chale, C par milne ke BAAD apne gantavya 24 aur 54 min mein pahunche — milne ka samay?”</p>
+      <div class="example">
+        <b>Q52:</b> t=√(24×54)=36 min → 10:00 + 36 = <span class="ans">10:36 a.m.</span>
+      </div>
+    </article>
+    <article class="card" data-cat="radha" data-kw="radha speed ratio root t2 t1 dusri train ki chaal cross karne ke baad ghante">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Radha Concept: S₁/S₂ = √(t₂/t₁)</h3>
+      <p class="trigger">Trigger: “cross karne ke baad A ne t₁ aur B ne t₂ mein safar poora kiya, ek ki speed di hai — dusri ki speed?”</p>
+      <div class="example">
+        <b>Q53:</b> 32/x=√(8÷49/8)=8/7 → <span class="ans">28 km/h</span>
+        <span class="q2"><b>Q54:</b> 54/x=√(9/16)=3/4 → <span class="ans">72 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="radha" data-kw="radha total distance s1t1 s2t2 doori A se B tak shyam speed">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Radha Concept: D = S₁t₁ + S₂t₂</h3>
+      <p class="trigger">Trigger: same Radha setup, par “A aur B ke beech ki DOORI” bhi poochi jaye.</p>
+      <div class="example">
+        <b>Q55:</b> 40/x=√(16/9)=4/3 → S=30; D=40×9+30×16 = <span class="ans">840 km, 30 km/h</span>
+      </div>
+    </article>
+    <article class="card" data-cat="radha" data-kw="lunch break together time spent radha concept beech me ruke jaipur kanpur">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Radha + beech mein LUNCH/rest ka time</h3>
+      <p class="trigger">Trigger: “raste mein mile, saath lunch kiya, 10:39 par phir chale, A gantavya 12:27 par pahuncha — lunch mein kitna time?”</p>
+      <div class="example">
+        <b>Q56:</b> A ka baad-ka time 108 min; 70/90=√(t₂/108) → t₂=176.4 → t=√(108×176.4)≈84 min → meet 10:24; 10:39−10:24 = <span class="ans">15 min</span>
+      </div>
+    </article>
+    <article class="card" data-cat="tofro" data-kw="walk ride horse both ways paidal ghoda bike dono taraf total time">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Ek taraf paidal + ek taraf ride → dono taraf?</h3>
+      <p class="trigger">Trigger: “jaane mein paidal, aane mein bike/ghoda — kul 37 min; dono taraf paidal 55 min — dono taraf ride mein?”</p>
+      <div class="example">
+        <b>Q57:</b> W+B=37, 2W=55→W=27.5, B=9.5 → 2B = <span class="ans">19 min</span>
+        <span class="q2"><b>Q58:</b> F+R=4.5h, 2R=3→R=1.5, F=3 → 2F = <span class="ans">6 hrs</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="chor police gap after 3 minutes distance between them relative speed baaki doori">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Chor-Police: N min baad beech ki doori</h3>
+      <p class="trigger">Trigger: “police ne 300 m se chor dekha, dono bhaage, 3 min baad unke beech doori?” — gap ghata, catch nahi hua.</p>
+      <div class="example">
+        <b>Q59:</b> (9−8)×5/18×180 = 50 m kam → 300−50 = <span class="ans">250 m</span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="chor police catch time D upon x minus y inspector kitne samay me pakad lega">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Catch time = Gap ÷ Relative speed</h3>
+      <p class="trigger">Trigger: “inspector chor se 288 m peeche hai — kitne samay mein pakad lega?”</p>
+      <div class="example">
+        <b>Q60:</b> 288/(42−30) = <span class="ans">24 min</span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="chor kitni door bhaga before overtaken distance run by thief 210m">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Pakde jaane se PEHLE chor kitna bhaga?</h3>
+      <p class="trigger">Trigger: “210 m se dekha, chor 25, police 32 — pakde jaane se pehle chor kitni doori (m) bhaag chuka hoga?”</p>
+      <div class="example">
+        <b>Q61:</b> t=0.21/(32−25)=0.03 h → chor=25×0.03 = <span class="ans">750 m</span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="police jeep minimum speed arrest 9 pm thief bike late suchna di gayi">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Police late chali → minimum speed kya ho?</h3>
+      <p class="trigger">Trigger: “chor 8:15 par 60 km/h se bhaaga, police ko 8:30 par pata chala, 9:00 baje pakadna hai — jeep ki minimum chaal?”</p>
+      <div class="example">
+        <b>Q62:</b> Lead=60×15/60=15 km; 30 min mein catch → x−60=15÷(1/2)=30 → <span class="ans">90 km/h</span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="thief unknown speed x km/h catches after 3 minutes 100 metres ahead">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Catch time diya → chor ki UNKNOWN speed</h3>
+      <p class="trigger">Trigger: “chor x km/h se bhaag raha, police 10 km/h, 100 m aage tha, 3 min baad pakda gaya — x?”</p>
+      <div class="example">
+        <b>Q63:</b> 3/60 = 0.1/(10−x) → 10−x=2 → <span class="ans">x = 8 km/h</span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="gap 200m remaining after 16 minutes speed of policeman distance from crime spot">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>16 min baad bhi 200 m gap → speed + catch distance</h3>
+      <p class="trigger">Trigger: “chor 15 km/h, police 4 min baad chala, 16 min baad bhi 200 m ka antar — police ki speed aur crime spot se kitni door pakdega?”</p>
+      <div class="example">
+        <b>Q64:</b> Lead=15×4/60=1 km; 16 min mein 800 m ghata → 50 m/min = 3 km/h → S=<span class="ans">18 km/h</span>; catch: 1000/50=20 min → 18×(36/60) = <span class="ans">6 km</span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="opposite direction different start time kis samay milenge remaining distance 135 km 181 km 296 km">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Opposite dir, START TIME alag → “kis samay milenge?”</h3>
+      <p class="trigger">Trigger: “A se 8 a.m. par, B se 9 a.m. par chale, doori D — kis samay milenge?” — pehle late-starter tak ki doori minus karo, phir t = bachi doori ÷ (S₁+S₂).</p>
+      <div class="example">
+        <b>Q65:</b> 135−25=110 → 110/55=2h → 9:00+2 = <span class="ans">11 a.m.</span>
+        <span class="q2"><b>Q66:</b> 181−12=169 → 169/65=2h36m → 8:54+2:36 = <span class="ans">11:30 a.m.</span><br><b>Q67:</b> 296−16=280 → 280/40=7h → 8:30+7 = <span class="ans">3:30 p.m.</span><br><b>Q70:</b> 416−176=240 → 240/96=2h30m → 1:30+2:30 = <span class="ans">4 p.m.</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="same direction two trains leave 9 am 9:30 am how far from Agra catch up">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Same dir, dusri train baad mein → kitni door milegi?</h3>
+      <p class="trigger">Trigger: “dono ek hi shahar se, ek 9:00 aur dusri 9:30 par, alag speeds — Agra se kitne km par milengi?”</p>
+      <div class="example">
+        <b>Q68:</b> Lead=240×½=120 → t=120/(300−240)=2h → 300×2 = <span class="ans">600 km</span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="meeting point ratio distance HJ KJ 11:30 pm ratio of distances">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Milne ka samay diya → doori ka RATIO</h3>
+      <p class="trigger">Trigger: “H se 6:30 par 90 km/h, K se 7:30 par 72 km/h, dono 11:30 par J par mile — HJ : KJ?”</p>
+      <div class="example">
+        <b>Q69:</b> HJ=90×5=450, KJ=72×4=288 → <span class="ans">25 : 16</span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="meet in two and half hours unknown speed of second train 275 km">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Meeting TIME diya → unknown speed</h3>
+      <p class="trigger">Trigger: “dono ek hi samay chale, doori 275 km, dhai ghante mein mile — dusri train ki chaal?”</p>
+      <div class="example">
+        <b>Q71:</b> 5/2 = 275/(60+x) → 60+x=110 → <span class="ans">x = 50 km/h</span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="later car reaches earlier find distance A to B 20 30 km/h time gap unit method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Baad mein chali par PEHLE pahunch gayi → doori</h3>
+      <p class="trigger">Trigger: “dusri car 1½ h baad chali aur 2½ h pehle pahunch gayi” — total time-diff = 4h; D/20 − D/30 = 4.</p>
+      <div class="example">
+        <b>Q72:</b> 3x−2x=80 (unit 60 km/hr LCM) → x=80 → D = <span class="ans">240 km</span>
+      </div>
+    </article>
+    <article class="card" data-cat="tofro" data-kw="reach and return immediately meets at C distance from A 2D formula lautkar milna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Pahunch kar TURANT wapas → C par mile</h3>
+      <p class="trigger">Trigger: “tez wala B pahunch kar turant lauta aur raste mein C par mila — A se C ki doori / O-N ki doori?”  Total combined path = 2D.</p>
+      <div class="example">
+        <b>Q73:</b> 2×105 = 210; slow ka hissa = 210×10/35 = <span class="ans">60 km</span>
+        <span class="q2"><b>Q74:</b> 2×245=490; A ka hissa=490×26/91=140 → ON = 245−140 = <span class="ans">105 km</span><br><b>Q75:</b> X=80−16=64, Y=80+16=96 → ratio 2:3, 1 unit=4 → <span class="ans">Y = 12 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="distance between two trains 3 minutes before they meet milne se pehle doori">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>Milne se N min PEHLE beech ki doori</h3>
+      <p class="trigger">Trigger: “milne se 3 minute pehle dono trains ke beech doori kitni hogi?” — total doori se matlab nahi, sirf relative speed × time.</p>
+      <div class="example">
+        <b>Q76:</b> (75+85)×3/60 = <span class="ans">8 km</span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="car bus behind then ahead ratio of speeds 4.2 km behind 15.8 km ahead same direction">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Peeche tha → aage nikal gaya (same dir) → speed/ratio</h3>
+      <p class="trigger">Trigger: “7:30 par car bus se 4.2 km peeche thi, 8:15 par 15.8 km aage — speeds ka ratio / bus ki speed?”  Gain = peeche + aage.</p>
+      <div class="example">
+        <b>Q77:</b> Gain=4.2+15.8=20 km in 45 min → rel=26⅔ → bus=72−26⅔=45⅓ → <span class="ans">27 : 17</span>
+        <span class="q2"><b>Q78:</b> Car 15 s mein 312.5 m; 80+x+40=312.5 → x=192.5 m → <span class="ans">46.2 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="same direction 7 hours opposite direction 1 hour speed of faster car sum difference">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Same dir mein t₁, opposite mein t₂ → dono speeds</h3>
+      <p class="trigger">Trigger: “same direction mein 7 ghante baad mile, ek dusre ki ore chale to 1 ghante baad” — y−x = D/t₁, y+x = D/t₂.</p>
+      <div class="example">
+        <b>Q79:</b> y−x=140/7=20, y+x=140/1=140 → <span class="ans">y = 80 km/h</span>
+        <span class="q2"><b>Q80:</b> x−y=45/4.5=10, x+y=45×60/27=100 → <span class="ans">55 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="only timings given leave reach at what time will they meet T S D ratio approximately">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Sirf TIMINGS di hain (koi speed/doori nahi)</h3>
+      <p class="trigger">Trigger: “ek 7am–5pm, dusra 4pm–10pm — dono kis samay milenge?” — time ratio se speed ratio ulta lo, D = LCM maan lo.</p>
+      <div class="example">
+        <b>Q81:</b> T=10:6 → S=3:5, D=30 → 4pm par A ne 27 tay; bacha 3/(3+5)... → ≈<span class="ans">4:37 p.m.</span>
+        <span class="q2"><b>Q82:</b> T=4:3.5 → S=7:8, D=28; 8:30 tak 3.5 chala, bacha 24.5/15=~2h8m → <span class="ans">10:08 a.m.</span><br><b>Q83:</b> T=6:10 → S=5:3, D=30 → t=30/8=3h45m → 8:00+3:45 = <span class="ans">11:45 a.m.</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="meet" data-kw="one train travelled 180 km more than other when they meet total distance">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>“Ek ne dusre se X km ZYADA tay kiya” → total doori</h3>
+      <p class="trigger">Trigger: “milne par pata chala ek train ne dusri se 180 km adhik doori tay ki” — speed difference = unit difference.</p>
+      <div class="example">
+        <b>Q84:</b> 95−80=15 → 15 unit=180 → 1 unit=12; total=(95+80)×12 = <span class="ans">2100 km</span>
+      </div>
+    </article>
+    <article class="card" data-cat="tofro" data-kw="both to and fro different start time first meet Anil Tirath 192 km round trip">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Dono aate-jaate (to-fro), start time alag → PEHLI meeting</h3>
+      <p class="trigger">Trigger: “dono A se chale (alag time par), B pahunch kar turant wapas — pehli baar kab mile?”  Late-starter ke chalne par positions plot karo, phir relative speed.</p>
+      <div class="example">
+        <b>Q85:</b> 9:50 par Anil 96 km par (aage), gap 96, aa-jaa combine → t=6/160 h... = 108 min → 9:50+1:48 = <span class="ans">11:38 a.m.</span>
+      </div>
+    </article>
+    <article class="card" data-cat="chase" data-kw="jumps leaps dog rabbit ratio of speeds kood chaal anupat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <h3>Jump/Leap wale chase (kood ka ratio)</h3>
+      <p class="trigger">Trigger: “A 8 baar koodta hai jab B 6 baar, par A ke 7 kood = B ke 5 kood — speeds ka ratio?”  Speed = jumps × jump-length.</p>
+      <div class="example">
+        <b>Q86:</b> 8×5 : 6×7 = 40:42 → <span class="ans">20 : 21</span>
+        <span class="q2"><b>Q87:</b> Rabbit 4×1.75=7, Dog 3×2.75=8.25; lead=125×1.75=218.75 → 218.75/1.25 = <span class="ans">175</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="partly" data-kw="half distance auto rest metro both ways return total time aadhi doori">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 27</p>
+      <h3>Aadhi doori auto + aadhi metro → dono taraf?</h3>
+      <p class="trigger">Trigger: “aadhi doori auto se, aadhi metro se = 50 min; poori metro se = 35 min — dono taraf auto se kitna time?”</p>
+      <div class="example">
+        <b>Q89:</b> m/2+m/2=35 → half-metro=17.5 → half-auto=50−17.5=32.5 → 4×32.5 = <span class="ans">130 min</span>
+      </div>
+    </article>
+    <article class="card" data-cat="partly" data-kw="partly train partly car 10 minutes more speed of train double equation swap distance">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 28</p>
+      <h3>Partly train + partly car (do case diye)</h3>
+      <p class="trigger">Trigger: “60 km train + baaki car = 4 h; 100 km train + baaki car = 10 min ZYADA” — 40 km shift se time-diff se ek speed nikaalo.</p>
+      <div class="example">
+        <b>Q90:</b> 40/T−40/C=1/6 → C=80; 60/T+240/80=4 → <span class="ans">Train = 60 km/h</span>
+        <span class="q2"><b>Q91:</b> 80/T−80/C=1/3 → 120/60+480/x=8 → <span class="ans">Car 80, Train 60 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="partly" data-kw="partly air partly train saved 4/5 of time arrived 2 hours early distance by train">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 29</p>
+      <h3>Poori yatra fast mode se hoti to time BACH jata</h3>
+      <p class="trigger">Trigger: “agar poori yatra hawai se karta to train ke time ka 4/5 bachta aur 2 ghante pehle pahunchta — train se kitni doori?”</p>
+      <div class="example">
+        <b>Q92:</b> (4/5)Tₜ=2 → Tₜ=2.5 h, T_air=1.5 h → S_air=400/2=200; air-part=200×1.5=300 → <span class="ans">Train = 100 km</span>
+      </div>
+    </article>
+    <article class="card" data-cat="bus" data-kw="bus terminal every 10 minutes man meets bus 8 minutes towards away speed formula">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 30</p>
+      <h3>Bus/Terminal: Sₘ/S_B = |t₁−t₂| / t₂</h3>
+      <p class="trigger">Trigger: “bus har t₁ min baad nikalti hai, par aadmi ko har t₂ min baad milti hai (towards ya away)” — ek speed di hogi.</p>
+      <div class="example">
+        <b>Q93:</b> x/20 = 2/8 → <span class="ans">5 km/h</span>
+        <span class="q2"><b>Q94:</b> x/30 = 5/10 → <span class="ans">15 km/h</span><br><b>Q95:</b> 30/x = 4/24 → <span class="ans">180 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="bus" data-kw="gun fired sound 330 m/s train speed interval heard passenger awaaz">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 31</p>
+      <h3>Gun/Sound wala same formula (S_sound diya)</h3>
+      <p class="trigger">Trigger: “do gun t₁ min ke antaraal par chale, par train ke passenger ne t₂ min baad suna, sound=330 m/s — train ki speed?”</p>
+      <div class="example">
+        <b>Q96:</b> x/330 = 0.5/12.5 → x=13.2 m/s = <span class="ans">47 13/25 km/h</span>
+        <span class="q2"><b>Q97:</b> x/330 = 8/352 → 7.5 m/s = <span class="ans">27 km/h</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="series" data-kw="speed increases every hour AP arithmetic progression Sn total distance hourly increment">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 32</p>
+      <h3>Speed har ghante badhti hai (AP / Sₙ formula)</h3>
+      <p class="trigger">Trigger: “initial speed 6 km/h, har ghante speed ek nishchit amount se badhti hai, 14 ghante mein 630 km” — Sₙ=n/2[2a+(n−1)d].</p>
+      <div class="example">
+        <b>Q98:</b> 14/2[12+13d]=630 → 91d=546 → <span class="ans">d = 6 km/h</span>
+        <span class="q2"><b>Q99:</b> n/2[120+(n−1)10]=1210 → n(n+11)=242 → <span class="ans">n = 11 hrs</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="series" data-kw="three lags 20% extra distance average speed of first two lags total time multi phase">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 33</p>
+      <h3>Multi-lag journey with % increase (avg speed of lags)</h3>
+      <p class="trigger">Trigger: “2nd lag mein speed 20% badhi aur distance bhi 20% zyada; 3rd lag pehle do ki AVERAGE speed par aur 10% extra distance — total time?”</p>
+      <div class="example">
+        <b>Q100:</b> L1: 50×5=250 (5h); L2: 60 km/h, 300 km → 5h; avg=(250+300)/10=55; L3=330/55=6h → <span class="ans">16 hours</span>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <b>50 patterns — merged from pages 92, 173 (ascending order).</b>
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

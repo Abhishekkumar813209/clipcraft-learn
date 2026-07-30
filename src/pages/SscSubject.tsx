@@ -137,6 +137,7 @@ export default function SscSubjectPage() {
                 topic === 'idioms_phrases' ? '/ssc/english/idioms'
                 : topic === 'one_word_substitution' ? '/ssc/english/ows'
                 : topic === 'synonyms_antonyms' ? '/ssc/english/synant'
+                : subject === 'quant' ? `/ssc/maths/${topic}`
                 : `/ssc/practice/${topic}`
               )}
             >

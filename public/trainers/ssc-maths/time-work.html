@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Time & Work Trainer (Complete)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+
+  .unit{ margin-bottom:64px; }
+  .unit + .unit{ border-top:2px dashed rgba(29,63,143,0.25); padding-top:28px; }
+  .unit-label{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:#fff; background:var(--ink-blue);
+    display:inline-block; padding:6px 12px; border-radius:8px; margin-left:64px;
+  }
+  @media (max-width:640px){ .unit-label{margin-left:36px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="unit">
+  <div class="unit-label">Pages 1–52 · Q1–Q24</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Time &amp; Work Class Notes (Q1–Q24)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'lcm', 'efficiency', 'A+B', 'remaining work', 'percent work'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">2 Variable</button>
+      <button data-filter="fraction">Fraction/%</button>
+      <button data-filter="three">3 Variable</button>
+      <button data-filter="pair">Pair (A+B,B+C)</button>
+      <button data-filter="partial">Partial/Left Work</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="basic" data-kw="lcm method efficiency work time total work do vyakti saath mein kaam a b together days lcm nikaalo x*y/(x+y) product formula">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>A aur B alag-alag din → dono saath mein kitne din?</h3>
+      <p class="trigger">Trigger: "A kaam 24 din mein, B 12 din mein — dono saath kaam karein toh kitne din?" — sabse basic 2-variable line.</p>
+      <div class="example">
+        <b>Q1:</b> A→24, S→12 → LCM=24, eff 1+2=3 → 24/3 = <span class="ans">8 din</span>
+        <span class="q2"><b>Q2:</b> 15 &amp; 10 → (15×10)/25 = <span class="ans">6 din</span></span>
+        <br><b>Q3:</b> 23.4 &amp; 39 → (23.4×39)/62.4 = <span class="ans">14.625 din</span>
+      </div>
+    </article>
+
+    <article class="card" data-kw="fraction of work 1/3 kaam 1/5 part days full work convert poora kaam nikaalo pehle" data-cat="fraction">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>"Kaam ka 1/n hissa X din mein" → pehle poora kaam nikaalo</h3>
+      <p class="trigger">Trigger: "A, kaam ka 1/5 bhaag 12 din mein karta hai" — fraction diya ho toh time × (denominator/numerator) karke full-work time banao, phir normal LCM.</p>
+      <div class="example">
+        <b>Q4:</b> P: 1/5→12d ⇒ 60; Q: 1/6→8d ⇒ 48 → (60×48)/108 = <span class="ans">26⅔ din</span>
+        <span class="q2"><b>Q5:</b> A: 1/3→7d ⇒ 21; B: 2/7→10d ⇒ 35 → (21×35)/56 = <span class="ans">13⅛ din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="fraction" data-kw="percent work 20% 25% 87.5% 65% days convert full work fraction of work in 1 day ek din ka kaam prasat pratishat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Kaam % mein diya ho (20%, 87.5%) → 100% wala time nikaalo</h3>
+      <p class="trigger">Trigger: "A, kaam ka 20% 7 din mein kar sakta hai" — % diya hai, seedha (din×100)/% karke full time nikaalo; kabhi 1-din ka kaam fraction mein poochte hain.</p>
+      <div class="example">
+        <b>Q7:</b> A 20%/7d, B 25%/7d → 7 din mein saath = <span class="ans">45%</span>
+        <span class="q2"><b>Q8:</b> A=35×100/87.5=40, B=23.4×100/65=36 → LCM 360, eff 9+10 → 1 din = <span class="ans">19/360</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="a+b given b given find a alone efficiency subtract ghata do combined minus individual s+r 20 s 25 r">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>(A+B) ka time diya + ek ka time diya → doosre ka?</h3>
+      <p class="trigger">Trigger: "A aur B milkar 30 din mein, akela B 50 din mein — A akela kitne din?" — combined eff mein se known eff minus karo.</p>
+      <div class="example">
+        <b>Q6:</b> S+R→20 (eff 5), S→25 (eff 4), W=100 → R eff 1 → <span class="ans">100 din</span>
+        <span class="q2"><b>Q:</b> A+B→30 (5), B→50 (3), W=150 → A eff 2 → <span class="ans">75 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="three" data-kw="three person teen vyakti a b c together 12 15 20 lcm efficiency sum total days vipin vaibhav chirag">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Teen log alag-alag din → teeno saath</h3>
+      <p class="trigger">Trigger: "A, B aur C kaam ko 12, 15 aur 20 din mein karte hain — saath milkar kitne din?" — teeno ka LCM lo, effs jodo.</p>
+      <div class="example">
+        <b>Q11:</b> 2,3,6 → LCM 6, eff 3+2+1=6 → 6/6 = <span class="ans">1 din</span>
+        <span class="q2"><b>Q12:</b> 12,15,20 → LCM 60, eff 5+4+3=12 → 60/12 = <span class="ans">5 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="three" data-kw="fraction part of work 1/6th together three person m n o partial fraction multiply total work se guna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Group milkar kaam ka sirf 1/n hissa karega → time?</h3>
+      <p class="trigger">Trigger: "M, N, O milkar usi kaam ka 1/6 bhaag kitne din mein karenge?" — total work ko fraction se multiply karke phir eff se divide.</p>
+      <div class="example">
+        <b>Q13:</b> 10,12,15 → LCM 60, eff 6+5+4=15; work=60×1/6=10 → 10/15 = <span class="ans">⅔ din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="three" data-kw="all three together given two individual given find third ashok ali avtar a+b+c minus a minus b baaki ka nikaalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>(A+B+C) diya + do ke time diye → teesra akela?</h3>
+      <p class="trigger">Trigger: "teeno milkar 8 din, A akela 20, B akela 24 — C akela kitne din?" — total eff mein se do effs minus.</p>
+      <div class="example">
+        <b>Q14:</b> LCM 120; A+B+C eff 15, Ali 6, Avtar 5 → Ashok 4 → 120/4 = <span class="ans">30 din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pair" data-kw="a+b b+c c+a pairs 2(a+b+c) jodo teeno pair add karke aadha ek akela nikaalo pair method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Pairs diye hain (A+B, B+C, C+A) → 2(A+B+C) trick</h3>
+      <p class="trigger">Trigger: "A+B 10 din, B+C 12 din, A+C 15 din mein — teeno saath ya koi ek akela kitne din?" — teeno pair-eff jodo, 2 se divide.</p>
+      <div class="example">
+        <b>Q20:</b> 10,12,15 → LCM 60, eff 6+5+4=15 → 2(A+B+C)=15 ⇒ A+B+C=7.5 → 60/7.5 = <span class="ans">8 din</span>
+        <span class="q2"><b>Q16:</b> A→7, B+C→21/4, C+A→7/2 → LCM 21; A=3, B+C=4, C+A=6 ⇒ C=3, B=1 → <span class="ans">B=21 hrs</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pair" data-kw="a+b and a+b+c given find a+c pair aur total diya doosra pair nikaalo subtract se">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Do pair + teeno ka total diya → maanga hua pair</h3>
+      <p class="trigger">Trigger: "A+B 9 din, B+C 18 din, A+B+C 8 din — A+C kitne din?" — total eff se pair minus karke individual eff nikaalo, phir maanga pair jodo.</p>
+      <div class="example">
+        <b>Q22:</b> LCM 72; A+B=8, B+C=4, A+B+C=9 ⇒ C=1, A=5, B=3 → A+C=6 → 72/6 = <span class="ans">12 din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="partial" data-kw="worked together some days remaining work baaki kaam left work a alone finishes rest 8 days b and c 8 din kaam kiya bacha hua">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Kuch din kisi ne kaam kiya → bacha kaam kisi aur ne</h3>
+      <p class="trigger">Trigger: "B aur C ne 8 din saath kaam kiya, bacha hua kaam A akela kitne din mein karega?" — total work − kiya hua work = bacha, phir /eff.</p>
+      <div class="example">
+        <b>Q18:</b> A:1/3→15d ⇒ 45, B:3/4→18d ⇒ 24, C→36 → LCM 360; (B+C)=15+10=25 ×8=200; bacha 160 ÷ A(8) = <span class="ans">20 din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="partial" data-kw="c joins leaves after days equation banao (a+b)9 + c6 = total work kitne din a+b+c ne kaam kiya joined chhod diya">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Koi beech mein juda/chhod gaya → equation banao</h3>
+      <p class="trigger">Trigger: "A aur B ne 9 din kaam kiya, phir C ne 6 din mein khatam kiya" ya "2 din baad C juda" — (eff × din) sabka jod = Total Work.</p>
+      <div class="example">
+        <b>Q17:</b> A→20(3), B→30(2), W=60 → 5×9 + 6C = 60 ⇒ C eff 2.5 → C akela = <span class="ans">24 din</span>
+        <span class="q2"><b>Q19:</b> Ra15(10),Ro25(6),Rh30(5), W=150 → 11×2 + 16t = 150 ⇒ t=8 → total = <span class="ans">10 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="partial" data-kw="a works first two days and last two days rest by b 2a+16b grouping equation 5a+7b+13c break into pairs tod kar likho">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Alag-alag din-count (5A+7B+13C) → pair mein todo</h3>
+      <p class="trigger">Trigger: "A ne 5 din, B ne 7 din, C ne 13 din kaam kiya" ya "A sirf pehle 2 aur aakhri 2 din kaam karta hai" — expression ko diye gaye pairs (A+B, B+C) ke form mein todo.</p>
+      <div class="example">
+        <b>Q23:</b> (A+B)→12(4), (B+C)→16(3), W=48; 5A+7B+13C = 5(A+B)+2(B+C)+11C = 48 → C eff nikaalo → <span class="ans">C = 24 din</span>
+        <span class="q2"><b>Q9:</b> A→15 (2 din start + 2 din end), baaki B, total 20 din → A+B saath = <span class="ans">80/9 din</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>12 patterns ab tak.</b> (Time &amp; Work class notes, Q1–Q24 tak) Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+<section class="unit">
+  <div class="unit-label">Pages 53–107 · Q27–Q62</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Time &amp; Work (Type 3–4)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Alternate Days aur Lefting the Work — trigger line padho, worked example se pattern lock karo.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'alternate', 'leaves', 'date', 'left work', 'before'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="alt">Alternate Days</button>
+      <button data-filter="neg">Negative Work</button>
+      <button data-filter="date">Date/Calendar</button>
+      <button data-filter="leave">Leaving Work</button>
+      <button data-filter="phase">Multi-Phase</button>
+      <button data-filter="pair">Pair Efficiency</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="alt" data-kw="alternate days ekantar din baari baari one day alternately starting with A total work LCM efficiency 2 days cycle एकांतर दिन बारी बारी">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Alternate Days basic (A, B, A, B…)</h3>
+      <p class="trigger">Trigger: "they work for a day alternately, starting with A" / "बारी-बारी से एक-एक दिन" — kitne din mein kaam poora?</p>
+      <div class="example">
+        <b>Q27:</b> A→13, B→26, TW=26, eff 2 &amp; 1 → 2D=3 → ×8 → 16D=24, bacha 2 → A ka 1 din<br>
+        16+1 = <span class="ans">17 din</span>
+        <span class="q2"><b>Q28:</b> R→12, A→16, TW=48, eff 4 &amp; 3 → 2D=7 → ×6 → 12D=42, bacha 6; 13th din R=4, bacha 2 → 2/3 din A ka = <span class="ans">13⅔ din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alt" data-kw="alternate days percent of work 75% partial work adha kaam half work complete hoga कितने दिन में 75% काम">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Alternate days mein sirf x% kaam kab poora?</h3>
+      <p class="trigger">Trigger: "alternate days work karte hain, to <b>75% (ya 1/2, 60%) kaam</b> kitne din mein poora hoga" — poora TW nahi, cut kiya hua work lo.</p>
+      <div class="example">
+        <b>Q29:</b> S→30, K→20, TW=60, eff 2 &amp; 3 → target = 60×3/4 = 45<br>
+        2D=5 → ×9 → <span class="ans">18 din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alt" data-kw="alternate cycle 3 day cycle A B B day1 day2 day3 combined given one alone keshav madhav uneven turn pattern">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Turn ka cycle alag (A, B, B / A, A, B) — 3-day cycle</h3>
+      <p class="trigger">Trigger: "X day 1 pe kaam karta hai aur Y day 2 <b>aur day 3</b> pe" — cycle 2 din ka nahi, 3 din ka hai; ek din ka combined time bhi diya hota hai.</p>
+      <div class="example">
+        <b>Q30:</b> K+M→35, K→84, TW=420 → K=5, M=7<br>
+        Cycle K,M,M = 5+7+7 = 19 → 3D=19 → ×22 → 66D=418, bacha 2 → 2/5 din K ka = <span class="ans">66⅖ din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alt" data-kw="three persons alternate A B C 1st day 2nd day 3rd day teen log rotation cycle 3 days work complete">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>3 log alternate (A, B, C, A, B, C…)</h3>
+      <p class="trigger">Trigger: "1st day A, 2nd day B, 3rd day C, phir 4th day A…" — 3 din ka ek cycle jodo, fir bacha hua kaam din-ba-din adjust karo.</p>
+      <div class="example">
+        <b>Q31:</b> A→10, B→15, C→20, TW=60, eff 6,4,3 → 3D=13 → ×4 → 12D=52<br>
+        13th din A=6 → 52+6=58, bacha 2 → 2/4 = ½ din B ka = <span class="ans">13½ din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="neg" data-kw="negative work one destroys spoils empties pipe leak A builds B breaks alternate days plus minus efficiency net gain कार्य बिगाड़ता">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Ek banata hai, doosra bigadta hai (−ve efficiency alternate)</h3>
+      <p class="trigger">Trigger: "A kaam karta hai aur B usko todta/bigadta hai, alternate days mein" — 2 din ka <b>net</b> gain nikaalo, par last din hamesha builder ka hi hoga.</p>
+      <div class="example">
+        <b>Aman-Rajan:</b> +15 din / −20 din → TW=60, eff +4, −3 → 2D = +1 → ×56 → 112D=56<br>
+        113th din Aman +4 = 60 → <span class="ans">113 din</span>
+        <span class="q2"><b>A/B:</b> A→+10, B→−20, TW=20, eff +2, −1 → 2D=1 → 36D=18, 37th din A+2=20 → <span class="ans">37 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="neg" data-kw="monkey pole frog well climbs slips 100 m per minute up down special concept last stroke distance time net gain">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Special: net gain ke baad "last stroke" alag</h3>
+      <p class="trigger">Trigger: distance/height type — "1 min mein +X, agle min mein −Y" — net se cycle nikaalo par <b>aakhri chadhai wapas nahi girti</b>, isliye ek step pehle hi kaam khatam.</p>
+      <div class="example">
+        <b>Q:</b> 1min +5, 1min −3 → 2min = +2m → ×48 → 96 min mein 96m<br>
+        Bacha 4m agle hi minute mein cover → answer <span class="ans">96 L/S wale step pe khatam</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="date" data-kw="date calendar started work on which date july august 2021 2022 A works 6th 12th 18th day off holiday completed on kis tarikh ko">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Kaam kis TAREEKH ko khatam hoga</h3>
+      <p class="trigger">Trigger: "A ne 1 July se kaam shuru kiya, A har 6th din chhutti leta hai / alternate days" — jawab din nahi, <b>date</b> mein poocha jaata hai.</p>
+      <div class="example">
+        <b>Q:</b> A|B→36 units; A ki chhutti 6th, 12th, 18th; B ki 8th, 16th → un dino ka kaam minus karke total din nikaalo<br>
+        Total din count karke start date pe jodo → <span class="ans">21 July 2021 type answer</span>
+        <span class="q2"><b>Q:</b> A/B→30, alternate, A→5th,10th,15th off → din nikaal ke date banao → <span class="ans">17 August 2022</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="leave" data-kw="leaves after some days q leaves work together for 4 days remaining work P finish kitne din chhod deta hai lefting the work शेष कार्य">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Sath kaam kiya, phir ek chhod gaya → bacha kaam kitne din</h3>
+      <p class="trigger">Trigger: "they work together for X days and then Q leaves" — bache hue kaam ke liye baaki person ke din poochhe jaate hain. Equation: (P+Q)X + P×t = T.W</p>
+      <div class="example">
+        <b>Q47:</b> P→30, Q→40, TW=120, eff 4 &amp; 3 → 7×4=28 → bacha 92 → t=92/4 = <span class="ans">23 din</span>
+        <span class="q2"><b>Q48:</b> A→15, B→30, TW=30, eff 2 &amp; 1 → 3×3=9 → bacha 21 → t=21/1 = <span class="ans">21 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="leave" data-kw="after how many days did A leave B finished remaining in 8 days reverse unknown t kitne din baad chhoda ulta">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Ulta: "A kitne din baad chhod ke gaya?"</h3>
+      <p class="trigger">Trigger: "B ne bacha hua kaam 8 din mein khatam kiya — A kitne din baad chala gaya?" — unknown shuru ke sath-kaam wale din hain. (A+B)t + B×8 = T.W</p>
+      <div class="example">
+        <b>Q49:</b> A→5, B→10, TW=10, eff 2 &amp; 1 → 3t + 1×8 = 10 → 3t=2 → <span class="ans">t = ⅔ din</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="leave" data-kw="left 5 days before completion leaves before finishing work before after plus minus concept total days formula TW plus extra divided by combined efficiency पहले छोड़ देता">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>"Kaam khatam hone se N din PEHLE chhod diya" (before → +)</h3>
+      <p class="trigger">Trigger: "A left <b>5 days before</b> the completion of work" — jo kaam wo un dino mein karta, wo T.W mein <b>jod do</b>, phir combined efficiency se divide. (after = minus, before = plus)</p>
+      <div class="example">
+        <b>Q:</b> A→18, B→30, TW=90, eff 5 &amp; 3; A ne 50/3 unit chhoda → Total = (90 + 50/3)/8 = <span class="ans">65/3 din</span>
+        <span class="q2"><b>Q:</b> A→10,B→12,C→15, TW=60, eff 6,5,4 → Total = (60 − 3C + 4B)/(A+B) = (60−12+20)/11 = <span class="ans">68/11 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="phase" data-kw="phase wise work segments first 2 days then 3 days then together stages part work M W men women ratio khand khand mein kaam">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Kaam tukdo (phases) mein hua → puri timeline ka equation</h3>
+      <p class="trigger">Trigger: "pehle 2 din dono ne, phir 3 din sirf W ne, phir 1 din dono, phir M akela" — har phase ka kaam alag likh ke jodo = T.W</p>
+      <div class="example">
+        <b>Q:</b> M→8, W→16, eff 2 &amp; 1 → (M+W)2 + 3W + 1(M+W) + M×t = 16<br>
+        6+3+3 = 12 → t=2 → M ke total din 2+1+2=5, W ke 2+3+1=6 → <span class="ans">5 : 6 type answer</span>
+        <span class="q2"><b>Q:</b> 6×2 + 4×10 + 3×2 + 1×t = 60 → t=2 → Total = 2+10+2+2 = <span class="ans">16 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pair" data-kw="P+Q 12 days Q+R 20 P+R 15 pair efficiency 2(P+Q+R) individual efficiency jodi wale do do log combined">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Jodi (P+Q, Q+R, P+R) diya → individual efficiency</h3>
+      <p class="trigger">Trigger: "P and Q together 12 days, Q and R 20 days, P and R 15 days" — teeno jod do, 2(P+Q+R) milta hai, fir minus karke individual.</p>
+      <div class="example">
+        <b>Q:</b> TW=60 → P+Q=5, Q+R=3, P+R=4 → sum=12 = 2(P+Q+R) → P+Q+R=6<br>
+        R=6−5=1, P=6−3=3, Q=6−4=2 → <span class="ans">eff P:Q:R = 3:2:1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="phase" data-kw="A worked 3 days B worked 2 days then B alone remaining fixed days each person alag alag din kaam kiya sum of work">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Har banda fix din kaam karke gaya → bacha kaam kis ne?</h3>
+      <p class="trigger">Trigger: "A ne 3 din kaam kiya, B ne 2 din, uske baad B ne akele khatam kiya" — units jod ke bacha hua nikaalo, fir divide.</p>
+      <div class="example">
+        <b>Q:</b> A→25, B→30, TW=150, eff 6 &amp; 5 → 3A+2B = 18+10 = 28 → bacha 122 → t=122/5 = <span class="ans">24⅖ din</span>
+        <span class="q2"><b>Q:</b> A→10, B→15, TW=30, eff 3 &amp; 2 → (A+B)t + 5B = 30 → 5t+10=30 → t=4, Total = <span class="ans">9 din</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pair" data-kw="B C D together started one left after 4 days another after 10 days total days all three ne mil ke shuru kiya kitne din laga total work extra units">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Sab sath shuru, log alag-alag din pe chhode → total din</h3>
+      <p class="trigger">Trigger: "teeno ne sath shuru kiya, B 4 din pehle gaya, C 10 din pehle gaya" — chhode gaye units T.W mein jodo, fir sabki combined efficiency se divide.</p>
+      <div class="example">
+        <b>Q:</b> B→24, C→36, D→48, TW=144, eff 6,4,3 → (144 + 4×6 + 10×4)/13 = 208/13 = <span class="ans">16 din</span>
+        <span class="q2"><b>Q:</b> P→36, Q→48, R→144, TW=144, eff 4,3,1 → (144+48+24)/8 = <span class="ans">27 din</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>14 patterns ab tak.</b> (Type-3 Alternate Days + Type-4 Lefting the Work, Q27–Q62). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+<section class="unit">
+  <div class="unit-label">Pages 108–169</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Time &amp; Work (Page 108–169)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Efficiency, MDH, Contractor aur Series — trigger line padho, worked example se pattern lock karo.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'efficiency', 'mdh', 'contractor', 'hostel', 'root'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="eff">Efficiency</button>
+      <button data-filter="ratio">Ratio/Units</button>
+      <button data-filter="equation">Equation</button>
+      <button data-filter="sqrt">√ (X &amp; Y more)</button>
+      <button data-filter="mdh">MDH</button>
+      <button data-filter="contractor">Contractor</button>
+      <button data-filter="series">AP Series</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="eff" data-kw="efficiency percent more efficient kushal adhik time inverse ratio E alpha 1/T kary kshamta 60% more">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>"x% zyada efficient" → time nikaalo</h3>
+      <p class="trigger">Trigger: "B, A se 60% adhik kushal hai / more efficient hai" aur ek ka time diya ho — E ↑ toh T ↓ (ulta ratio).</p>
+      <div class="example">
+        <b>Q62:</b> Virat 30 din, Daniel 60% zyada efficient → E = 160:100 = 8:5<br>
+        5×30 = 8×t → t = <span class="ans">18¾ days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="eff" data-kw="twice as good doguna kary kushal together 16 days alone efficiency 2:1 tarun tripti">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>"Twice as good" + together time → akela kitne din</h3>
+      <p class="trigger">Trigger: "A, B se doguna/teen guna kaam-kushal hai, dono milkar N din mein" — akele ka time poocha jaaye.</p>
+      <div class="example">
+        <b>Q63:</b> E → Tarun:Tripti = 2:1, sum = 3<br>
+        3×16 = 1×t → <span class="ans">t = 48 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="eff" data-kw="times as fast 3.5 guna tezi days less difference 45 days together efficiency ratio unit difference">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>"x guna tez" + "N din kam lagte hain" → together</h3>
+      <p class="trigger">Trigger: "A, B se 3.5 guna tez kaam karta hai aur A ko B se 45 din kam lagte hain" — units ka difference = diye hue din.</p>
+      <div class="example">
+        <b>Q64:</b> E = 3.5:1 = 7:2 → T = 2:7 → diff 5 unit = 45 → 1 unit = 9<br>
+        A=18, B=63 → together = 18×63/81 = <span class="ans">14 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="P takes twice as long three times as long multiple person time ratio LCM total work together two days Q alone">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>"P, Q se dugna ya R se teen guna time leta hai"</h3>
+      <p class="trigger">Trigger: ek banda baaki sab se "x guna zyada samay" leta hai, teeno milkar N din — pehle T ka ratio likho, phir E.</p>
+      <div class="example">
+        <b>Q65:</b> T → P:Q:R = 6:3:2 → E = 1:2:3 (sum 6)<br>
+        T.W = 6×2 = 12 → t<sub>Q</sub> = 12/2 = <span class="ans">6 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="eff" data-kw="half as much work in 4/5 of the time ramesh parul aadha kaam samay efficiency derive 5:8 together 24 days">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>"Aadha kaam, 4/5 samay mein" → efficiency banao</h3>
+      <p class="trigger">Trigger: "Ramesh, Parul se aadha kaam 4/5 time mein karta hai" — pehle work/time se E ka ratio nikaalo, tabhi aage badho.</p>
+      <div class="example">
+        <b>Q66:</b> (R×4/5)/1 = (P×t)/2 → R/P = 5/8<br>
+        (5+8)×24 = 8×t → <span class="ans">t = 39 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="A+C : B combined ratio three person split units 12:5:3 individual days IARI multiple ratios join">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Do alag ratio jodo → A:B:C ek line mein</h3>
+      <p class="trigger">Trigger: "(A+C), B se 3 guna kaam karta hai aur A, C se 4 guna" — do alag comparison diye ho toh common term se ratio multiply karke jodo.</p>
+      <div class="example">
+        <b>Q84:</b> (A+C):B = 15:5, A:C = 12:3 → E = A:B:C = 12:5:3<br>
+        T.W = 180 → <span class="ans">15, 36, 60 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="A vs B+C combined time 24:10 units total work efficiency subtract remaining person alone">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>A vs (B+C) ka time diya → ek banda akela</h3>
+      <p class="trigger">Trigger: "A akela utne din leta hai jitne B aur C milkar" ya "A : (B+C) ka time ratio" — E nikaal ke ghatao.</p>
+      <div class="example">
+        <b>Q85:</b> T → A:(B+C) = 24:10 → E = 5:12 → T.W = 120<br>
+        E<sub>C</sub> = 12 − E<sub>B</sub> → <span class="ans">45 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="efficiency changed half thrice double one third same work equation 12 days 9 days A/2 3B compare">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Efficiency badal ke wahi kaam → equation banao</h3>
+      <p class="trigger">Trigger: "agar A aadhi speed se aur B teen guna speed se kaam kare toh kaam 9 din mein" — T.W dono taraf barabar likho.</p>
+      <div class="example">
+        <b>Q87:</b> (A+B)12 = (A/2 + 3B)9 → 4A+4B = 3A+9B → A = 5B<br>
+        T.W = 6B×12 = 72B → t<sub>A</sub> = <span class="ans">24 days</span> (approach)
+        <span class="q2"><b>Q94:</b> (A+B)6 = (2A + B/3)(9/2) → 4A+4B = 6A+B → 3B = 2A → answer nikaalo</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="left the work joined after days remaining alone extra days B works 24 more days A+B 45 35 equation ratio 7:5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Beech mein koi chhod gaya / baaki ne poora kiya</h3>
+      <p class="trigger">Trigger: "dono milkar shuru, N din baad A chala gaya aur B ne M din mein khatam kiya" — T.W = same likh ke ratio nikaalo.</p>
+      <div class="example">
+        <b>Q89:</b> (A+B)45 = (A+B)35 + B×24 → (A+B)10 = 24B → 5A = 7B<br>
+        A:B = 7:5 → T.W se answer <span class="ans">90/108 type</span>
+        <span class="q2"><b>Q90:</b> (Ra+Ro)5 = (Ra+Ro)2 + Ra×4 → 3Ro = Ra → <span class="ans">Ra:Ro = 3:1</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="three person x y z group joined 48 15 22 days total work equation combined efficiency">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Teesra banda beech mein join hua (x+y+z)</h3>
+      <p class="trigger">Trigger: "x aur y ne N din kaam kiya, phir z bhi aa gaya aur M din mein kaam poora" — dono expressions barabar.</p>
+      <div class="example">
+        <b>Q93:</b> (x+y)48 = (x+y)15 + (x+y+z)22 → (x+y)33 = (x+y+z)22<br>
+        → (x+y):(x+y+z) = 2:3 → z ka share nikaalo → <span class="ans">16 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="use option hit and trial tA+tB = 25 sum of days A>B options check shortcut half work">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Options se hit &amp; trial (jab do time ka SUM diya ho)</h3>
+      <p class="trigger">Trigger: "A aur B milkar 8 din mein, alag-alag karein toh dono ke time ka jod 25 din" — equation lambi hai, option/hit-trial se todo.</p>
+      <div class="example">
+        <b>Q91:</b> (A+B)→8, E = 4:1 → T.W = 40 → A=10, B=40? check<br>
+        Sahi split: 20/4 + 20/1 = 25 ✓ → <span class="ans">20 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sqrt" data-kw="X and Y days more than A+B together root sqrt t = root xy 27 hours 3 hours 8+d 18+d shortcut type 6">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>A aur B ko (A+B) se X &amp; Y din ZYADA → t = √(X·Y)</h3>
+      <p class="trigger">Trigger: "A akela (A+B) se 27 ghante zyada leta hai aur B, 3 ghante zyada" — seedha root laga do.</p>
+      <div class="example">
+        <b>Q82:</b> t = √(27×3) = 9 → A = 9+27 = <span class="ans">36</span>, B = 12
+        <span class="q2"><b>Q83:</b> A=(8+d), B=(18+d) → d = √(8×18) = 12 → A=20, B=30; A 4 din → bacha 48/2 = <span class="ans">24 days</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sqrt" data-kw="A and B together equal to C alone 5 more 9 more days root sqrt variant three person t+9 t+4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Variant: (A+B) ka time = C ka time → wahi √ trick</h3>
+      <p class="trigger">Trigger: "A, B se x din zyada aur C se y din zyada leta hai; A+B milkar utna hi time lete hain jitna C akela" — C ko (A+B) maan lo.</p>
+      <div class="example">
+        <b>Q84:</b> A=t+9, B=t+4, C=t → t = √(9×4) = 6 → A = <span class="ans">15 days</span>
+        <span class="q2"><b>Q85:</b> A=t+2, B=t+8, C=t → t = √(2×8) = 4 → B = <span class="ans">12 days</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mdh" data-kw="MDH M1D1H1/W1 = M2D2H2/W2 men days hours work tourists containers persons hours a day formula chain">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>MDH formula: M₁D₁H₁/W₁ = M₂D₂H₂/W₂</h3>
+      <p class="trigger">Trigger: aadmi/din/ghante/kaam mein se koi teen diye ho aur chautha poocha jaaye — "25 tourists, 8 din, 5 container..." wala phrasing.</p>
+      <div class="example">
+        <b>Q86:</b> 25×8/5 = 10×16/x → <span class="ans">x = 4 containers</span>
+        <span class="q2"><b>Q87:</b> 36×6×10 = 24×9×t → <span class="ans">t = 10 days</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mdh" data-kw="hostel food provision students left after 20 days remaining ration mess bacha khana kitne din chalega provision">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Hostel/ration: kuch log chhod gaye → bacha khana kitne din</h3>
+      <p class="trigger">Trigger: "300 students ke liye 30 din ka khana tha, 20 din baad 50 chale gaye — bacha khana kab tak chalega?"</p>
+      <div class="example">
+        <b>Q88:</b> 300×30 = 300×20 + 250×t → 300×10 = 250×t → <span class="ans">t = 12 days</span>
+        <span class="q2"><b>Q89:</b> 18×96 = 18×26 + 28×t → t = 45 → total = 26+45 = <span class="ans">71 days</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mdh" data-kw="MDH with percent work done 36% 64% N+15 N+9 unknown men equation variable persons hours">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>MDH mein % work aur unknown men (N) ho</h3>
+      <p class="trigger">Trigger: "(N+15) log 8 din 9 ghante mein 36% kaam, (N+9) log 20 din 7 ghante mein 64%" — MDH mein W ki jagah % daal do.</p>
+      <div class="example">
+        <b>Q110:</b> (N+15)×8×9/36 = (N+9)×20×7/64<br>
+        32N+480 = 35N+315 → 3N = 165 → <span class="ans">N = 55</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="contractor" data-kw="contractor work done work left thekedar extra men hire additional labour 1/4 3/4 fraction completed remaining schedule">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Contractor: Work done = Work left</h3>
+      <p class="trigger">Trigger: "thekedaar ne N aadmi lagaye, X din mein sirf 1/4 kaam hua — samay par khatam karne ke liye kitne aadmi aur chahiye/hataye ja sakte hain?"</p>
+      <div class="example">
+        <b>Q92:</b> 200×50/(1/4) = (200+x)×100/(3/4) → 300 = 200+x → <span class="ans">x = 100 men</span>
+        <span class="q2"><b>Q93:</b> 20×60/(3/4) = (60−x)×30/(1/4) → 40 = 60−x → <span class="ans">x = 20 men</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="series" data-kw="every day men left work AP arithmetic progression 150 146 142 sum Sn n/2 2a+(n-1)d 8 days 12 days number of men at start">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Roz kuch aadmi chhodte gaye → AP ka sum</h3>
+      <p class="trigger">Trigger: "kaam 8 din mein hona tha, par har din 10 aadmi chhodte gaye aur kaam 12 din mein khatam hua" — total work ko AP series ke sum se barabar karo.</p>
+      <div class="example">
+        <b>Q97:</b> 150×(t−8) = 150+146+142+… → Sₙ = n/2[2a+(n−1)d] → <span class="ans">25 days</span>
+        <span class="q2"><b>Q98:</b> x×8 = 12/2[2x + 11(−10)] → 8x = 12x − 660 → <span class="ans">x = 165 men</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>18 patterns ab tak.</b> (Time &amp; Work · Page 108–169 · Type-5 Efficiency, Type-6 √(X·Y), Type-7 MDH, Contractor, AP Series). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+<section class="unit">
+  <div class="unit-label">Pages 170–188 · MWC</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Time &amp; Work (Page 170–188) · Type-8 MWC</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Men-Women-Children (MWC) concept — "or" wale statement se efficiency ratio banao, phir units mein kaam khatam.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'or', 'goat', 'ratio', 'women assist', 'alternate'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="or">"OR" Type</button>
+      <button data-filter="ratio">Ratio Banao</button>
+      <button data-filter="equation">2 Group Equation</button>
+      <button data-filter="mid">Beech mein Change</button>
+      <button data-filter="cycle">Alternate/Cycle</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="or" data-kw="goats sheep bakri bhed graze field or equal work 3G 5S efficiency ratio combined together days MWC">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>"3 bakri YA 5 bhed" → dono ka efficiency ratio</h3>
+      <p class="trigger">Trigger: statement mein "OR / या" aaye — "3 goats or 5 sheep 54 din mein" — dono ka kaam barabar, isliye ratio ulta.</p>
+      <div class="example">
+        <b>Q99:</b> 3G = 5S → G:S = 5:3 → 6G+8S = 30+24 = 54 units<br>
+        (54)×t = 3G×54 = 15×54 → <span class="ans">t = 15 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="or" data-kw="4 women or 6 men same days one man 60 days 5 women how many days individual time given or statement">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>"OR" ratio + ek unit ka time diya → doosre ka time</h3>
+      <p class="trigger">Trigger: "4 women or 6 men equal din mein, ek man 60 din mein karta hai — 5 women kitne din?"</p>
+      <div class="example">
+        <b>Q100:</b> 4w = 6m → w:m = 3:2<br>
+        1m×60 = 5w×t → 2×60 = 15×t → <span class="ans">t = 8 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="8 men 16 women 32 boys 8 months M=2w=4B ratio 4:2:1 mixed group 4 men 4 women 4 boys together total work units">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Teen category (M/W/B) "or" mein → M:W:B ratio</h3>
+      <p class="trigger">Trigger: "8 men or 16 women or 32 boys 8 mahine mein" — phir mixed team (4m+4w+4b) ka time poocha jaaye.</p>
+      <div class="example">
+        <b>Q101:</b> 8m = 16w = 32B → M:W:B = 4:2:1; T.W = 8×4×8 = 256<br>
+        4(4+2+1) = 28 → t = 256/28 = <span class="ans">9⅐ months</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="3 men 10 days 4 women 12 days 10 qualified workers 6 days different times ratio 8:5:4 mixed team total work equate">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Har group ka ALAG time diya → pehle barabar karo</h3>
+      <p class="trigger">Trigger: "3 men 10 din, 4 women 12 din, 10 workers 6 din mein wahi kaam" — teeno ka product barabar karke ratio nikaalo.</p>
+      <div class="example">
+        <b>Q103:</b> 3m×10 = 4w×12 = 10Q×6 → 5m = 8w = 10Q → m:w:Q = 8:5:4<br>
+        (4m+4w+4Q) = 4×17 = 68; T.W = 24×10 = 240 → <span class="ans">t = 60/17 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="15 men 25 women 9.6 days 16 women 27 days two mixed groups equation m/w ratio 4:3 find 16 men days">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Do mixed groups ka data → m:w ratio nikaalo</h3>
+      <p class="trigger">Trigger: "15 men + 25 women 9.6 din mein, aur 16 women 27 din mein" — dono ka T.W barabar likh ke m/w ratio.</p>
+      <div class="example">
+        <b>Q102:</b> (15m+25w)9.6 = 16w×27 → 45m = 60w → m:w = 4:3<br>
+        16m×t = 16w×27 → 4t = 3×27 → <span class="ans">t = 20.25 days</span>
+        <span class="q2"><b>Q107:</b> (2m+7w)28 = (6m+16w)11 → ratio nikaalo → 5m+4w ka time</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="how many women should assist 4 men complete in 7 days 4m+5w 15 days 9m+6w 10 days find x women">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>"Kitni women 4 men ki madad karein" (x nikaalo)</h3>
+      <p class="trigger">Trigger: do mixed groups diye ho aur poocha jaaye "same kaam N din mein karne ke liye kitni women chahiye" — x maan ke equation.</p>
+      <div class="example">
+        <b>Q106:</b> (4m+5w)15 = (9m+6w)10 → 3w = 6m → w:m = 2:1<br>
+        (2x+4)×7 = (9+12)×10 → 2x = 26 → <span class="ans">x = 13 women</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="ratio of efficiency 3:2 given directly man woman 66 days 6 men 2 women simple substitution">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Efficiency ratio SEEDHA diya (3:2) → bas units bhar do</h3>
+      <p class="trigger">Trigger: "1 man + 1 woman 66 din mein, unki efficiency ka ratio 3:2 hai" — koi equation nahi, direct units.</p>
+      <div class="example">
+        <b>Q109:</b> m:w = 3:2 → (1m+1w) = 5; T.W = 5×66 = 330<br>
+        6m+2w = 18+4 = 22 → t = 330/22 = <span class="ans">15 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mid" data-kw="worked for 4 days then more men joined remaining work 18 men 14 days 5m+6w 8m+6w total days part work change team">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Beech mein team badli → T.W ko tukdon mein todo</h3>
+      <p class="trigger">Trigger: "pehle N din 5 men + 6 women, phir aur log jud gaye" — T.W = (group-1 × din) + (group-2 × t).</p>
+      <div class="example">
+        <b>Q110:</b> 3w = 2m; 18m×14 = (5m+6w)4 + (8m+6w)t → 756 = 84 + 36t<br>
+        t = 18 → total = 18+4 = <span class="ans">22 days</span>
+        <span class="q2"><b>Q112:</b> 5m×20 = 10w×15 → m:w = 3:2; (2m+6w)5 + (3m+3w)t = 300 → <span class="ans">t = 14 days</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="woman does double the work a man child half 3 men 4 women 6 children 7 days how many women alone relative efficiency words">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Words mein relation ("woman = 2× man, child = ½ man")</h3>
+      <p class="trigger">Trigger: efficiency shabdon mein di ho — "ek aurat aadmi se dugna, bachcha aadha kaam karta hai" — man ko 1 unit maan lo.</p>
+      <div class="example">
+        <b>Q111:</b> m=2, w=4, c=1 → (3m+4w+6c) = 6+16+6 = 28<br>
+        28×7 = x×4×7 → <span class="ans">x = 7 women</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="cycle" data-kw="man woman qualified worker work in same order three different days alternate cycle 3 day cycle remaining fraction 135/4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Baari-baari kaam (M, W, Q ek-ek din) → 3-day cycle</h3>
+      <p class="trigger">Trigger: "ek man, ek woman aur ek worker isi kram mein alag-alag dinon par kaam karte hain" — 3 din ka cycle jodo, phir bacha kaam.</p>
+      <div class="example">
+        <b>Q104:</b> 2m = 4w = 8Q → m:w:Q = 4:2:1; T.W = 10Q×8 = 80<br>
+        3 din = 7 units → 11 cycle (33 din) = 77, bacha 3 → <span class="ans">33¾ = 135/4 days</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="half time (1m+1w) t/2 = (1w+1B) t boys women ratio 3:1 find days 4 men mixed derive multiple relations">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>"(m+w) aadhe time mein" jaisa comparison → do relation jodo</h3>
+      <p class="trigger">Trigger: ek team doosri team se aadhe/duguna samay leti ho — dono equations se m, w, B ki value nikaal ke aage badho.</p>
+      <div class="example">
+        <b>Q105:</b> (1m+1w)×t/2 = (1w+1B)×t → m+1 = 8 → m = 7, B:w = 3:1<br>
+        4m×t = 18×20 → 28t = 60 → <span class="ans">t = 2.14 days</span>
+      </div>
+    </article>
+
+  </main>
+
+
+  <footer>
+    <b>11 patterns ab tak.</b> (Time &amp; Work · Page 170–188 · Type-8 MWC Concept). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+</div>
+<script>
+  document.querySelectorAll('.unit').forEach(unit => {
+    const cards = Array.from(unit.querySelectorAll('.card'));
+    const searchBox = unit.querySelector('.searchBox');
+    const filterBtns = Array.from(unit.querySelectorAll('.controls button'));
+    let activeFilter = 'all';
+    function applyFilters(){
+      const q = searchBox ? searchBox.value.trim().toLowerCase() : '';
+      cards.forEach(card => {
+        const cat = card.dataset.cat;
+        const kw = ((card.dataset.kw || '') + ' ' + card.textContent).toLowerCase();
+        const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+        const matchesSearch = q === '' || kw.includes(q);
+        card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+      });
+    }
+    if (searchBox) searchBox.addEventListener('input', applyFilters);
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        applyFilters();
+      });
+    });
+  });
+</script>
+</body>
+</html>
