@@ -6,7 +6,7 @@ export const SSC_TOPICS = [
   // Quant
   'percentage', 'profit_loss', 'ratio_proportion', 'average', 'time_work',
   'time_speed_distance', 'number_system', 'algebra', 'geometry', 'trigonometry',
-  'data_interpretation', 'simplification',
+  'data_interpretation', 'simplification', 'mixture_alligation',
   // Reasoning
   'analogy', 'coding_decoding', 'series', 'blood_relation', 'direction',
   'syllogism', 'puzzle', 'venn_diagram', 'statement_conclusion',
@@ -32,7 +32,7 @@ export const SSC_SUBJECTS: { key: SscSubject; label: string; icon: string; color
 
 export const SUBJECT_TOPICS: Record<SscSubject, SscTopic[]> = {
   english: ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms', 'error_detection', 'sentence_improvement', 'fill_in_blanks', 'cloze_test', 'reading_comprehension', 'active_passive', 'direct_indirect', 'parajumbles', 'spelling_correction'],
-  quant: ['percentage', 'profit_loss', 'ratio_proportion', 'average', 'time_work', 'time_speed_distance', 'number_system', 'algebra', 'geometry', 'trigonometry', 'data_interpretation', 'simplification'],
+  quant: ['percentage', 'profit_loss', 'ratio_proportion', 'average', 'time_work', 'time_speed_distance', 'mixture_alligation', 'number_system', 'algebra', 'geometry', 'trigonometry', 'data_interpretation', 'simplification'],
   reasoning: ['analogy', 'coding_decoding', 'series', 'blood_relation', 'direction', 'syllogism', 'puzzle', 'venn_diagram', 'statement_conclusion'],
   gk: ['history', 'polity', 'geography', 'economy', 'static_gk', 'current_affairs'],
 };
@@ -103,6 +103,7 @@ export const TOPIC_META: Record<SscTopic, { label: string; icon: string; color: 
   trigonometry: { label: 'Trigonometry', icon: '📏', color: 'hsl(15 80% 50%)' },
   data_interpretation: { label: 'Data Interpretation', icon: '📉', color: 'hsl(210 70% 50%)' },
   simplification: { label: 'Simplification', icon: '➗', color: 'hsl(var(--primary))' },
+  mixture_alligation: { label: 'Mixture & Alligation', icon: '🧪', color: 'hsl(190 80% 42%)' },
   // Reasoning
   analogy: { label: 'Analogy', icon: '🔗', color: 'hsl(262 83% 58%)' },
   coding_decoding: { label: 'Coding Decoding', icon: '🔐', color: 'hsl(25 95% 53%)' },
