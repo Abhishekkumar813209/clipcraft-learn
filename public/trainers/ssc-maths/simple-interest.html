@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Simple Interest Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Simple Interest (साधारण ब्याज)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search patterns...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic PRT</button>
+      <button data-filter="days">Days/Date</button>
+      <button data-filter="multi">Multi-Sum</button>
+      <button data-filter="diff">SI Difference</button>
+      <button data-filter="rt-rel">r ↔ t Relation</button>
+      <button data-filter="borrow">Borrow-Lend</button>
+      <button data-filter="prop">Proportion</button>
+      <button data-filter="frac">Fraction Rate</button>
+      <button data-filter="times">Times/Multiple</button>
+      <button data-filter="ratio">P:A Ratio</button>
+      <button data-filter="ratechange">Rate ↑/↓</button>
+      <button data-filter="munni">Munni Method</button>
+      <button data-filter="alligation">Alligation</button>
+      <button data-filter="twopart">Do Part SI</button>
+      <button data-filter="slab">Slab Rate</button>
+      <button data-filter="totalsi">Total SI</button>
+      <button data-filter="avgrate">Average Rate</button>
+      <button data-filter="equalsi">Equal SI</button>
+      <button data-filter="equalamt">Equal Amount</button>
+      <button data-filter="misc">Misc/Tricky</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+    <!-- ===== Page 69 ===== -->
+<article class="card" data-cat="basic" data-kw="basic prt formula simple interest find si p r t missing months mixed rate fractional 14 2/3 amount">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Basic PRT/100 — koi ek variable missing</h3>
+      <p class="trigger">Trigger: "P, r%, t diya hai — SI nikaalo" ya "A/SI diya hai, r ya t poocha jaaye" — time months/mixed fraction (21 months, 4y 3m, 14⅔%) mein ho toh saal/fraction mein convert.</p>
+      <div class="example">
+        <b>Q1:</b> 6000, 8%, 21m → SI=(6000×8×21)/(100×12) = <span class="ans">₹840</span>
+        <span class="q2"><b>Q2:</b> 27000, 14⅔%(=44/3), 8m → (27000×44×8)/(3×100×12) = <span class="ans">₹2640</span></span>
+        <br><b>Q3:</b> 12000 → 15000 in 5y, SI=3000 → r=3000×100/(12000×5) = <span class="ans">5%</span>
+        <br><b>Q4:</b> 2500 → 4100, r=16% → t=1600×100/(2500×16) = <span class="ans">4 years</span>
+        <br><b>Q9:</b> SI=7480, r=55/3%, t=51/12y → P=7480×3×12/(55×51) = <span class="ans">₹9600</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="days" data-kw="days date to date borrow loan may june july august leap year 365 366 include exclude both days">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Date-to-date se days count → t = days/365</h3>
+      <p class="trigger">Trigger: "22 May se 2 August tak" / "24 Jan se 18 June tak" — mahino ke days jod ke total days nikaalo, leap year ho toh /366, warna /365. "Both days included" toh +1.</p>
+      <div class="example">
+        <b>Q6:</b> 22 May–2 Aug (both incl.) = 10+30+31+2 = 73 days<br>
+        SI=12300×12×73/(100×365) = <span class="ans">≈₹300</span>
+        <span class="q2"><b>Q7:</b> 26 Mar–7 Jun = 5+30+31+7 = 73 days; 75000×9×73/(100×365) = 1350 → A=<span class="ans">₹76,350</span></span>
+        <br><b>Q8:</b> 24 Jan–18 Jun 2012 (leap) = 146 days, 8¾% → SI=(78000×35×146)/(4×100×366) = 2730 → A=<span class="ans">₹80,730</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="amount rt shortcut a = p(100+rt)/100 total 5 years 8.5 percent single step">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Amount direct: A = P × (100 + r·t)/100</h3>
+      <p class="trigger">Trigger: "P, r%, t diya hai — kul Amount (mishradhan) nikaalo" — SI alag mat nikaalo, seedha shortcut lagao.</p>
+      <div class="example">
+        <b>Q15:</b> 17650, 8.5%, 5y → A=17650×(100+42.5)/100 = 17650×142.5/100 = <span class="ans">₹25,151</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="multi" data-kw="multiple sums same rate different time deposits total si combined 500 700 1250 unknown rate find r">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Kai sums, same rate, alag-alag time → total SI diya, r poocha</h3>
+      <p class="trigger">Trigger: "Rs.500 for 4y aur Rs.700 for 2y, total SI = Rs.280" / "Rs.500 for 3y, 650 for 5y, 1250 for 7y, total SI diya" — sab ka SI jod, r common nikaalo.</p>
+      <div class="example">
+        <b>Q10:</b> 500×4r + 700×2r = 28000 → 34r=280×100/... → <span class="ans">r=8 4/17 %</span>
+        <span class="q2"><b>Q11:</b> 500×3 + 650×5 + 1250×7 = 13500 (P·t sum); 1620×100/13500 = <span class="ans">r=12%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="multi" data-kw="rate increases every year arithmetic progression each year 4 percent yearly step deposit 10000 5 years">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Har saal rate x% badhta jaaye (AP) → total SI</h3>
+      <p class="trigger">Trigger: "starting rate y%, phir har saal x% aur badh jaata hai" — 1st,2nd,3rd... year ka rate AP mein, saare rates jod ke average×years lagao.</p>
+      <div class="example">
+        <b>Q12:</b> 10000, 8%→12%→16%→20%→24% (5y) → sum=80%, avg 16%<br>
+        SI = 10000 × 80% = <span class="ans">₹8000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="diff" data-kw="difference of si same sum two different rate time compare more less less than more than 1440 507">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Same P — do alag (r,t) ke SI/Amount ka difference diya → P?</h3>
+      <p class="trigger">Trigger: "usi sum par 15% se 6y ka SI, 18% se 9y ke SI se Rs.1440 kam" / "2⅖ y ka Amount, 9½y ke SI se Rs.507 kam" — dono % of P nikaal ke subtract, difference=diya hua Rs.</p>
+      <div class="example">
+        <b>Q13:</b> 90% vs 162% → diff=72%=1440 → P=<span class="ans">₹2000</span>
+        <span class="q2"><b>Q14:</b> A=(100+36)%=136%, SI₂=142.5% → diff=6.5%=507 → P=<span class="ans">₹7800</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="times" data-kw="sum becomes fraction of itself 8/7 4/3 rate find r t after 2 years 3 years return back">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>"Sum apne aap ka a/b guna ho jaata hai t saal mein" → r?</h3>
+      <p class="trigger">Trigger: "sum 2 years mein khud ka 8/7 guna" / "3 years baad 4/3 wapas kiya" — SI/P = (a−b)/b, phir r = SI% ÷ t.</p>
+      <div class="example">
+        <b>Q16:</b> A=8/7·P → SI=1/7·P → 1/7=r×2/100 → <span class="ans">r=7 1/7%</span>
+        <span class="q2"><b>Q17:</b> A=4/3·P → SI=1/3·P → 1/3=r×3/100 → <span class="ans">r=11 1/9%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="rt-rel" data-kw="rate related time r equals t r = t/4 t = r/2 r = 4t equation quadratic square root find rate">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>r aur t ke beech relation diya (r=t/4, t=r/2, r=4t...)</h3>
+      <p class="trigger">Trigger: "rate, years ka one-fourth/half hai" ya "r = k × t" — relation ko PRT formula mein substitute karo, quadratic bane → square root.</p>
+      <div class="example">
+        <b>Q18:</b> 32400, r=t/4, SI=11664 → 11664=32400·t·t/(400) → t²=144 → t=12, <span class="ans">r=3%</span>
+        <span class="q2"><b>Q19:</b> t=r/2, SI=P/8 → P/8=P·r·(r/2)/100 → r²=25 → r=5%; 15000, 8y → <span class="ans">₹6000</span></span>
+        <br><b>Q20:</b> SI=P/4, r=4t → 1/4=4t²/100 → t=5/2, r=10%; +2% → 12%; 3600×12×6/100=<span class="ans">₹2592</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="borrow" data-kw="borrow lend gain profit difference rate a lends to b two rates 5 percent 7 percent yearly gain">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Borrow at r₁%, Lend at r₂% → gain = P·(r₂−r₁)·t/100</h3>
+      <p class="trigger">Trigger: "A ne x% par udhaar liya, y% par B ko de diya, dono t saal ke liye — A ka gain?"</p>
+      <div class="example">
+        <b>Q21:</b> 90000, 5%→7%, 4y → gain%=(7−5)×4=8% → 90000×8/100 = <span class="ans">₹7200</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="proportion si proportional to prt scale multiply ratio same rate same time change one variable given si find new si">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>SI ∝ P·R·T → scaling se seedha nikaalo</h3>
+      <p class="trigger">Trigger: "ek case ka SI/Amount diya hai, doosre case mein koi ek/do variable badle (P, r ya t double/triple/half), naya SI ya A poocha jaaye" — formula chhodo, seedha ratio multiply/divide karo.</p>
+      <div class="example">
+        <b>Q22:</b> 8%,5½y → A=12096; SI at 10%,8y = 12096×(10×8)/(100+8×5.5) = 12096×80/144 = <span class="ans">₹6720</span>
+        <span class="q2"><b>Q23:</b> 10500 → 13825 (SI=3325) in 19/5 y; 2r, 5y → 3325×2×5÷(19/5)= <span class="ans">₹8750</span></span>
+        <br><b>Q24:</b> 8400 → SI=2646; same r,t, 10800 → 2646×10800/8400 = <span class="ans">₹3402</span>
+        <br><b>Q26:</b> 72 → 104.4 (SI=32.4) in 3y; 120, 5y → SI=32.4×120×5/(72×3)=90 → A=<span class="ans">₹210</span>
+        <br><b>Q35–Q38 (P,r,t scale):</b> SI₂ = SI₁ × (P₂/P₁) × (r₂/r₁) × (t₂/t₁). Eg. P,r,t→SI=100; 2P,3r,5t/3 se → 100×2×3×5/3 = <span class="ans">₹1000</span> style
+      </div>
+    </article>
+
+    <article class="card" data-cat="frac" data-kw="fraction rate shortcut 12.5 percent 1/8 16 2/3 1/6 20 percent 1/5 11 1/9 1/9 rate as fraction of principal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>r% ko fraction bana ke SI ek line mein</h3>
+      <p class="trigger">Trigger: rate awkward mixed number (11 1/9%, 12½%, 16⅔%, 20%, 25%) — usko SI/P fraction mein convert karo (11⅑%=1/9, 12½%=1/8, 16⅔%=1/6, 20%=1/5, 25%=1/4), phir SI = P × fraction × t.</p>
+      <div class="example">
+        <b>Q (page 42):</b> 1800, 11⅑%(=1/9), 3y → SI=1800×3/9 = <span class="ans">₹600</span>
+        <span class="q2"><b>Q (page 43):</b> 2400, 12½%(=1/8), 5y → 2400×5/8 = <span class="ans">₹1500</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="times" data-kw="si equal to principal double triple 5 times how many years fraction rate 12.5 25 percent">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>SI = k × P at r% → t kitne saal? (rate ko fraction bana)</h3>
+      <p class="trigger">Trigger: "kitne saal mein SI, principal ke barabar / double / N-guna ho jayega" (rate fraction-friendly hai: 12.5%, 25%, 20% etc).</p>
+      <div class="example">
+        <b>Q39:</b> 12.5%=1/8 → SI=P → t=8 → <span class="ans">8 years</span>
+        <span class="q2"><b>Q40:</b> 12.5%=1/8, SI=2P → t=16 → <span class="ans">16 years</span></span>
+        <br><b>Q41:</b> 25%=1/4, SI=5P → t=20 → <span class="ans">20 years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="times" data-kw="sum doubles triples n times in t years find time for m times concept of times ratio proportion becomes 5 times 4 times 10 times">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Concept of Times: N× in T₁ yrs → M× in ? yrs</h3>
+      <p class="trigger">Trigger: "sum t₁ years mein N-guna ho jaati hai, kitne saal mein M-guna hogi?" — rate constant, SI ∝ t, isliye T₂ = T₁ × (M−1)/(N−1).</p>
+      <div class="example">
+        <b>Q42:</b> 2× in 7y → 5× (SI=4P) → T = 7×4/1 = <span class="ans">28 years</span>
+        <span class="q2"><b>Q43:</b> 2× in 6y → 10× (SI=9P) → 6×9/1 = <span class="ans">54 years</span></span>
+        <br><b>Q44:</b> 2× in 8y → 4× → 8×3/1 = <span class="ans">24 years</span>
+        <br><b>Q45:</b> 3× in 20y → 2× (SI=P) → 20×1/2 = <span class="ans">10 years</span>
+        <br><b>Q46:</b> 4× in 12y → 10× → 12×9/3 = <span class="ans">36 years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="times" data-kw="find rate becomes n times in given years 3 times 36 years 4 times 14 percent least complete years">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>N× in T yrs → rate? / rate diya → least whole years to exceed N×?</h3>
+      <p class="trigger">Trigger: "kis rate par 36 saal mein 3-guna" / "14% par kitne kam-se-kam POORE saal mein 4-guna se zyada" — SI/P = (N−1) = r·t/100. "More than" ho toh answer ceiling lo.</p>
+      <div class="example">
+        <b>Q47:</b> 3× in 36y → 2=r×36/100 → <span class="ans">r = 50/9 = 5.55%</span>
+        <span class="q2"><b>Q48:</b> 14%, &gt;4× → 3=14t/100 → t=300/14=21.4… → <span class="ans">22 years</span> (agla poora saal)</span>
+      </div>
+    </article>
+
+    <!-- ===== Page 98 ===== -->
+<article class="card" data-cat="ratio" data-kw="ratio principal amount mooldhan mishradhan anupat P:A after years rate of interest equate ratio same principal 5:6 1:2 vyaj ki dar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>P : A ka ratio badal gaya → rate?</h3>
+      <p class="trigger">Trigger: "kisi nishchit samay baad mooldhan aur mishradhan ka anupat 5:6 hai, 8 saal baad 2:3 ho jaata hai — dar gyaat karo" — dono ratio mein P ko barabar karo, A ka difference = us gap ka SI.</p>
+      <div class="example">
+        <b>Q49:</b> 5:6 → 8y → 1:2(=5:10) → SI(8y)=4, P=5 → r=4×100/(5×8) = <span class="ans">10%</span>
+        <span class="q2"><b>Q50:</b> 5:6 & 2:3 → P barabar: 10:12 aur 10:15 → SI(6y)=3 → r=3×100/(10×6) = <span class="ans">5%</span></span>
+        <br><b>Q51:</b> 4:5 & 5:7 → 20:25 aur 20:28 → SI(3y)=3 → r=3×100/(20×3) = <span class="ans">5%</span>
+        <br><b>Q52:</b> 9:17 & 15:43 → 45:85 aur 45:129 → SI(27.5y)=44 → r=44×100/(45×27.5) = <span class="ans">3⁵⁄₉%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratechange" data-kw="rate 5% less more interest 400 less find sum principal higher lower rate difference SI diff x100 upon r into t dar kam adhik hoti">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>"Rate x% zyada/kam hoti to ₹D zyada/kam milta" → P</h3>
+      <p class="trigger">Trigger: "ek nishchit rashi t saal ke liye lagayi, agar dar x% adhik/kam hoti to ₹D adhik/kam byaj milta — rashi gyaat karo" — sirf extra rate hi kaam karta hai.</p>
+      <div class="example">
+        Formula: P = D×100/(x×t)
+        <span class="q2"><b>Q53:</b> 5% kam, ₹400 kam, 4y → 400×100/(5×4) = <span class="ans">₹2000</span></span>
+        <br><b>Q54:</b> 4% zyada, ₹960 zyada, 6y → 960×100/(4×6) = <span class="ans">₹4000</span>
+        <br><b>Q55:</b> 6% zyada, ₹600 zyada, 4y → P=600×100/24=2500 → 2.5P = <span class="ans">₹6250</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratechange" data-kw="annual rate increase from 11% to 17.5% yearly income increase 1071.20 principal invested one year single year rate difference vaarshik aay">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Rate a% se b% hui → yearly income ↑ diya → P</h3>
+      <p class="trigger">Trigger: "saadharan byaj ki vaarshik dar 11% se badhkar 17½% ho jaati hai to vaarshik aay ₹1071.20 badh jaati hai" — t=1 saal, rate difference se seedha divide.</p>
+      <div class="example">
+        diff rate = 17.5−11 = 6.5%
+        <span class="q2"><b>Q56:</b> P = 1071.20×100/6.5 = <span class="ans">₹16,480</span></span>
+        <br><b>Q57:</b> usi P par 10%, 5y ka SI = 16480×10×5/100 = <span class="ans">₹8,240</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratechange" data-kw="8800 becomes 12000 in 4 years rate 3% more amount at end of 7 years 1120 1792 4% less new amount naya mishradhan">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Amount diya → rate x% badla + time badla → naya Amount</h3>
+      <p class="trigger">Trigger: "₹8800, 4 saal mein ₹12000 ho jaata hai, agar dar 3% adhik hoti to 7 saal ke ant mein mishradhan?" — pehle purane SI se 1 saal ka SI nikaalo, naye time se multiply, phir extra rate ka effect ± karo.</p>
+      <div class="example">
+        <b>Q58:</b> SI(4y)=3200 → 1y=800 → 7y=5600; extra 3%×7y=21% of 8800=1848 → SI=7448 → A=8800+7448= <span class="ans">₹16,248</span>
+        <span class="q2"><b>Q59:</b> SI(8y)=672 → 1y=84 → 10y=840; 4% kam ×10y=40% of 1120=448 → SI=392 → A= <span class="ans">₹1512</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratechange" data-kw="8% rate SI 240 after 3 years 5% more how much more interest earned extra interest proportion ratio of rates kitna adhik byaj">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Rate x% zyada → kitna ADHIK byaj? (rate ka ratio)</h3>
+      <p class="trigger">Trigger: "8% ki dar se 3 saal mein ₹240 byaj mila, agar dar 5% adhik hoti to kitna adhik byaj milta?" — P nikaalne ki zarurat nahi, SI ∝ rate.</p>
+      <div class="example">
+        <b>Q60:</b> extra SI = 240 × 5/8 = <span class="ans">₹150</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratechange" data-kw="rate increased 10.5 to 18 time 4.5 to 7 years total SI increased 1250 find increased simple interest ratio r into t method dono badle">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Rate AUR time dono badle → SI ratio (r×t) method</h3>
+      <p class="trigger">Trigger: "dar 10.5% se 18% aur samay 4.5 saal se 7 saal ho gaya, kul byaj ₹1250 badh gaya — antim byaj gyaat karo" — SI₁:SI₂ = r₁t₁ : r₂t₂.</p>
+      <div class="example">
+        <b>Q61:</b> 10.5×4.5 : 18×7 = 47.25:126 = 3:8 → diff 5 units=1250 → 1 unit=250 → new SI=8×250 = <span class="ans">₹2000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="munni" data-kw="munni method sum amounts to in 1 year and 4 years find sum and rate per year SI difference divide by years back calculate principal 6076 7504 5600 8.5%">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Munni Method: do time par Amount → P nikaalo</h3>
+      <p class="trigger">Trigger: "ek rashi t₁ saal mein ₹A₁ aur t₂ saal mein ₹A₂ ho jaati hai — rashi gyaat karo" — (A₂−A₁)÷(t₂−t₁) = 1 saal ka SI, phir A₁ se t₁ saal ka SI ghatao.</p>
+      <div class="example">
+        <b>Q62:</b> (7504−6076)/3=476/yr → P=6076−476= <span class="ans">₹5600</span>, r=476×100/5600= <span class="ans">8.5%</span>
+        <span class="q2"><b>Q63:</b> (6750−6000)/3=250/yr → P=6000−1000= <span class="ans">₹5000</span></span>
+        <br><b>Q66:</b> 1708−1630=78/yr → P=1630−234= <span class="ans">₹1396</span>
+        <br><b>Q68:</b> (18906−14522)/4=1096/yr → P=14522−7672= <span class="ans">₹6850</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="munni" data-kw="munni method rate of interest two amounts 6000 3 years 10500 7 years 6 months 33 1/3 percent 9920 12800 12% 7656 8120 8% dar gyaat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Munni Method ka extension: rate poocha jaaye</h3>
+      <p class="trigger">Trigger: wahi "t₁ saal mein A₁, t₂ saal mein A₂" — par ab "byaj ki dar kya hai" poocha ho → P nikaalo, phir r = (1 saal ka SI)×100/P.</p>
+      <div class="example">
+        <b>Q64:</b> (10500−6000)/4.5=1000/yr → P=6000−3000=3000 → r=1000×100/3000 = <span class="ans">33⅓%</span>
+        <span class="q2"><b>Q65:</b> (12800−9920)/3=960/yr → P=9920−1920=8000 → r=960×100/8000 = <span class="ans">12%</span></span>
+        <br><b>Q67:</b> 8120−7656=464/yr → P=7656−1856=5800 → r=464×100/5800 = <span class="ans">8%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="munni" data-kw="same rate different sum new SI 10% 4 years 14880 16800 12000 4800 8500 6.5 years 4600 6000 same rate usi rashi par usi dar par">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Munni se P/r nikaal ke "usi dar par" naya SI</h3>
+      <p class="trigger">Trigger: "rashi t₁ saal baad A₁ aur t₂ saal baad A₂ hoti hai — usi rashi/us hi dar par 10% se 4 saal ka byaj gyaat karo" — do step: pehle P (ya r), phir naya SI.</p>
+      <div class="example">
+        <b>Q69:</b> (16800−14880)/2=960/yr → P=14880−2880=12000 → SI=12000×10×4/100 = <span class="ans">₹4800</span>
+        <span class="q2"><b>Q70:</b> (6000−4600)/3=466.67/yr → P=4600−2333.33=2266.67 → r=20⁵⁄₁₇% → 8500×r×6.5 = <span class="ans">₹11,375</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="SI formula PRT/100 r = SI x 100 / P x t basic find time rate principal base formula rearrange">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Base formula ko ulta-pulta karke use karna</h3>
+      <p class="trigger">Trigger: jab question mein 3 cheezein di ho (P, SI, t ya r) aur chauthi poochi jaaye — sabhi patterns ki jad yahi formula hai.</p>
+      <div class="example">
+        SI = P×r×t/100 → r = SI×100/(P×t), t = SI×100/(P×r), A = P(100+rt)/100
+        <span class="q2"><b>Q59 (basic way):</b> 672=1120×r×8/100 → r=7.5% → r−4=3.5% → A=1120×135/100 = <span class="ans">₹1512</span></span>
+      </div>
+    </article>
+
+    <!-- ===== Page 129 ===== -->
+<article class="card" data-cat="alligation" data-kw="alligation mishran do bhag two parts lent invested rate 7% 5% average rate ratio simple interest sum divided part hissa milan vidhi">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Sum do parts mein → Alligation se ratio</h3>
+      <p class="trigger">Trigger: "A sum of Rs X is lent in two parts at r1% and r2%, total interest Rs I" — pehle average rate nikalo (r = SI×100/P×t), fir alligation.</p>
+      <div class="example">
+        <b>Q71:</b> 3500, 7% &amp; 5%, SI=210, t=1 → r=210×100/3500=6% → 7|5 around 6 → 1:1 → 7% part = <span class="ans">Rs 1750</span>
+        <span class="q2"><b>Q73:</b> 10000, 8% &amp; 10%, SI=1680, t=2 → r=8.4% → 1.6:0.4=4:1 → A(8%) = <span class="ans">Rs 8000</span></span>
+        <br><b>Q74:</b> 10000, 10% &amp; 15%, SI=2400, t=2 → r=12% → 3:2 → 15% part = <span class="ans">Rs 4000</span>
+        <br><b>Q72:</b> 25600, 7% &amp; 9%, SI=5832, t=3 → r=243/32% → 45:19 → 9% part = <span class="ans">Rs 7600</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="difference between parts antar do rashi ka alligation 15% 10% 5 years 6500 difference of amounts lent">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Do parts ka ANTAR poocha jaaye</h3>
+      <p class="trigger">Trigger: "difference between the parts of the amounts he lent is" — ratio nikalo, fir (bada−chhota) unit × 1 unit value.</p>
+      <div class="example">
+        <b>Q76:</b> 10000, 15% &amp; 10%, SI=6500, t=5 → r=13% → 3:2 → diff=1 unit=10000/5 = <span class="ans">Rs 2000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="twopart" data-kw="common method dono par ek hi rate maan lo 7% 9% difference trick short cut whole sum assume 25600 15600 15% II 2% II">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Common Method: pura sum ek hi rate par maan lo</h3>
+      <p class="trigger">Trigger: wahi "two parts + total interest" question, par numbers ugly ho — poore P par ek rate ka SI nikaalo, actual SI se ghatao, bacha hua difference = rate-gap% of dusre part.</p>
+      <div class="example">
+        <b>Q72:</b> 1 saal SI=1944; poora 7% par → 1792 → diff 152 = 2% of II → II = 152/2×100 = <span class="ans">Rs 7600</span>
+        <span class="q2"><b>Q75:</b> 15600, 7%&amp;9%, 3yr SI=3738 → 1yr=1246; poora 9% par=1404 → diff 158=2% of I → <span class="ans">Rs 7900</span></span>
+        <br><b>Q74:</b> 1yr SI=1200; poora 10% par=1000 → 200=5% of II → <span class="ans">Rs 4000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avgrate" data-kw="rate of interest for whole sum poori dhanrashi par dar weighted average 1850 2150 7% 9% 8.075 combined rate">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Alag-alag banks/parts → whole sum ka rate?</h3>
+      <p class="trigger">Trigger: "Rs A at r1% aur Rs B at r2% — find the rate of interest for the whole sum" — weighted average: (r1A+r2B)/(A+B).</p>
+      <div class="example">
+        <b>Q77:</b> 1850@7%, 2150@9% → ratio 37:43 → (7×37+9×43)/80 = 646/80 = <span class="ans">8.075%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="slab" data-kw="slab rate first four years next six years beyond ten years borrowed total interest 9016 12750 27600 35100 time period wise rate different periods">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Slab-wise rate (pehle x saal, agle y saal, uske baad) → Sum?</h3>
+      <p class="trigger">Trigger: "5% for first 4 years, 8% for next 6 years, 12% beyond 10 years, total interest Rs I after n years — find sum." Har slab ka t×r jodo → total SI%, fir P = SI×100/total%.</p>
+      <div class="example">
+        <b>Q78:</b> 4×5+6×8+2×12 = 20+48+24 = 92% → 9016/92×100 = <span class="ans">Rs 9800</span>
+        <span class="q2"><b>Q79:</b> 3×5+2×8+2×10 = 51% → 12750/51×100 = <span class="ans">Rs 25,000</span></span>
+        <br><b>Q80:</b> 3×4+4×8+4×12 = 92% → 27600/92×100 = <span class="ans">Rs 30,000</span>
+        <br><b>Q83:</b> 8×7.25+6×8.5+4×6.5 = 135% → 35100/135×100 = <span class="ans">Rs 26,000</span>
+        <br><b>Q81:</b> 2×6+3×10+2×12 = 66% → 12771/66×100 = <span class="ans">Rs 19,350</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="totalsi" data-kw="total si equal si1 si2 si3 time period nikalna rate nikalna 1200 1800 1380 t=5 500 600 1000 deposit same rate">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Total SI = SI₁+SI₂+SI₃ → time ya rate nikaalo</h3>
+      <p class="trigger">Trigger: "alag-alag amounts, same time (ya same rate), total interest Rs I diya — find the time period / rate of interest."</p>
+      <div class="example">
+        <b>Q84:</b> 1380 = 1200×8×t/100 + 1800×10×t/100 → 276t=1380 → <span class="ans">t = 5 years</span>
+        <span class="q2"><b>Q85:</b> 1000 = (500×2 + 600×5 + 1000×6)r/100 = 100r → <span class="ans">r = 10%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="totalsi" data-kw="three schemes 10000 4% 6% 10% 4000 first scheme third scheme kitni rashi teesri yojana 2800 five years">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>3 schemes, ek part diya → baaki part nikaalo</h3>
+      <p class="trigger">Trigger: "Rs 10000 in three schemes at 4%, 6%, 10%; Rs 4000 in the first — how much in the third scheme?" 1 saal ka SI pe aao, known part hatao, fir common-method difference.</p>
+      <div class="example">
+        <b>Q86:</b> 1yr SI=560; 4% of 4000=160 → 400 = 6%II+10%III; agar dono 6% → 360 → 40 = 4% of III → III = <span class="ans">Rs 1000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avgrate" data-kw="fraction part of sum 40% 50% of rest five twelfth 2/9 1/8 3/5 average rate P=100 lends invests remaining total investment 14.4%">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Sum ke fraction/% parts alag rates par → avg rate ya Total sum</h3>
+      <p class="trigger">Trigger: "40% of sum at 15%, 50% of rest at 10%, rest at 18%" ya "5/12 part at 9%, 2/9 at 11%, baaki 16%" — parts ko LCM units mein todo, har part×rate jodo = total SI%.</p>
+      <div class="example">
+        <b>Q87:</b> P=100 → 40,30,30 @15,10,18 → 600+300+540=1440 → r = <span class="ans">14.4%</span>
+        <span class="q2"><b>Q88:</b> 36 units → 15,8,13 @9,11,16 → 135+88+208=431% of 1 unit; SI=38790 → total = <span class="ans">Rs 3,24,000</span></span>
+        <br><b>Q89:</b> 40 units → 5,24,11 @5,6,10 ×2yr → 279% → 1674 → total = <span class="ans">Rs 12,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avgrate" data-kw="one fourth 25000 certain rate rest 4% higher rate find second rate 9.25 average rate equation r+3(r+4)">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>"Baaki paisa r% se 4% ZYADA rate par" → rate nikaalo</h3>
+      <p class="trigger">Trigger: "1/4 sum at a certain rate aur rest at 4% higher rate, 2 saal ka total interest diya — rate of second sum?" Average rate = weighted mix, r maan ke solve karo.</p>
+      <div class="example">
+        <b>Q90:</b> avg r = 4125×100/(25000×2) = 8.25% → (r + 3(r+4))/4 = 8.25 → 4r=21 → r=5.25 → 2nd = <span class="ans">9.25%</span>
+      </div>
+    </article>
+
+    <!-- ===== Page 168 ===== -->
+<article class="card" data-cat="equalsi" data-kw="equal interest same interest three parts divided rate ratio inverse samaan byaj barabar teen bhag nivesh 3% 4% 6% invested part">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Equal SI (same time) → P ∝ 1/r</h3>
+      <p class="trigger">Trigger: "sum ko 2/3 bhaago mein alag-alag rate par invest kiya, ek hi saal baad sabko EQUAL interest mila" — part nikalna hai.</p>
+      <div class="example">
+        <b>Q91:</b> 9000 @3%,4%,6% equal SI → r=3:4:6 → P=1/3:1/4:1/6 = 4:3:2<br>
+        6% wala = 9000×2/9 = <span class="ans">₹2,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equalsi" data-kw="equal interest same rate different time years 2 years 4 years divided two parts A B total interest samaan byaj alag samay 5 10 20 years">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Equal SI (same rate) → P ∝ 1/t</h3>
+      <p class="trigger">Trigger: "same rate par A ko t₁ saal, B ko t₂ saal — dono ka interest EQUAL" — parts ya total interest poocha jaaye.</p>
+      <div class="example">
+        <b>Q92:</b> 27000, 15%, t=2:4 → P=2:1 → A=18000,B=9000<br>
+        SI=18000×15×2/100=5400 each → total = <span class="ans">₹10,800</span>
+        <span class="q2"><b>Q93:</b> 8680, t=5:10:20 → P=4:2:1 → <span class="ans">4960, 2480, 1240</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="simple interest first part double times two parts mixed fraction rate 6 2/3 4 1/5 ratio second to first difference dogunaa guna P1 P2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>SI₁ = k × SI₂ → P₁:P₂ cross-multiply</h3>
+      <p class="trigger">Trigger: "sum do bhaago mein aise baanta ki pehle part ka SI (t₁ saal, r₁%) doosre part ke SI ka double/5/2 guna hai" — ratio ya difference poocha jaaye.</p>
+      <div class="example">
+        <b>Q94/96:</b> P₁×(21/5)(20/3) = 2×P₂×(11/4)(4) → P₁:P₂=11:14 → ratio 2nd:1st = <span class="ans">14 : 11</span><br>
+        Diff = 5000×3/25 = <span class="ans">₹600</span>
+        <span class="q2"><b>Q95:</b> P₁×(15/2)(25/3) = (5/2)×P₂×(21/4)(8) → P₁:P₂=42:25 → diff=50250×17/67 = <span class="ans">₹12,750</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equalamt" data-kw="equal amount barabar rashi A = B invested 9100 three years 10% five years 8% 90% of sum amount equal P(100+rt)">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Equal AMOUNT → P₁(100+r₁t₁) = P₂(100+r₂t₂)</h3>
+      <p class="trigger">Trigger: "A ka amount = B ka amount" (interest nahi, AMOUNT barabar) — doosri sum ya uska kuch % poocha jaaye.</p>
+      <div class="example">
+        <b>Q97:</b> 9100×130 = B×140 → B=8450 → 90% of B = <span class="ans">₹7,605</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equalamt" data-kw="two sons ages 9 13 years 21 age equal amount share younger child bacchon ki umar bank account 4.5% divide 21750 bacha bhaag">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Do bacchon ki age → 21 saal par equal amount</h3>
+      <p class="trigger">Trigger: "beto ki umar 9 aur 13 saal, aise invest kiya ki 21 saal ki age par dono ko EQUAL amount mile" — pehle har ek ka t = 21−age nikalo.</p>
+      <div class="example">
+        <b>Q98:</b> t=12 & 8 yr, r=4.5% → P_C×154 = P_B×136 → 68:77<br>
+        Younger = 21750×68/145 = <span class="ans">₹10,200</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equalamt" data-kw="three parts loan 5% 2 3 4 years equal amounts after respective periods A received 23790 teen bhag rin barabar rashi product method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>3 parts, equal amount → cross-product of (100+rt)</h3>
+      <p class="trigger">Trigger: "raashi 3 bhaago mein A,B,C ko alag-alag saal ke liye di, sabke amounts baad mein barabar" — A ka hissa poocha jaaye.</p>
+      <div class="example">
+        <b>Q99:</b> 110:115:120 → 22:23:24 → P = 23×24 : 22×24 : 22×23 = 552:528:506<br>
+        A = 23790×552/1586 = <span class="ans">₹8,280</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="deposited each year every year starting beginning yearly deposit 13% 3rd year total amount 24948 pratyek varsh jama installment sum of years">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Har saal shuru mein jama (yearly deposit) → A = 3P + SI</h3>
+      <p class="trigger">Trigger: "har saal ke aarambh mein ek nishchit rashi jama karta hai, 3rd year ke end par total amount ₹X" — har deposit ka time alag hoga (3,2,1 yr).</p>
+      <div class="example">
+        <b>Q100:</b> 100x each; SI = 13x+26x+39x = 78x → A = 300x+78x = 378x<br>
+        378x = 24948 → 100x = <span class="ans">₹6,600</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="borrowed after four months more borrowed rate doubled decreased 2% total interest paid end of year mid change principal badla dar dogun loan 12000 6000 2800">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Beech mein principal/rate badla → SI ko tukdo mein todo</h3>
+      <p class="trigger">Trigger: "kuch mahine/saal baad aur paisa udhar liya AUR rate double/2% kam ho gaya, saal ke end par total interest ₹X" — total SI = SI(phase-1) + SI(phase-2).</p>
+      <div class="example">
+        <b>Q101:</b> 12000×r×4/1200 + 18000×2r×8/1200 = 2800 → 40r+240r=2800 → <span class="ans">r = 10%</span>
+        <span class="q2"><b>Q102:</b> P·r·3 + 2P(r−2)·5 = P·r·(34/3) → 9r+30r−60=34r → r=12; SI=13600 → P = <span class="ans">₹12,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="x% 3x% y more years seven times earlier interest value of y rate multiple time product r×t constant guna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>SI ka ratio = (r×t) ka ratio → P cancel</h3>
+      <p class="trigger">Trigger: "same amount x% par 3 saal, agar 3x% par 'y' aur saal hota toh interest 7 guna hota" — P dono taraf same hai, sirf r×t compare karo.</p>
+      <div class="example">
+        <b>Q103:</b> 7·(x·3) = 3x·(3+y) → 21 = 9+3y → <span class="ans">y = 4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="amount given find SI different rate time 14395.20 9.25% 5.4 years 8.6% 4.5 years same sum A/(100+rt) formula rashi">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Amount diya hai → P nikale bina direct SI</h3>
+      <p class="trigger">Trigger: "koi raashi r₁% par t₁ saal mein ₹A ho jaati hai, usi raashi par r₂% & t₂ saal ka SI kya hoga?" — P = A×100/(100+r₁t₁), fir naya SI.</p>
+      <div class="example">
+        <b>Q104:</b> SI = 14395.2×8.6×4.5 / (100+9.25×5.4) = <span class="ans">₹3,715.20</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="money lender claims 8% simple interest includes interest in principal every six months half yearly effective rate becomes 8.16% cleverly chatur sahukar CI">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>"SI bolta hai par har 6 mahine principal mein jodta hai" → CI</h3>
+      <p class="trigger">Trigger: "dawa SI ka 8% ka, par har chhe mahine interest ko principal mein mila deta hai" — effective rate poocha jaaye → CI treat karo.</p>
+      <div class="example">
+        <b>Q105:</b> r = 8/2 = 4%, n = 2 half-years → 4+4+(4×4)/100 = <span class="ans">8.16%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equalsi" data-kw="in what time same interest produce 10000 4% 8000 4 years 5% equal SI P1r1t1 = P2r2t2 find time period 800 5.5% 600 4% kitne samay">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Do alag sums ka SI equal → P₁r₁t₁ = P₂r₂t₂</h3>
+      <p class="trigger">Trigger: "kitne samay mein ₹P₁ par r₁% se utna hi interest milega jitna ₹P₂ par t saal mein r₂% se milta hai" — missing time poocha jaaye.</p>
+      <div class="example">
+        <b>Q106:</b> 10000×4×t = 8000×5×4 → <span class="ans">t = 4 years</span>
+        <span class="q2"><b>Q107:</b> 800×5.5×6 = 600×4×t → <span class="ans">t = 11 years</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="diff" data-kw="sum becomes in 6 years 10 years amount difference find rate principal 59200 72000 49600 56000 81840 92400 2% more doubled how many years ladder method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do amounts diye (t₁ & t₂) → 1 saal ka SI se P & r</h3>
+      <p class="trigger">Trigger: "koi raashi 3/6 saal mein ₹A₁ aur 5/10 saal mein ₹A₂ ho jaati hai; agar rate 2% zyada hota toh kitne saal mein ₹X / double hoti?"</p>
+      <div class="example">
+        <b>Q108:</b> (72000−59200)/4 = 3200/yr → P=40000, r=8% → new r=10%, SI=36000 → <span class="ans">t = 9 years</span>
+        <span class="q2"><b>Q109:</b> (56000−49600)/2 = 3200/yr → P=40000, r=8% → new 10%, double ⇒ SI=100% → <span class="ans">t = 10 years</span></span>
+        <br><b>Q113:</b> (92400−81840)/2 = 5280/yr → P=66000, x=8% → 10% → double → <span class="ans">t = 10 years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="diff" data-kw="same sum same time two rates r and r+2 amounts 15748 16510 difference 762 equals 2% of P three years find r antar do dar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Same sum, same time, r vs (r+2)% → diff = P·2·t/100</h3>
+      <p class="trigger">Trigger: "wahi raashi r% par ₹A₁ aur (r+2)% par utne hi samay mein ₹A₂ ho jaati hai" — r poocha jaaye.</p>
+      <div class="example">
+        <b>Q114:</b> 16510−15748 = 762 = P×2×3/100 → P = 12700<br>
+        SI = 15748−12700 = 3048 → r = 3048×100/(12700×3) = <span class="ans">8%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="interest added to principal after 10 years new principal 32000 64000 5% how many years amount reinvested jodna mooldhan me byaj">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Interest principal mein jod diya → naya P se aage chalo</h3>
+      <p class="trigger">Trigger: "10 saal baad interest ko mooldhan mein jod diya gaya, ab usi rate par kitne saal mein ₹X hoga" — do stage banao.</p>
+      <div class="example">
+        <b>Q115:</b> SI=32000×5×10/100=16000 → new P=48000; chahiye 16000 aur<br>
+        t = 16000×100/(48000×5) = <span class="ans">6⅔ years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="SI is one fourth of sum rate 4 times number of years 5/8 of principal three fourth of rate t squared fraction of principal ansh mooldhan ka">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>"SI = sum ka 1/4 (ya 5/8)" → P cancel, r·t = fraction×100</h3>
+      <p class="trigger">Trigger: "SI raashi ka one-fourth / 5-8th hai" aur/ya "rate saalo ki sankhya ka 4 guna hai" — P kabhi zarurat nahi padti.</p>
+      <div class="example">
+        <b>Q110:</b> 25 = (4t)×t → t=2.5, r=10 → new r=12% → SI=5000×12×3/100 = <span class="ans">₹1,800</span>
+        <span class="q2"><b>Q116:</b> (5/8)100 = 10×t → t=6¼; r→7.5% → T₂=(4/3)t = <span class="ans">8⅓ years</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="diff" data-kw="two equal sums 6% 10% first recovered two years later amount same 1105 find sum equal amount time difference barabar rashi do saal baad">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Equal sums, alag rate, ek 2 saal late → amount same</h3>
+      <p class="trigger">Trigger: "do barabar raashi 6% aur 10% par udhaar, pehli doosri se 2 saal baad wapas mili aur dono ka amount ₹1105 hi tha" — sum poocha jaaye.</p>
+      <div class="example">
+        <b>Q111:</b> 6(t+2) = 10t → t=3 → rt=30 → 130% = 1105<br>
+        P = 1105×100/130 = <span class="ans">₹850</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="lent two parts ratio 4:5 for 4 and 5 years 8% difference between interests 4680 total sum lent anupat do bhag antar byaj kul rashi">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Parts ka ratio + alag time → SI ratio = P×t</h3>
+      <p class="trigger">Trigger: "raashi 4:5 ratio mein 4 aur 5 saal ke liye, same rate; dono ke interest ka ANTAR ₹X" — total sum poocha jaaye.</p>
+      <div class="example">
+        <b>Q112:</b> SI ∝ 4×4 : 5×5 = 16:25 → diff 9 units = 4680 → 1 unit=520<br>
+        SI₂=13000 → 5x = 13000×100/(8×5)=32500 → x=6500 → Total 9x = <span class="ans">₹58,500</span>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <b>51 patterns — merged from pages 69, 98, 129, 168 (ascending order).</b>
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

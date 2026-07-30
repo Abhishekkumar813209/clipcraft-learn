@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Partnership Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Partnership (Saajhedari)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'ratio', 'joined', 'left', 'charity', 'salary', 'capital'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic I×T</button>
+      <button data-filter="reverse">Reverse (T/I nikalo)</button>
+      <button data-filter="join">Join / Left</button>
+      <button data-filter="capital">Capital Change</button>
+      <button data-filter="charity">Charity / Tax</button>
+      <button data-filter="mgmt">Salary / Management</button>
+      <button data-filter="misc">Misc</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="basic" data-kw="investment ratio profit ratio nivesh anupat labh same time basic simplify deepa ziya raju sanju">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Same time → Profit ratio = Investment ratio</h3>
+      <p class="trigger">Trigger: "dono ne ₹X aur ₹Y invest kiye, saal ke ant mein profit ka ratio / hissa kya hoga" — time ka zikr hi nahi.</p>
+      <div class="example">
+        <b>Q1:</b> 50000 : 40000 → <span class="ans">5 : 4</span>
+        <span class="q2"><b>Q2:</b> 36000:63000 → 4:7; profit 5500 → 1u=500 → <span class="ans">₹2000, ₹3500</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="investment time months years product P = I x T alag alag samay x y z share">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Alag-alag time → P = I × T</h3>
+      <p class="trigger">Trigger: "unhone ₹A, ₹B, ₹C invest kiye 3, 2, 4 saal/mahine ke liye" — total profit mein kisi ek ka share poocha jaaye.</p>
+      <div class="example">
+        <b>Q3:</b> 4000×3 : 6000×2 : 8000×4 = 3:3:8 → Y = 56000×3/14 = <span class="ans">₹12,000</span>
+        <span class="q2"><b>Q7:</b> 40000×5:45000×4:60000×3 = 10:9:9 → C% = 9/28×100 = <span class="ans">32%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="profit diya investment nikalo ulta reverse P/I total invested Q share amount 52000">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Profit diya hai → Investment nikaalo (P ÷ T)</h3>
+      <p class="trigger">Trigger: "P ko ₹1430, Q ko ₹1870, R ko ₹2420 mile — Q ne kitna invest kiya?" (total investment diya hai, time same).</p>
+      <div class="example">
+        <b>Q4:</b> P ratio 1430:1870:2420 = 13:17:22 (52 units) → 52000/52 × 17 = <span class="ans">₹17,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="time nikalo T = P/I kitne mahine invest kiya duration months nikhil neha one year more">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>I aur P diya → Time nikaalo (T = P ÷ I)</h3>
+      <p class="trigger">Trigger: "investment ka ratio 14:15, profit ka ratio 2:5, A ne 3 mahine lagaye — B ne kitne mahine?"</p>
+      <div class="example">
+        <b>Q5:</b> T = 2/14 : 5/15 = 3:7; A=3 mahine → 1u=1 → <span class="ans">B = 7 months</span>
+        <span class="q2"><b>Q6:</b> I 5:4, P 6:5 → T = 6/5 : 5/4 = 24:25, farq 1u = 1 saal → <span class="ans">Neha = 25 years</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="ratio ka ratio I ratio T ratio P ratio cross multiply three variables 16:21:18 64:49:20 find x y z">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Teen mein se do ratio diye → teesra ratio (cross-multiply)</h3>
+      <p class="trigger">Trigger: "I ka ratio a:b:c aur T ka ratio d:e:f diya — profit ratio batao" ya ulta "P aur I diya — T ka ratio batao".</p>
+      <div class="example">
+        <b>Q8:</b> I 3:4:8, T 2:3:5 → P = 6:12:40 = <span class="ans">3:6:20</span>
+        <span class="q2"><b>Q9:</b> I 3:4:8, P 2:3:5 → T = 2/3 : 3/4 : 5/8 = <span class="ans">16:18:15</span></span>
+        <br><b>Q12:</b> T 7:8:14, P 8:7:5 (type) → I = P/T → <span class="ans">64:49:20</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="fraction investment 4/5 2/3 5/8 LCM percent more than kitna percent zyada 220%">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Investment fraction/percent mein → LCM se units banao</h3>
+      <p class="trigger">Trigger: "A, B, C ne 4/5 : 2/3 : 5/8 ke anupat mein paisa lagaya" ya "kisi ka hissa dusre se kitna % zyada hai".</p>
+      <div class="example">
+        <b>Q17:</b> 4/5 : 2/3 : 5/8 → LCM 120 → 96:80:75 → % compare karo <span class="ans">(₹ share nikaal ke)</span>
+        <span class="q2"><b>Q17b:</b> ratio se x ka hissa y se → 11/5 × 100% = <span class="ans">220%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="3A = 2B = 4C equal equation capital barabar LCM invert investment ratio 2A=3B=4C">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>"3A = 2B = 4C" type equation → ratio ulta karo</h3>
+      <p class="trigger">Trigger: "A ki pooji ka 3 guna, B ka 2 guna aur C ka 4 guna barabar hai" — pehle investment ratio nikaalo, phir profit baanto.</p>
+      <div class="example">
+        <b>Q22:</b> 3A=2B=4C → LCM 12 → A:B:C = 4:6:3 → share nikaalo <span class="ans">(units × 1 unit)</span>
+        <span class="q2"><b>Q23:</b> 2A=3B=4C → 6:4:3 → total profit se hissa = <span class="ans">₹6,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="join" data-kw="joined after 3 months baad me judaa monu kapil late entry 12 9 ratio share profit">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Koi baad mein juda → uska time 12 − x mahine</h3>
+      <p class="trigger">Trigger: "A ne ₹X se business shuru kiya, 3/5/6 mahine baad B ₹Y lekar juda" — saal ke ant mein ratio ya share.</p>
+      <div class="example">
+        <b>Q23:</b> 50000×12 : 70000×9 = <span class="ans">20 : 21</span>
+        <span class="q2"><b>Q24:</b> 75000×12 : 80000×7 = 45:28; 73u=408800, 1u=5600 → <span class="ans">₹2,52,000 & ₹1,56,800</span></span>
+        <br><b>Q25:</b> 40000×12 : 20000×6 = 4:1 → Kevin = 10000×1/5 = <span class="ans">₹2,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="join" data-kw="left the business chhod diya rahul raman mohan replaced quit exit joined same time 4 months">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Ek nikla, dusra ghusa (left + joined ek saath)</h3>
+      <p class="trigger">Trigger: "4 mahine baad Rahul ne business chhod diya aur Mohan ₹20000 lekar shamil ho gaya" — teeno ka alag-alag time.</p>
+      <div class="example">
+        <b>Q26:</b> 16000×4 : 12000×12 : 20000×8 = 4:9:10 (23u)<br>Mohan = 46000×10/23 = <span class="ans">₹20,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="join" data-kw="kitne mahine baad joined after how many months unknown time Q joined 4000 6000 profit 4:3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Profit ratio diya → "kitne mahine baad juda?"</h3>
+      <p class="trigger">Trigger: "kuch mahino baad Q juda, saal ke ant mein P:Q profit 4:3 — Q kitne mahine baad juda?"</p>
+      <div class="example">
+        <b>Q27:</b> 4000×12 : 6000×t = 4:3 → 48000/6000t = 4/3 → t = 6 → juda <span class="ans">6 months baad</span>
+        <span class="q2"><b>Q28:</b> A 54000×12, B 8 mah, C 6 mah, P=1:4:5 → I nikaalo → B~C diff = <span class="ans">₹2,16,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="capital" data-kw="capital increased by 5% 15% 20% badha diya percent increase investment new ratio 21:46:64">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Sabne apni pooji x%, y%, z% badha di → naya ratio</h3>
+      <p class="trigger">Trigger: "A ne 5%, B ne 15%, C ne 20% se apni pooji badha di" — naya profit/investment ratio poocha jaaye.</p>
+      <div class="example">
+        <b>Q31:</b> 300,600,800 → +5%,+15%,+20% → 315:690:960 = <span class="ans">21 : 46 : 64</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="capital" data-kw="after 4 months increased withdrew capital change beech me badla monthly equivalent 5x4+4x8 mid year">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Beech saal mein pooji badli → (I₁×T₁ + I₂×T₂)</h3>
+      <p class="trigger">Trigger: "4 mahine baad A ne pooji badha di / nikaal li, baaki 8 mahine nayi pooji chali" — har banda ke do tukde jodo.</p>
+      <div class="example">
+        <b>Q34:</b> X: 30×5+45×7 : Y: 50×5+20×7 → 465:390 = <span class="ans">93 : 78</span>
+        <span class="q2"><b>Q35:</b> (5×4+4×8) : (6×4+8×8) = 52:88 = <span class="ans">13 : 22</span></span>
+        <br><b>Q36:</b> (25000×5+19000×7):(...18000×7):(...33000×7) = 258:251:356 → share = <span class="ans">₹700</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="capital" data-kw="increased to 30% increased by 30% dec to dec by trap difference fraction one third 1350x9 ajay vijay satyam">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>"to 30%" vs "by 30%" ka trap + fraction se badhana</h3>
+      <p class="trigger">Trigger: "pooji 30% tak kar di (to)" = 30 bachta hai; "30% kam kar di (by)" = 70 bachta hai. Ya "1/3 aur badha diya" type.</p>
+      <div class="example">
+        <b>Q38:</b> Ajay 4500×9 + 1350×9, Vijay 3000×9 + 900×9, Satyam 2000×9<br>585:390:200 → 117:78:40 → share = <span class="ans">₹13,650 type</span>
+        <span class="q2"><b>Q39:</b> 50×1+63×1 : 70×1+84×1 : 60×1+69×1 = <span class="ans">113 : 154 : 129</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="charity" data-kw="charity donation daan trust 5% 10% total profit ka jata hai remaining bant jata hai 95% 90% total profit find">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Profit ka x% charity/trust → bacha hua ratio mein</h3>
+      <p class="trigger">Trigger: "kul labh ka 5%/10% daan mein jaata hai aur A ka hissa ₹855 hai — total profit?"</p>
+      <div class="example">
+        <b>Q40:</b> 855 × 5/3 × 100/95 = <span class="ans">₹1,500</span>
+        <span class="q2"><b>Q41:</b> B=1200, ratio 5:4 → 1200 × 9/4 × 100/90 = <span class="ans">₹3,000</span></span>
+        <br><b>Q43:</b> 8550 × 5/3 × 100/95 = <span class="ans">₹15,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="charity" data-kw="tax 20% paid as taxes rest divided mixed ratio 1 : 1.5 : 2 publication shares of P Q R">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Tax kaat ke bacha profit mixed-ratio mein baanto</h3>
+      <p class="trigger">Trigger: "₹9,00,000 profit, uska 20% tax gaya, bacha hua 1 : 1½ : 2 mein bata" — pehle fraction ko whole ratio banao.</p>
+      <div class="example">
+        <b>Q42:</b> Bacha = 720000; 1 : 3/2 : 2 = 2:3:4 (9u) → <span class="ans">₹1,60,000 / ₹2,40,000 / ₹3,20,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mgmt" data-kw="80% equally divided barabar bant liya rest according to investment difference between share 4000 distribution">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Profit ka x% barabar, baaki investment ratio mein</h3>
+      <p class="trigger">Trigger: "kul labh ka 80% aapas mein barabar baant lete hain, shesh nivesh ke anupat mein" — dono hisso ka farq diya jaata hai.</p>
+      <div class="example">
+        <b>Q44:</b> TP=500x; 80%=400x (200x each), 20%=100x → A 60x, B 40x<br>Farq 20x=4000 → x=200 → TP=<span class="ans">₹1,00,000</span> (A 52000, B 48000)
+      </div>
+    </article>
+
+    <article class="card" data-cat="mgmt" data-kw="working partner sleeping partner salary management 5% commission monthly salary remaining profit ratio 90 5 5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Working partner ko salary/commission, phir baaki ratio mein</h3>
+      <p class="trigger">Trigger: "A ko management/working ke liye profit ka x% milta hai, bacha hua pooji ke anupat mein baanta jaata hai".</p>
+      <div class="example">
+        <b>Q47:</b> A 90 : B 5 : C 5 → 18:1:1 → farq/hissa se total nikaalo → <span class="ans">₹1,500</span>
+        <span class="q2"><b>Q46:</b> I 3:5 → P 30:50, salary ±2 → 32:48 = <span class="ans">2:3 (=20)</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mgmt" data-kw="earn equally barabar kamai salary adjust A earn B earn 20000 8000 4000 4000 kitni salary">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Salary is tarah ki dono ki kamai barabar ho jaaye</h3>
+      <p class="trigger">Trigger: "A managing partner hai, salary itni ho ki dono ki total kamai barabar ho jaaye" — salary ka amount poocha jaaye.</p>
+      <div class="example">
+        <b>Q50:</b> I 20000:8000 = 5:2; profit units baanto, A ko salary do<br>A=4000, B=4000 barabar → salary = <span class="ans">₹4,000 & ₹4,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="miscellaneous simple interest 10% withdraw share difference X Y 1500 900 350 375 anil vimal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Miscellaneous: ratio + % adjustment mila-jula</h3>
+      <p class="trigger">Trigger: "X ne 1500, Y ne 900 lagaya, ek ka 10% kat ke dusre ko jodna hai" ya profit mein % ghata-badha ke hissa poocha jaaye.</p>
+      <div class="example">
+        <b>Q54:</b> 1500:900 = 5:3; −10% shift → 4S:3S → 800×3/... = <span class="ans">₹350</span>
+        <span class="q2"><b>Q55:</b> Anil 12000, Vimal 20000 → 30:50 = 3:5 → hissa = <span class="ans">₹3,937.5 type</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="one partner half capital withdrew adha nikal liya A B C 40 50 70 35 half share end of period">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>Kisi ne apni pooji ka aadha nikaal liya → units halve</h3>
+      <p class="trigger">Trigger: "C ne beech mein apni pooji ka aadha/1/3 nikaal liya" — us bande ke units aadhe karke naya ratio banao.</p>
+      <div class="example">
+        <b>Q56:</b> A 40, B 50, C 70 → C aadha → 40 : 50 : 35 = <span class="ans">8 : 10 : 7</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>20 patterns ab tak.</b> (Partnership notes — page 3 se 77 tak ke solved questions se banaye gaye.) Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

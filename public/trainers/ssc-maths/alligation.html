@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Alligation & Mixture Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Alligation & Mixture</p>
+    <h1>Question dekho, alligation lagao.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'milk', 'alloy', 'interest', 'speed', 'average', 'coins'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="mixture">Milk-Water/Alloy</button>
+      <button data-filter="pl">Profit-Loss</button>
+      <button data-filter="discount">Discount</button>
+      <button data-filter="si">Simple Interest</button>
+      <button data-filter="tsd">Speed-Distance</button>
+      <button data-filter="percent">Population/Income</button>
+      <button data-filter="avg">Weighted Avg</button>
+      <button data-filter="triple">Triple Alligation</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="mixture" data-kw="milk water vessel ratio mix दूध पानी अनुपात बर्तन fraction of milk new mixture two vessels mixed in ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Do vessels ka mixture given ratio mein mila diya → naya ratio?</h3>
+      <p class="trigger">Trigger: "do bartan mein milk:water 1:4 aur 3:8, dono ko 3:2 mein mila diya → naye mixture ka ratio?" — mixing ratio DIYA hai, answer nikalna hai.</p>
+      <div class="example">
+        <b>Q1:</b> Milk fraction 1/5 & 3/11, mix 3:2 → milk=(1/5×3 + 3/11×2)/5 = 63/275 → water=212/275 → <span class="ans">63 : 212</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixture" data-kw="alligation cross rule find mixing ratio milk water acid tea alloy copper tin equal half milk अनुपात में मिलाया जाए kis anupat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Cross-rule: ratio POOCHA gaya hai (fraction ko alligation mein rakho)</h3>
+      <p class="trigger">Trigger: "kis anupat mein milaya jaye taaki naye mixture mein ratio a:b ho / half milk half water ho" — dono side ka SAME element fraction lo, beech mein target.</p>
+      <div class="example">
+        <b>Q3:</b> Milk 4/7 & 2/5, target 1/2 → |1/2−2/5| : |4/7−1/2| = 1/10 : 1/14 = <span class="ans">7 : 5</span>
+        <span class="q2"><b>Q4:</b> D-tea 4/11 & 2/7, target 6/19 → cross → <span class="ans">44 : 91</span></span>
+        <br><b>Q6:</b> Acid 10% & 30%, target 25% → 5:15 = <span class="ans">1 : 3</span>
+        <br><b>Q7:</b> Cu 1/4 & 2/7, target 3/11 (tin:cu 8:3) → <span class="ans">4 : 7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixture" data-kw="how many litres kitne litre second mixture added 3 litre first mixture quantity find unit value milaya jaye litre">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Ratio nikaal ke QUANTITY (litre/kg) poochi ho</h3>
+      <p class="trigger">Trigger: "pehle mixture ke 3 litre ke saath doosre mixture ke kitne litre milaye jaye" — pehle alligation se ratio, phir unit value se quantity.</p>
+      <div class="example">
+        <b>Q2:</b> Milk 3/5 & 4/9, target 1/2 → ratio 5:9 ; 5 unit=3L → 1 unit=3/5 → 9 unit = <span class="ans">5.4 litre</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixture" data-kw="alloy copper tin gold silver zinc added pure metal gram kitna milaya jaye 1250 gram 250gm purity percent">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Alloy mein PURE metal (100%) ya paani (0%) milana</h3>
+      <p class="trigger">Trigger: "alloy/solution mein kitna gram pure copper ya kitna paani aur milaya jaye taaki % badal jaye" — ek side 100% (pure) ya 0% (water) rakho.</p>
+      <div class="example">
+        <b>Q:</b> 40% metal wala mixture + 100% pure → target 50% → 50:10 = 5:1 → pure metal = <span class="ans">40 gms</span>
+        <span class="q2"><b>Q:</b> 1250 g alloy Cu:Tin=60:40, target ratio ke liye added = <span class="ans">250 g</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pl" data-kw="profit loss cp sp overall profit percent two articles quantity ratio cost price मिश्रण लाभ हानि 2500 1500 2250">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>P&L alligation: P1% / P2% ke beech overall P% → CP ka ratio</h3>
+      <p class="trigger">Trigger: "ek cheez par x% profit, doosri par y% profit/loss, overall z% — dono ke CP ka ratio ya quantity poochi jaye." Yaad: neeche aane wala ratio CP ka hota hai.</p>
+      <div class="example">
+        <b>Q:</b> CP1 par 2500, CP2 par 1500, overall 2250 → 750:250 → <span class="ans">3 : 1</span>
+        <span class="q2"><b>Q:</b> 60 & 42 ke beech 50 → 8:10 → <span class="ans">4 : 5</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pl" data-kw="pen pencil profit percent no profit no loss find cost price 21% 48% 1890 equation method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Do items, dusri condition "no profit no loss" → CP nikalo</h3>
+      <p class="trigger">Trigger: "pen par x% profit aur pencil par y% loss se na labh na hani; pehle case mein ₹P profit" — no-P-no-L se CP ratio, phir profit se value.</p>
+      <div class="example">
+        <b>Q70:</b> Pen×21/4 = Pencil×15 → CP 200x : 70x ; profit 42x+33.6x=1890 → x=25 → <span class="ans">Pen ₹5000, Pencil ₹1750</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="discount" data-kw="discount mp marked price overall discount percent two articles d1 d2 छूट अनुपात 3:4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Discount alligation: D1% / D2% → MP ka ratio</h3>
+      <p class="trigger">Trigger: "do items par alag-alag discount, overall discount x% — MP ka ratio ya kisi ek ka MP poocha jaye." Neeche ka ratio MP1:MP2.</p>
+      <div class="example">
+        <b>Q:</b> D1=8%, D2=15%, overall=11% → 4:3 → MP ratio <span class="ans">3 : 4</span> (ulat ke cross se)
+      </div>
+    </article>
+
+    <article class="card" data-cat="si" data-kw="simple interest two banks invested partly rate of interest total interest principal ratio 12800 15000 15600 10200 ब्याज दर निवेश">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Sum ko do rates par baanta → Principal ka ratio</h3>
+      <p class="trigger">Trigger: "₹X ka kuch hissa r1% par, baaki r2% par, t saal ka total interest ₹I" — pehle overall rate r = SI×100/(P×t), phir alligation → P1:P2.</p>
+      <div class="example">
+        <b>Q23:</b> 40000, 9.5% & 5.5%, SI=3200 → r=8% → 2.5:1.5 = 5:3 → diff=2 unit = <span class="ans">₹10,000</span>
+        <span class="q2"><b>Q24:</b> 12800, 15% & 12%, 3yr SI=5085 → r=1695/128% → 159:225 → 15% wala = <span class="ans">₹5300</span></span>
+        <br><b>Q26:</b> 15000, 12% & 10%, 2yr SI=3344 → 43:32 → 10% par = <span class="ans">₹6,400</span>
+        <br><b>Q29:</b> 10000, 15% & 10%, 5yr SI=6500 → r=13% → 3:2 → diff = <span class="ans">₹2,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="tsd" data-kw="average speed partly by bus train foot cycle distance covered time ratio km/h औसत चाल दूरी समय अनुपात">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Partly bus + partly train → average speed alligation (ratio = TIME ka)</h3>
+      <p class="trigger">Trigger: "kuch doori bus se s1 km/h, baaki train se s2 km/h, total D km T ghante mein" — avg speed=D/T, alligation ka ratio TIME ka hota hai, phir D=s×t.</p>
+      <div class="example">
+        <b>Q33:</b> 255km/7hr → avg=255/7 ; 30 & 45 → time 4:3 → bus D=30×4 = <span class="ans">120 km</span>
+        <span class="q2"><b>Q34:</b> 61km/9hr, 9 & 4 km/h → time <span class="ans">5 : 4</span></span>
+        <br><b>Q30:</b> 360km/6hr=60 avg; bus 48 → time ratio se train distance = <span class="ans">180 km</span>
+        <br><b>Q31:</b> 20km/h 30min & x km/h 45min, avg 14 → time 2:3 → <span class="ans">x = 10 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="percent" data-kw="population male female increases decreases overall population percent difference number of male जनसंख्या पुरुष महिला वृद्धि">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Population: male% & female% change → overall% (ratio = initial number)</h3>
+      <p class="trigger">Trigger: "male x% badhe, female y% badhe, total population z% badhi" — alligation ka ratio initial male : initial female deta hai.</p>
+      <div class="example">
+        <b>Q36:</b> 7% & 10%, overall 9.5% → 0.5:2.5 = 1:5 → 120000 → M=20000, F=100000 → diff = <span class="ans">80,000</span>
+        <span class="q2"><b>Q37:</b> −10% & +5%, increase 600 of 15000 = +4% → 1:14 → male = <span class="ans">1000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="percent" data-kw="income expenditure saving increases decreases ratio of income and expenditure spends 80% आय व्यय बचत प्रतिशत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Income = Expenditure + Saving (income beech mein rakho)</h3>
+      <p class="trigger">Trigger: "income x% ghati, expenditure y% ghata, saving z% badhi → income:expenditure ratio" — INCOME hamesha middle value, E:S neeche milta hai.</p>
+      <div class="example">
+        <b>Q38:</b> E=−8%, S=+4%, I=−6% → E:S = 10:2 = 5:1 → I:E = 6:5 → <span class="ans">6 : 5</span>
+        <span class="q2"><b>Q39:</b> Spend 80% → E:S=4:1; I=+12%, S=−10% → 12=(4x−10)/5 → <span class="ans">x = 17.5%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="coins 25p 50p total money number of coins box interchanged सिक्के कुल धन paise value per coin">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Coins (25p / 50p): avg value per coin</h3>
+      <p class="trigger">Trigger: "box mein 25p aur 50p ke sikke, total ₹X aur total N sikke" — avg per coin = total money/total coins, phir alligation.</p>
+      <div class="example">
+        <b>Q40:</b> ₹42, 120 coins → avg 35p ; 25 & 50 → 15:10 = 3:2 → 25p coins = <span class="ans">72</span>
+        <span class="q2"><b>Q41:</b> ₹36, 90 coins → avg 40p → 2:3 → 36:54 ; interchange → total = <span class="ans">₹31.5</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="average salary employees middle senior graduate marks boys girls urban rural weighted average total number find average औसत वेतन अंक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Weighted average: Avg1 / Avg2 → Number ka ratio</h3>
+      <p class="trigger">Trigger: "group A ka average a1, group B ka a2, sabka combined average A" — alligation ka ratio NUMBER of persons ka hota hai (boys:girls, middle:senior, urban:rural).</p>
+      <div class="example">
+        <b>Q42:</b> 5500 & 14000, overall 8687.5 → 5312.5:3187.5 = 5:3 → 125 middle → total 200 = 80% → <span class="ans">250 employees</span>
+        <span class="q2"><b>Q:</b> Graduate 16550, U.G 11950, overall 14750 → 2800:1800 = <span class="ans">14 : 9</span></span>
+        <br><b>Q:</b> 58 marks (27 boys) & 62 (23 girls) → (58×27+62×23)/50 = <span class="ans">59.84</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="avg" data-kw="bowling average wickets runs conceded reduced decreases by 0.4 0.5 total wickets total runs गेंदबाजी औसत विकेट">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Bowling average: nayi inning se average x se ghata</h3>
+      <p class="trigger">Trigger: "bowling average A tha, agli inning mein W wicket par R run diye, average 0.5 se kam ho gaya" — purana avg vs new-inning avg (R/W), beech mein final avg.</p>
+      <div class="example">
+        <b>Q68:</b> 11.5 vs 40/5=8, final 11 → wicket 5:0.5 = 6:1 → new=5 → total = <span class="ans">30 wickets*</span> (purane 25 + 5)
+        <span class="q2"><b>Q69:</b> 12.4 vs 26/5=5.2, final 12 → 17:1 → 5 unit → total W=90 → Runs=12×90 = <span class="ans">1080</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="triple" data-kw="triple alligation three items X Y Z overall profit loss percent combined pair xy yz tino ka ratio teen vastu">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Triple Alligation: X-Y aur Y-Z ke overall se teeno ka ratio</h3>
+      <p class="trigger">Trigger: "3 items par x%, y%, z% profit/loss; X-Y ka overall a% aur Y-Z ka overall b% diya" — do jodi par alag-alag alligation karo, Y ka part common banao, phir weighted avg.</p>
+      <div class="example">
+        <b>Q71:</b> 21,19,3 ; XY=20.66→5:1, YZ=11→1:1 → X:Y:Z=5:1:1 → (21×5+19+3)/7 = <span class="ans">18.14% loss</span>
+        <span class="q2"><b>Q72:</b> 16,19,28 ; XY=17→2:1, YZ=22.25→23:13 → 46:23:13 → <span class="ans">18.74% profit</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="triple" data-kw="three varieties rice sugar mixed ratio 3:3:9 price of third variety per kg profit 10% cost of mixture teen kism chawal cheeni">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>3 varieties given ratio mein → 3rd ka price ya quantity</h3>
+      <p class="trigger">Trigger: "teen kism ke chawal/cheeni ₹a, ₹b, ₹c ko p:q:r mein mila ke ₹M/kg ka mixture" — seedha weighted-average equation likho aur unknown solve karo.</p>
+      <div class="example">
+        <b>Q73:</b> 42,46,x in 1:1:3, mix=47 → 235=88+3x → <span class="ans">x = ₹49/kg</span>
+        <span class="q2"><b>Q74:</b> 20,24,30 ; SP 27.5 at 10% profit → CP=25 → ratio 1:5:2 → 3rd=2kg → 2nd = <span class="ans">5 kg</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>16 patterns ab tak.</b> (Alligation & Mixture · Class Notes page 3–114) Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>
