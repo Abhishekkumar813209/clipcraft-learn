@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Arithmetic Progression Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Arithmetic Progression Class Notes</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'nth term', 'sum', 'multiples', 'common term', 'saving'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="nth">nth Term</button>
+      <button data-filter="prop">Properties</button>
+      <button data-filter="sum">Sum (Sn)</button>
+      <button data-filter="range">Range/Multiples</button>
+      <button data-filter="word">Word Problem</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="nth" data-kw="nth term find kth term sequence given series a d common difference samantar shreni pad nikalo 11th 10th term formula a+(n-1)d">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Series di hai → koi bhi term nikaalo</h3>
+      <p class="trigger">Trigger: "2, 6, 10, 14, ... ka 11th term kya hoga?" — poori series di hai, seedha a aur d dikh rahe hain.</p>
+      <div class="example">
+        <b>Q4:</b> 2,6,10,14 → a=2, d=4 → a₁₁=a+10d=2+40 = <span class="ans">42</span>
+        <span class="q2"><b>Q7:</b> 2,7,12,... → a=2,d=5 → a₁₀=2+9×5 = <span class="ans">47</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="nth" data-kw="two terms given 5th 9th 20th term first term common difference subtract equations find d a last term 25 terms 314">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Do term diye → a aur d nikaal ke teesra term</h3>
+      <p class="trigger">Trigger: "5th term 16 hai aur 9th term 22, toh 7th term?" / "20th term 101, first term 6, d?" — do equations bana ke subtract karo.</p>
+      <div class="example">
+        <b>Q2:</b> a+4d=16, a+8d=22 → 4d=6, d=1.5, a=10 → T₇=10+9 = <span class="ans">19</span>
+        <span class="q2"><b>Q:</b> T₂₀=101, a=6 → 19d=95 → <span class="ans">d=5</span></span>
+        <br><b>Q1:</b> n=25, l=314, d=12 → a=314−24×12 = <span class="ans">26</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="nth" data-kw="nth term expression general term option 3n-31 -3n+31 8-3n t3 t17 find tn algebra form">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Answer expression mein chahiye (Tn = ...)</h3>
+      <p class="trigger">Trigger: "nth term ज्ञात कीजिए" aur options 3n−31, −3n+32 jaise ho — a+(n−1)d ko simplify karke n ke form mein likho.</p>
+      <div class="example">
+        <b>Q3:</b> 5,2,−1 → a=5,d=−3 → 5+(n−1)(−3) = <span class="ans">8−3n</span>
+        <span class="q2"><b>Q:</b> t₃=22, t₁₇=−20 → 14d=−42, d=−3, a=28 → <span class="ans">31−3n</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="three terms in AP middle term average 2b=a+c value of k series 2 3+k 6 arithmetic mean condition">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Teen term AP mein hai → 2b = a + c</h3>
+      <p class="trigger">Trigger: "kis value of k ke liye 2, 3+k, 6 AP mein honge?" — beech wala hamesha dono ka average.</p>
+      <div class="example">
+        <b>Q1:</b> 3+k = (2+6)/2 = 4 → <span class="ans">k = 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="m times mth term equal n times nth term 5 times 5th 8 times 8th 13th term zero shortcut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>m·Tm = n·Tn → T(m+n) = 0</h3>
+      <p class="trigger">Trigger: "5 times of 5th term = 8 times of 8th term, toh 13th term?" — answer hamesha ZERO.</p>
+      <div class="example">
+        <b>Q8:</b> 5(a+4d)=8(a+7d) → 3a+36d=0 → a+12d=0 → T₁₃ = <span class="ans">0</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="pth term q qth term p rth term algebraic d=-1 p+q-r standard result">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>pth term = q, qth term = p → rth = p+q−r</h3>
+      <p class="trigger">Trigger: variables mein question — "pवाँ पद q hai aur qवाँ पद p hai" — yahan d hamesha −1 aata hai.</p>
+      <div class="example">
+        d(p−q) = −(p−q) → d=−1, a=p+q−1 → T_r = <span class="ans">p + q − r</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="equation form a2+a5-a3 a2+a9 term relation 17th term 8 more than 13th solve simultaneously a20 find AP">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Terms ka equation diya → a, d solve karo</h3>
+      <p class="trigger">Trigger: "a₂+a₅−a₃=10 aur a₂+a₉=17" ya "17th term 13th term se 8 zyada hai" — har term ko a+(n−1)d likh ke simple equations banao.</p>
+      <div class="example">
+        <b>Q:</b> a+3d=10, 2a+9d=17 → d=−1, a=13 → a₂₀=13−19 = <span class="ans">−6</span>
+        <span class="q2"><b>Q29:</b> a+9d=21; a+16d=(a+12d)+8 → 4d=8, d=2, a=3 → AP = <span class="ans">3, 5, 7, 9…</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="common terms two APs LCM common difference 10th common term both series ubhayanishth pad">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Do AP ke common terms → d = LCM(d₁, d₂)</h3>
+      <p class="trigger">Trigger: "dono series ka 10th common term nikaalo" — pehla common term dhundo, uske baad d = LCM.</p>
+      <div class="example">
+        <b>Q:</b> 3,7,11…(d=4) & 1,6,11…(d=5) → 1st common=11, d=LCM=20<br>
+        T₁₀ = 11 + 9×20 = <span class="ans">191</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="equidistant terms sum equal beginning end middle term sum of 5 terms 6 terms a3 a4 given shortcut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Beech ke terms diye → equidistant sum barabar</h3>
+      <p class="trigger">Trigger: "3rd aur 4th term 5 & 8 hain, first 6 terms ka sum?" ya "3rd term 4 hai, first 5 terms ka sum?" — a aur d nikaalne ki zarurat hi nahi.</p>
+      <div class="example">
+        <b>Q:</b> a₃+a₄=13 → S₆ = 3×13 = <span class="ans">39</span>
+        <span class="q2"><b>Q15:</b> a₃=4 (odd terms → middle×n) → S₅ = 5×4 = <span class="ans">20</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="prop" data-kw="assume terms a-d a a+d three numbers sum product find numbers symmetric assumption 4 terms 5 terms">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Sum + Product diya → terms ko (a−d), a, (a+d) maano</h3>
+      <p class="trigger">Trigger: "teen numbers AP mein hain, sum −3 aur product 8 hai, numbers batao" — symmetric assumption se d cancel ho jaata hai.</p>
+      <div class="example">
+        <b>Q16:</b> 3a=−3 → a=−1; (−1)(1−d²)=8 → d²=9, d=±3<br>
+        Numbers = <span class="ans">−4, −1, 2</span>
+        <span class="q2">4 terms: (a−3d),(a−d),(a+d),(a+3d) · 5 terms: (a−2d)…(a+2d)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="sum of n terms Sn formula 23 terms 151 terms 5 9 13 243 256 269 sum series yog">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Seedha Sn = n/2[2a + (n−1)d]</h3>
+      <p class="trigger">Trigger: "AP 5, 9, 13, 17… ke 23 terms ka sum" — n, a, d teeno saaf diye hain.</p>
+      <div class="example">
+        <b>Q18:</b> (23/2)[10+88] = 23×49 = <span class="ans">1127</span>
+        <span class="q2"><b>Q19:</b> 243,256,269 (d=13), n=151 → (151/2)(2436) = <span class="ans">1,83,918</span></span>
+        <br><b>Q17:</b> First n odd numbers ka sum = <span class="ans">n²</span>
+      </div>
+    </article>
+
+    <article class="card" data-kw="how many terms sum given quadratic n find number of terms sum 45 sum 400 last term 45 kitne pad" data-cat="sum">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Sum diya → n (number of terms) poocha</h3>
+      <p class="trigger">Trigger: "kitne terms lene par sum 45 ho jayega?" — Sn formula mein daalo, quadratic banega; agar last term bhi diya ho toh n/2(a+l) se seedha.</p>
+      <div class="example">
+        <b>Q:</b> −9,−6,−3…, Sn=45 → 3n²−21n−90=0 → (n−10)(n+3) → <span class="ans">n = 10</span>
+        <span class="q2"><b>Q:</b> a=5, l=45, S=400 → 400 = n/2(50) → <span class="ans">n = 16</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="range" data-kw="how many terms 3 7 11 407 n = (l-a)/d + 1 count of terms number of terms formula">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Last term diya → n = (l − a)/d + 1</h3>
+      <p class="trigger">Trigger: "AP 3, 7, 11, …, 407 mein kitne terms hain?" — counting wala question, sum nahi.</p>
+      <div class="example">
+        <b>Q9:</b> (407−3)/4 + 1 = 101+1 = <span class="ans">102 terms</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="range" data-kw="multiples of 5 between 100 and 1000 sum natural numbers divisible LCM 5 and 7 both simultaneously remainder 3 divided by 7 less than 100">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Range mein multiples / remainder wale numbers</h3>
+      <p class="trigger">Trigger: "100 aur 1000 ke beech 5 ke multiples ka sum" / "7 se divide karne par remainder 3 dene wale numbers kitne hain" — pehla & aakhri term pakdo, d = divisor (dono ke liye d = LCM).</p>
+      <div class="example">
+        <b>Q:</b> 105…995, d=5 → n=179 → S=179×550 = <span class="ans">98,450</span>
+        <span class="q2"><b>Q:</b> 5 aur 7 dono → d=LCM=35 → 105…980, n=26 → 13×1085 = <span class="ans">14,105</span></span>
+        <br><b>Q27:</b> 3,10,…,94 (d=7) → n = 91/7+1 = <span class="ans">14 numbers</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="ratio of sums two APs 5n+3 3n+4 ratio of 17th terms replace n by 2m-1 shortcut mth term ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Do AP ke Sn ka ratio diya → mth terms ka ratio</h3>
+      <p class="trigger">Trigger: "do AP ke n terms ke sum ka ratio (5n+3):(3n+4) hai, 17th terms ka ratio?" — n ki jagah (2m−1) rakh do, bas.</p>
+      <div class="example">
+        <b>Q28:</b> m=17 → n = 2×17−1 = 33<br>
+        (5×33+3):(3×33+4) = <span class="ans">168 : 103</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="grouped series bracket 1+5 6+10 11+15 200 terms pairs new AP half terms sum">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Bracket/jodi wali series → naya AP bana lo</h3>
+      <p class="trigger">Trigger: "1+5+(6+10)+(11+15)+… ke first 200 terms ka sum" — har bracket ka sum nikaalo, wo khud AP hai aur terms aadhe ho jayenge.</p>
+      <div class="example">
+        <b>Q20:</b> brackets = 6, 16, 26… (a=6, d=10), 200 terms → 100 brackets<br>
+        S₁₀₀ = 50[12+990] = <span class="ans">50,100</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="word" data-kw="saving every month increases by 75 january annual saving installment salary yearly total word problem story sum 12 months">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Story sum: har mahine/saal fixed amount se badhta hai</h3>
+      <p class="trigger">Trigger: "January mein ₹1550 bachaya, har mahine ₹75 zyada — saal bhar ka total?" — fixed jump = d, months = n, seedha Sn.</p>
+      <div class="example">
+        <b>Q26:</b> a=1550, d=75, n=12 → 6[3100+825] = <span class="ans">₹23,550</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>17 patterns ab tak.</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

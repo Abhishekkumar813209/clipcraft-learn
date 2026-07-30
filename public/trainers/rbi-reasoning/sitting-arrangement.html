@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Sitting Arrangement Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+
+  .qmap{ margin-top:10px; border-top:1px dashed var(--paper-line); padding-top:8px; }
+  .qmap .qhead{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--margin-red); font-weight:700; margin-bottom:6px;
+  }
+  .qrow{ display:grid; grid-template-columns:52px 1fr; gap:8px; padding:4px 0; border-bottom:1px dotted #E7EBF3; font-size:12.8px; line-height:1.5; }
+  .qrow:last-child{ border-bottom:none; }
+  .qrow .qn{ font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--ink-blue); font-size:11.5px; padding-top:1px; }
+  .qrow .qt b{ color:var(--check-green); }
+  .qrow .qt i{ color:var(--muted); }
+  .qrow .qa{ color:var(--margin-red); font-weight:700; }
+  .setline{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin:0 0 8px 0; }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Chapter 9 · Sitting Arrangement · Reasoning Ability</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'triangular', 'hexagonal', 'concentric', 'coded', 'vacant house', 'either or', 'circular', 'double row', 'vacant', 'blood relation', 'odd one out', 'who case'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="circular">Circular</button>
+      <button data-filter="linear">Linear / Rows</button>
+      <button data-filter="square">Square / Rect / Octa</button>
+      <button data-filter="clue">Clue Grammar</button>
+      <button data-filter="poly">Triangle / Hexagon</button>
+      <button data-filter="grid">Grid / Houses / 3-Row</button>
+      <button data-filter="special">Concentric / Coded</button>
+      <button data-filter="qtype">Question Types</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="circular" data-kw="circle round table facing centre inside eight persons immediate right left third gol mez kendra ki taraf">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Circular — sab centre ki taraf (basic)</h3>
+      <p class="trigger">Trigger: “…sitting around a circular table, all facing towards the centre.” Koi direction-variable nahi. Yahi sabse simple base hai — <b>left = clockwise</b>, <b>right = anti-clockwise</b>.</p>
+      <div class="example">
+        <b>Ex 1–5 (8 persons E–L):</b> Start un clue se jo 100% fix ho → “L, E ke immediate right” + “I, E se 3rd left” → 2 cases.<br>“Only two persons between I and H, who sits immediate left of J” → dono case fill.<br>Final killer clue: “G immediate right of K” → Case-2 <span class='ans'>eliminate</span>.<br><span class='q2'><b>Mini-rule:</b> facing centre → uska <i>left</i> tumhare screen par clockwise. Har baar bottom seat se bharna shuru karo.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular some facing inside some outside opposite direction same direction neighbours andar bahar mukh">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Circular — kuch andar, kuch bahar mukh</h3>
+      <p class="trigger">Trigger: “Three of them are facing the centre while others are facing outside.” Ab <b>left/right ulta ho jaata hai</b> bahar-mukhi log ke liye.</p>
+      <div class="example">
+        <b>Ex 6–10 (P–W, 8 log):</b> Pehle direction-anchor lo: “R faces centre. P 2nd to right of R. W (outside) opposite P.”<br>Phir “S immediately left of V (outside)” → 2 cases.<br>“U 2nd right of T, both same direction” + “neither U nor T adjacent to S” → filter.<br>Last: “Q not adjacent to P, both same direction” → <span class='ans'>Case 1 out</span>.<br><span class='q2'><b>Mini-rule:</b> ‘opposite’ sirf even number of persons pe hi 100% kaam karta hai (8 log → gap 4).</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular days week monday sunday months variable din mahina schedule seat day arrangement">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Circular + Days/Months variable</h3>
+      <p class="trigger">Trigger: circle ke saath “different days Monday to Sunday / different months”. Yahan <b>do cheezein ek saath</b> baithani hai — seat + day.</p>
+      <div class="example">
+        <b>Ex 11–15 (7 girls A–G):</b> “G sits on Saturday immediately after B and before A” → B=Friday, A=Sunday (day-order = seat-order dono lock).<br>“One girl between D and G, four between A and D” → 2 cases → “Three girls between C and G”, “D/G Tuesday wale ke adjacent nahi” se cut.<br>“F Wednesday, 2nd right of A” → <span class='ans'>Case 2 out</span>. Final: A(Sun) C(Thu) D(Mon) B(Fri) G(Sat) F(Wed) E(Tue).<br><span class='q2'><b>Mini-rule:</b> day-based circle mein ‘immediately after’ = agla din AND agli seat — dono ek saath maan lo tabhi jaldi bhesta hai.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular ages numbers years older younger age difference variable numeric mixed facing umra">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Circular + Age/Number variable (older/younger)</h3>
+      <p class="trigger">Trigger: “different ages 24, 16, 19, 30…”, “X is 12 years older than Y”. <b>Numbers hi asli filter hain</b>, seating nahi.</p>
+      <div class="example">
+        <b>Ex 16–20 (A,B,C,M,N,O,V,W):</b> “C is 12 years older than A” → given list mein sirf <b>24 & 36</b> ka hi 12 ka gap banta hai → age lock, phir seat.<br>“Age difference between immediate neighbours of W is 6” → 24 & 30.<br>“N is 9 years older than M” → 19 & 10.<br><span class='q2'><b>Mini-rule:</b> pehle given numbers ke saare valid pairs (difference wale) likh lo — usually ek hi possible hota hai, wahi entry point hai.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular blood relation family husband wife mother brother daughter sister male female parivaar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Circular + Blood Relation (family tree)</h3>
+      <p class="trigger">Trigger: “H’s husband…”, “D’s daughter…”, “A is the father of G”. <b>Do diagram banao</b> — ek circle, ek family tree — warna gadbad pakki.</p>
+      <div class="example">
+        <b>Ex 21–25 (A–H):</b> “F 2nd left of D’s daughter”, “only one person between F and A”, “A is father of G” → skeleton.<br>“H’s husband 2nd right of B” + “no female immediate side of B” → 2 cases → “E aur H’s mother ke beech ek person” → Case 2 mein E ki jagah hi nahi → <span class='ans'>rejected</span>.<br>Answers: A = H ka husband, H = G ki mother, H = D ki sister.<br><span class='q2'><b>Mini-rule:</b> ‘X’s husband/mother’ jaise phrase = seat clue + relation clue dono. Gender ko ⊕/⊖ mark karke circle pe likho.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular uncertain number of persons certain number more than 15 counted from left right ginti pata nahi">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Circular — Uncertain number of persons</h3>
+      <p class="trigger">Trigger: “<b>Certain number</b> of persons… more than 15 are sitting.” Total pata nahi — isliye <b>ek reference person se gaps count</b> karke total nikalna hota hai.</p>
+      <div class="example">
+        <b>Ex 26–30:</b> “Four persons between M and N”, “O 3rd left of M”, “two between O and P”, “Q exactly between M and P”.<br>Balancing clue: “N–Q (right of Q) = M–O (left of O)” → equation ban gaya.<br>“More than 15” condition se chhota case cut → <span class='ans'>Total = 17</span>.<br><span class='q2'><b>Mini-rule:</b> uncertain circle = ‘…counted from left/right of X’ wale clue hi total decide karte hain. Dono taraf ka count likho: n = a + b + 2.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="linear single row north facing extreme end third to left right eight friends ek line seedhi kataar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Linear single row — sab ek hi direction</h3>
+      <p class="trigger">Trigger: “sitting in a row, facing towards the North.” Simple: North = tumhara <b>left = West</b> (row ka left end).</p>
+      <div class="example">
+        <b>Ex 31–35 (A–H, 8 seats):</b> Anchor = “A at extreme end, third to the left of H” → A ki 2 possible ends → 2 cases.<br>“B adjacent to H, 2nd left of E” → dono case fill.<br>“D immediately left of F”, “F/G kabhi end pe nahi” → tight.<br>“G not adjacent to A” → <span class='ans'>Case 2 out</span>.<br><span class='q2'><b>Mini-rule:</b> ‘extreme end’ wala clue hamesha sabse pehle use karo — wahi 2 se zyada cases nahi banne deta.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="linear single row some facing north some south bench nine persons mixed direction ulta seedha">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Linear single row — kuch North, kuch South</h3>
+      <p class="trigger">Trigger: “Four of them facing North while others facing South.” Har person ka arrow lagana zaroori — <b>South-facing ka left/right ulta</b>.</p>
+      <div class="example">
+        <b>Ex 36–40 (A–I, 9 seats):</b> “H at extreme end, G immediate right of H, both same direction” + “I 3rd right of H, H & I alag direction” → base block.<br>“A at extreme end, 3rd right of F; A immediate left of C (North); A & F both South” → direction lock.<br>“B 2nd left of D, dono I ke adjacent” → B, D North.<br><span class='q2'><b>Mini-rule:</b> ‘both face same direction’ / ‘do not face same direction’ ko seat clue se pehle mat chhodo — yahi cases kaatta hai.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="double row parallel rows facing each other row1 row2 north south twelve persons opposite faces do kataar aamne saamne">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Double row (parallel) — aamne-saamne baithna</h3>
+      <p class="trigger">Trigger: “two parallel rows… row-1 facing South, row-2 facing North, each person faces the other.” <b>Row-1 ka left = Row-2 ka right</b>.</p>
+      <div class="example">
+        <b>Ex 41–45 (D–O, 12 log):</b> “F 4th to the left of H” → row-1 mein sirf 2 slots → “L immediate to the person who faces F” + “two persons between L and O” → 3 cases.<br>“M immediate to O, facing E” + “I immediate to E” → aur cases.<br>“N not immediate to L”, “H does not face N”, “G not at end”, “K neither faces F nor I” → case 1 & 3 out; “J and M not immediate” → <span class='ans'>final</span>.<br><span class='q2'><b>Mini-rule:</b> ‘faces’ wala clue seedha vertical link hai — pehle vertical pairs fix karo, phir horizontal.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="double row ten persons opposite of sits second to left faces south north equal number each row">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Double row — “opposite of” chain se solve</h3>
+      <p class="trigger">Trigger: har clue “X sits opposite of Y” / “Y sits 2nd to the left of Z” ke roop mein — <b>chain</b> banti hai, ek sire se pakdo.</p>
+      <div class="example">
+        <b>Ex 46–50 (A,B,E,F,I,M,Q,U,X,Z — 5+5):</b> “U 2nd left of M, M opposite B” + “M and A extreme ends of same row” → skeleton.<br>“Both B and I face South” → row fix. “I 2nd right of E” → 2 cases.<br>“Q opposite F, F 2nd left of Z, neither Z nor F adjacent to E” → <span class='ans'>Case 2 out</span>. Final: I Q E X B / A F U Z M.<br><span class='q2'><b>Mini-rule:</b> jis row ka direction 2 clue se confirm ho, wahi row pehle bharo.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="linear row with variable likes cartoon character colour subject fruit six girls single row pasand">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Linear + Variable (likes/colour/brand)</h3>
+      <p class="trigger">Trigger: row + “like different cartoon characters / colours / brands”. <b>Do row banao</b>: upar naam, neeche variable.</p>
+      <div class="example">
+        <b>Ex 51–55 (6 girls, cartoons):</b> “F likes Bheem, C 2nd left of F” → base.<br>“D 3rd right of A, A immediate neighbour of F”, “two girls between F and B” → 2 cases.<br>Variable clue hi killer: “F aur B ke beech wali Oggy & Doremon like karti hain”, “A likes Shinchan”, “C & E na Oggy na Patlu” → <span class='ans'>Case 1 out</span>.<br>Final: C(Pokemon) A(Shinchan) F(Bheem) E(Doremon) D(Oggy) B(Patlu).<br><span class='q2'><b>Mini-rule:</b> variable-only clue (“…jo Oggy pasand karta hai”) tabhi lagao jab seating half-fixed ho, warna cases phatt jayenge.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="double row variable smartphone brand samsung sony mi oppo realme faces the person who likes eight persons">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Double row + Variable (“jo X pasand karta hai uske saamne…”)</h3>
+      <p class="trigger">Trigger: parallel rows + brands/colours, aur clue variable-to-variable ho: “The person who likes Samsung is facing the one who likes Oneplus.”</p>
+      <div class="example">
+        <b>Ex 56–60 (A–D vs P–S, 8 brands):</b> “D at one end, faces the one who likes Oppo” + “D 2nd right of A (Sony)” → base.<br>“Q (Samsung) faces Oneplus wale” → 2 cases → “R immediate left of Q”, “only P between Q and S” → <span class='ans'>Case 2 out</span>.<br>“MI faces Micromax”, “Lava 3rd right of Micromax”, “B not at ends” → complete.<br><span class='q2'><b>Mini-rule:</b> variable-to-variable clue = vertical pair banao (facing pair), person naam baad mein bharo.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="linear uncertain number certain number of people row how many people sit total ginti nikalna south facing">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Linear row — Uncertain number of people (total nikalna)</h3>
+      <p class="trigger">Trigger: “A <b>certain number</b> of people sit in a linear row… How many people sit in the row?” End-anchored clue (“2nd from the left end”, “only two people to the right of S”) se total banta hai.</p>
+      <div class="example">
+        <b>Ex 61–65:</b> “W 2nd from left end” → left side pin. “M 3rd right of W”, “H 5th right of M”, “K 2nd right of M”, “P 6th right of W” → sab positions W se number kar do (W=2, M=5, K=7, H=10, P=8).<br>“Four people between H and S” → S=15; “only two to the right of S” → <span class='ans'>Total = 17</span>.<br>“Between G–H = between S–P” → G ki jagah fix.<br><span class='q2'><b>Mini-rule:</b> uncertain linear = ek end ko seat-number 1 maan lo, har clue ko number equation bana do. Guess mat karo, ginti karo.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="square table four corners facing inside four middle edges facing outside eight friends">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Square — 4 corner (inside) + 4 edge (outside)</h3>
+      <p class="trigger">Trigger: “Four sitting at corners facing inside and four at edges facing outside.” Yaad rakho: <b>corner aur edge alternate</b> hote hain, aur inke left/right ulte hote hain.</p>
+      <div class="example">
+        <b>Ex 66–70 (M,N,O,P,R,S,T,U):</b> “M (outside) 2nd right of T” + “O and S immediate right of each other” → 2 cases.<br>“N faces U, U 3rd left of P” → fill.<br>“O opposite to neither R nor M” → <span class='ans'>Case 2 out</span>.<br><span class='q2'><b>Mini-rule:</b> square mein ‘opposite’ = corner ke saamne corner, edge ke saamne edge. Corner-edge kabhi opposite nahi hote.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="square table two people on each edge eight people facing inside side of the edge same side">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Square — har edge par 2 log, sab inside facing</h3>
+      <p class="trigger">Trigger: “Two people sit on each of the edges of the table”, aur clue mein “<b>same side of the edge</b>” aata hai — ye pair-based restriction hai.</p>
+      <div class="example">
+        <b>Ex 71–75 (P,Q,R,S,T,U,V,W):</b> “P 2nd right of V” + “three people between P and U” → 2 cases; “U faces T” → cross-check.<br>“Q immediate right of S, dono ek hi edge par” → strong filter.<br>“W not adjacent to U”, “R not adjacent to P” → <span class='ans'>Case 2 out</span>.<br><span class='q2'><b>Mini-rule:</b> 8 log / 4 edge → seats ko 1–8 number karke edge-pairs (1,2)(3,4)(5,6)(7,8) mark karo, tabhi ‘same side’ clue lagega.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="square vacant seat empty seven persons colours pink blue black brown green white khali seat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Square/Rect + Vacant seat (log kam, seat zyada)</h3>
+      <p class="trigger">Trigger: “Seven persons… <b>one of the seats is vacant</b>.” Vacant seat ko ek 8th ‘person’ maan ke hi baithao.</p>
+      <div class="example">
+        <b>Ex 76–80 (M,N,O,P,Q,R,S + colours):</b> “S immediate right of the one who is 2nd right of P” + “two seats between M and P (Blue)” → 2 cases.<br>“R immediate left of Pink wala”, “only one seat between R and N; N na M na S ke adjacent”.<br>“Black 2nd left of Brown, dono vacant ke adjacent nahi” + “Green immediate right of vacant” + “O (White) corner par” → <span class='ans'>Case 2 out</span>.<br><span class='q2'><b>Mini-rule:</b> vacant seat = counting mein ginte hain (‘two seats between’), par ‘persons between’ mein nahi. Question ka shabd dekho.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="rectangular table corner middle sides nine persons alphabetical order clockwise rearrangement">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Rectangular table (corner + middle of sides)</h3>
+      <p class="trigger">Trigger: “sitting around a rectangular table”. Square jaisa hi, bas <b>lambi side aur chhoti side</b> ka farq — opposite pairs wahi rehte hain.</p>
+      <div class="example">
+        <b>Ex 86–90:</b> “Three persons between C and F, who faces inside” → 2 cases.<br>“B 2nd left of E, E immediate right of C, B at corner” → <span class='ans'>Case 2 out</span>.<br>“Two persons between B and I”, “A 4th left of I and immediate left of G”, “F not adjacent to D” → final.<br><span class='q2'><b>Mini-rule:</b> rect. table pe seat count circle jaisa hi chalta hai — shape sirf drawing badalta hai, logic nahi.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="octagonal table eight corners no two together same direction alternate facing centre outside">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Octagonal table — alternate facing (“no two together same direction”)</h3>
+      <p class="trigger">Trigger: “No two persons seated together are facing the same direction.” Ye clue akela hi <b>poora direction pattern</b> de deta hai — in, out, in, out…</p>
+      <div class="example">
+        <b>Ex 91–95 (A–H):</b> “B faces the centre” → seat-wise alternate direction turant fix.<br>“C 3rd left of B”, “E & D immediate neighbours, na B na C ke adjacent, E outside” → block set.<br>“G immediate right of F”, “A same direction as F, D ka neighbour nahi”, “H same direction as G” → final.<br><span class='q2'><b>Mini-rule:</b> alternate-facing table mein ek bhi person ka direction pata chal jaye to baaki saat automatic ho jaate hain.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="clue" data-kw="and but while who whom whose case first second candidate naam kiska rule grammar trigger word">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Clue-grammar: AND / BUT / WHILE  vs  WHO / WHOM / WHOSE</h3>
+      <p class="trigger">Trigger: ek hi vakya mein do position di ho. <b>Yahi sabse zyada silly mistake karata hai.</b></p>
+      <div class="example">
+        <b>AND-case →</b> pehle naam par lagega.<br>“D is 3rd to the left of A <b>and</b> 2nd to the right of F” → D–A ke beech 2, aur <b>D</b>–F ke beech 1.<br><span class='q2'><b>WHO-case →</b> doosre naam par lagega.<br>“D is 3rd to the left of A <b>who</b> is 2nd to the left of H” → D–A ke beech 2, aur <b>A</b>–H ke beech 1.</span><br><span class='ans'>Rule: AND = subject wahi rehta, WHO = subject badal jaata hai.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="clue" data-kw="between exactly between immediate neighbour not adjacent negative information possible information beech mein">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>Clue-grammar: Between / Exactly between / Immediate neighbour</h3>
+      <p class="trigger">Trigger: “G is between A and H”, “exactly between”, “immediate neighbour”, “not adjacent”. Har ek ka <b>alag matlab</b> hai.</p>
+      <div class="example">
+        <b>Between</b> → G ke dono taraf A aur H (order fixed nahi) → possible info, 2 cases.<br><b>Exactly between</b> → A aur H ke beech <b>odd</b> number of persons, G bilkul beech mein.<br><b>Immediate neighbour of both</b> → ye between ka hi case hai.<br><span class='q2'><b>Not adjacent / neither… nor</b> → negative info: koi seat fix nahi karta, sirf <span class='ans'>cases kaatta hai</span> — isliye ise hamesha <b>last</b> mein lagao.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="clue" data-kw="definite positive information indefinite negative comparative possible information order of solving priority kaunsa clue pehle">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Clue ko priority do: Definite → Comparative → Possible → Negative</h3>
+      <p class="trigger">Trigger: har set mein 6–8 clue hote hain. Jo student upar se neeche padh ke lagata hai wo phasta hai. <b>Order badlo.</b></p>
+      <div class="example">
+        <b>1. Definite:</b> “A sits at the extreme left end”, “F sits on Wednesday” → seat pakki.<br><b>2. Comparative:</b> “A is 4th to the left of B” → do log ka relative block.<br><b>3. Possible:</b> “A sits between B and C” → 2 cases banao.<br><span class='q2'><b>4. Negative:</b> “A is not adjacent to B”, “neither X nor Y” → ye sirf <span class='ans'>case eliminate</span> karte hain. Inhe pehle lagaoge to time waste hoga.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="position of X with respect to Y third to the left right question type sthiti">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Q-type: “What is the position of X with respect to Y?”</h3>
+      <p class="trigger">Trigger: sabse common question. <b>Y base hai, X ko count karna hai</b> — ulta karoge to answer galat.</p>
+      <div class="example">
+        <b>Ex 4:</b> “Position of F w.r.t. J” → J se ginn ke F = immediate right.<br><b>Ex 9:</b> W w.r.t. V → 3rd to the left.<br><span class='q2'><b>Circle mein trap:</b> ek hi answer do tarah se sahi ho sakta hai (Ex 13: B is 3rd to the left <b>and</b> 4th to the right of A) → tab option <span class='ans'>“Both (1) and (3)”</span> hota hai. Circle mein hamesha dono side check karo: left-count + right-count = total − 1.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="four of the following five pairs are alike group odd one out gap same side facing each other">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Q-type: “Four of the five are alike” (odd one out)</h3>
+      <p class="trigger">Trigger: paanch pairs diye, ek odd. <b>Common logic dhundo</b>, naam mat dekho.</p>
+      <div class="example">
+        Usual logics jo baar-baar aate hain:<br>• <b>Gap same</b> — Ex 5: har pair mein beech mein 1 person, sirf GF mein nahi.<br>• <b>Beech mein 2 log</b> — Ex 15 / Ex 53.<br>• <b>Position type</b> — Ex 42: baaki sab end pe, I nahi. Ex 65: baaki middle mein, L end pe.<br>• <b>Facing / side</b> — Ex 57: baaki sab ek doosre ko face karte hain. Ex 68: baaki sab edge + outside facing. Ex 73: baaki sab same side of table. Ex 91: baaki sab immediate neighbours.<br><span class='q2'><b>Mini-rule:</b> teen cheez check karo — <span class='ans'>gap, facing direction, seat-type (corner/edge/end)</span>. Inhi teen mein se ek hi logic nikalta hai.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="if X is related to Y in the same way analogy related to relation pair question">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>Q-type: “If X is related to Y, then Z is related to?” (analogy)</h3>
+      <p class="trigger">Trigger: do sample pair diye jaate hain — <b>unka gap/rule nikaalo</b>, phir teesre pe lagao.</p>
+      <div class="example">
+        <b>Ex 3:</b> I→H, L→K … har baar “immediate left wala” → J→<span class='ans'>K</span>.<br><b>Ex 64:</b> M→G, P→H … dono mein beech mein 1 person → L→<span class='ans'>S</span>.<br><b>Ex 90:</b> C→E adjacent → H→<span class='ans'>D</span>.<br><span class='q2'><b>Mini-rule:</b> dono sample pair ka gap likho. Agar dono ka gap same hai — bas wahi rule hai, aur kuch mat socho.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="how many persons sit between counted from the left of right of counting question ginti">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Q-type: “How many persons between X and Y, counted from the left/right of Y?”</h3>
+      <p class="trigger">Trigger: “<b>counted from the left of Q</b>” — ye phrase aate hi samajh jao ki <b>ek hi taraf ginna hai</b>, chhota rasta nahi.</p>
+      <div class="example">
+        <b>Ex 27:</b> P–Q, counted from left of Q → <span class='ans'>13</span> (short side nahi, lamba side).<br><b>Ex 29:</b> M–O, right of O → 7.<br><b>Ex 69:</b> N–O, left of N → 4 (isliye answer “More than three”).<br><span class='q2'><b>Mini-rule:</b> circle mein dono taraf ke counts jodo → total − 2. Ek nikal aaye to doosra turant mil jaata hai.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="if all persons arranged alphabetical order clockwise from west to east rearrangement how many remain same position">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <h3>Q-type: Rearrangement — “alphabetical order mein baithao”</h3>
+      <p class="trigger">Trigger: “If all are arranged in alphabetical order clockwise / from west to east…” Ye <b>naya arrangement</b> banane ko kehta hai, purana bhool jao.</p>
+      <div class="example">
+        <b>Ex 89:</b> A se clockwise alphabetical → A ke alawa <span class='ans'>2 log (E, H)</span> same seat pe.<br><b>Ex 54:</b> reverse alphabetical west→east baithao → phir poocha “ab Doremon kaun?” — <b>variable seat ke saath nahi jaata, seat ke saath naya naam aata hai</b>.<br><span class='q2'><b>Mini-rule:</b> do row bana lo — upar purana, neeche naya. Seat-by-seat compare, guess bilkul nahi.</span>
+      </div>
+    </article>
+
+
+    <article class="card" data-cat="square" data-kw="square table all facing away from centre outside corner edge conditional clue if then agar to sab bahar mukh">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 27</p>
+      <h3>Square — sab BAHAR mukh (all facing away) + conditional clue</h3>
+      <p class="method-pill">8 log &middot; 4 corner + 4 edge &middot; sab outside</p>
+      <p class="trigger">Trigger: &ldquo;facing <b>away</b> from the center&rdquo; + ek clue &ldquo;<b>If</b> Kanika is a neighbour of Rahul, <b>then</b> Mansi sits along an edge, <b>else</b> corner.&rdquo; Sab bahar mukh &rarr; <b>left = anti-clockwise</b> (ulta), aur if-else clue hamesha <b>last</b> mein lagta hai case kaatne ke liye.</p>
+      <div class="example">
+        <p class="setline">Set: Q1&ndash;5 &middot; Jatin, Priyansh, Kanika, Lalit, Rahul, Jyoti, Harry, Mansi</p>
+        <b>Entry point:</b> &ldquo;Jatin 3rd right of Priyansh&rdquo; + &ldquo;Rahul corner par, Priyansh ka neighbour nahi&rdquo; &rarr; 2 case. &ldquo;Kanika edge par, Lalit ke just left&rdquo; se fill, aur last mein if-else clue lagate hi ek case <span class='ans'>out</span>.<br><b>Mini-rule:</b> outside-facing table par ginti hamesha ulti &mdash; pehle chhota diagram bana ke arrow lagao, phir hi count karo.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q1</div><div class="qt">&ldquo;position of Jyoti w.r.t. Harry&rdquo; &rarr; <b>Harry base</b>, outside-facing gin &rarr; <span class='qa'>(4) Third to the left</span></div></div>
+        <div class="qrow"><div class="qn">Q2</div><div class="qt">&ldquo;sitting at the <i>edges</i>&rdquo; &rarr; corner/edge chart dekho &rarr; <span class='qa'>(4) Jatin & Jyoti</span></div></div>
+        <div class="qrow"><div class="qn">Q3</div><div class="qt">&ldquo;immediate neighbour pair of Rahul&rdquo; &rarr; Rahul corner par, dono side edge &rarr; <span class='qa'>(5) Kanika & Jatin</span></div></div>
+        <div class="qrow"><div class="qn">Q4</div><div class="qt">&ldquo;opposite to the one 2nd right of Priyansh&rdquo; &rarr; do-step: pehle 2nd right (=Harry), phir opposite &rarr; <span class='qa'>(1) Lalit</span></div></div>
+        <div class="qrow"><div class="qn">Q5</div><div class="qt">odd one out &rarr; logic = <b>seat type</b> (corner vs edge) &rarr; <span class='qa'>(2) Mansi</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="poly" data-kw="triangular table three persons on each side no one at corners nine students facing outward tikona mez">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 28</p>
+      <h3>Triangular table — har side par 3 log, corner khali</h3>
+      <p class="method-pill">9 log &middot; 3 side &times; 3 &middot; sab outward</p>
+      <p class="trigger">Trigger: &ldquo;sit around a <b>triangular</b> table, three persons sit at the sides&hellip; <b>No one sits at the corners</b>.&rdquo; Yani ye asal mein <b>9-seat ka circle</b> hai, bas seats 3-3 ke group (same side) mein bant di gayi hain.</p>
+      <div class="example">
+        <p class="setline">Set: Q6&ndash;10 &middot; A, B, C, D, E, F, G, H, I</p>
+        <b>Entry point:</b> &ldquo;B, E, H same side&rdquo; = block of 3 &mdash; ye sabse strong clue hai, isi se start. Phir &ldquo;C 2nd left of F&rdquo;, &ldquo;I immediate right of E&rdquo;, &ldquo;two between I and A&rdquo;.<br><b>Mini-rule:</b> seats ko 1&ndash;9 number do, sides = (1,2,3)(4,5,6)(7,8,9). &lsquo;Same side&rsquo; clue tabhi apply hoga.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q6</div><div class="qt">&ldquo;two places away from F&rdquo; &rarr; gap-2 dono taraf check &rarr; <span class='qa'>(2) B</span></div></div>
+        <div class="qrow"><div class="qn">Q7</div><div class="qt">&ldquo;third to the left of D&rdquo; &rarr; outward facing &rarr; left = clockwise &rarr; <span class='qa'>(4) C</span></div></div>
+        <div class="qrow"><div class="qn">Q8</div><div class="qt">odd one out (triplets) &rarr; logic = <b>same side of table</b> &rarr; <span class='qa'>(4) AFD</span></div></div>
+        <div class="qrow"><div class="qn">Q9</div><div class="qt">&ldquo;which sentence is true about G&rdquo; &rarr; ek-ek option verify &rarr; <span class='qa'>(5) None</span></div></div>
+        <div class="qrow"><div class="qn">Q10</div><div class="qt">&ldquo;between B and A, counted from right of A&rdquo; &rarr; ek hi taraf gin &rarr; <span class='qa'>(3) Two</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="poly" data-kw="triangular table one person each corner one each side six persons subject teacher facing inside outside mixed">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 29</p>
+      <h3>Triangular — corner + side (6 log) + subject variable</h3>
+      <p class="method-pill">6 log &middot; 3 corner + 3 side &middot; mixed facing</p>
+      <p class="trigger">Trigger: &ldquo;one person at each corner and one at each side&rdquo; of triangle + subjects. Yahan <b>corner aur side alternate</b> aate hain (bilkul square wale rule jaisa), aur &lsquo;facing each other&rsquo; = corner ke saamne side.</p>
+      <div class="example">
+        <p class="setline">Set: Q91&ndash;95 &middot; A(Maths) F(Accounts) B(Science) C(Economics) D(Arts) E(English)</p>
+        <b>Entry point:</b> &ldquo;E aur Accounts teacher aamne-saamne&rdquo; + &ldquo;E corner par&rdquo; &rarr; Accounts side par. Phir &ldquo;Science 2nd left of Accounts&rdquo;, &ldquo;English 2nd left of Economics&rdquo;, &ldquo;F 3rd right of English&rdquo;.<br><b>Mini-rule:</b> 6-seat polygon mein &lsquo;facing each other&rsquo; = gap 3. Subject chain ko alag line mein likho, naam baad mein bharo.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q91</div><div class="qt">&ldquo;how many facing inside&rdquo; &rarr; arrow chart gino &rarr; <span class='qa'>(3) Three</span></div></div>
+        <div class="qrow"><div class="qn">Q92</div><div class="qt">&ldquo;between science &amp; arts, from <i>right of arts</i>&rdquo; &rarr; one-side count &rarr; <span class='qa'>(1) One</span></div></div>
+        <div class="qrow"><div class="qn">Q93</div><div class="qt">&ldquo;D kis subject ka&rdquo; &rarr; bache hue subject ka elimination &rarr; <span class='qa'>(3) Arts</span></div></div>
+        <div class="qrow"><div class="qn">Q94</div><div class="qt">&ldquo;maths teacher&rdquo; &rarr; A neither Arts nor English &rarr; <span class='qa'>(1) A</span></div></div>
+        <div class="qrow"><div class="qn">Q95</div><div class="qt">odd one out &rarr; person&ndash;subject mapping galat wala &rarr; <span class='qa'>(4) D-English</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="poly" data-kw="hexagonal table six corners no three consecutive persons face same direction chhah kone">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 30</p>
+      <h3>Hexagonal — 6 corner + &ldquo;no three consecutive same direction&rdquo;</h3>
+      <p class="method-pill">6 log &middot; corners only &middot; direction condition</p>
+      <p class="trigger">Trigger: &ldquo;<b>No three consecutive persons face the same direction</b>.&rdquo; Ye direction ka master-rule hai &mdash; kahin bhi 3 same arrow banein to wo case turant <b>reject</b>.</p>
+      <div class="example">
+        <p class="setline">Set: Q71&ndash;75 &middot; N, O, P, Q, R, S</p>
+        <b>Entry point:</b> &ldquo;O 2nd left of R&rdquo; + &ldquo;O immediate left of N&rdquo; &rarr; block. &ldquo;R ke dono neighbour same direction&rdquo; + &ldquo;S outside nahi&rdquo; se arrows lock.<br><b>Mini-rule:</b> direction-condition wale set mein seating pehle, arrows baad mein &mdash; par condition har step pe check karte chalo.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q71</div><div class="qt">&ldquo;which statement is correct&rdquo; &rarr; final diagram se verify &rarr; <span class='qa'>(4) P 3rd right of O</span></div></div>
+        <div class="qrow"><div class="qn">Q72</div><div class="qt">&ldquo;which pair adjacent&rdquo; &rarr; <span class='qa'>(5) S, O</span></div></div>
+        <div class="qrow"><div class="qn">Q73</div><div class="qt">rearrangement: O se clockwise alphabetical &rarr; seat-by-seat compare &rarr; <span class='qa'>(1) None</span></div></div>
+        <div class="qrow"><div class="qn">Q74</div><div class="qt">&ldquo;immediate left of P&rdquo; &rarr; P ka facing dekh ke &rarr; <span class='qa'>(4) Q</span></div></div>
+        <div class="qrow"><div class="qn">Q75</div><div class="qt">&ldquo;correct combination&rdquo; &rarr; arrow chart &rarr; <span class='qa'>(3) P &mdash; inside</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="poly" data-kw="hexagonal eight persons diagram given numbered seats corners face outside edges inside colours either or answer">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 31</p>
+      <h3>Hexagon (8 seat, diagram diya hua) + colours &rarr; Either/Or answers</h3>
+      <p class="method-pill">8 seat &middot; corner=outside, edge=inside &middot; colour variable</p>
+      <p class="trigger">Trigger: question ke saath hi <b>diagram diya</b> ho aur seats numbered ho. Yahan positions fix hain, sirf naam bharne hain. Do log ka data interchangeable rah jaye to answer <b>&ldquo;Either X or Y&rdquo;</b> hota hai &mdash; ye is set ki pehchaan hai.</p>
+      <div class="example">
+        <p class="setline">Set: Q105&ndash;108 &middot; P&ndash;W + 8 colours</p>
+        <b>Entry point:</b> &ldquo;P 5th left of Red wala&rdquo; + &ldquo;W 3rd right of P&rdquo; &rarr; numbering pe direct plot. Diagram ke corner/edge se facing turant likh do.<br><b>Mini-rule:</b> jab do naam tak hi info aaye aur aage koi clue na ho &mdash; guess mat karo, <span class='ans'>Either/Or</span> option dhoondo.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q105</div><div class="qt">&ldquo;sixth to the right of Violet wala&rdquo; &rarr; seat number pe count &rarr; <span class='qa'>(2) W</span></div></div>
+        <div class="qrow"><div class="qn">Q106</div><div class="qt">odd one out &rarr; logic = <b>facing direction</b> &rarr; <span class='qa'>(1) T</span></div></div>
+        <div class="qrow"><div class="qn">Q107</div><div class="qt">&ldquo;third to the right of Green&rdquo; &rarr; U/R ambiguous &rarr; <span class='qa'>(4) Either U or R</span></div></div>
+        <div class="qrow"><div class="qn">Q108</div><div class="qt">&ldquo;who likes Red&rdquo; &rarr; wahi ambiguity &rarr; <span class='qa'>(4) Either U or R</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="two parallel rows both facing same direction south row 2 south of row 1 ten people faces the one behind">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 32</p>
+      <h3>Double row — dono rows EK HI direction mein (aamne-saamne nahi)</h3>
+      <p class="method-pill">10 log &middot; Row1 & Row2 dono South</p>
+      <p class="trigger">Trigger: &ldquo;Row 2 is to the south of Row 1 and <b>all of them are facing South</b>.&rdquo; Normal double-row nahi hai! Yahan Row-1 wale Row-2 walon ki <b>peeth</b> nahi, balki Row-1 wale ko Row-2 wala <i>face</i> karta hai &mdash; aur dono ka left/right <b>same</b> rehta hai.</p>
+      <div class="example">
+        <p class="setline">Set: Q36&ndash;40 &middot; Row1 P,S,M,O,K &middot; Row2 L,R,J,N,Q</p>
+        <b>Entry point:</b> &ldquo;Two persons between R and Q, dono Row-2&rdquo; + &ldquo;Q extreme end&rdquo; &rarr; Row-2 skeleton. Phir &ldquo;L immediate right of R&rdquo;, &ldquo;P faces L&rdquo;.<br><b>Mini-rule:</b> same-direction double row mein <b>left/right ulta nahi hota</b> &mdash; yahi sabse badi trap hai, normal wala rule mat lagana.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q36</div><div class="qt">&ldquo;who faces N&rdquo; &rarr; vertical pair &rarr; <span class='qa'>(5) O</span></div></div>
+        <div class="qrow"><div class="qn">Q37</div><div class="qt">&ldquo;between M and the one who faces R&rdquo; &rarr; do-step &rarr; <span class='qa'>(5) None</span></div></div>
+        <div class="qrow"><div class="qn">Q38</div><div class="qt">&ldquo;2nd to the left of J&rdquo; &rarr; same-direction rows &rarr; <span class='qa'>(4) L</span></div></div>
+        <div class="qrow"><div class="qn">Q39</div><div class="qt">odd one out &rarr; logic = <b>opposite pairs</b> &rarr; <span class='qa'>(3) K-N</span></div></div>
+        <div class="qrow"><div class="qn">Q40</div><div class="qt">&ldquo;2nd right of the one who faces N&rdquo; &rarr; pehle facing, phir count &rarr; <span class='qa'>(1) S</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="double row colour white black red green no two same colour opposite or next diagonally opposite">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 33</p>
+      <h3>Double row + colour with &ldquo;no two same colour opposite ya adjacent&rdquo;</h3>
+      <p class="method-pill">8 log &middot; 4 colours &times; 2 &middot; placement restriction</p>
+      <p class="trigger">Trigger: colour/brand <b>repeat</b> ho raha ho (4 colour, 8 log) aur clue ho &ldquo;no two people liking the same colour sit opposite or next to each other&rdquo; + &ldquo;<b>diagonally opposite</b>&rdquo;. Yahan seating se zyada <b>colour placement grid</b> solve karta hai.</p>
+      <div class="example">
+        <p class="setline">Set: Q41&ndash;45 &middot; Row1 P,N,M,O &middot; Row2 J,Q,K,L</p>
+        <b>Entry point:</b> &ldquo;Q red, J ke just left&rdquo; + &ldquo;O red&rdquo; &rarr; do red ki jagah fix. &ldquo;Black diagonally opposite&rdquo; + &ldquo;black, green ko face nahi karta&rdquo; se grid band ho jata hai.<br><b>Mini-rule:</b> repeated-variable set mein pehle <b>colour ka naksha</b> banao (kaunsi seat par kaunsa possible), naam sabse last mein.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q41</div><div class="qt">&ldquo;who likes green&rdquo; &rarr; M white ke just left green &rarr; <span class='qa'>(4) N</span></div></div>
+        <div class="qrow"><div class="qn">Q42</div><div class="qt">&ldquo;just left of white in Row 2&rdquo; &rarr; row-specific &rarr; <span class='qa'>(2) Q</span></div></div>
+        <div class="qrow"><div class="qn">Q43</div><div class="qt">&ldquo;colour of the one just left of K&rdquo; &rarr; <span class='qa'>(1) Black</span></div></div>
+        <div class="qrow"><div class="qn">Q44</div><div class="qt">odd one out &rarr; logic = <b>end seat vs middle</b> &rarr; <span class='qa'>(2) N</span></div></div>
+        <div class="qrow"><div class="qn">Q45</div><div class="qt">&ldquo;K likes&rdquo; &rarr; last bachi colour &rarr; <span class='qa'>(4) Green</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="uncertain number of people linear row half twice the number of people between arithmetic clue total kitne log">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 34</p>
+      <h3>Uncertain linear row — &ldquo;half / same as&rdquo; wale arithmetic clues</h3>
+      <p class="method-pill">Total unknown &middot; ratio clues &middot; total nikaalna</p>
+      <p class="trigger">Trigger: &ldquo;The number of people seated between K and F is <b>half</b> the number between P and K&rdquo; type clue. Ye pure <b>algebra</b> hai &mdash; positions ko number do, equation banao, guess bilkul nahi.</p>
+      <div class="example">
+        <p class="setline">Set: Q61&ndash;65 &middot; G, P, U, F, V, K, M &middot; Total = 20</p>
+        <b>Entry point:</b> &ldquo;F 5th left of V&rdquo; ko F=x, V=x+5 likho. Har clue ko equation banao; &lsquo;M at one end&rsquo; aur &lsquo;G at one end&rsquo; se dono kinare band &rarr; total.<br><b>Mini-rule:</b> &lsquo;between&rsquo; = seat difference &minus; 1. Ye ek line yaad rahe to poora set 3 minute mein.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q61</div><div class="qt">&ldquo;how many people in the row&rdquo; &rarr; dono end fix (M &amp; G) &rarr; <span class='qa'>(3) 20</span></div></div>
+        <div class="qrow"><div class="qn">Q62</div><div class="qt">&ldquo;right of V = between __ and __&rdquo; &rarr; count match &rarr; <span class='qa'>(2) P and U</span></div></div>
+        <div class="qrow"><div class="qn">Q63</div><div class="qt">&ldquo;between G and U&rdquo; &rarr; seat diff &minus;1 &rarr; <span class='qa'>(4) 7</span></div></div>
+        <div class="qrow"><div class="qn">Q64</div><div class="qt">&ldquo;even number between&rdquo; &rarr; har pair ka gap check &rarr; <span class='qa'>(4) F and P (6)</span></div></div>
+        <div class="qrow"><div class="qn">Q65</div><div class="qt">analogy: V&rarr;M ka gap 4 &rarr; F&rarr;? same gap &rarr; <span class='qa'>(5) V</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="uncertain row number of people left of X same as right of Y balance clue consecutive pairs">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 35</p>
+      <h3>Uncertain linear — &ldquo;left of X = right of Y&rdquo; balance clue</h3>
+      <p class="method-pill">Total unknown &middot; symmetry clue &middot; total = 15</p>
+      <p class="trigger">Trigger: &ldquo;The number of people seated between N and U was the <b>same as</b> between U and P&rdquo; aur question mein bhi &ldquo;left of L = right of ___&rdquo;. Ye <b>mirror/balance</b> clue hai &mdash; U jaise beech wale point ko center maan ke dono taraf barabar rakho.</p>
+      <div class="example">
+        <p class="setline">Set: Q51&ndash;55 &middot; R, L, P, U, C, N, T &middot; Total = 15</p>
+        <b>Entry point:</b> &ldquo;T at one end&rdquo; + &ldquo;three between C and T&rdquo; &rarr; left kinara pin. &ldquo;R at one end&rdquo; se doosra kinara. Negative clue (&ldquo;neither C nor T adjacent to N&rdquo;) sabse aakhir mein.<br><b>Mini-rule:</b> uncertain row mein <b>dono end wale naam</b> hi total decide karte hain &mdash; unhe dhoondna hi pehla kaam hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q51</div><div class="qt">&ldquo;left of L = right of ___&rdquo; &rarr; dono taraf ki ginti barabar &rarr; <span class='qa'>(2) N</span></div></div>
+        <div class="qrow"><div class="qn">Q52</div><div class="qt">&ldquo;between C and P&rdquo; &rarr; <span class='qa'>(4) Five</span></div></div>
+        <div class="qrow"><div class="qn">Q53</div><div class="qt">odd one out &rarr; logic = <b>consecutive known persons</b> &rarr; <span class='qa'>(2) R-N</span></div></div>
+        <div class="qrow"><div class="qn">Q54</div><div class="qt">&ldquo;how many in the row&rdquo; &rarr; dono end (T, R) fix &rarr; <span class='qa'>(2) 15</span></div></div>
+        <div class="qrow"><div class="qn">Q55</div><div class="qt">&ldquo;position of P w.r.t. U&rdquo; &rarr; U base &rarr; <span class='qa'>(2) 4th to the left</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="twelve persons long linear row four persons between chain single direction north bara log">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 36</p>
+      <h3>Linear 12 log — lambi chain, sirf gap clues</h3>
+      <p class="method-pill">12 seats &middot; sab North &middot; pure gap-chaining</p>
+      <p class="trigger">Trigger: bade group (10&ndash;12 log) ka row jisme har clue sirf &ldquo;four persons sit between X and Y&rdquo; type ho. Koi direction variable nahi &mdash; sirf <b>chain lagao aur seat number likho</b>.</p>
+      <div class="example">
+        <p class="setline">Set: Q66&ndash;70 &middot; O,J,W,G,X,K,H,Y,N,M,P,L (left&rarr;right)</p>
+        <b>Entry point:</b> &ldquo;L, P ka neighbour aur end par&rdquo; = fixed anchor. Wahan se &ldquo;two between Y and P&rdquo;, &ldquo;four between W and Y&rdquo; chain chalao.<br><b>Mini-rule:</b> 12-seat row mein hamesha 1&ndash;12 number likh ke chalo; &lsquo;X ke right/left&rsquo; sochne mein time jaata hai, number mein nahi.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q66</div><div class="qt">&ldquo;between G and M&rdquo; &rarr; seat diff &rarr; <span class='qa'>(4) 5</span></div></div>
+        <div class="qrow"><div class="qn">Q67</div><div class="qt">&ldquo;M w.r.t. W&rdquo; &rarr; W base &rarr; <span class='qa'>(3) 7th to the right</span></div></div>
+        <div class="qrow"><div class="qn">Q68</div><div class="qt">&ldquo;O w.r.t. K&rdquo; &rarr; K base &rarr; <span class='qa'>(1) 5th to the left</span></div></div>
+        <div class="qrow"><div class="qn">Q69</div><div class="qt">&ldquo;who sits at the end&rdquo; &rarr; seat 1 &amp; 12 &rarr; <span class='qa'>(4) O</span></div></div>
+        <div class="qrow"><div class="qn">Q70</div><div class="qt">odd one out &rarr; logic = <b>gap of 1 person</b> &rarr; <span class='qa'>(5) K-N</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="linear row with gadgets mobile laptop headphones television camera tablet speaker computer variable eight persons">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 37</p>
+      <h3>Linear row + gadget/variable jisme clue variable-se-shuru ho</h3>
+      <p class="method-pill">8 log &middot; 8 gadgets &middot; variable-anchored clues</p>
+      <p class="trigger">Trigger: &ldquo;J sits <b>fifth to the left of the person who likes laptop</b>&rdquo; &mdash; clue ka anchor person nahi, <b>variable</b> hai. Aise clue se hi cases bante hain, isliye inhe pehle lagao.</p>
+      <div class="example">
+        <p class="setline">Set: Q86&ndash;90 &middot; J(Mobile) L(Tablet) O(TV) F(Speaker) R(Headphone) C(Laptop) H(Computer) N(Camera)</p>
+        <b>Entry point:</b> &ldquo;J 5th left of laptop&rdquo; &rarr; sirf 3 possible slot. &ldquo;Three between J and R&rdquo; se cases, &ldquo;N 2nd right of C, camera&rdquo; se fill, &ldquo;L immediate left of O (TV)&rdquo; se lock.<br><b>Mini-rule:</b> gadget/variable row mein do line banao &mdash; upar naam, neeche gadget. Adjacent-type variable clue (&lsquo;mobile beside tablet&rsquo;) sabse last.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q86</div><div class="qt">&ldquo;R kya pasand&rdquo; &rarr; R na tablet na computer &rarr; <span class='qa'>(1) Headphones</span></div></div>
+        <div class="qrow"><div class="qn">Q87</div><div class="qt">&ldquo;between L and N&rdquo; &rarr; <span class='qa'>(5) Five</span></div></div>
+        <div class="qrow"><div class="qn">Q88</div><div class="qt">&ldquo;who likes tablet&rdquo; &rarr; mobile-tablet adjacent rule &rarr; <span class='qa'>(5) L</span></div></div>
+        <div class="qrow"><div class="qn">Q89</div><div class="qt">&ldquo;third from the left end&rdquo; &rarr; seat 3 &rarr; <span class='qa'>(3) O</span></div></div>
+        <div class="qrow"><div class="qn">Q90</div><div class="qt">&ldquo;pair immediate to the one 3rd right of TV wala&rdquo; &rarr; do-step &rarr; <span class='qa'>(4) H, R</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular maximum two persons adjacent same direction eight persons facing centre away rule">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 38</p>
+      <h3>Circular — &ldquo;maximum two adjacent same direction&rdquo; rule</h3>
+      <p class="method-pill">8 log &middot; mixed facing &middot; direction cap rule</p>
+      <p class="trigger">Trigger: &ldquo;<b>Maximum two</b> persons sitting adjacent to each other face the same direction.&rdquo; Matlab 3 same arrow lagatar allowed nahi &mdash; ye rule har case ko test karta hai, seating clue ke saath-saath check karte raho.</p>
+      <div class="example">
+        <p class="setline">Set: Q76&ndash;80 &middot; M, S, N, P, R, O, Q, T</p>
+        <b>Entry point:</b> &ldquo;M faces R aur Q jaisi direction&rdquo; + &ldquo;M, S ke immediate right&rdquo; &rarr; base block. &ldquo;P ke dono neighbour opposite direction&rdquo; se arrows.<br><b>Mini-rule:</b> &lsquo;X faces Y&rsquo; circle mein = opposite (8 log &rarr; gap 4), na ki same direction.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q76</div><div class="qt">&ldquo;2nd left of O&rdquo; &rarr; O ka arrow dekh kar &rarr; <span class='qa'>(3) P</span></div></div>
+        <div class="qrow"><div class="qn">Q77</div><div class="qt">&ldquo;opposite to T&rdquo; &rarr; gap 4 &rarr; <span class='qa'>(2) P</span></div></div>
+        <div class="qrow"><div class="qn">Q78</div><div class="qt">&ldquo;between N and M, from right of M&rdquo; &rarr; one-side count &rarr; <span class='qa'>(4) Five</span></div></div>
+        <div class="qrow"><div class="qn">Q79</div><div class="qt">&ldquo;3rd right of the one immediate left of Q&rdquo; &rarr; do-step &rarr; <span class='qa'>(1) N</span></div></div>
+        <div class="qrow"><div class="qn">Q80</div><div class="qt">odd one out &rarr; logic = <b>facing direction</b> &rarr; <span class='qa'>(5) P</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular table mobile brand laptop brand opposite to each other object variable oppo samsung nokia dell acer">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 39</p>
+      <h3>Circular + object variable jisme clue &ldquo;A and B owners opposite&rdquo; ho</h3>
+      <p class="method-pill">8 / 6 log &middot; brand variable &middot; opposite-pair clues</p>
+      <p class="trigger">Trigger: &ldquo;<b>Oppo and Lenovo owners are opposite</b> to each other, but none of them was P.&rdquo; Clue mein person ka naam hai hi nahi &mdash; sirf variable ka. Aise clue se <b>pair-of-seats</b> fix hoti hai, naam baad mein.</p>
+      <div class="example">
+        <p class="setline">Set: Q56&ndash;60 (P,T,M,O,S,N,Q,R + phones) &middot; Q96&ndash;100 (6 log + laptops)</p>
+        <b>Entry point:</b> variable-opposite clue ko diagram par <i>dotted line</i> se maro (seat 1&harr;5 type). Jab do-teen dotted line ban jayein, tab hi naam bharna shuru karo.<br><b>Mini-rule:</b> &lsquo;X ka owner Y ke immediate right&rsquo; = X aur Y alag log hain &mdash; same person kabhi mat maan lena.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q56</div><div class="qt">&ldquo;Apple owner&rdquo; &rarr; S opposite Apple, N Apple nahi &rarr; <span class='qa'>(4) P</span></div></div>
+        <div class="qrow"><div class="qn">Q57</div><div class="qt">&ldquo;Honor w.r.t. R&rdquo; &rarr; R base &rarr; <span class='qa'>(4) 2nd to the right</span></div></div>
+        <div class="qrow"><div class="qn">Q58</div><div class="qt">&ldquo;opposite Honor&rdquo; &rarr; gap 4 &rarr; <span class='qa'>(1) T</span></div></div>
+        <div class="qrow"><div class="qn">Q59</div><div class="qt">&ldquo;pair adjacent to Q&rdquo; &rarr; <span class='qa'>(1) N and R</span></div></div>
+        <div class="qrow"><div class="qn">Q60</div><div class="qt">&ldquo;Samsung owner&rdquo; &rarr; last bacha brand &rarr; <span class='qa'>(3) T</span></div></div>
+        <div class="qrow"><div class="qn">Q96</div><div class="qt">&ldquo;between HP wala &amp; R, from right of HP&rdquo; &rarr; <span class='qa'>(2) Two</span></div></div>
+        <div class="qrow"><div class="qn">Q97</div><div class="qt">analogy on gap-1 pairs &rarr; <span class='qa'>(5) Both (2) and (3)</span></div></div>
+        <div class="qrow"><div class="qn">Q98</div><div class="qt">alphabetical rearrangement from right of P &rarr; <span class='qa'>(5) One (R)</span></div></div>
+        <div class="qrow"><div class="qn">Q99</div><div class="qt">&ldquo;Apple ke opposite&rdquo; &rarr; <span class='qa'>(1) S</span></div></div>
+        <div class="qrow"><div class="qn">Q100</div><div class="qt">&ldquo;Lenovo owner&rdquo; &rarr; P opposite Lenovo &rarr; <span class='qa'>(1) U</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circular" data-kw="circular blood relation family food items three variable mother in law son daughter grandchild burger pizza momos">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 40</p>
+      <h3>Circular + Family + Food (teen variable ek saath)</h3>
+      <p class="method-pill">8 log &middot; seat + relation + dish &middot; mixed facing</p>
+      <p class="trigger">Trigger: ek hi set mein <b>seating + blood relation + food</b>. Teen alag chart banane padte hain warna gadbad pakki: (1) circle+arrow, (2) family tree, (3) dish list.</p>
+      <div class="example">
+        <p class="setline">Set: Q101&ndash;104 &middot; E(Sandwich) F(Pasta) G(Pizza) D(Noodles) J(Burrito) K(Momos) L(Taco) H(Burger)</p>
+        <b>Entry point:</b> &ldquo;H 3rd left of J, H outside, Burger&rdquo; = definite. &ldquo;F 3rd right of J&rdquo;, &ldquo;Sandwich wala J ke opposite&rdquo; se dish lock, phir relation clue (&lsquo;E married to J&rsquo;, &lsquo;H son of J&rsquo;) tree pe.<br><b>Mini-rule:</b> relation clue seat nahi deta, sirf <b>gender/generation</b> deta hai &mdash; ise seat clue ke saath mat mix karo.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q101</div><div class="qt">odd one out &rarr; logic = <b>opposite facing direction</b> &rarr; <span class='qa'>(2) J-L</span></div></div>
+        <div class="qrow"><div class="qn">Q102</div><div class="qt">&ldquo;who orders Momos&rdquo; &rarr; Momos = L ki beti, L &amp; J ke adjacent &rarr; <span class='qa'>(4) K</span></div></div>
+        <div class="qrow"><div class="qn">Q103</div><div class="qt">&ldquo;E ka F se rishta&rdquo; &rarr; family tree &rarr; <span class='qa'>(1) Grandmother</span></div></div>
+        <div class="qrow"><div class="qn">Q104</div><div class="qt">&ldquo;D w.r.t. Taco wala&rdquo; &rarr; Taco base &rarr; <span class='qa'>(3) 3rd to the right</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="linear" data-kw="family three generations linear row north south blood relation paternal grandmother son in law nine members">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 41</p>
+      <h3>Linear row + 3-generation Family + directions</h3>
+      <p class="method-pill">9 log &middot; row + facing + family tree</p>
+      <p class="trigger">Trigger: &ldquo;A family of three generations having nine members sit in a linear row&hellip; some facing north, some south.&rdquo; Har clue do kaam karta hai &mdash; ek relation, ek seat/direction.</p>
+      <div class="example">
+        <p class="setline">Set: Q125&ndash;129 &middot; A, B, C, D, E, F, G, H, I</p>
+        <b>Entry point:</b> &ldquo;A is father of I and D&rdquo; + &ldquo;D married to F&rdquo; se tree shuru; &ldquo;D's father extreme end, north&rdquo; + &ldquo;dono end same direction&rdquo; se row shuru.<br><b>Mini-rule:</b> pehle poora <b>family tree</b> complete karo (kaun kiska), tabhi &lsquo;G's paternal grandmother&rsquo; jaise seat-clue kaam karenge.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q125</div><div class="qt">odd one out &rarr; logic = <b>facing direction</b> (baaki south) &rarr; <span class='qa'>(3) H</span></div></div>
+        <div class="qrow"><div class="qn">Q126</div><div class="qt">&ldquo;between G and her brother&rdquo; &rarr; brother = B &rarr; <span class='qa'>(1) Four</span></div></div>
+        <div class="qrow"><div class="qn">Q127</div><div class="qt">&ldquo;2nd right of F's father&rdquo; &rarr; pehle F ka father (=H) &rarr; <span class='qa'>(4) E</span></div></div>
+        <div class="qrow"><div class="qn">Q128</div><div class="qt">&ldquo;G ka C se rishta&rdquo; &rarr; tree &rarr; <span class='qa'>(1) Granddaughter</span></div></div>
+        <div class="qrow"><div class="qn">Q129</div><div class="qt">&ldquo;I ka rishta 2nd-right-of-C wale se&rdquo; &rarr; do-step &rarr; <span class='qa'>(5) Aunt</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="grid" data-kw="houses numbered 1 to 10 west to east vacant houses ages perfect square difference makan number">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 42</p>
+      <h3>Houses 1&ndash;10 (West&rarr;East) + vacant + ages</h3>
+      <p class="method-pill">10 house &middot; 8 log &middot; 2 vacant &middot; age variable</p>
+      <p class="trigger">Trigger: &ldquo;ten houses from west to east numbered 1 to 10&hellip; two houses are <b>vacant</b>&rdquo; + ages. Row hi hai, par <b>seat number fixed</b> hain &mdash; isliye har clue = number equation. Vacant house ginti mein aata hai, &lsquo;people between&rsquo; mein nahi.</p>
+      <div class="example">
+        <p class="setline">Set: Q109&ndash;113 &middot; 1 Q(49) 2 S(51) 3 &mdash; 4 G(59) 5 J(64) 6 K(35) 7 R(25) 8 &mdash; 9 L(79) 10 P(85)</p>
+        <b>Entry point:</b> &ldquo;J ki age perfect square, odd house, house 7 se west&rdquo; &rarr; J = 64, house 5. &ldquo;4 houses between vacant houses&rdquo; + &ldquo;house 4 not vacant&rdquo; se vacant pair fix (3 &amp; 8).<br><b>Mini-rule:</b> question padho dhyan se &mdash; <span class='ans'>&lsquo;houses between&rsquo; &ne; &lsquo;people between&rsquo;</span>. Vacant yahin trap karta hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q109</div><div class="qt">&ldquo;house 2 aur 9 ki age ka diff&rdquo; &rarr; 79&minus;51 &rarr; <span class='qa'>(4) 28 years</span></div></div>
+        <div class="qrow"><div class="qn">Q110</div><div class="qt">&ldquo;correct statement&rdquo; &rarr; ek-ek verify &rarr; <span class='qa'>(2) S is 2 yrs elder to Q</span></div></div>
+        <div class="qrow"><div class="qn">Q111</div><div class="qt">&ldquo;eldest&rdquo; &rarr; max age 85 &rarr; <span class='qa'>(1) P</span></div></div>
+        <div class="qrow"><div class="qn">Q112</div><div class="qt">&ldquo;west of G&rdquo; &rarr; house 1&ndash;3 mein log gino (vacant chhodo) &rarr; <span class='qa'>(2) Two</span></div></div>
+        <div class="qrow"><div class="qn">Q113</div><div class="qt">&ldquo;<i>houses</i> between 51 and 79&rdquo; &rarr; houses gino, log nahi &rarr; <span class='qa'>(5) Six</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="grid" data-kw="bus sixteen seats four rows four columns seat number in front of behind row column grid arrangement">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 43</p>
+      <h3>Bus/Classroom grid — 4 row &times; 4 seat, numbered 1&ndash;16</h3>
+      <p class="method-pill">16 seat &middot; row + column &middot; front/behind</p>
+      <p class="trigger">Trigger: &ldquo;16 seats, row 1 in front of row 2&hellip; seats numbered 1 to 16&rdquo; + Note: &lsquo;left/right = <b>same row</b>&rsquo;, &lsquo;front/behind = <b>different rows</b>&rsquo;. Ye Note hi poora set solve karta hai &mdash; ise clue maano.</p>
+      <div class="example">
+        <p class="setline">Set: Q121&ndash;124 &middot; R1: Amit1 Siraj2 Anju3 Raju4 &middot; R2: Nidhi5 Rita6 Ankit7 Rahat8 &middot; R3: Indra9 Sumi10 Sania11 Pihu12 &middot; R4: Hari13 Viru14 Neha15 Sudip16</p>
+        <b>Entry point:</b> &ldquo;Rahat immediate in front of Indra, even seat, one end&rdquo; &rarr; seat 8 &amp; 9 fix. Phir &ldquo;Amit immediate in front of Rahat, odd seat, end&rdquo; &rarr; seat 1.<br><b>Mini-rule:</b> grid set mein 4&times;4 ka box bana ke <b>seat number pehle likh do</b>. &lsquo;Odd/even seat&rsquo; wala clue sabse zyada powerful hota hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q121</div><div class="qt">&ldquo;same numbered row&rdquo; &rarr; row chart &rarr; <span class='qa'>(4) Neha, Viru</span></div></div>
+        <div class="qrow"><div class="qn">Q122</div><div class="qt">&ldquo;correct combination&rdquo; &rarr; seat number match &rarr; <span class='qa'>(5) Sumi &mdash; 10</span></div></div>
+        <div class="qrow"><div class="qn">Q123</div><div class="qt">&ldquo;sum of seat numbers&rdquo; &rarr; 12 + 5 &rarr; <span class='qa'>(3) 17</span></div></div>
+        <div class="qrow"><div class="qn">Q124</div><div class="qt">&ldquo;Raju ki seat&rdquo; &rarr; Anju ke same row &rarr; <span class='qa'>(1) Seat 4</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="grid" data-kw="three rows row 1 row 2 row 3 four eight four persons companies facing north south sixteen persons">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 44</p>
+      <h3>Teen rows (4 &ndash; 8 &ndash; 4) + company variable</h3>
+      <p class="method-pill">16 log &middot; 3 rows &middot; row-2 half N half S</p>
+      <p class="trigger">Trigger: &ldquo;<b>three rows</b>&hellip; four in row 1, eight in row 2, four in row 3&rdquo; aur row-2 ke pehle 4 south, aakhri 4 north. Row-2 hi pull hai &mdash; uske left half ko row-1 face karta hai, right half ko row-3.</p>
+      <div class="example">
+        <p class="setline">Set: Q130&ndash;133 &middot; A&ndash;P + companies</p>
+        <b>Entry point:</b> pehle <b>facing map</b> banao: row-2 ke seat 1&ndash;4 &harr; row-1, seat 5&ndash;8 &harr; row-3. Phir &ldquo;Genpact &amp; Tech Mahindra dono end par&rdquo; jaise definite clue.<br><b>Mini-rule:</b> lambe (20+ clue) set mein pehla round sirf <b>definite clues</b> ka lagao, doosre round mein negative wale &mdash; warna 2 case bhi 8 ban jaate hain.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q130</div><div class="qt">&ldquo;who works in Accenture&rdquo; &rarr; K, IBM(A) ka neighbour &amp; Tech Mahindra ke opposite &rarr; <span class='qa'>(4) Both (1) and (2)</span></div></div>
+        <div class="qrow"><div class="qn">Q131</div><div class="qt">&ldquo;Wipro wala + row&rdquo; &rarr; <span class='qa'>(4) F, row-3</span></div></div>
+        <div class="qrow"><div class="qn">Q132</div><div class="qt">&ldquo;between Coredge wala &amp; F ke opposite wala&rdquo; &rarr; <span class='qa'>(1) Three</span></div></div>
+        <div class="qrow"><div class="qn">Q133</div><div class="qt">&ldquo;Mindtree&rdquo; &rarr; O ke east wale ka opposite &rarr; <span class='qa'>(2) J</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="special" data-kw="two concentric circular tables inner outer husbands wives couples facing each other weights ages reverse digits">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 45</p>
+      <h3>Concentric circles — Outer + Inner (couples, weight/age link)</h3>
+      <p class="method-pill">8+8 &middot; outer inside-facing, inner outside-facing</p>
+      <p class="trigger">Trigger: &ldquo;two <b>concentric</b> circular tables&hellip; husbands outside circle facing inside, wives inside facing outside&rdquo;. Dono circle ka left/right <b>ulta</b> hota hai. Plus numeric link: wife ki age = husband ke weight ke digits reverse.</p>
+      <div class="example">
+        <p class="setline">Set: Q114&ndash;118 &middot; A&ndash;H (husbands) &middot; P&ndash;W (wives)</p>
+        <b>Entry point:</b> numeric clue pehle: &ldquo;wife age 46&rdquo; &rarr; husband weight 64; &ldquo;V ki age 27&rdquo; &rarr; weight 72; &ldquo;H ka weight square number&rdquo; &rarr; 64. Numbers hi seating se pehle lock hote hain.<br><b>Mini-rule:</b> inner circle par ginti karte waqt outer ka arrow mat use karna &mdash; dono ka left/right alag hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q114</div><div class="qt">&ldquo;between D and the 83-weight wala&rdquo; &rarr; C=83 &rarr; <span class='qa'>(3) Three</span></div></div>
+        <div class="qrow"><div class="qn">Q115</div><div class="qt">&ldquo;heaviest&rdquo; &rarr; 92 &rarr; <span class='qa'>(1) B</span></div></div>
+        <div class="qrow"><div class="qn">Q116</div><div class="qt">&ldquo;wife of A&rdquo; &rarr; A ka weight = wife ki age &rarr; palindrome jaisa case &rarr; <span class='qa'>(1) U</span></div></div>
+        <div class="qrow"><div class="qn">Q117</div><div class="qt">&ldquo;F + P ki age ka sum&rdquo; &rarr; 85 + 38 &rarr; <span class='qa'>(4) 123</span></div></div>
+        <div class="qrow"><div class="qn">Q118</div><div class="qt">&ldquo;age of H&rdquo; &rarr; reverse-digit rule &rarr; <span class='qa'>(3) 64</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="special" data-kw="concentric circular tables larger smaller four each hobbies condition if one or two persons between same table opposite different table">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 46</p>
+      <h3>Concentric circles + &ldquo;Condition&rdquo; wala twist (4+4)</h3>
+      <p class="method-pill">8 log &middot; 4 outer + 4 inner &middot; hobby variable</p>
+      <p class="trigger">Trigger: set ke andar ek alag <b>&ldquo;Condition:&rdquo;</b> box &mdash; &ldquo;agar do logon ke beech 1 ya 2 log hain to wo <b>same table</b> par hain; agar opposite hain to <b>alag table</b> par&rdquo;. Ye condition hi batati hai kaun andar, kaun bahar.</p>
+      <div class="example">
+        <p class="setline">Set: Q134&ndash;138 &middot; A(Singing) D(Dancing) C(Swimming) F(Cooking) B(Painting) E(Reading) H(Gardening) G(Designing)</p>
+        <b>Entry point:</b> &ldquo;A faces Dancing wala&rdquo; + &ldquo;A Singing&rdquo; &rarr; A aur D alag table, aamne-saamne. &ldquo;F Cooking, faces C&rdquo; se doosri jodi.<br><b>Mini-rule:</b> jab bhi &lsquo;faces&rsquo; aaye &rarr; alag table; jab &lsquo;X ke aur Y ke beech 1&ndash;2 log&rsquo; aaye &rarr; same table. Isi do line se poora set khulta hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q134</div><div class="qt">&ldquo;2nd left of Designing wala&rdquo; &rarr; G base &rarr; <span class='qa'>(4) A</span></div></div>
+        <div class="qrow"><div class="qn">Q135</div><div class="qt">odd one out &rarr; logic = <b>outer vs inner table</b> &rarr; <span class='qa'>(5) D</span></div></div>
+        <div class="qrow"><div class="qn">Q136</div><div class="qt">&ldquo;Painting wale ko kaun face karta&rdquo; &rarr; B ke saamne &rarr; <span class='qa'>(2) E</span></div></div>
+        <div class="qrow"><div class="qn">Q137</div><div class="qt">&ldquo;opposite to G&rdquo; &rarr; alag table &rarr; <span class='qa'>(3) H</span></div></div>
+        <div class="qrow"><div class="qn">Q138</div><div class="qt">&ldquo;who likes Reading&rdquo; &rarr; designing ke immediate right &rarr; <span class='qa'>(4) E</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="special" data-kw="coded seating arrangement symbols means opposite adjacent third to the left code language sanket chihn">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 47</p>
+      <h3>Coded seating — symbols (# $ % &amp; @ ^) se clue diye hue</h3>
+      <p class="method-pill">Clue coded &middot; pehle decode, phir baithao</p>
+      <p class="trigger">Trigger: &ldquo;A #* B means A and B are opposite&rdquo; / &ldquo;R%Q means two persons between R and Q&rdquo; type legend. Kaam do step ka hai: (1) har symbol ko <b>hindi/english vakya</b> mein likho, (2) phir normal set ki tarah solve karo.</p>
+      <div class="example">
+        <p class="setline">Set: Q119&ndash;120 (10 trucks, 2 rows) &middot; Q139&ndash;141 (square table, 8 log)</p>
+        <b>Entry point:</b> pehle legend ko ek jagah likh lo (2 minute lagti hai par baad mein galti zero). Coded chain (&ldquo;A $% B #$ C&hellip;&rdquo;) ko todo &mdash; har jodi ek alag clue hai.<br><b>Mini-rule:</b> coded set mein <b>negative symbols</b> ($#, #, &amp;) sirf case kaatte hain &mdash; unhe last mein lagao. Aur ambiguity bache to <span class='ans'>CBD / Either-Or</span> hi answer hota hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q119</div><div class="qt">&ldquo;which is true&rdquo; &rarr; decode kar ke verify &rarr; <span class='qa'>(4) Scania &amp; Mahindra same row</span></div></div>
+        <div class="qrow"><div class="qn">Q120</div><div class="qt">&ldquo;correct pair&rdquo; &rarr; truck&ndash;destination chart &rarr; <span class='qa'>(2) Bharatbenz &mdash; Ranchi</span></div></div>
+        <div class="qrow"><div class="qn">Q139</div><div class="qt">&ldquo;F w.r.t. D&rdquo; &rarr; F/D interchange ho sakte &rarr; <span class='qa'>(5) Can't be determined</span></div></div>
+        <div class="qrow"><div class="qn">Q140</div><div class="qt">&ldquo;between G and B, from right of B&rdquo; &rarr; <span class='qa'>(3) Three</span></div></div>
+        <div class="qrow"><div class="qn">Q141</div><div class="qt">do position barabar sahi &rarr; <span class='qa'>(5) Either (1) or (2)</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="question type statement correct which of the following statements is true verify each option sahi kathan">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 48</p>
+      <h3>Q-type: &ldquo;Which statement is correct / true?&rdquo; (verify-each)</h3>
+      <p class="method-pill">Final diagram &middot; option-by-option check</p>
+      <p class="trigger">Trigger: paanch statements diye, ek sach. Yahan koi shortcut nahi &mdash; <b>final diagram banna zaroori</b> hai, aur har option ko ek-ek kar ke tick/cross karna hai.</p>
+      <div class="example">
+        <p class="setline">Set-wise: Q13, Q18, Q71, Q84, Q110, Q145</p>
+        <b>Mini-rule:</b> upar se neeche mat padho &mdash; jis option mein sirf <b>do naam</b> hain use pehle check karo (sabse tez verify hota hai). Aur &lsquo;Both&hellip;&rsquo; wala option ho to baaki sab check karna majboori hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q13</div><div class="qt">&ldquo;U sits to the left of O&rdquo; verify &rarr; <span class='qa'>(5)</span></div></div>
+        <div class="qrow"><div class="qn">Q18</div><div class="qt">&ldquo;S 3rd to the left of K&rdquo; &rarr; <span class='qa'>(5)</span></div></div>
+        <div class="qrow"><div class="qn">Q71</div><div class="qt">&ldquo;P 3rd right of O&rdquo; &rarr; <span class='qa'>(4)</span></div></div>
+        <div class="qrow"><div class="qn">Q84</div><div class="qt">&ldquo;only one person between E and A&rdquo; &rarr; <span class='qa'>(2)</span></div></div>
+        <div class="qrow"><div class="qn">Q110</div><div class="qt">&ldquo;S is 2 years elder to Q&rdquo; &rarr; <span class='qa'>(2)</span></div></div>
+        <div class="qrow"><div class="qn">Q145</div><div class="qt">do statement sahi &rarr; <span class='qa'>(5) Both (2) and (4)</span></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="qtype" data-kw="either or cannot be determined ambiguous two cases both possible answer type nishchit nahi">
+      <div class="tag">&#10003;</div>
+      <p class="no">PATTERN 49</p>
+      <h3>Q-type: &ldquo;Either / Cannot be determined&rdquo; kab aata hai</h3>
+      <p class="method-pill">2 case tak reh gaye &rarr; CBD/Either</p>
+      <p class="trigger">Trigger: set solve hone ke baad bhi <b>do log interchangeable</b> reh jayein. Ye galti nahi hai &mdash; paper mein aisa option jaan-boojh ke rakha jaata hai. Dobara solve karne mein time mat barbaad karo.</p>
+      <div class="example">
+        <p class="setline">Set-wise: Q107, Q108, Q139, Q141, Q43</p>
+        <b>Mini-rule:</b> CBD tabhi choose karo jab <b>saare clue laga chuke ho</b>. Ek bhi negative clue baaki hai to pehle wo lagao &mdash; 90% baar ambiguity wahin khatam ho jaati hai.
+        <div class="qmap">
+          <div class="qhead">Question-wise trigger &rarr; method &rarr; answer</div>
+        <div class="qrow"><div class="qn">Q107</div><div class="qt">U/R dono possible &rarr; <span class='qa'>(4) Either U or R</span></div></div>
+        <div class="qrow"><div class="qn">Q108</div><div class="qt">wahi ambiguity &rarr; <span class='qa'>(4) Either U or R</span></div></div>
+        <div class="qrow"><div class="qn">Q139</div><div class="qt">F &amp; D ki jagah swap ho sakti &rarr; <span class='qa'>(5) Can't be determined</span></div></div>
+        <div class="qrow"><div class="qn">Q141</div><div class="qt">do position barabar valid &rarr; <span class='qa'>(5) Either (1) or (2)</span></div></div>
+        <div class="qrow"><div class="qn">Q43</div><div class="qt">yahan info poori thi, CBD trap tha &rarr; <span class='qa'>(1) Black</span></div></div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>49 patterns ab tak.</b> Coverage: Chapter&nbsp;9 Sitting Arrangement &mdash; purane notes (Examples 1&ndash;95, PDF page 21 tak) <b>+</b> naya Exercise set (Q1&ndash;145, Level&nbsp;1 &amp; 2, solutions PDF page 19 tak).<br>
+    Naye cards mein har question ka <b>trigger &rarr; method &rarr; answer</b> mapping diya hai &mdash; question padhte hi pattern pehchano, phir mini-solution se method confirm karo.<br>
+    Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena &mdash; <code>data-cat</code> aur <code>data-kw</code> update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

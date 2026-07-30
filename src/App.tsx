@@ -40,6 +40,8 @@ import BpscPyqSession from "./pages/BpscPyqSession";
 import RbiLayout from "./pages/RbiLayout";
 import RbiDashboard from "./pages/RbiDashboard";
 import RbiPractice from "./pages/RbiPractice";
+import RbiReasoning from "./pages/RbiReasoning";
+import RbiReasoningTrainer from "./pages/RbiReasoningTrainer";
 import RbiEnglish from "./pages/RbiEnglish";
 import RbiEnglishVocab from "./pages/RbiEnglishVocab";
 import RbiVocabPractice from "./pages/RbiVocabPractice";
@@ -188,6 +190,8 @@ const App = () => (
               <Route index element={<RbiDashboard />} />
               <Route path="practice" element={<RbiPractice />} />
               <Route path="practice/:topic" element={<RbiPracticeSession />} />
+              <Route path="reasoning" element={<RbiReasoning />} />
+              <Route path="reasoning/trainer/:slug" element={<RbiReasoningTrainer />} />
               <Route path="english" element={<RbiEnglish />} />
               <Route path="english/vocab" element={<RbiEnglishVocab />} />
               <Route path="english/vocab/practice" element={<RbiVocabPractice />} />
