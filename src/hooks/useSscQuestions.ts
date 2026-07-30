@@ -7,7 +7,7 @@ export function useSscQuestions(topic?: SscTopic) {
     queryKey: ['ssc-questions', topic],
     queryFn: async () => {
       let query = supabase.from('ssc_questions').select('*');
-      if (topic) query = query.eq('topic', topic);
+      if (topic) query = query.eq('topic', topic as never);
       const { data, error } = await query;
       if (error) throw error;
       return (data || []).map((q: any) => ({
