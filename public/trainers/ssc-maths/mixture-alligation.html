@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mixture & Alligation | Pattern Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Complete Maths Course</p>
+    <h1>Mixture & Alligation — pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search patterns...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="addsub">Add/Remove</button>
+      <button data-filter="percent">% / Concentration</button>
+      <button data-filter="alligation">Alligation</button>
+      <button data-filter="replace">Replacement</button>
+      <button data-filter="reverse">Reverse/Multi-step</button>
+      <button data-filter="mixmix">Mixture + Mixture</button>
+      <button data-filter="percentmix">% / Strength</button>
+      <button data-filter="misc">Miscellaneous</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+    <!-- ===== Page 41 ===== -->
+<article class="card" data-cat="addsub" data-kw="milk water ratio added new ratio doodh paani mila 36 litre canister mixture add ek cheez">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Ek cheez add → naya ratio nikalo</h3>
+      <p class="trigger">Trigger: "36 L mixture 3:1, usme 15 L doodh aur mila diya — naya ratio kya hoga?"</p>
+      <div class="example">
+        <b>Q1:</b> 36L, m:w=3:1 → 27:9; +15 milk → 42:9 = <span class="ans">14:3</span>
+        <span class="q2"><b>Q2:</b> 25L, acid:water=4:1 → 20:5; +3 water → 20:8 = <span class="ans">5:2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="kitna mila quantity added find x ratio become 7:1 unit method milk added litres">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Ratio de diya → kitna add hua? (jo cheez add nahi hui use fix karo)</h3>
+      <p class="trigger">Trigger: "kuch aur doodh milane ke baad ratio 7:1 ho gaya — mila hua doodh kitna tha?"</p>
+      <div class="example">
+        <b>Q3:</b> 200L, 17:3 → water fix: 17:3 & 7:1=21:3 → total 20u=200 → 1u=10; milk +4u = <span class="ans">40 L</span>
+        <span class="q2"><b>Q5 (alloy):</b> Cu:Zn:Ni 5:3:2 (100kg) → 5:3:3, Cu+Zn fix → 1u=10 → Ni add = <span class="ans">10 kg</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="water extracted nikala removed subtract reduced mixture quantity chemical process ratio 5:7">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Kuch nikaal diya (subtract) → kitna nikla?</h3>
+      <p class="trigger">Trigger: "kuch paani nikaal dene par ratio 5:7 ho gaya aur mixture 36 L reh gaya — paani kitna nikla?"</p>
+      <div class="example">
+        <b>Q6:</b> m:w=2:3 → milk fix → 10:15 & 5:7=10:14 → new total 24u=36 → 1u=1.5; water gaya 1u = <span class="ans">1.5 L</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="percent" data-kw="63% 70% concentration milk solution percent badhana how much milk added saandrata">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>% concentration badhani hai → kitna pure milaayein?</h3>
+      <p class="trigger">Trigger: "49 L solution mein 63% milk hai, 70% karne ke liye kitna milk aur daalein?"</p>
+      <div class="example">
+        <b>Q4:</b> Water constant = 37% of 49. Naya total = 49×37/30<br>
+        Added = 49×7/30 = <span class="ans">11 13/30 L</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="alligation pure water added 20% 15% acid ratio mixing two concentrations kitna paani milaya">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Alligation: pure paani/acid mila ke % lana</h3>
+      <p class="trigger">Trigger: "20% acid wale mixture mein paani milaya, ab 15% acid — paani kitna?" (pure cheez = 0% ya 100%)</p>
+      <div class="example">
+        <b>Q7:</b> 20% & 0% → 15% → (15−0):(20−15)=15:5=3:1 → mixture 30L → water = <span class="ans">10 L</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="percent" data-kw="quantity of chocolate equal same amount 50% 60% x percent solution mix two vessels equal quantity component">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Component ki quantity barabar → equation banao</h3>
+      <p class="trigger">Trigger: "dono solution mein chocolate/milk ki maatra barabar hai" — 50% of 8 = 60% of x type.</p>
+      <div class="example">
+        <b>Q8:</b> 50×8/100 = 60×x/100 → x = 20/3 = <span class="ans">6⅔%</span>
+        <span class="q2"><b>Q9:</b> 60L (10% C) + 20L milk = 80L → 60×10 = 80×x → x = <span class="ans">7.5%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="1:x find value of x by option beaker acid water 50 ml added ratio 2:5 option lagao">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Ratio mein "1 : x" diya ho → option laga ke check</h3>
+      <p class="trigger">Trigger: "acid:water = 1 : x, 300 ml mixture mein 50 ml paani mila → 2:5 ho gaya, x = ?"</p>
+      <div class="example">
+        <b>Q10:</b> x=2 lo → 1:2 → 300ml = 100:200; +50 water → 100:250 = <span class="ans">2:5 ✓ (x=2)</span>
+        <span class="q2"><b>Q11:</b> F:W 5:3 (4L base) me +1L → check karke <span class="ans">option match</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="do baar add multi step two additions 20 ltr then 50 ltr chain ratio backward find x initial unit matching">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Do-teen baar add hua (chain) → har step ka ratio match karo</h3>
+      <p class="trigger">Trigger: "pehle kuch milk mila → ratio badla, phir 20 L paani mila → ratio phir badla" — beech ka x poocha jaaye.</p>
+      <div class="example">
+        <b>Q12:</b> 2:3 →(+x)→ 3:2 →(+20 W)→ 1:2 → milk constant se units match → x = 20×5/12 = <span class="ans">25/3 L</span>
+        <span class="q2"><b>Q13:</b> 2:3 →(+x)→3:2→(+y)→1:2→(+10)→4:3 → y=8, x=10/3 → x+y = <span class="ans">34/3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="pehle nikala fir dala removed then added acid water 12 ltr taken out 7.5 added 5:6 final ratio">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Pehle nikala, phir dusri cheez dali (mixed operation)</h3>
+      <p class="trigger">Trigger: "mixture se X L nikaala gaya, phir Y L paani daala gaya — final ratio 5:6"</p>
+      <div class="example">
+        <b>Q:</b> Acid:W=5:3 → −12L mixture (same ratio mein jaata hai) → 12.5:7.5<br>
+        +7.5 W → 12.5:15 = <span class="ans">5:6</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="replacement nikala paani bhara repeated twice thrice old left ratio square cube pratisthapan replace equal quantity vessel">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Equal Replacement: (old : left)^n — jo replace NAHI hoti uska ratio lo</h3>
+      <p class="trigger">Trigger: "X L nikaal ke utna hi paani bhar diya, yeh process n baar dohraya" — bacha hua milk/acid poocha jaaye.</p>
+      <div class="example">
+        <b>Q14:</b> 10L, 2L nikala 2 baar → left=8/10=4/5 → (5:4)² = 25:16 → acid left : original = <span class="ans">16:25</span>
+        <span class="q2"><b>Q15:</b> 20L, 5L × 2 baar → 4:3 → (4:3)² = <span class="ans">16:9</span></span>
+        <br><b>Q17:</b> 90L, 18L × 3 baar → 5:4 → 125:64 → 90×64/125 = <span class="ans">46.08 L</span>
+        <br><b>Q19:</b> 1600L, 25%(=1/4) × 3 baar → 4:3 → 64:27 → 1600×27/64 = <span class="ans">675 L</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="kerosene petrol replaced 4 times total kerosene amount other liquid difference 625 256 369">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Replacement mein DOOSRI cheez (kerosene/water) poochi jaaye</h3>
+      <p class="trigger">Trigger: "n baar replace karne ke baad mixture mein kerosene/paani ki total maatra kitni?"</p>
+      <div class="example">
+        <b>Q18:</b> 200L, 40L(=1/5) × 4 baar → 5:4 → 625:256 → kerosene part = 625−256 = 369<br>
+        200×369/625 = <span class="ans">118.08 L</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="initial quantity find milk water 100:69 256:33 root square cube unit method reverse replacement aarambhik matra">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Reverse Replacement: final ratio diya → initial quantity nikalo (root lo)</h3>
+      <p class="trigger">Trigger: "6 L nikaal ke paani mila, 2 baar; ab m:w = 100:69 — shuruaati doodh kitna tha?"</p>
+      <div class="example">
+        <b>Q20:</b> m:w=100:69 → old:left = 169:100 → √ → 13:10 → 3u = 6L → 1u=2 → initial = 13×2 = <span class="ans">26 L</span>
+        <span class="q2"><b>Q20b:</b> 5L × 2 baar, 256:33 → 289:256 → 17:16 → 1u=5 → <span class="ans">85 L</span></span>
+        <br><b>Q21:</b> 6L × 3 baar, m:w=1000:331 → 1331:1000 → ∛ → 11:10 → 1u=6 → <span class="ans">66 L</span>
+      </div>
+    </article>
+
+    <!-- ===== Page 85 ===== -->
+<article class="card" data-cat="replace" data-kw="replacement replace part of mixture milk water medicine ratio kitna bhaag pani se badla प्रतिस्थापित मिश्रण अनुपात fraction">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>"Kitna bhaag replace karein" → ratio se fraction</h3>
+      <p class="trigger">Trigger: "mixture ka kitna part paani se replace kiya jaye taaki ratio a:b ho jaye" — quantity nahi, sirf FRACTION poocha jaye.</p>
+      <div class="example">
+        <b>Q21:</b> M:W 7:5 → 2:3. Milk fraction: 7/12 × R = 2/5 → R = 24/35 (left/old) → replaced = 1 − 24/35 = <span class="ans">11/35</span>
+        <span class="q2"><b>Q22:</b> W:M 3:7 → 1:1. Medicine: 7/10 × R = 1/2 → R = 5/7 → replaced = <span class="ans">2/7</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="percent acid water solution 64% 30% four litres taken out same quantity water added original quantity प्रतिशत घोल एसिड">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Replacement jab data % mein ho (acid/water solution)</h3>
+      <p class="trigger">Trigger: "solution mein water x% tha, N litre nikal ke utna hi paani daala, ab acid y% hai — shuru mein kitna paani/solution tha?"</p>
+      <div class="example">
+        <b>Q23:</b> Acid 36% → 30%. 36/100 × R = 30/100 → R = 5/6 (left/original) → nikala 1/6 = 4L → 1 unit = 4 → O.Q = 24 L<br>
+        Water = 24 × 64/100 = <span class="ans">15.36 L</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="litres replaced by liquid B initial quantity jar container mixture 10 litre 9 litre nikala daala original quantity find A">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Fixed litre replace → initial quantity nikalo</h3>
+      <p class="trigger">Trigger: "N litre mixture nikaal ke utne hi litre liquid B daala, ratio a:b ho gaya — shuru mein A kitna tha?"</p>
+      <div class="example">
+        <b>Q24:</b> A:B 4:1 → 2:3, A ka fraction: 4/5 × R = 2/5 → R = 1/2 → nikla 1/2 = 10L → 1 unit = 10, O.Q = 20 → A = 4/5 × 20 = <span class="ans">16 L</span>
+        <span class="q2"><b>Q25:</b> 7:5 → 7:9, 9L replace: 7/12 × R = 7/16 → R = 3/4 → 1/4 = 9L → O.Q = 36 → A = 7/12 × 36 = <span class="ans">21 L</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="unequal taken out added different quantity 48 litre nikala 81 litre water added 8 litre 12 litre milk unit method ladder">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Nikaala X litre, daala ALAG Y litre (unequal)</h3>
+      <p class="trigger">Trigger: "48L mixture nikaal ke 81L paani milaya" / "8L nikaal ke 12L doodh milaya" — nikala aur daala quantity alag hai, isliye total badal jaata hai.</p>
+      <div class="example">
+        <b>Q26:</b> 13:11 (24u) −48L → same ratio; +81L water → 7:8. Ladder: 91:77 vs 7×13:8×13 → 1 unit = 3L, total 552 → Milk = 552 × 13/24 = <span class="ans">299 L</span>
+        <span class="q2"><b>Q27:</b> 64L, 7:3 → 8L nikala (bacha 56 = 39.2:16.8) + 12L milk → 51.2:16.8 = <span class="ans">64 : 21</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixmix" data-kw="in what ratio should be mixed alligation two alloys A B copper zinc milk water target ratio kis anupat me milaya jana chahiye">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>"Kis ratio mein milayein?" → Alligation / cross equation</h3>
+      <p class="trigger">Trigger: "do alloy/container ka ratio diya hai, naya mixture a:b banana hai — A aur B ko kis anupaat mein milaya jaye?"</p>
+      <div class="example">
+        <b>Q28:</b> Cu:Zn 7:8 & 4:1 → chahiye 2:1. (7x+12y)/(8x+3y)=2/1 → 6y=9x → <span class="ans">2 : 3</span>
+        <span class="q2"><b>Q29:</b> 3:2 & 6:5 → 4:3. Milk-fraction alligation 3/5, 6/11 vs 4/7 → <span class="ans">10 : 11</span></span>
+        <br><b>Q30:</b> X:Y 2:3 & 7:3 → X = 50% (=1/2). Alligation: |7/10−1/2| : |1/2−2/5| = 1/5 : 1/10 → <span class="ans">2 : 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixmix" data-kw="equal quantities melted third alloy C gold copper zinc tin barabar matra same quantity mixed ratio LCM">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Equal quantity mila di → naya ratio</h3>
+      <p class="trigger">Trigger: "dono alloys ki SAMAN/equal quantity pighla kar C banaya" — dono ratio ko same total (LCM) pe le jao, phir add karo.</p>
+      <div class="example">
+        <b>Q31:</b> 7:2 (9) & 7:11 (18) → LCM 18 → 14:4 aur 7:11 → jod = 21:15 = <span class="ans">7 : 5</span>
+        <span class="q2"><b>Q44:</b> Zn:Tin 5:2 (7kg) & 3:4 (21kg) → 5:2 aur 9:12 → 14:14 = <span class="ans">1 : 1</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixmix" data-kw="mixed in the ratio 4:5 3:1 alloy C percentage of y percent chocolate milk syrup water ladder method total units cross multiply">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Mixing ratio DIYA hai → final ratio / % nikalo (ladder)</h3>
+      <p class="trigger">Trigger: "A aur B ko m:n ratio mein mila diya gaya, naye mixture ka ratio ya kisi metal ka % poocha jaye" — har ratio ko uske total se × mixing-part karke jodo.</p>
+      <div class="example">
+        <b>Q38:</b> A 5:2 (7), B 3:4 (7), mix 4:5 → x:y = (20+15):(8+20) = 35:28... units milao → y% = 44⁴⁄₉% → <span class="ans">44⁴⁄₉ %</span>
+        <span class="q2"><b>Q37:</b> Choc:Milk 5:3 & 6:2, mix → 50:27 → choc% = 50/77 × 100 ≈ <span class="ans">65%</span></span>
+        <br><b>Q33:</b> Cu:Zn 5:3 (11u) & 15:7 (22u) mix → <span class="ans">5 : 2</span> &nbsp;·&nbsp; <b>Q34:</b> → <span class="ans">27 : 43</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixmix" data-kw="three samples utensils equal quantity mixtures 2:1 3:2 5:3 teen namune barabar matra final ratio water acid milk">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>TEEN mixtures, equal quantity → final ratio</h3>
+      <p class="trigger">Trigger: "teen bartan/nomune mein equal quantity mixture hai (a:b, c:d, e:f), sab mila diya" — teeno ko common total (LCM) pe lao, phir add.</p>
+      <div class="example">
+        <b>Q39:</b> Acid:W 2:1, 3:2, 5:3 → LCM 120 → 80:40, 72:48, 75:45 → 227:133 → Water:Acid = <span class="ans">227 : 133</span>
+        <span class="q2"><b>Q40:</b> 6:1, 5:2, 3:1 → common 28 → 24:4, 20:8, 21:7 → <span class="ans">65 : 19</span></span>
+        <br><b>Q41:</b> → <span class="ans">157 : 53</span> &nbsp;·&nbsp; <b>Q42:</b> S:W → 33:12 = <span class="ans">11 : 4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="alloy A lead tin alloy B tin copper different metals 60 kg 100 kg amount of tin actual quantity kg nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Dono alloys ke metals ALAG-ALAG hain → actual kg nikalo</h3>
+      <p class="trigger">Trigger: "A mein lead-tin 3:2, B mein tin-copper 1:4, 60kg + 100kg mila diya — naye alloy mein tin kitna?" — ratio mat jodo, pehle har alloy se actual kg nikalo.</p>
+      <div class="example">
+        <b>Q43:</b> A 60kg → lead 36, tin 24; B 100kg → tin 20, Cu 80<br>
+        Tin = 24 + 20 = <span class="ans">44 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="how much quantity from third bottle unknown x litres syrup water 1:1 equation banao teesri bottle kitni matra">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Teesri bottle se kitna lein? → x maan ke equation</h3>
+      <p class="trigger">Trigger: "pehli se 10L, dusri se 21L liya, teesri se kitni quantity lein taaki final 1:1 ho" — unknown x rakh kar syrup=water banao.</p>
+      <div class="example">
+        <b>Q45:</b> 10L(2:3)=4:6, 21L(3:4)=9:12, x(7:5)=7x/12 : 5x/12<br>
+        (156+7x)/(216+5x)=1 → 2x=60 → x = <span class="ans">30 litres</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="three varieties tea weights 4:5:8 added 5 kg 10 kg some quantity becomes 5:7:9 final mixture quantity third variety">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Har variety mein FIXED amount add → naya ratio</h3>
+      <p class="trigger">Trigger: "teen kismon ka ratio 4:5:8, usme 5kg, 10kg aur kuch quantity milaayi to ratio 5:7:9 ho gaya" — pehle do se unit nikalo, phir teesri.</p>
+      <div class="example">
+        <b>Q46:</b> 4k+5 : 5k+10 = 5:7 → 28k+35 = 25k+50 → k=5 → 3rd = 8×5=40, final 3rd = 9 unit; 1st=25 → unit=5 → <span class="ans">45 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="percentmix" data-kw="45% alcohol 60% solution mixed ratio resultant 66% 72% weighted average alligation percent solution acid strength">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>% strength wale solutions → weighted average, phir dobara alligation</h3>
+      <p class="trigger">Trigger: "45% aur 60% alcohol ko 2:3 mein milaya, ab is result ko 72% ke saath kis ratio mein milayein ki 66% mile?" — 2-step: pehle mixture ka % nikalo, phir alligation.</p>
+      <div class="example">
+        <b>Q47:</b> (45×2 + 60×3)/5 = 54%. Ab 54% & 72% → 66%: (72−66):(66−54) = 6:12 → <span class="ans">1 : 2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="two vessels A B 8 litres taken out from B added to A then from A to B final ratio to and fro exchange aana jaana">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do vessels ke beech aana-jaana (A→B, phir B→A)</h3>
+      <p class="trigger">Trigger: "B se 2L nikaal ke A mein daala, mix karke A se 2L nikaal ke wapas B mein daala — final B ka ratio?" — har step pe actual litre track karo.</p>
+      <div class="example">
+        <b>Q48:</b> A(8L) 3:1 = 6:2; B(8L) 5:3 → 2L of B = 1.25:0.75<br>
+        A ab 7.25:2.75 (10L) → 2L nikalo = 1.45:0.55 → B = (3.75+1.45):(2.25+0.55) = 5.2:2.8 = <span class="ans">13 : 7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="percentmix" data-kw="how much water should be mixed 520 ml 324 ml resulting solution ratio 3:4 33 1/3% acid alcohol add water target ratio kitna pani milaya jaye">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Mix karke, phir sirf PAANI add karo → target ratio</h3>
+      <p class="trigger">Trigger: "A aur B ko m:n mein mila diya, us solution ke N ml mein kitna paani milayein ki ratio 3:4 (ya acid 33⅓%) ho jaye?" — acid constant rehta hai, sirf water badhta hai.</p>
+      <div class="example">
+        <b>Q49:</b> 3:5 & 9:7 mix 5:8 → 51:53 (104u = 520ml, 1u=5ml). Acid 51 fix → 3:4 → water chahiye 68 → +15u = <span class="ans">75 ml</span>
+        <span class="q2"><b>Q50:</b> 5:4 & 7:11, 10L:8L → 39:42 = 13:14 (27u = 324ml, 1u=12ml). 33⅓% → 13:26 → +12u = <span class="ans">144 ml</span></span>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <b>26 patterns — merged from pages 41, 85 (ascending order).</b>
+  </footer>
+
+
+  <footer>
+    <b>22 patterns ab tak.</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Average Trainer (Complete)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+
+  .unit{ margin-bottom:64px; }
+  .unit + .unit{ border-top:2px dashed rgba(29,63,143,0.25); padding-top:28px; }
+  .unit-label{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:#fff; background:var(--ink-blue);
+    display:inline-block; padding:6px 12px; border-radius:8px; margin-left:64px;
+  }
+  @media (max-width:640px){ .unit-label{margin-left:36px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="unit">
+  <div class="unit-label">Part 1 — Average Pattern Trainer</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Average (औसत)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Average chapter — trigger line padho, worked example se pattern lock karo.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'deviation', 'weighted', 'missing', 'weight', 'marks'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="basic">Basic/Deviation</button>
+      <button data-filter="missing">Missing Term</button>
+      <button data-filter="weighted">Weighted</button>
+      <button data-filter="group">Group Split</button>
+      <button data-filter="shift">Add/Multiply</button>
+      <button data-filter="algebra">Algebra/Relation</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="basic" data-kw="deviation method assumed mean basic average weight kg earnings daily sale औसत विचलन भार आय बड़ी संख्या">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Deviation (मान लो average) method</h3>
+      <p class="trigger">Trigger: "in numbers ka average nikalo" — numbers aapas mein paas-paas hain, jodna lamba padega.</p>
+      <div class="example">
+        <b>Q1:</b> 49,42,61,55,58 → base 50 → D=−1−8+11+5+8=15 → 15/5=3 → <span class="ans">53</span>
+        <span class="q2"><b>Q2:</b> 350…620 (7 din) → base 500 → D=+140 → 140/7=20 → <span class="ans">₹520</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="plain sum divide big scattered numbers decimal average basic 650.89 सामान्य औसत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Numbers bikhre hue → seedha Sum/n</h3>
+      <p class="trigger">Trigger: numbers ek dusre se bahut door hain (3-digit random) ya options decimal mein hain — deviation ka faayda nahi.</p>
+      <div class="example">
+        <b>Q3:</b> 693,456,876,532,934,691,596,398,682 → Sum=5858 → 5858/9 = <span class="ans">650.89</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="unit conversion kg gram parcel weight mixed units litre ml इकाई बदलो">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Units alag-alag → pehle same unit karo</h3>
+      <p class="trigger">Trigger: data mein kg aur gm (ya m aur cm) dono mile ho — "average weight kya hai".</p>
+      <div class="example">
+        <b>Q4:</b> 1.5kg,1.25kg,1.35kg,750g,950g,0.7kg,0.4kg,0.5kg → sab gram → 7400/8 = <span class="ans">925 gm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="missing" data-kw="missing number x value find unknown term average is given fifth day sale sixth month expenditure लुप्त संख्या">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Average diya hai → missing term (x) nikalo</h3>
+      <p class="trigger">Trigger: "…aur x ka average 30 hai, x ka maan?" / "5ve din ki bikri" / "6the mahine kitna kharch kare".</p>
+      <div class="example">
+        <b>Q5:</b> 32,34,38,21,26,x avg 30 → base 30 → D=+2+4+8−9−4=+1 → x=30−1=<span class="ans">29</span>
+        <span class="q2"><b>Q9:</b> 4600,5600,4800,3800,6000,x avg 4500 → D=+2300 → x=4500−2300=<span class="ans">₹2200</span></span>
+        <br><b>Q7:</b> 5445,5937,5865,6562,x avg 6050 → D=−391 → x=6050+391=<span class="ans">₹6441</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="weighted" data-kw="weighted average two groups ratio students boys girls sections college marks 95 209 171 भारित औसत मिश्रण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Weighted Average (do/teen groups, alag counts)</h3>
+      <p class="trigger">Trigger: "n1 logon ka avg a, n2 logon ka avg b — sabka combined average?" — counts ya ratio diya hota hai.</p>
+      <div class="example">
+        <b>Type-1:</b> 10:40 → 15kg,25kg → base 20 → D=(−5×1+5×4)/5=3 → <span class="ans">23 kg</span>
+        <span class="q2"><b>Q28:</b> 95:209:171 = 5:11:9 → 83,78,85 → base 78 → D=(25+0+63)/25=3.52 → <span class="ans">81.52</span></span>
+        <br><b>Q27:</b> 3:2:2 papers → 45,55,60 → base 55 → D=(−30+10)/7=−2.9 → <span class="ans">52.1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="weighted" data-kw="weighted missing group average x third group unknown avg reverse deviation 22.5 भारित लुप्त">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Weighted mein ek group ka average x</h3>
+      <p class="trigger">Trigger: groups ke counts diye, combined average diya, kisi ek group ka average poocha jaaye.</p>
+      <div class="example">
+        <b>Type-2:</b> 10:30:60 → 25,20,x; combined 22 → D=(3×1)+(−2×3)=−3 → 60 units ko +3 → x=22+0.5=<span class="ans">22.5</span>
+        <span class="q2"><b>Ratio fraction:</b> 2/14:7/49:1/7 =1:1:1 → 101,102,x; avg 99 → D=+4+21 → x=99−25=<span class="ans">74</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="weighted" data-kw="percent group 75% 25% 60% 40% n numbers increased decreased each new average प्रतिशत समूह">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>n numbers ka x% badha, baaki ghata → new avg</h3>
+      <p class="trigger">Trigger: "n numbers ka average A hai, 75%/60% numbers mein p jodo aur baaki mein q ghatao — naya average?"</p>
+      <div class="example">
+        <b>Q19:</b> 75%:25%=3:1, +6/−9 → Davg=(18−9)/4=2.25 → 36+2.25=<span class="ans">38.25</span>
+        <span class="q2"><b>Q20:</b> 60%:40%=3:2, +5/−10 → Davg=(15−20)/5=−1 → 45−1=<span class="ans">44</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="remaining numbers 15 numbers 13 numbers equal two numbers each subgroup बची हुई संख्याएं">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Bache hue numbers ka average / value</h3>
+      <p class="trigger">Trigger: "15 numbers ka avg 30, unme se 13 ka avg 32 — bachi 2 barabar sankhyaon mein har ek?"</p>
+      <div class="example">
+        <b>Q10:</b> 13:2 → 32 vs base 30 → T.D=+26 → 2 par bantega −26/2=−13 → 30−13=<span class="ans">17</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="overlapping first 7 last 7 8th result middle term first three last three third subject common term ओवरलैप">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Overlapping groups → beech wala term</h3>
+      <p class="trigger">Trigger: "pehle 7 ka avg, aakhri 7 ka avg, total 15 ka avg — 8va result?" ya "pehle 3 + aakhri 3, teesra term diya".</p>
+      <div class="example">
+        <b>Q21:</b> base 21 → pehle 7: 0, aakhri 7: −7 → T.D=−7 → 8th=21+7=<span class="ans">28</span>
+        <span class="q2"><b>Q25:</b> a+b+c=225, c+d+e=246, c=66 → (159+66+180)/5 = <span class="ans">81</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="frequency students got marks 11 students 78 marks hindi test data avg groups counts आवृत्ति">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Frequency data (kitne logon ne kitne marks paaye)</h3>
+      <p class="trigger">Trigger: "11 students ko 78, 7 ko 80, 5 ko 82, 2 ko 86 marks mile — average marks?"</p>
+      <div class="example">
+        <b>Q26:</b> 11,7,5,2 vs 78,80,82,86 → base 80 → D=−22+0+10+12=0 → <span class="ans">80</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="shift" data-kw="each number multiplied added subtracted divided new average operation same on all प्रत्येक संख्या गुणा जोड़">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Har number par same operation → average par wahi operation</h3>
+      <p class="trigger">Trigger: "har sankhya ko k se guna kiya / k joda / k ghataya / divide kiya — naya average?"</p>
+      <div class="example">
+        <b>Q13:</b> avg 32, ×2 → <span class="ans">64</span> &nbsp;|&nbsp; <b>Q14:</b> avg 8, ×12 → <span class="ans">96</span>
+        <span class="q2"><b>Q15:</b> avg 42, +5 → <span class="ans">47</span> &nbsp;|&nbsp; <b>Q16:</b> 43−M=38 → <span class="ans">M=5</span></span>
+        <br><b>Q17:</b> avg 81, ÷6 phir +2.5 → 13.5+2.5 = <span class="ans">16</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="shift" data-kw="some values changed first three subtracted next five added new average davg total change partial आंशिक बदलाव">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Kuch hi terms badle → new avg = old avg + Davg</h3>
+      <p class="trigger">Trigger: "8 values ka avg 36, pehle 3 mein se 4 ghatao aur agle 5 mein 5 jodo — naya average?"</p>
+      <div class="example">
+        <b>Q18a:</b> 36 + (3×−4 + 5×5)/8 = 36+1.625 = <span class="ans">37.625</span>
+        <span class="q2"><b>Q18b:</b> 40 + (3×−2 + 5×6)/8 = 40+3 = <span class="ans">43</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="missing" data-kw="how many papers subjects n find number of terms more marks average increased 67.6 72.6 total increase कितने पेपर">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Total change diya → n (papers/terms) nikalo</h3>
+      <p class="trigger">Trigger: "agar Maths mein 27, CS mein 10, History mein 18 marks aur milte to avg 67.6 se 72.6 ho jaata — kitne paper the?"</p>
+      <div class="example">
+        <b>Q29:</b> Total change=55, Davg=5 → 55/n=5 → <span class="ans">n=11</span>
+        <span class="q2"><b>Variant:</b> 46 base par 45kg group + 46,44,43,80 → (1+2−2+5)/(n+4)=1 → <span class="ans">n=2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="A B C pairs average weight of B elimination equations two at a time जोड़ा समीकरण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>A,B,C ka avg + pairs ka avg → ek ka value</h3>
+      <p class="trigger">Trigger: "A,B,C ka average X, A&B ka Y, B&C ka Z — B ka weight?" — pairs ko jodo, triple ko ghatao.</p>
+      <div class="example">
+        <b>Q23:</b> A+B+C=231, A+B=136, B+C=166 → B=136+166−231=<span class="ans">71 kg</span>
+        <span class="q2"><b>Q24:</b> A+B+C=195, A+B=127, A+C=135 → A=127+135−195=<span class="ans">64 kg</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="relation between numbers one third twice smallest number ratio A B C difference 2d+4 e = a+d-1 संबंध अनुपात">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Numbers ka aapsi relation diya → ratio bana ke rakho</h3>
+      <p class="trigger">Trigger: "doosri sankhya pehli ki 1/3 hai aur teesri ki 3/4", "A = C/6, B = 2A" — average diya, smallest/difference poocha.</p>
+      <div class="example">
+        <b>Q11:</b> 9x:3x:4x, avg 112 → 16x=336 → x=21 → smallest=3x=<span class="ans">63</span>
+        <span class="q2"><b>Q12:</b> C=6x,B=2x,A=x, avg 30 → 9x=90 → C−A=5x=<span class="ans">50</span></span>
+        <br><b>Q33:</b> a+b=16,b+c=10,c+d=8, sum=8d+16 → d=1,a=13,e=13 → (1+13)/2=<span class="ans">7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="weighted" data-kw="same money spent each rate mangoes per unit price average price harmonic total quantity 36 rupees mandi बराबर पैसा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Har jagah paisa same → avg price = Total money ÷ Total qty</h3>
+      <p class="trigger">Trigger: "Rs 36 ke aam har mandi se alag-alag rate par kharide — har aam ka average price?" (rates ka simple average NAHI).</p>
+      <div class="example">
+        <b>Q30:</b> qty=36,24,20,18,16=114; money=36×5=180 → 180/114 = <span class="ans">₹1.58</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="digit x three digit numbers 335 2x5 63x average 411 find x sum column addition अंक पहेली">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Numbers mein hidden digit x → Sum se x nikalo</h3>
+      <p class="trigger">Trigger: "335, 2x5, x35, 63x, 406 ka average 411 hai" — number ke andar hi x chhupa hai.</p>
+      <div class="example">
+        <b>Q31:</b> Sum=411×5=2055 → column add → x=4 → avg of (x−1,x−3,x+3,x+5)=x+1=<span class="ans">5</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="shift" data-kw="frequency k occurrences number replaced by 6 in all places new average 2.85 5.25 प्रतिस्थापन">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Ek number ko replace kiya (frequency wala data)</h3>
+      <p class="trigger">Trigger: "2,3,4,5 kramash: (2+5k),(5k−7)… baar aate hain, avg 2.85; baad mein har jagah 2 ki jagah 6 rakh diya — naya avg?"</p>
+      <div class="example">
+        <b>Q32:</b> avg se k=2 → total terms=20, 2 ki frequency=12, change=+4 each<br>
+        new avg = 2.85 + (4×12)/20 = <span class="ans">5.25</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>18 patterns ab tak.</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+<section class="unit">
+  <div class="unit-label">Part 2 — Inclusion / Exclusion / Replacement</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Average Part-2 (औसत — Inclusion/Exclusion/Replacement)</p>
+    <h1>Naya banda aaya, average hil gaya.</h1>
+    <p class="sub">Average chapter ka doosra hissa — Inclusion, Exclusion, Replacement, n nikalna aur Davg patterns. Trigger line padho, worked example se method lock karo.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'inclusion', 'joins', 'new student', 'n nikalo', 'davg', 'replace'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="incl">Inclusion</button>
+      <button data-filter="mix">Group Join / Weighted</button>
+      <button data-filter="findn">n / Count nikalo</button>
+      <button data-filter="davg">Change &amp; Davg</button>
+      <button data-filter="algebra">Algebra/Trick</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="incl" data-kw="inclusion new member joins third number combined average changes formula N=O±inc/dec×final member नया सदस्य शामिल">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Master Formula — Inclusion/Exclusion/Replacement</h3>
+      <p class="trigger">Trigger: "ek naya member aaya / chala gaya aur average badla" — hamesha yahi lagao: <b>N = O ± (inc/dec) × Final member</b> (N = nayi value, O = purana average).</p>
+      <div class="example">
+        <b>Q34:</b> 2 numbers ka avg 46, teesri milane par avg 43 → N = 46 − 3×3 = <span class="ans">37</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incl" data-kw="new student admitted average decreases by 500 g weight of new student 49 students 53 kg नया छात्र वजन घटा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Naya member aaya, average GHATA → uski value</h3>
+      <p class="trigger">Trigger: "49 students ka avg 53kg, ek naya aaya to avg 500g kam ho gaya — uska weight?" (decrease = minus).</p>
+      <div class="example">
+        <b>Q35:</b> N = 53 − 0.5×50 = <span class="ans">28 kg</span><span class="q2"><b>Q36:</b> 20 persons avg 60, 21 hone par 59 → N = 60 − 1×21 = <span class="ans">39 kg</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incl" data-kw="runs required next innings raise average cricket 19 innings 65 to 67 20th innings score पारी औसत बढ़ाना">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Average BADHANE ke liye agli baar kitna chahiye</h3>
+      <p class="trigger">Trigger: "19 innings mein avg 65, 20th innings mein kitne runs banaye ki avg 67 ho jaye" — increase = plus.</p>
+      <div class="example">
+        <b>Q37:</b> N = 65 + 2×20 = <span class="ans">105 runs</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="group joins 5 men join 65 men average of joining group inclusion multiple members 32 34 60 समूह शामिल">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Ek saath KAI log jude → unka apna average</h3>
+      <p class="trigger">Trigger: "65 logon ka avg 32, 5 aur jude to 70 ka avg 34 — un 5 ka average?" — formula mein final member/joined count divide karo.</p>
+      <div class="example">
+        <b>Q38:</b> N = 32 + (2×70)/5 = <span class="ans">60 saal</span><br>M-1 (weighted): 65:5 → 32 : x, mid 34 → D: −26×... → x = 34+26 = 60
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="120 30 students average 62.5 58.2 join weighted ratio 4:1 second group average भारित">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Do groups mila diye (counts diye) → doosre group ka avg</h3>
+      <p class="trigger">Trigger: "120 logon ka avg 62.5, 30 aur mile to sabka avg 58.2" — ratio 4:1 bana ke deviation balance karo.</p>
+      <div class="example">
+        <b>Q39:</b> 4:1 → 62.5 aur x, mid 58.2 → 4×(+4.3) = 1×(x-side) → <span class="ans">≈41 years</span> wale option se match karo
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="2 8 4 average 48 44 58 fraction ratio parts weighted 49.5 kg sections मिश्रण भाग">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Ratio/fraction mein data diya (2/8 : 1/4 : 1/4)</h3>
+      <p class="trigger">Trigger: parts fraction mein diye ho — pehle common denominator se whole-number ratio banao, phir base leke deviation.</p>
+      <div class="example">
+        <b>Q:</b> 2:1:1 (of 4) → avg 48,44,58, base 40 → D = (+8×2 +4 +18)/4 → <span class="ans">48.5 kg</span> family — hamesha ratio × deviation
+      </div>
+    </article>
+
+    <article class="card" data-cat="findn" data-kw="how many students joined find n number of persons zero deviation 27 25 26 balance कितने लोग">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>n nikalna — deviation ZERO balance trick</h3>
+      <p class="trigger">Trigger: "27 avg wale n logon mein 25 avg wale 4 log mile aur avg 26 ho gaya, n = ?" — dono taraf ka deviation barabar karo.</p>
+      <div class="example">
+        <b>Q41:</b> +1×n = −1×4 (base 26) → 1×n = 1×4 → <span class="ans">n = 4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="findn" data-kw="three groups n 2 3 4 average 22 18 21 17 combined 21 find n multi group balance">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Teen-chaar groups, ek group ki count unknown</h3>
+      <p class="trigger">Trigger: "n logon ka 22, 2 ka 18, 3 ka 21, 4 ka 17 — sabka 21" → base = combined avg, sab deviations ka sum = 0.</p>
+      <div class="example">
+        <b>Q:</b> base 21 → n(+1) + 2(−3) + 3(0) + 4(−4) = 0 → n = 22 → check<span class="q2"><b>Q:</b> n,2,3 → 44,40,41 with 43 → n −6 −6 = 0 → <span class="ans">n = 12</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="findn" data-kw="average 16.5 15 members 16 find original number ICAR trick 0.5 0.125 45 mixture count">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Chhoti-si decimal shift → original count nikalo</h3>
+      <p class="trigger">Trigger: "n logon ka avg 16.5, 15 aur (avg 16) jude to avg 16.375 type ho gaya" — shift × count = shift × count.</p>
+      <div class="example">
+        <b>Q44:</b> 0.5×15 = 0.125×n_final → n_final = 60 → original = 60 − 15 = <span class="ans">45</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incl" data-kw="8 students division A height x 4 students 156 cm average increases 2/3 find x 154 ऊंचाई">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Join karne wale ka avg diya, PURANE group ka avg poocha</h3>
+      <p class="trigger">Trigger: "8 students ka avg x, 156cm wale 4 aa gaye, avg 2/3 badha — x?" — N = O ± inc/dec × (final/joined).</p>
+      <div class="example">
+        <b>Q45:</b> 156 = x + (2/3)×(12/4) → 156 = x + 2 → <span class="ans">x = 154 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incl" data-kw="21 students average 14 two new x and x-5 join 23 students average 17 find x CRPF">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Do naye members (ek dusre se relate) jude</h3>
+      <p class="trigger">Trigger: "21 ka avg 14, x aur (x−5) jude to 23 ka avg 17" — seedha Sum equation lagao.</p>
+      <div class="example">
+        <b>Q:</b> (21×14 + x + x−5)/23 = 17 → 294 + 2x − 5 = 391 → <span class="ans">x = 51</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="davg" data-kw="new average old average plus Davg each member changed different amounts 12.5 15 subjects marks बदलाव">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Har member ka change alag-alag → New = Old + Davg</h3>
+      <p class="trigger">Trigger: "M,E,R,GS mein kramash +3,+2,+4,+1 marks badhe — naya avg?" — sirf changes ka average jodo.</p>
+      <div class="example">
+        <b>Ex:</b> old 12.5, changes +3,+2,+4,+1 → Davg = 10/4 = 2.5 → <span class="ans">15</span><span class="q2"><b>Ex:</b> old 20 → new 30, changes +10,+20,+10,+x → x = <span class="ans">0</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="davg" data-kw="how many papers subjects examination average 67.6 72.6 extra marks 27 10 18 total 55 पेपर संख्या">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Extra marks diye, PAPERS ki count poochi</h3>
+      <p class="trigger">Trigger: "avg 67.6 tha, Maths mein 27, CS mein 10, History mein 18 extra milte to 72.6 hota — kitne paper the?"</p>
+      <div class="example">
+        <b>Q29:</b> total extra = 55, avg badha 5 → n = 55/5 = <span class="ans">11 papers</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="davg" data-kw="some values increased some decreased first three subtract 4 next five add 5 new average 37.625 43">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Kuch members mein ghata, kuch mein joda</h3>
+      <p class="trigger">Trigger: "8 values ka avg 36 — pehle 3 mein se 4 ghata aur agle 5 mein 5 joda" — Davg = (Σ changes)/total.</p>
+      <div class="example">
+        <b>Q18:</b> 36 + (3×(−4) + 5×(+5))/8 = 36 + 1.625 = <span class="ans">37.625</span><span class="q2"><b>Q18b:</b> 40 + (−6+30)/8 = <span class="ans">43</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="average of a b c d is 2d+4 pairs 8 5 4 e = a+d-1 find average of d and e equations">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Pairs ke average diye → equations bana ke solve</h3>
+      <p class="trigger">Trigger: "a,b,c,d ka avg 2d+4; a&b ka 8, b&c ka 5, c&d ka 4" — pairs ko sum mein badlo, phir alternate add/subtract.</p>
+      <div class="example">
+        <b>Q33:</b> a+b=16, b+c=10, c+d=8, total = 8d+16 = 24 → d=1, c=7, b=3, a=13 → e = 13 → avg(d,e) = <span class="ans">7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="algebra" data-kw="same money spent different rates mangoes average price 36 rupees five mandis 1.58 harmonic">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Same paisa, alag-alag rate → average price (harmonic type)</h3>
+      <p class="trigger">Trigger: "har mandi se ₹36 ke aam kharide, rate ₹1, 1.5, 1.8, 2, 2.25" — quantity nikalo, phir total price / total quantity.</p>
+      <div class="example">
+        <b>Q30:</b> qty = 36,24,20,18,16 = 114; total = 36×5 = 180 → 180/114 = <span class="ans">₹1.58</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>16 patterns (Average Part-2).</b> Part-1 file mein 18 patterns alag hain — total <b>34</b> Average patterns. Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+<section class="unit">
+  <div class="unit-label">Part 3 — Q89–Q154</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Average (Pages 89–154)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Average chapter — Exclusion, Replacement, Alligation, Wrongly Entered Data aur Ages. Trigger line padho, worked example se pattern lock karo.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'removed', 'replace', 'wrong entry', 'alligation', 'age'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="exclusion">Exclusion</button>
+      <button data-filter="replace">Replacement</button>
+      <button data-filter="findn">Find n</button>
+      <button data-filter="alligation">Alligation</button>
+      <button data-filter="wrong">Wrong Entry</button>
+      <button data-filter="ages">Ages</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="exclusion" data-kw="exclusion removed excluded number leaves left the class nikali gayi sankhya average increases decreases N=O±inc/dec×FM weight staff member">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Ek member nikla → uski value?</h3>
+      <p class="trigger">Trigger: "n cheezon ka average A tha, ek number/student/staff nikal diya, ab average B ho gaya — nikali gayi value kya?" → N = New Avg ± change × Final Members.</p>
+      <div class="example">
+        <b>Q46:</b> 15 no. avg 53 → 14 ka 55 → 55+2×15... ulta: x=55−2×15 = <span class="ans">25</span>
+        <span class="q2"><b>Q48:</b> 15 stu avg 40 → 14 ka 39.5 → x = 40+0.5×14 = <span class="ans">47 kg</span></span>
+        <br><b>Q47:</b> 5 no. avg 30 → 4 ka 31 → x = 30−1×4 = <span class="ans">26</span>
+        <br><b>Q49:</b> 120 staff 62.5 → 119 ka 62.250 → x = 62.250+0.250×120 = <span class="ans">92.25 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exclusion" data-kw="top two scores excluded highest second highest do sankhya hatai average goes down by 2 pair average multiple removed">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Top DO nikle → highest score?</h3>
+      <p class="trigger">Trigger: "top two scores hata diye toh average x se gir gaya, second highest diya hai — highest nikalo" — 2 nikle hain toh pehle unka combined avg nikalo, fir 2 se multiply.</p>
+      <div class="example">
+        <b>Q50:</b> 36 stu avg 60 → 34 ka 58 → 2 nikle ka avg K = 60 + (2×34)/2 = 94<br>
+        x+90 = 188 → highest = <span class="ans">98</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exclusion" data-kw="death died oldest member family ages x x+12 x+24 average reduced by 3 after how many years same as before mrityu">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Sabse bada mar gaya → avg kab wapas aayega?</h3>
+      <p class="trigger">Trigger: "kuch saal baad sabse bade sadasya ki mrityu, average 3 kam ho gaya — kitne saal baad average phir wahi ho jayega?"</p>
+      <div class="example">
+        <b>Q51:</b> 2010 avg = x+18; death ke baad 3 members avg = x+15 (drop 3)<br>
+        Har saal +1 → 3 saal mein x+18 → <span class="ans">3 years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="replacement replaced by new person came in place of average increases decreases N=O±inc/dec×FM naya vyakti aaya sthan par teacher retires">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Replacement: "X ki jagah naya aaya"</h3>
+      <p class="trigger">Trigger: "n logon ka average x kg badh/ghat jata hai jab unme se ek (jiska weight/age diya hai) ki jagah naya aata hai" → N = O ± inc/dec × Total Members.</p>
+      <div class="example">
+        <b>Q52:</b> 15 log, +3.2, purana 52 → N = 52+3.2×15 = <span class="ans">100 kg</span>
+        <span class="q2"><b>Q56:</b> 5 men, −3, purana 150 → N = 150−3×5 = <span class="ans">135 kg</span></span>
+        <br><b>Q53:</b> 15 log, +1.2, purana 51 → 51+1.2×15 = <span class="ans">69 kg</span>
+        <br><b>Q55 (ulta):</b> 10 teacher, −3, naya 25 → O = 25+3×10 = <span class="ans">55 yrs</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="findn" data-kw="find number of people group members n nikalna replacement age increased by 4 one leaves another joins how many students kitne log the">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Replacement mein LOGON KI SANKHYA poochi ho</h3>
+      <p class="trigger">Trigger: "purana aur naya dono diya hai, average x se badha/ghata — group mein kitne log hain?" → n = (Naya − Purana) ÷ change.</p>
+      <div class="example">
+        <b>Q57:</b> 56 = 32 + 4×n → 24 = 4n → <span class="ans">n = 6</span>
+        <span class="q2"><b>Q58:</b> 48 gaya, 44 aaya, avg 42→41.6 → 44 = 48 − 0.4n → <span class="ans">n = 10</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="findn" data-kw="join or leave both cases average same equal 15 persons join 5 persons leave initially how many children camp group shuru mein kitne">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>"Ya toh log aayein YA jaayein — dono case mein avg same"</h3>
+      <p class="trigger">Trigger: "a log avg P join karein YA b log avg Q leave karein, dono cases mein group ka average barabar ho — shuru mein kitne the?" → dono side ka deviation-total (n±) ke saath equate karo.</p>
+      <div class="example">
+        <b>Q59:</b> 76 avg; 15×(−4)/(n+15) = 5×(+8)/(n−5) → 3/(n+15)=2/(n−5) → <span class="ans">n = 45</span>
+        <span class="q2"><b>Q60:</b> 40 avg; 5×4/(n+5) = 5×3.2/(n−5) → 5(n−5)=4(n+5) → <span class="ans">n = 45</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="findn" data-kw="leave and join both together deviation method average increases by 380 g girls group initially number 5 leave 10 join mixed">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Kuch gaye + kuch aaye, avg thoda badha → n?</h3>
+      <p class="trigger">Trigger: "a log (avg P) chhod gaye AUR b log (avg Q) aa gaye, average sirf 380 g / 0.4 kg badha" — deviation method: sab deviations ka total ÷ change = n.</p>
+      <div class="example">
+        <b>Q61:</b> base 54.8; gaye 5×(+1.6→1.1 net), aaye 10×2.7... deviation total = (1.1×5 + 2.7×5)=19<br>
+        19 ÷ 0.38 = <span class="ans">n = 50</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="replace" data-kw="A B C D E F chain entry replacement stepwise 5th man enters average decreases F comes in place of A 4 kg more find weight of A multi step">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Step-by-step chain: pehle entry, phir replacement</h3>
+      <p class="trigger">Trigger: "A,B,C,D ka avg diya; 5th aadmi E aaya toh avg 2 kam; fir A ki jagah F aaya (F = E+4) toh avg 65" — har line alag likho, ek-ek karke N=O±inc/dec×FM lagao.</p>
+      <div class="example">
+        <b>Q62:</b> E = 68 − 2×5 = 58 → F = 62; F = A − 1×5 → 62 = A−5 → <span class="ans">A = 67 kg</span>
+        <span class="q2"><b>Q63:</b> (10A −48×2 +56×3)/11 = B, A+B=438 → 21B=4452 → B=212, A=226 → <span class="ans">A−B = 14</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="alligation passed failed students average ratio boys girls two groups mixture total average teeraj cross method">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Alligation: do groups ka avg diya, total avg diya</h3>
+      <p class="trigger">Trigger: "pass students ka avg 55, fail ka 35, poori class ka 50" — do group + ek mixed average dikhe toh seedha alligation cross banao (ratio = ulta difference).</p>
+      <div class="example">
+        <b>Q64:</b> 55 &amp; 35 vs 50 → no. ratio 15:5 = 3:1 → Total marks 3×55 : 1×35 = <span class="ans">33 : 7</span>
+        <span class="q2"><b>Q66:</b> 40 boys(40kg), 20 girls(35kg) → (2×40+35)/3 = <span class="ans">38.33 kg</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="find missing average of other group 15 faculty salary last two months earnings failed students average deviation shortcut baaki group ka average">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Ek group ka avg missing (dusre group ka diya)</h3>
+      <p class="trigger">Trigger: "35 members ka avg X, poore 50 ka avg Y — baaki 15 ka average?" — deviation shortcut: bade group ka total deviation chhote group par ulta baant do.</p>
+      <div class="example">
+        <b>Q65:</b> 35 log +7500 = 262500 extra → 15 log par → 30000 − 17500 = <span class="ans">₹12,500</span>
+        <span class="q2"><b>Q68:</b> 10 mah −450 → total −4500 → 2 mah mein +2250 → 6250+2250 = <span class="ans">₹8,500</span></span>
+        <br><b>Q67:</b> 80 stu avg 50, pass 50 stu@55, fail 30 → (4000−2750)/30 = <span class="ans">41.66</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="wrong" data-kw="wrongly entered data misread taken as instead of correct average deviation galat likha number sahi average nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Galat entry → sahi average (Deviation method)</h3>
+      <p class="trigger">Trigger: "average nikalte samay ek number 48 ki jagah 84 padh liya gaya — sahi average kya hai?" → Deviation = (sahi − galat)/n, use purane avg mein jodo.</p>
+      <div class="example">
+        <b>Q:</b> 36 no., avg 45, 48 ki jagah 84 → (−48+84)/36 = +1 → <span class="ans">46</span>
+        <span class="q2"><b>Q:</b> 45 no., avg 39, 56 ki jagah 65 → +9/45 = 0.2 → <span class="ans">39.2</span></span>
+        <br><b>Q:</b> 25 no., avg 19; −18−19+14+15 = −8 → −8/25 = −0.32 → <span class="ans">18.68</span>
+        <br><b>Q:</b> 20 no., avg 25×40 base → (−20+60−90+80)/20 = +1.5 → <span class="ans">51.5</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="wrong" data-kw="wrong entry find number of observations n nikalna average decreased by 0.25 increased how many observations were there galat entry se n">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Galat entry se avg x badla → OBSERVATIONS kitne?</h3>
+      <p class="trigger">Trigger: "galti se 98 ki jagah 89 likh diya jisse average 0.25 kam ho gaya — kitne numbers the?" → n = (sahi−galat) ÷ avg change.</p>
+      <div class="example">
+        <b>Q:</b> (−98+89)/n = −0.25 → 9/0.25 = <span class="ans">n = 36</span>
+        <span class="q2"><b>Q:</b> (−65+45)/n = −1/3 → 20×3 = <span class="ans">n = 60</span></span>
+        <br><b>Q:</b> (−90+60)×100/n = −5 → <span class="ans">n = 600</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="wrong" data-kw="digits interchanged reversed two digit number 54 45 difference of digits average decreased by 2.7 ank badal gaye 9 multiple">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do-ank ke digits ulat gaye → digits ka antar</h3>
+      <p class="trigger">Trigger: "ek do-ank sankhya ke ank aapas mein badal gaye jisse average 2.7 kam ho gaya" — yaad rakho: reverse ka difference hamesha 9(x−y) hota hai.</p>
+      <div class="example">
+        <b>Q:</b> Total decrease = 2.7×10 = 27 → 27/9 = <span class="ans">difference = 3</span><br>
+        Formula: (10x+y)−(10y+x) = 9(x−y), Sum = 11(x+y)
+      </div>
+    </article>
+
+    <article class="card" data-cat="ages" data-kw="ages years ago average age new member X joins family present age N=O±inc/dec×M shyam ravi mohan govind 5 years ago">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>"X saal pehle avg tha, ab naya member juda" → uski age?</h3>
+      <p class="trigger">Trigger: "5 saal pehle A,B,C,D ka avg 45 tha, X judne par paanchon ka avg 49" — pehle sabko PRESENT par lao (+saal), fir N = O ± inc/dec × Final Members.</p>
+      <div class="example">
+        <b>Q81:</b> present 4 ka avg = 50; 5 ka 49 → X = 50 − 1×5 = <span class="ans">45 yrs</span>
+        <span class="q2"><b>Q85:</b> present 3 ka avg = 38; 4 ka 36 → S = 38 − 2×4 = <span class="ans">30 yrs</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ages" data-kw="child born birth time average husband wife new born baby youngest member family before birth bachche ke janm ke samay present age">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Bachche ke JANM ke waqt vs ab ka average</h3>
+      <p class="trigger">Trigger: "jab bachcha paida hua tab pati-patni ka avg 27 tha, ab teeno ka 21 hai" / "sabse chhote ki age 8, uske janm se theek pehle avg?" — janm ke waqt baaki sabki age me x ghatao/badhao, bachche ki age = x.</p>
+      <div class="example">
+        <b>Q82:</b> H+W=54; (H+x)+(W+x)+x = 63 → 3x = 9 → <span class="ans">3 years</span>
+        <span class="q2"><b>Q83:</b> Sum = 120 − 8 = 112; janm se pehle 4 ka = (112−32)/4 = <span class="ans">20 years</span></span>
+        <br><b>Q87:</b> 4 ka sum(6yr ago)=60→ab 84; 84+2x+2 = 90 → x=2 → bada bachcha = <span class="ans">4 years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ages" data-kw="sum method equation abhay wife child father mother 4 years older find present age total sum se nikalna two equations subtract">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Do groups ka SUM banao → ghatao → ek member ki age</h3>
+      <p class="trigger">Trigger: "6 saal pehle A+wife+child ka avg 42, 8 saal pehle wife+child ka avg 30 — A ki present age?" ya "father, mother se 4 saal bade" — dono ke sum banao aur subtract karo.</p>
+      <div class="example">
+        <b>Q84:</b> Ab+W+C = 144; W+C = 76 → <span class="ans">Abhay = 68 yrs</span>
+        <span class="q2"><b>Q86:</b> 5 bachche 75; +mata-pita = 175 → m+(m+4) = 100 → <span class="ans">Mother = 48</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>16 patterns ab tak.</b> (Average — pages 89–154, Q46–Q87). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+<section class="unit">
+  <div class="unit-label">Part 4 — Q88–Q155</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Complete Maths Course · AVERAGE (Q88–Q155)</p>
+    <h1>Average: question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'consecutive', 'cricket', 'hostel', 'weight', 'middle number'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="series">Series Formula</button>
+      <button data-filter="consec">Consecutive</button>
+      <button data-filter="incexc">Inclusion/Exclusion</button>
+      <button data-filter="group">Group / Deviation</button>
+      <button data-filter="cricket">Cricket</button>
+      <button data-filter="money">Money / Expense</button>
+      <button data-filter="misc">Misc</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="series" data-kw="first n natural numbers average square cube formula pratham prakritik sankhya varg ghan औसत वर्ग घन">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>First n natural numbers — avg, square avg, cube avg</h3>
+      <p class="trigger">Trigger: "pratham n prakritik sankhyaon ka / unke vargon ka / ghanon ka average" — seedha formula lagao.</p>
+      <div class="example">
+        <b>Q89:</b> squares of first 10 → (n+1)(2n+1)/6 = 11×21/6 = <span class="ans">38.5</span>
+        <span class="q2"><b>Q90:</b> squares of first 20 → 21×41/6 = <span class="ans">143.5</span></span>
+        <br><b>Q91:</b> cubes of first 10 → n(n+1)²/4 = 10×121/4 = <span class="ans">302.5</span>
+        <br><b>Q92:</b> cubes of first 49 → 49×50×50/4 = <span class="ans">30625</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="series" data-kw="first n even odd numbers average sam visham sankhya n+1 n प्रथम सम विषम">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>First n EVEN → (n+1) | First n ODD → n</h3>
+      <p class="trigger">Trigger: "pehli 50 sam sankhyaon ka औसत" ya "100 tak ki visham sankhyaon ka औसत" — count nikalo, formula lagao.</p>
+      <div class="example">
+        <b>Q93:</b> first 50 even → n+1 = <span class="ans">51</span>
+        <span class="q2"><b>Q95:</b> odd up to 100 → 50 odd terms → avg = n = <span class="ans">50</span></span>
+        <br><b>Q96:</b> first 8 odd → n = <span class="ans">8</span>
+      </div>
+    </article>
+
+    <article class="card" data-kw="AP series average first term last term arithmetic progression range natural numbers 49 to 125 औसत श्रेणी" data-cat="series">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Kisi bhi AP/range ka avg = (First + Last)/2</h3>
+      <p class="trigger">Trigger: "X se Y tak ki sabhi sankhyaon ka औसत" — terms equally spaced ho toh sirf pehla+aakhri.</p>
+      <div class="example">
+        <b>Q88:</b> 49 se 125 → (49+125)/2 = 174/2 = <span class="ans">87</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="series" data-kw="sum of AP two digit even numbers number of terms n/2(a+l) yog do ank sam sankhya योग">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>AP ka SUM poocha jaaye → n nikaalo phir n/2(a+l)</h3>
+      <p class="trigger">Trigger: "do anko ki sabhi sam/visham sankhyaon ka yog" — pehle n = (L−F)/d + 1, phir sum.</p>
+      <div class="example">
+        <b>Q94:</b> 10,12,…,98 → n = (98−10)/2+1 = 45; Sum = 45×(10+98)/2 = <span class="ans">2430</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="series" data-kw="prime numbers average abhajya sankhya first six primes between 32 and 69 अभाज्य">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Prime numbers ka average (formula nahi — list karo)</h3>
+      <p class="trigger">Trigger: "abhajya sankhyaon ka औसत" / "primes between X and Y" — primes likho, jodo, count se bhaag.</p>
+      <div class="example">
+        <b>Q97:</b> 2+3+5+7+11+13 = 41 → 41/6 = <span class="ans">6 5/6</span>
+        <span class="q2"><b>Q98:</b> 37+41+43+47+53+59+61+67 = 408 → 408/8 = <span class="ans">51</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="consec" data-kw="consecutive numbers average smallest largest middle term terms both sides kramagat sankhya sabse choti badi क्रमागत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Consecutive series: avg diya → Smallest / Largest</h3>
+      <p class="trigger">Trigger: "n kramagat (natural/even/odd) sankhyaon ka औसत A hai, sabse choti/badi sankhya?" — avg beech mein, dono taraf (n−1)/2 terms × d.</p>
+      <div class="example">
+        <b>Q100:</b> 17 consecutive, avg 41 → 8 terms ×1 → S = 41−8 = <span class="ans">33</span>
+        <span class="q2"><b>Q109:</b> 35 consecutive even, avg 44 → 17×2 = 34 → S = 44−34 = <span class="ans">10</span></span>
+        <br><b>Q113:</b> 44 consecutive odd, avg 144 → L = 145 + 42 = <span class="ans">187</span>
+        <br><b>Q99:</b> 18 consecutive integers, avg 22.5 → L = 23 + 8 = <span class="ans">31</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="consec" data-kw="middle two numbers average even count first six sum consecutive beech ki do sankhya yog बीच">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Terms EVEN ho → beech ki 2 sankhya ka avg = series avg</h3>
+      <p class="trigger">Trigger: "10 kramagat sankhyaon mein beech ki do ka औसत 13.5" ya "avg 33/2, pehli teen ka औसत?" — decimal avg dekhte hi even-count series.</p>
+      <div class="example">
+        <b>Q101:</b> avg 13.5 → middle pair 13,14 → series 9…; first 6 = 9+10+11+12+13+14 = <span class="ans">69</span>
+        <span class="q2"><b>Q108:</b> avg 16.5 → 12…21; first three avg = (12+13+14)/3 = <span class="ans">13</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incexc" data-kw="next m numbers included new average increase diff×m/2 agli sankhya shamil inclusion अगली संख्याएं शामिल">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Agli m terms include → New avg = Old + (d/2)×m</h3>
+      <p class="trigger">Trigger: "n kramagat sankhyaon ka औसत X, agli m sankhyaein bhi shamil kar li jayein toh naya औसत?"</p>
+      <div class="example">
+        <b>Q103:</b> 5 terms avg 12, +2 terms → 12 + (1/2)×2 = <span class="ans">13</span>
+        <span class="q2"><b>Q105:</b> 5 terms, +3 terms → (1/2)×3 = <span class="ans">+1.5</span></span>
+        <br><b>Q106:</b> 11 odd avg 251, +4 odd → (2/2)×4 = +4 → <span class="ans">255</span>
+        <br><b>Q112:</b> 5 even avg A, +5 even → (2/2)×5 → <span class="ans">A+5</span>
+        <br><b>Q104:</b> 9 terms avg n, +2 → <span class="ans">n+1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incexc" data-kw="next 7 consecutive natural numbers average shift block agli 7 sankhya औसत k+7">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Agla poora BLOCK (n aur n terms) → avg + n×d</h3>
+      <p class="trigger">Trigger: "7 kramagat sankhyaon ka औसत K hai, AGLI 7 kramagat sankhyaon ka औसत?" — puri series shift ho rahi hai, mix nahi.</p>
+      <div class="example">
+        <b>Q102:</b> 7 terms shift → avg badhega 7×1 → <span class="ans">K+7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="consec" data-kw="smallest largest sum difference first last consecutive even numbers 2×avg (n-1)d सबसे छोटी बड़ी योग अंतर">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>S+L = 2×avg | L−S = (n−1)×d</h3>
+      <p class="trigger">Trigger: "sabse choti aur sabse badi ka YOG?" ya "pehli aur aakhri ke beech ka ANTAR?" — series banane ki zarurat hi nahi.</p>
+      <div class="example">
+        <b>Q110:</b> 6 even, avg 35 → S+L = 2×35 = <span class="ans">70</span>
+        <span class="q2"><b>Q111:</b> 7 even, avg 84 → (7−1)×2 = <span class="ans">12</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="consec" data-kw="sum is 30 more than average four consecutive odd numbers equation n n+2 n+4 योग औसत से अधिक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>"Sum, average se X zyada hai" → equation banao</h3>
+      <p class="trigger">Trigger: "chaar kramagat visham sankhyaon ka YOG unke औसत se 30 adhik hai" — n, n+2, n+4… rakh ke solve.</p>
+      <div class="example">
+        <b>Q114:</b> (4n+12) = 30 + (4n+12)/4 → 3n = 21 → first = <span class="ans">7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="consec" data-kw="set A set B mean lowest number 15 more sum of five consecutive samuh yog माध्य से अधिक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Ek set ka mean → doosre set ka sum</h3>
+      <p class="trigger">Trigger: "set-A ki 8 sankhyaon ka yog 376, doosre set ki sabse choti sankhya set-A ke maadhya se 15 adhik" — mean nikalo, naya set banao.</p>
+      <div class="example">
+        <b>Q107:</b> A ka mean = 376/8 = 47 → new start 62 → 62..66, sum = 64×5 = <span class="ans">320</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="cricket" data-kw="batsman innings average increased decreased new innings score N=O±inc×F.m बल्लेबाज पारी औसत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Nayi innings se avg badha/ghata → N = O ± change × (final matches)</h3>
+      <p class="trigger">Trigger: "11 pariyon ka औसत tha, 12vi pari mein 90 run banaye jisse औसत 5 kam/badh gaya — naya औसत?"</p>
+      <div class="example">
+        <b>Q123:</b> 90 = O − 5×12 → O = 150 → new = <span class="ans">145</span>
+        <span class="q2"><b>Q124:</b> 85 = O + 3×17 → O = 34 → new = <span class="ans">37</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="cricket" data-kw="highest lowest score excluded difference maximum minimum H+L H-L innings adhiktam nyuntam स्कोर">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Highest & Lowest innings hata do → H+L aur H−L</h3>
+      <p class="trigger">Trigger: "adhiktam aur nyuntam score ka antar X hai, in do pariyon ko chhodkar औसत Y ho jata hai — adhiktam score?"</p>
+      <div class="example">
+        <b>Q125:</b> 64×62 − 62×60 = H+L = 248; H−L = 180 → H = 428/2 = <span class="ans">214</span>
+        <span class="q2"><b>Q146:</b> 27×47 − 25×42 = 219 = H+L; H−L = 157 → H = <span class="ans">188</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="cricket" data-kw="bowling average wickets runs improves decreases by points alligation gendbaji औसत विकेट">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Bowling average sudhra → Alligation se purane wickets</h3>
+      <p class="trigger">Trigger: "bowling औसत 12.4 hai, aakhri match mein 26 run dekar 5 wicket liye jisse औसत 0.2 sudhar gaya — pehle kitne wicket?"</p>
+      <div class="example">
+        <b>Q126:</b> new match avg = 26/5 = 5.2; mix = 12.2 → 12.4:5.2 alligation → 7:0.2 = 35:1 → 35×5 = <span class="ans">175 wickets</span>
+        <span class="q2"><b>Q127:</b> 38.5/7 = 5.5, avg 11.125→10 → ratio se old = 28; total = <span class="ans">35 wickets</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="first eleven last eleven middle number overlap common counted twice series 21 numbers madhya sankhya पहली अंतिम ग्यारह">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>First k + Last k − Total = MIDDLE number</h3>
+      <p class="trigger">Trigger: "21 sankhyaon ka औसत 43, pehli 11 ka 33, aakhri 11 ka 53 — 11vi sankhya?" — overlap wala term do baar gina gaya.</p>
+      <div class="example">
+        <b>Q128:</b> 11×33 + 11×53 − 21×43 = 946 − 903 = <span class="ans">43</span>
+        <span class="q2">Basic: 5 no. avg 43, first3 = 33, last3 = 50 → 99+150−215 = <span class="ans">34</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="deviation method middle number excluded remaining average one decimal place D avg vichalan हटा दी जाए शेष औसत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Middle number hata do → Deviation method (D/remaining)</h3>
+      <p class="trigger">Trigger: "…11vi/17vi sankhya hata di jaaye toh shesh sankhyaon ka औसत (ek dashamlav tak)?" — har group ka deviation × count jodo.</p>
+      <div class="example">
+        <b>Q130:</b> D = +4×11 − 2×11 = 22 → 22/20 = 1.1 → 44 − 1.1 = <span class="ans">42.9</span>
+        <span class="q2"><b>Q129:</b> D = −1.2×17 + 3.2×17 = 34 → 34/32 ≈ 1.1 → 74 − 1.1 = <span class="ans">72.9</span></span>
+        <br><b>Q136:</b> middle = 64 + 91 = 155; (25×64 − 155 − 61)/23 = <span class="ans">60.2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="remaining numbers average groups 24 5 38 numbers deviation shesh sankhyaon ka औसत समूह">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Do group diye → BACHE hue group ka average</h3>
+      <p class="trigger">Trigger: "38 sankhyaon ka औसत 51, pehli 24 ka 45, aakhri 5 ka 60 — shesh sankhyaon ka औसत?" — deviation ÷ remaining count.</p>
+      <div class="example">
+        <b>Q132:</b> D = −6×24 + 9×5 = −99 → +99/9 = +11 → 51 + 11 = <span class="ans">62</span>
+        <span class="q2"><b>Q133:</b> D = −4×11 + 1×10 = −34 → +34/4 = 8.5 → x = 63.5; phir 63.5,66,70 wale 6 ka avg = <span class="ans">65</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="fourth number 10 less than fifth 20 less than sixth relation x x+10 x+20 eighth number relative sankhya sambandh चौथी संख्या">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Baaki numbers aapas mein related (x, x+a, x+b)</h3>
+      <p class="trigger">Trigger: "chauthi sankhya paanchvi se 10 kam aur chhathi se 20 kam hai" — unknown ko x maan ke total sum se ghatao.</p>
+      <div class="example">
+        <b>Q131:</b> 3x + 30 = 6×50 − 3×40 = 180 → x = <span class="ans">50</span>
+        <span class="q2"><b>Q134:</b> 3x + 14 = 8×44 − (150+104) = 98 → x = 28 → 8th = <span class="ans">36</span></span>
+        <br><b>Q135:</b> 13×47 − (117+343) = 151 = 2y + y + (y+3) → y = 37 → avg(11th,13th) = <span class="ans">55.5</span>
+        <br><b>Q140:</b> (x + x+4) = 28×7 − 90 − 70 = 36 → avg = <span class="ans">18 years</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="average of two numbers added to third number three four natural numbers 24 20 18 equations do sankhyaon ka औसत तीसरी में जोड़ा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>"Baaki ka average + bachi hui sankhya" wale equations</h3>
+      <p class="trigger">Trigger: "3/4 prakritik sankhyaon mein se, do ka औसत teesri mein jod dein toh 24, 20, 18 milte hain" — sab jodo, (n+1)×total nikalo.</p>
+      <div class="example">
+        <b>Q138:</b> 4(a+b+c) = 124 → total = 31 → c = 24 − 17/2… → <span class="ans">5, 9, 17</span>
+        <span class="q2"><b>Q139:</b> 4(a+b+c+d) = 270… total = 45 → ek sankhya = <span class="ans">21</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="money" data-kw="friends spent Rs each twelfth spent less than average expenditure total money students hotel meal dost kharch खर्च औसत से कम">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Aakhri banda "OVERALL average se X kam/zyada" kharch kare</h3>
+      <p class="trigger">Trigger: "11 doston ne 18-18 rupaye kharch kiye aur 12ve ne SABKE औसत se 11 rupaye kam kharch kiye — kul kharch?" — deviation total ko baaki (n−1) par baanto.</p>
+      <div class="example">
+        <b>Q141:</b> −11 baant do 11 par → x + 1 = 18 → avg 17 → total = 17×12 = <span class="ans">Rs 204</span>
+        <span class="q2"><b>Q142:</b> +19 → x − 1 = 175 → avg 176 → total = 176×20 = <span class="ans">Rs 3520</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="money" data-kw="hostel mess new students admission expenses increased average expenditure per head diminished original expenditure chhatravas mess kharch छात्रावास">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Hostel mess: naye students → kharch badha, per-head औसत ghata</h3>
+      <p class="trigger">Trigger: "70 chhatra the, 14 naye aaye, mess kharch Rs 28 badha par prati vyakti औसत Rs 1 kam ho gaya — mool kharch?" — Nx + inc = (N+m)(x−d).</p>
+      <div class="example">
+        <b>Q143:</b> 70x + 28 = 84(x−1) → 14x = 112 → x = 8 → 70×8 = <span class="ans">Rs 560</span>
+        <span class="q2"><b>Q144:</b> 54x + 540 = 63(x−3) → 9x = 729 → x = 81 → 54×81 = <span class="ans">Rs 4374</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="money" data-kw="librarian books extra spending more average price reduced per book pustak औसत मूल्य कम">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Extra items + extra paisa → per-unit औसत ghata</h3>
+      <p class="trigger">Trigger: "60 kitaab, Rs 336 aur kharch karke 4 kitaab zyada milti aur prati kitaab औसत Rs 1 kam ho jata — purana औसत mulya?"</p>
+      <div class="example">
+        <b>Q137:</b> (60x + 336)/64 = x − 1 → 60x + 336 = 64x − 64 → 4x = 400 → <span class="ans">Rs 100</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="group" data-kw="section A B students shifted average weight equal transfer exchange vibhag vajan sthanantarit वर्ग औसत वजन">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>Do sections ke beech students ka exchange → avg barabar</h3>
+      <p class="trigger">Trigger: "A aur B mein 40-40 students, A ke 2 students B mein aur B ke 2 A mein gaye jisse dono ka औसत barabar ho gaya."</p>
+      <div class="example">
+        <b>Q145:</b> 40×45.5 − 97.5 + 2x = 40×44.2 + 97.5 − 2x → 4x = 143 → <span class="ans">35.75 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="money" data-kw="average monthly expenditure income savings first three months next four last five family aay vyay bachat आय व्यय बचत">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Income = Expenditure + Savings (monthly avg)</h3>
+      <p class="trigger">Trigger: "pehle 3 mahine kharch X, agle 4 mahine Y, aakhri 5 mahine Z; saal bhar ki bachat B — औसत maasik aay?"</p>
+      <div class="example">
+        <b>Q147:</b> Exp avg = 20000 + 17000/12; I = Exp + 143020/12 = 20000 + 160020/12 = <span class="ans">Rs 33,335</span>
+        <span class="q2"><b>Q148:</b> Exp avg = 7000 + 5200/12; I = 7000 + 42000/12 = <span class="ans">Rs 10,500</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="average temperature monday friday tuesday overlapping days subtraction tapman saptah सोमवार शुक्रवार तापमान">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <h3>Overlapping days → bade group se chhota group ghatao</h3>
+      <p class="trigger">Trigger: "Mon–Fri ka औसत 30.2, Tue–Fri ka 30, aur Monday ka tapman Friday se 2 zyada — Friday?"</p>
+      <div class="example">
+        <b>Q149:</b> 5×30.2 − 4×30 = 151 − 120 = Monday = 31 → F = 31 − 2 = <span class="ans">29°C</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="month starts on tuesday saturday friday average sale visitors december april days counting mahine ke din औसत बिक्री आगंतुक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 27</p>
+      <h3>Mahine ka din-wise average (calendar counting)</h3>
+      <p class="trigger">Trigger: "mahina mangalwar se shuru hota hai, Saturday ka औसत 30, Friday ka 37, baaki dino ka?" — pehle kis din kitni baar aaya wo gino, phir deviation.</p>
+      <div class="example">
+        <b>Q150:</b> April(30d, Tue se): 4 Fri, 4 Sat, 22 other → dev = 4×9 + 4×2 = 44 → 44/22 = 2 → 28 − 2 = <span class="ans">26</span>
+        <span class="q2"><b>Q151:</b> Dec(31d, Thu se): 5 Sat, 4 Sun; dev = 5×16 + 4×387 = 1628 → 1628/22 = 74 → 238 − 74 = <span class="ans">164</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="weight opinion greater than less than probable weights average estimation raghav shiva inequality sambhavit vajan संभावित वजन अनुमान">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 28</p>
+      <h3>Sabki opinion sahi → common range ke integers ka avg</h3>
+      <p class="trigger">Trigger: "uske hisaab se vajan 64 se zyada 74 se kam, behen ke hisaab se…, pita ke hisaab se 67 se zyada nahi — sambhavit vajano ka औसत?"</p>
+      <div class="example">
+        <b>Q152:</b> 64 &lt; R ≤ 67 → 65,66,67 → avg = <span class="ans">66</span>
+        <span class="q2"><b>Q153:</b> 65 &lt; S ≤ 68 → 66,67,68 → avg = <span class="ans">67</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="weighed consecutively average increases each time heavier than first person 2(n-1) trick family members lagatar vajan औसत बढ़ता">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 29</p>
+      <h3>Ek-ek karke weigh, har baar avg y se badhe → last − first = 2(n−1)y</h3>
+      <p class="trigger">Trigger: "paanch sadasya lagatar tole gaye, har baar औसत 2 kg badh jata hai — aakhri wala pehle se kitna bhaari?"</p>
+      <div class="example">
+        <b>Q154:</b> 2(n−1)y = 2×4×2 = <span class="ans">16 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="torn page booklet sum of remaining pages numbered n(n+1)/2 phata prishth pustika पन्ना फटा योग">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 30</p>
+      <h3>Torn page: n(n+1)/2 se nearest total lo, difference = phata page</h3>
+      <p class="trigger">Trigger: "ek panna faad diya gaya, bache hue panno ki sankhyaon ka yog 195 hai — phate page par kaun se number?"</p>
+      <div class="example">
+        <b>Q155:</b> n=19 → 190 (kam), n=20 → 210; 210 − 195 = 15 = 7+8 → <span class="ans">7, 8</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>30 patterns ab tak (Average — Q88 se Q155 tak).</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</section>
+</div>
+<script>
+  document.querySelectorAll('.unit').forEach(unit => {
+    const cards = Array.from(unit.querySelectorAll('.card'));
+    const searchBox = unit.querySelector('.searchBox');
+    const filterBtns = Array.from(unit.querySelectorAll('.controls button'));
+    let activeFilter = 'all';
+    function applyFilters(){
+      const q = searchBox ? searchBox.value.trim().toLowerCase() : '';
+      cards.forEach(card => {
+        const cat = card.dataset.cat;
+        const kw = ((card.dataset.kw || '') + ' ' + card.textContent).toLowerCase();
+        const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+        const matchesSearch = q === '' || kw.includes(q);
+        card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+      });
+    }
+    if (searchBox) searchBox.addEventListener('input', applyFilters);
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        applyFilters();
+      });
+    });
+  });
+</script>
+</body>
+</html>

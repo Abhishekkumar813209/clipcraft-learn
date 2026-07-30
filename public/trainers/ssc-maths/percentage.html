@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Master Trainer (Pg 1–305) | Pattern → Method</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Percentage · Complete Pg 1–305 (Merged)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'election', 'area', 'saving', 'successive', 'commission', 'venn'...">
+      
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="convert">Fraction ↔ %</button>
+      <button data-filter="basic">Basic %</button>
+      <button data-filter="compare">Compare</button>
+      <button data-filter="unit">Unit Convert</button>
+      <button data-filter="reverse">Reverse/Find No.</button>
+      <button data-filter="ratio">Ratio</button>
+      <button data-filter="abrule">AB Rule</button>
+      <button data-filter="restore">Restore</button>
+      <button data-filter="dimension">1D/2D/3D</button>
+      <button data-filter="pce">Price-Cons-Exp</button>
+      <button data-filter="successive">Successive</button>
+      <button data-filter="product">Product (x×y)</button>
+      <button data-filter="volume">Volume/Dimension</button>
+      <button data-filter="population">Population M/F</button>
+      <button data-filter="venn">Venn Diagram</button>
+      <button data-filter="election">Election</button>
+      <button data-filter="exam">Pass/Fail</button>
+      <button data-filter="commission">Commission</button>
+      <button data-filter="income">Income-Exp-Sav</button>
+      <button data-filter="alligation">Alligation</button>
+      <button data-filter="chain">A-B-C Chain</button>
+      <button data-filter="misc">Misc</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="convert" data-kw="percent into fraction pratishat bhinn 20% 25% 30% convert 1/100 multiply badalna Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01 · Pg 1–50</p>
+      <h3>% → Fraction (×1/100)</h3>
+      <p class="trigger">Trigger: "20%, 25%, 30% ko fraction mein badlo" — kisi bhi % ko 1/100 se multiply karo aur simplify.</p>
+      <div class="example">
+        <b>Q:</b> 20% = 20×1/100 = <span class="ans">1/5</span>
+        <span class="q2"><b>Q:</b> 30% = 3/10, 25% = <span class="ans">1/4</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="convert" data-kw="mixed number percent 16 2/3 11 1/9 6 1/4 improper fraction mishrit sankhya convert 50/3 100/9 25/4 Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02 · Pg 1–50</p>
+      <h3>Mixed % (16⅔%, 11⅑%, 6¼%) → pehle improper banao</h3>
+      <p class="trigger">Trigger: % value mixed number mein diya ho (16⅔%, 11⅑%, 6¼%) — pehle improper fraction, phir ×1/100.</p>
+      <div class="example">
+        <b>Q:</b> 16⅔% = 50/3 × 1/100 = <span class="ans">1/6</span>
+        <span class="q2"><b>Q:</b> 11⅑% = 100/9 ×1/100 = 1/9 &nbsp;|&nbsp; 6¼% = 25/4 ×1/100 = <span class="ans">1/16</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="convert" data-kw="fraction into percent 1/4 1/5 1/8 100 multiply table 1/1 to 1/20 yaad rakhna standard values Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03 · Pg 1–50</p>
+      <h3>Fraction → % (×100) + 1/1 se 1/20 tak table</h3>
+      <p class="trigger">Trigger: "1/8 kitna percent hai" — ya paper mein 12½%, 8⅓% jaise value dikhein: table ratta chahiye.</p>
+      <div class="example">
+        <b>Q:</b> 1/8 ×100 = 25/2 = <span class="ans">12½%</span>
+        <span class="q2"><b>Table:</b> 1/3=33⅓, 1/6=16⅔, 1/7=14²⁄₇, 1/9=11⅑, 1/12=8⅓, 1/16=<span class="ans">6¼%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="convert" data-kw="1/11 family multiple 2/11 3/11 5/11 7/11 nine one eleventh pattern quick shortcut Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04 · Pg 1–50</p>
+      <h3>1/11 family — base value ko multiply kar do</h3>
+      <p class="trigger">Trigger: 2/11, 3/11, 5/11 jaisi fraction ka % poocha jaaye — 1/11 = 9⅟₁₁% ko seedha n se multiply karo.</p>
+      <div class="example">
+        <b>Q:</b> 2/11 = 2×9⅟₁₁ = <span class="ans">18²⁄₁₁%</span>
+        <span class="q2"><b>Q:</b> 3/11 = 27³⁄₁₁%, 5/11 = 45⁵⁄₁₁%, 7/11 = <span class="ans">63⁷⁄₁₁%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="convert" data-kw="less than one more than one 6/7 7/8 10/11 10/9 9/8 13/12 100 minus plus split fraction Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05 · Pg 1–50</p>
+      <h3>Fraction 1 se kam / zyada → 100% ± chhota part</h3>
+      <p class="trigger">Trigger: 6/7, 7/8, 10/9, 13/12 jaisi fraction ka % nikalna — 1 ± (1/n) mein todo, table lagao.</p>
+      <div class="example">
+        <b>Q:</b> 6/7 = 1 − 1/7 = 100% − 14²⁄₇% = <span class="ans">85⁵⁄₇%</span>
+        <span class="q2"><b>Q:</b> 10/9 = 1 + 1/9 = <span class="ans">111⅑%</span> &nbsp;|&nbsp; 13/12 = 108⅓%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="convert" data-kw="100 se bada percent 114 2/7 457 1/7 616 2/3 157 1/7 improper fraction whole part split reverse Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06 · Pg 1–50</p>
+      <h3>100% se bada % → whole + fraction todo</h3>
+      <p class="trigger">Trigger: 114²⁄₇%, 457⅟₇%, 616⅔% jaise bade % diye ho — whole part alag, fraction part table se.</p>
+      <div class="example">
+        <b>Q:</b> 114²⁄₇% = 100% + 14²⁄₇% = 1 + 1/7 = <span class="ans">8/7</span>
+        <span class="q2"><b>Q:</b> 457⅟₇% = 4 + 4/7 = 32/7 &nbsp;|&nbsp; 616⅔% = 6 + 1/6 = <span class="ans">37/6</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="compare" data-kw="which is least greatest smallest sabse kam 12% of 625 15% of 555 compare options calculate each Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07 · Pg 1–50</p>
+      <h3>"Which of the following is the least/greatest?"</h3>
+      <p class="trigger">Trigger: "निम्न में से कौन सबसे कम है?" — chaar option a% of b — har ek ko fraction se kaato aur compare karo.</p>
+      <div class="example">
+        <b>Q1:</b> 12%×625=75, 15%×555=83.25, 10%×720=<span class="ans">72 (least)</span>, 9%×845=76.05
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="a is what percent of b kitna pratishat fraction 2/3 1/3 divide multiply 100 ratio Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08 · Pg 1–50</p>
+      <h3>"a is what % of b" → (a/b)×100</h3>
+      <p class="trigger">Trigger: "1/3 का कितना प्रतिशत 2/3 है?" — jiska poocha wo upar, "of" wala neeche.</p>
+      <div class="example">
+        <b>Q2:</b> (2/3) ÷ (1/3) × 100% = 2×100 = <span class="ans">200%</span>
+        <span class="q2">Ratio trick: 2/3 : 1/3 = 2 : 1 → <span class="ans">200%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unit" data-kw="unit conversion mm cm dm m deca hecto km hours day litre ml percent of 3 day 12 hours same unit Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09 · Pg 1–50</p>
+      <h3>Do alag units ka % → pehle same unit banao</h3>
+      <p class="trigger">Trigger: "3 din का कितना % 12 घंटे है", "1 mm कितना % 1 m का", "8% of 5 L in ml" — units mismatch dikhe toh convert karo.</p>
+      <div class="example">
+        <b>Q4:</b> 12hr ÷ (3×24)hr ×100 = 1/6×100 = <span class="ans">16⅔%</span>
+        <span class="q2"><b>Q:</b> 8% of 5L = 8/100×5000 ml = <span class="ans">400 ml</span> &nbsp;|&nbsp; ladder: mm→cm→dm→m→deca→hecto→km (×10 each)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="quick calculation 25% of 200 17% of 300 23% of 200 fraction shortcut divide by 4 mental maths Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10 · Pg 1–50</p>
+      <h3>Fast % calculation — fraction se kaato</h3>
+      <p class="trigger">Trigger: "25% of 800", "17% of 300" — jab % standard fraction ho toh divide karo, warna (%×number)/100.</p>
+      <div class="example">
+        <b>Q:</b> 25% of 800 = 800/4 = <span class="ans">200</span>
+        <span class="q2"><b>Q:</b> 17% of 300 = 51, 19% of 500 = 95, 23% of 200 = <span class="ans">46</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="convert" data-kw="37.5 percent 62.5 percent 3/8 5/8 decimal percent shortcut 12.5 87.5 multiply big number Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11 · Pg 1–50</p>
+      <h3>Decimal % (37.5%, 62.5%) → /8 family</h3>
+      <p class="trigger">Trigger: 37.5%, 62.5%, 87.5% jaise decimal % ke saath bada number diya ho — fraction 3/8, 5/8, 7/8 lagao.</p>
+      <div class="example">
+        <b>Q:</b> 37.5% = 375/1000 = <span class="ans">3/8</span> → number×3/8
+        <span class="q2"><b>Q:</b> 62.5% = 625/1000 = <span class="ans">5/8</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="x of 280 equals 15% of 240 plus 20% of 310 equation find x dono taraf percent add Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12 · Pg 1–50</p>
+      <h3>x% of A = y% of B + z% of C → x nikalo</h3>
+      <p class="trigger">Trigger: "x% of 280 = 15% of 240 + 20% of 310, x ka maan?" — dono side ka value nikaal ke simple equation.</p>
+      <div class="example">
+        <b>Q:</b> 2.8x = 36 + 62 → 7x = 245 → x = <span class="ans">35</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="17% and 50% more than a third number ratio two numbers teesri sankhya se zyada compare A:B 117:150 Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13 · Pg 1–50</p>
+      <h3>Do numbers "third number" se x% & y% zyada → ratio</h3>
+      <p class="trigger">Trigger: "A tisri sankhya se 17% zyada hai aur B 50% zyada, A:B kya hoga?" — third number = 100 maano.</p>
+      <div class="example">
+        <b>Q:</b> A=117, B=150 → 117:150 = <span class="ans">39 : 50</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="72% of x is 360 find number percent of number given reverse 100/percent multiply 360 500 Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14 · Pg 1–50</p>
+      <h3>x% of number = value → number nikalo</h3>
+      <p class="trigger">Trigger: "किसी संख्या का 72% 360 है, संख्या ज्ञात करो" — value × 100 ÷ %.</p>
+      <div class="example">
+        <b>Q:</b> 360 × 100/72 = <span class="ans">500</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="old new ratio 8:9 increase number becomes original ratio unit method O:N 88 99 percentage increase Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15 · Pg 1–50</p>
+      <h3>Old : New ratio bana ke unit method</h3>
+      <p class="trigger">Trigger: "number badhne/ghatne ke baad naya value diya hai, original/naya poocha jaaye" — O:N ratio likho, unit se value.</p>
+      <div class="example">
+        <b>Q:</b> O:N = 8:9, N=99 → 1 unit=11 → O = <span class="ans">88</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="157 1/7 percent of itself 64 added number becomes original find number F/O fraction 11/7 difference Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16 · Pg 1–50</p>
+      <h3>"N jodne par number apne aap ka x% ban jaata hai"</h3>
+      <p class="trigger">Trigger: "यदि किसी संख्या में 64 जोड़ा जाए तो वह अपने आप का 157⅟₇% हो जाती है" — % ko F/O fraction banao, difference = added number.</p>
+      <div class="example">
+        <b>Q20:</b> 157⅟₇% = 1+4/7 = 11/7 → F−O = 4 unit = 64 → 1 unit=16 → O = 7×16 = <span class="ans">112</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="reverse" data-kw="85% of a number added to 75 result is number itself remaining 15 percent equals 75 find number 500 Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17 · Pg 1–50</p>
+      <h3>"x% of number + N = number itself"</h3>
+      <p class="trigger">Trigger: "किसी संख्या के 85% में 75 जोड़ने पर वही संख्या मिलती है" — bacha hua (100−x)% hi N ke barabar hai.</p>
+      <div class="example">
+        <b>Q21:</b> 100%−85% = 15% = 75 → number = 75×100/15 = <span class="ans">500</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="basic" data-kw="chain percent of percent 3800 multiply 15% 18% successive fraction cut big multiplication 285 Pg 1 50">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18 · Pg 1–50</p>
+      <h3>% of % of number (chain multiply)</h3>
+      <p class="trigger">Trigger: ek hi number par do-teen % lagatar lag rahe ho ("15% of 18% of ...") — sab ko fraction bana ke seedha cut karo.</p>
+      <div class="example">
+        <b>Q:</b> 3800 × 15/100 × 18/100 (×25/9) = <span class="ans">285</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="abrule" data-kw="income age more than percent less A B ab rule fraction aay adhik kam mohan shyam radhema karim Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19 · Pg 61–163</p>
+      <h3>"A is x% MORE than B" → B kitna % kam?</h3>
+      <p class="trigger">Trigger: "A ki income/age B se x% adhik hai, B, A se kitne % kam hai?" — % ko fraction banao, +1/n → −1/(n+1).</p>
+      <div class="example">
+        <b>Q31:</b> 25% zyada → 1/4 → −1/5 = <span class="ans">20%</span>
+        <span class="q2"><b>Q32:</b> 40% zyada → 2/5 → −2/7 = <span class="ans">28⁴⁄₇%</span></span>
+        <br><b>Q35:</b> Karim 25% zyada → Radhema = <span class="ans">20% kam</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="abrule" data-kw="less than percent more reverse ulta kejriwal yogi rajdhani shatabdi slower faster marks 33.33 16 2/3 Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20 · Pg 61–163</p>
+      <h3>"A is x% LESS than B" → B kitna % zyada?</h3>
+      <p class="trigger">Trigger: "x% kam / slower / marks kam hai — toh dusra kitna % adhik ya faster hai?" — −1/n → +1/(n−1).</p>
+      <div class="example">
+        <b>Q33:</b> 20% kam → 1/5 → +1/4 = <span class="ans">25%</span>
+        <span class="q2"><b>Q34:</b> 33.33% kam → 1/3 → +1/2 = <span class="ans">50%</span></span>
+        <br><b>Q36:</b> Rajdhani 16⅔% slow → 1/6 → +1/5 = <span class="ans">20%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="abrule" data-kw="15 percent non friendly odd fraction 3/20 3/17 rita richa 14 11/17 denominator base change Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21 · Pg 61–163</p>
+      <h3>Non-friendly % (15%, 28%...) → base badalke fraction</h3>
+      <p class="trigger">Trigger: AB-rule wahi hai par % "ganda" hai (15%, 28%, 23%) — fraction 3/20 banao, base 20→17, answer 3/17×100.</p>
+      <div class="example">
+        <b>Q37:</b> Rita 15% kam → 3/20 → +3/17×100 = <span class="ans">17¹¹⁄₁₇%</span> (Richa zyada)
+      </div>
+    </article>
+
+    <article class="card" data-cat="restore" data-kw="restore original production manpower working hours increase former value price cut bahal karna wapas Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22 · Pg 61–163</p>
+      <h3>"Original wapas laane ke liye kitna % badhayein?"</h3>
+      <p class="trigger">Trigger: "x% ki kami aa gayi — mool/former value restore karne ke liye kitne % vridhi honi chahiye?"</p>
+      <div class="example">
+        <b>Q38:</b> Production −35% → 7/20 → +7/13×100 = <span class="ans">53.85%</span>
+        <span class="q2"><b>Q39:</b> Price −25% → 1/4 → +1/3×100 = <span class="ans">33⅓%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="price increase consumption reduce expenditure same rice petrol khapat kami vyay pehle jitna P x C = E Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23 · Pg 61–163</p>
+      <h3>Price ↑ x%, expenditure SAME → consumption ↓?</h3>
+      <p class="trigger">Trigger: "chawal/petrol ki keemat x% badhi, kharcha pehle jitna hi rakhna hai — khapat kitne % kam kare?" → P×C=E, +1/n → −1/(n+1).</p>
+      <div class="example">
+        <b>Q40:</b> Rice +20% → 1/5 → −1/6 = <span class="ans">16.7%</span>
+        <span class="q2"><b>Q41:</b> Petrol +28% → 7/25 → −7/32×100 = <span class="ans">21.88%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="price increase expenditure only additional percent more consumption reduce sunitha sugar rice 100 wala method chart Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24 · Pg 61–163</p>
+      <h3>Price ↑ x%, kharcha sirf y% hi badhaya → consumption ↓?</h3>
+      <p class="trigger">Trigger: "keemat x% badhi par wo kharch sirf y% hi zyada karna chahta hai" — 100 wala method: P×C=(100+x), E=(100+y), dec = (x−y)/(100+x)×100.</p>
+      <div class="example">
+        <b>Q63:</b> P+19%, E+12% → 7/119×100 = <span class="ans">6%</span>
+        <span class="q2"><b>Q64:</b> P+18%, E+12% → 6/118×100 = <span class="ans">5.1%</span></span>
+        <br><b>Q65:</b> P+17%, E+5% → 12/117×100 = <span class="ans">10.2%</span>
+        <br><b>Q66/69:</b> P+23%, E+5% → 18/123×100 = <span class="ans">14.6%</span>
+        <br><b>Q67:</b> P+25%, E+15% → 10/125×100 = <span class="ans">8%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="price reduced sale increased x percent revenue receipt increase find x reverse 100 method Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25 · Pg 61–163</p>
+      <h3>Price ↓, sale ↑ x% (x unknown), revenue ↑ diya → x?</h3>
+      <p class="trigger">Trigger: "price x% kam hua, sale x% badhi, revenue mein y% ki vridhi hui — x ka maan?" — P×S=R chart ulta chalao.</p>
+      <div class="example">
+        <b>Q68:</b> P=80, R=125 → S=125/80 → inc=45/80×100 = <span class="ans">56.25%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="price increase same amount money kitna kg khareed sakta hai quantity inverse ratio pulse daal 60 kg Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26 · Pg 61–163</p>
+      <h3>Price ↑/↓, usi paise mein ab kitna maal?</h3>
+      <p class="trigger">Trigger: "daal ki keemat x% badh gayi, pehle N kg khareedta tha — usi amount mein ab kitna kg?" — Exp const → P ∝ 1/Q.</p>
+      <div class="example">
+        <b>Q70:</b> +25% → P 4:5 → Q 5:4 → 60×4/5 = <span class="ans">48 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="reduction price 2 kg more buy for rs reduced rate per kg original rate salt sugar unit method 15% 7.5% 20% Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 27 · Pg 61–163</p>
+      <h3>"x% kami se Rs Y mein N kg zyada" → rate?</h3>
+      <p class="trigger">Trigger: "namak/cheeni ki keemat x% kam hui jisse Rs Y mein N kg adhik mil gaya — ghati hui (ya original) dar prati kg?"</p>
+      <div class="example">
+        <b>Q71:</b> −15% → P 20:17, Q 17:20; 3u=2kg → N.C=40/3 → 272÷40/3 = <span class="ans">₹20.40</span>
+        <span class="q2"><b>Q72:</b> −7.5% → 40:37, Q 37:40; N.C=80/3 → 925×3/80 = <span class="ans">₹34.6875</span></span>
+        <br><b>Q73:</b> −20% → P 5:4, Q 4:5; 1u=2kg → O.C=8kg → 360/8 = <span class="ans">₹45 (original)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="dimension" data-kw="1D perimeter diagonal circumference side radius same percent square circle parimap vikarn tirjya Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 28 · Pg 61–163</p>
+      <h3>1D chalo → perimeter/diagonal/circumference SAME %</h3>
+      <p class="trigger">Trigger: "side/radius x% badhi toh perimeter, diagonal ya circumference mein kitne % vridhi?" — sab 1D hai, answer wahi x% (koi calculation nahi).</p>
+      <div class="example">
+        <b>Q42:</b> Square side +10% → perimeter & diagonal = <span class="ans">10%, 10%</span>
+        <span class="q2"><b>Q43:</b> Radius +20% → circumference = <span class="ans">20%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="dimension" data-kw="area surface area square cube hemisphere radius side same percent both a+b+ab/100 x squared 2D 300 percent 19 percent 12 percent Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 29 · Pg 61–163</p>
+      <h3>2D Area jab dono dimension SAME x% badle</h3>
+      <p class="trigger">Trigger: "square/cube ki side, ya circle/hemisphere ki radius x% badhi/ghati → area ya surface area mein % change?" — x,x lagao: 2x + x²/100.</p>
+      <div class="example">
+        <b>Q44:</b> Cube side −12% → −24+1.44 = <span class="ans">−22.56%</span>
+        <span class="q2"><b>Q48:</b> Radius +300% → 600+900 = <span class="ans">+1500%</span></span>
+        <br><b>Q49:</b> Hemisphere r +19% → 38+3.61 = <span class="ans">+41.61%</span> (TSA & CSA dono)
+      </div>
+    </article>
+
+    <article class="card" data-cat="dimension" data-kw="rectangle length breadth increased decreased area net effect 2D a+b+ab/100 aayat lambai chaudai kshetrafal triangle base height Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 30 · Pg 61–163</p>
+      <h3>Rectangle/Triangle: l & b (ya base & height) alag-alag %</h3>
+      <p class="trigger">Trigger: "lambai x% badhi aur chaudai y% ghati → kshetrafal par net prabhav?" — a+b+ab/100, sign dhyan se.</p>
+      <div class="example">
+        <b>Q45:</b> +12%, −8% → 4−0.96 = <span class="ans">+3.04%</span>
+        <span class="q2"><b>Q46:</b> +8%, −10% → −2−0.8 = <span class="ans">−2.8%</span></span>
+        <br><b>Q47:</b> +10%, +20% → ratio 50:66 = <span class="ans">+32%</span>
+        <br><b>Q52:</b> base +33⅓%(3:4), h −16⅔%(6:5) → 9:10 = <span class="ans">+11⅑%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="dimension" data-kw="cuboid volume length breadth height 3D three dimensions ratio method successive three terms ghanabh aayatan Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 31 · Pg 61–163</p>
+      <h3>Cuboid Volume: teeno dimension change (3D)</h3>
+      <p class="trigger">Trigger: "ghanabh ki l, b, h mein x%, y%, z% parivartan → aayatan mein % change?" — teeno ka ratio multiply karo (ya 2-2 karke successive).</p>
+      <div class="example">
+        <b>Q59:</b> +20%,+30%,−50% → 100:78 = <span class="ans">−22%</span>
+        <span class="q2"><b>Q60:</b> +7%,+6%, h same → 13+0.42 = <span class="ans">+13.42%</span></span>
+        <br><b>Q61:</b> +10%,+20%,−20% → 250:264 = <span class="ans">+5⅗%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="dimension" data-kw="volume remains same area remains same height reduced increased third dimension cylinder radius cuboid triangle base height 16 percent 12 percent reverse Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 32 · Pg 61–163</p>
+      <h3>Volume/Area FIX rakhna hai → teesri dimension kitni?</h3>
+      <p class="trigger">Trigger: "…taaki aayatan/kshetrafal same rahe (ya utna hi badhe) — height/breadth kitne % badhayein-ghatayein?" — ratio ulta cross-multiply karo.</p>
+      <div class="example">
+        <b>Q50:</b> Cylinder r −16% (25:21) → h = 441:625 → 184/441×100 = <span class="ans">+41.72%</span>
+        <span class="q2"><b>Q62:</b> l,b +12% (25:28) → h = 784:625 → 159/784×100 = <span class="ans">−20.28%</span></span>
+        <br><b>Q51:</b> base +40%(5:7), area +60%(5:8) → h = 35:40 → <span class="ans">+14.29%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="successive two percent increase decrease combined price redmi savlon shampoo a+b+ab/100 net change Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 33 · Pg 61–163</p>
+      <h3>Do alag % ek ke baad ek (successive)</h3>
+      <p class="trigger">Trigger: "keemat pehle x% badhi/ghati aur phir y% badhi/ghati — kul kitna % change?" — a+b+ab/100.</p>
+      <div class="example">
+        <b>Q74:</b> −10%, −10% → −20+1 = <span class="ans">−19%</span>
+        <span class="q2"><b>Q75:</b> +20%, +10% → 30+2 = <span class="ans">+32%</span></span>
+        <br><b>Q76:</b> +20%, −10% → 10−2 = <span class="ans">+8%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="same percent increase then decrease x squared by 100 salary income number 8 percent 50 percent 20 percent 28 percent reverse original number Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 34 · Pg 61–163</p>
+      <h3>Same x% badha, phir wahi x% ghata → −x²/100</h3>
+      <p class="trigger">Trigger: "pehle x% vridhi phir x% kami (ya ulta)" — hamesha NET LOSS, seedha −x²/100 likh do.</p>
+      <div class="example">
+        <b>Q78:</b> +8% then −8% → <span class="ans">−0.64%</span>
+        <span class="q2"><b>Q79:</b> −50% then +50% → <span class="ans">−25%</span></span>
+        <br><b>Q80:</b> ±20% → <span class="ans">−4%</span>
+        <br><b>Q81 (reverse):</b> ±28% → −7.84% = 784 → <span class="ans">10,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="mixed fraction percent 12 1/2 8 1/2 16 2/3 7 1/7 ratio method movie ticket rafale price sale income Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 35 · Pg 61–163</p>
+      <h3>Mixed-number % (12½%, 16⅔%, 7⅐%) → ratio method</h3>
+      <p class="trigger">Trigger: % fraction/mixed form mein diya ho — formula chhodo, har % ko fraction bana ke ratio multiply karo.</p>
+      <div class="example">
+        <b>Q77:</b> Price 8:9, Sale 200:214 → Income 1600:1953 → <span class="ans">+22.0625%</span>
+        <span class="q2"><b>Q82:</b> +16⅔%(6:7), −7⅐%(14:13) → 12:13 → <span class="ans">+8⅓%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="four steps chain multiple successive 40 25 15 20 net increase decrease salary 50 100 percent gain loss Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 36 · Pg 61–163</p>
+      <h3>3–4 step chain → ratio chain sabse fast</h3>
+      <p class="trigger">Trigger: "pehle x% badha, fir y% ghata, fir z% badha, fir w% ghata — net % vridhi/kami?" — har % ka ratio le kar multiply, formula mat ghaso.</p>
+      <div class="example">
+        <b>Q87:</b> +40,−25,+15,−20 → 5:7×4:3×20:23×5:4 → 500:483 = <span class="ans">−3.4%</span>
+        <span class="q2"><b>Q88:</b> −50,+50,+100 → 2:1×2:3×1:2 → 2:3 = <span class="ans">+50% gain</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="product" data-kw="wage rate per hour working hours increased daily earning weekly wages worker basir 12 1/2 percent 15 20 percent Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 37 · Pg 61–163</p>
+      <h3>Rate × Hours = Earning</h3>
+      <p class="trigger">Trigger: "prati ghanta majdoori x% badhi par kaam ke ghante y% ghate/badhe — kul kamai mein kitne % change?" (Rs 38,400 jaise extra data trap hai).</p>
+      <div class="example">
+        <b>Q83:</b> rate 8:9, hours 10:9 → 80:81 = <span class="ans">+1.25%</span>
+        <span class="q2"><b>Q84:</b> +15%, +20% → 35+3 = <span class="ans">+38%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="product" data-kw="expression xy both variables decreased price reduced number sold increased sales effect watch 20 40 percent Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 38 · Pg 61–163</p>
+      <h3>Do variable ka product (xy / price×qty sold)</h3>
+      <p class="trigger">Trigger: "vyanjak xy mein dono x aur y x% kam", ya "keemat x% kam hui toh bikri y% badh gayi — sales par prabhav?" — dono ka a+b+ab/100.</p>
+      <div class="example">
+        <b>Q85:</b> x,y dono −20% → −40+4 = <span class="ans">−36%</span>
+        <span class="q2"><b>Q86:</b> Price −20%, qty +40% → 5:4 × 5:7 = 25:28 = <span class="ans">+12% increase</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="three terms successive formula abc 10000 volume l b h 2 3 4 percent 3 7 5 percent step by step do do karke Pg 61 163">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 39 · Pg 61–163</p>
+      <h3>3-term successive → 2-2 karke todo</h3>
+      <p class="trigger">Trigger: teen % ek saath diye ho (l,b,h ya 3 baar price change) aur ratio bhaddi ban rahi ho — pehle do ka net nikaalo, phir us net ko teesre ke saath lagao.</p>
+      <div class="example">
+        <b>Rule:</b> (a+b+c) + (ab+bc+ca)/100 + abc/10000; 10,20,30 → <span class="ans">71.6%</span>
+        <span class="q2"><b>Ex:</b> 3%,7%,5% → 10.21 → 10.21+5+0.5105 = <span class="ans">15.7205%</span></span>
+        <br><b>Ex:</b> +10%,+12%,−15% → 23.2 → 8.2−3.48 = <span class="ans">+4.72%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="volume" data-kw="cuboid ghanabh volume aayatan length breadth height lambai chaudai unchai ratio percent effect on volume badhna ghatna Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 40 · Pg 120–233</p>
+      <h3>Cuboid ki l, b, h badli → Volume par effect?</h3>
+      <p class="trigger">Trigger: "length x% increased, breadth y% increased, height z% decreased — find effect on volume / % increase in volume"</p>
+      <div class="example">
+        <b>Q59:</b> l+20%(5:6), b+30%(10:13), h−50%(2:1) → V=100:78 → <span class="ans">22% decrease</span>
+        <span class="q2"><b>Q61:</b> l+10%(10:11), b+20%(5:6), h−20%(5:4) → V=250:264 → 14/250×100 = <span class="ans">5⅗%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="volume" data-kw="cuboid volume same constant unchanged height reduce kitna percent kam 12 percent both length breadth aayatan samaan rahe Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 41 · Pg 120–233</p>
+      <h3>Volume SAME rakhna hai → teesri dimension kitni ghataayein?</h3>
+      <p class="trigger">Trigger: "l aur b dono x% badh gaye, height kitne % kam ki jaaye taaki volume same rahe?"</p>
+      <div class="example">
+        <b>Q62:</b> l,b +12% → 25:28 each → l×b = 625:784<br>
+        V same → h = 784:625 → 159/784×100 = <span class="ans">20.28%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="do quantity multiply length breadth only two dimension a+b+ab/100 formula 7 6 13.42 percent increase area rectangle Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 42 · Pg 120–233</p>
+      <h3>Sirf 2 dimension badle (3rd constant) → a+b+ab/100</h3>
+      <p class="trigger">Trigger: "length aur breadth 7% aur 6% badhe, volume/area mein % increase?" — teesri cheez ka zikr hi nahi.</p>
+      <div class="example">
+        <b>Q60:</b> 7+6+(7×6)/100 = <span class="ans">13.42%</span>
+        <span class="q2">Third term 0% ho toh: 13.42+0+0 = same <span class="ans">13.42%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="successive three terms teen percent a b c formula abc/10000 chain do do karke jodna 2 3 4 10 20 30 71.6 Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 43 · Pg 120–233</p>
+      <h3>3 successive % → do-do karke jodo (ya full formula)</h3>
+      <p class="trigger">Trigger: "teen alag-alag % changes ek saath (l,b,h ya 3 steps)" — net % change poocha jaaye.</p>
+      <div class="example">
+        <b>Trick:</b> pehle 2 jodo → phir uska answer teesre ke saath jodo.<br>
+        <b>Ex:</b> 2%,3%,4% → (2+3+0.06)=5.06 → (5.06+4+0.2024)= <span class="ans">9.2624%</span>
+        <span class="q2"><b>Ex:</b> 10%,20%,30% → 60 + 1100/100 + 6000/10000 = <span class="ans">71.6%</span></span>
+        <br><b>Ex:</b> +10%,+12%,−15% → 23.2 → (23.2−15−3.48) = <span class="ans">4.72%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="price consumption expenditure petrol kimat khapat vyay quantity reduce additional spend 19 12 percent ratio method Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 44 · Pg 120–233</p>
+      <h3>Price ↑, Expenditure sirf thoda ↑ → Consumption kitna ghataye?</h3>
+      <p class="trigger">Trigger: "petrol ka price 19% badha aur wo sirf 12% extra kharch karna chahti hai — quantity kitne % kam kare?"</p>
+      <div class="example">
+        <b>Q63:</b> P=100:119, E=100:112 → C = 112/119<br>
+        C→119:112 → 7/119×100 = <span class="ans">≈6%</span>
+        <span class="q2"><b>100-wala method:</b> P↑10%, E↑20% → C = 120/110 → <span class="ans">9 1/11% increase</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="expenditure constant same paisa price increase decrease quantity kitna kharid sakta inverse P proportional 1/Q 25 percent 60 kg daal Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 45 · Pg 120–233</p>
+      <h3>Expenditure FIX → Price ∝ 1/Quantity</h3>
+      <p class="trigger">Trigger: "price x% badh/ghat gaya, utne hi paise mein ab kitna kharid sakta hai" — kharcha same hai.</p>
+      <div class="example">
+        Price +25% → P=4:5 → Q=5:4<br>
+        <b>Q:</b> 60 kg × 4/5 = <span class="ans">48 kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pce" data-kw="reduced rate per kg extra quantity zyada mila salt namak sugar 15 percent kami 2 kg 272 rupees new rate unit method Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 46 · Pg 120–233</p>
+      <h3>"Price kam hone se X kg zyada mila" → naya rate?</h3>
+      <p class="trigger">Trigger: "price mein x% ki kami se Rs Y mein X kg zyada milta hai — reduced rate per kg kya hai?"</p>
+      <div class="example">
+        Price −15% → P=20:17 → Q=17:20 → diff 3 unit = 2kg<br>
+        New qty = 20 unit = 40/3 kg → 272 ÷ 40/3 = <span class="ans">Rs 20.40/kg</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="same percent increase then decrease x square by 100 net loss 8 8 0.64 20 20 4 percent hamesha kami Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 47 · Pg 120–233</p>
+      <h3>x% badhaya phir wahi x% ghataya → −x²/100</h3>
+      <p class="trigger">Trigger: "pehle x% badhaya, phir usi par x% kam kiya — net effect?" — answer hamesha DECREASE.</p>
+      <div class="example">
+        +8% then −8% → −(8×8)/100 = <span class="ans">0.64% decrease</span>
+        <span class="q2">+20% then −20% → −400/100 = <span class="ans">4% decrease</span></span>
+        <br><b>Reverse:</b> diff=784 diya → x²/100=7.84% → value = <span class="ans">10,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="do alag percent successive net change 20 10 32 percent 8 percent increase price salary formula a+b+ab/100 sign Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 48 · Pg 120–233</p>
+      <h3>Do alag % successive → a+b+ab/100 (sign ke saath)</h3>
+      <p class="trigger">Trigger: "pehle x% badha phir y% badha/ghata — overall % change kitna?"</p>
+      <div class="example">
+        +20% then +10% → 20+10+200/100 = <span class="ans">32% increase</span>
+        <span class="q2">+20% then −10% → 20−10−200/100 = <span class="ans">8% increase</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="successive" data-kw="mixed fraction percent 16 2/3 one sixth 12 half ratio banao multiply 7:6 shortcut Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 49 · Pg 120–233</p>
+      <h3>Fraction wale % (16⅔%, 12½%) → ratio bana ke multiply</h3>
+      <p class="trigger">Trigger: % values mixed-fraction mein diye ho — formula lagane se pehle fraction/ratio banao.</p>
+      <div class="example">
+        16⅔% = 1/6 → 6:7 ; 7⅐% = 1/14 → 14:13<br>
+        Combine → 12:13 → <span class="ans">8⅓% increase</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="population" data-kw="population village jansankhya males females purush mahila 8 percent 5 percent increase total becomes number of males before increase common method Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 50 · Pg 120–233</p>
+      <h3>Male x%, Female y% badhe → Male/Female nikaalo (Common Method)</h3>
+      <p class="trigger">Trigger: "gaon ki population P thi, males x% aur females y% badhe, total P' ho gaya — males kitne the?"</p>
+      <div class="example">
+        <b>Q115:</b> 9600 → 10272, diff=672 = (8%M+5%F); 5% of 9600=480<br>
+        672−480 = 192 = 3%M → M = 192×100/3 = <span class="ans">6400</span>
+        <span class="q2"><b>Q116:</b> 18000→19200, diff=1200=(5%M+7%F); 7% of 18000=1260 → 1260−1200=60=2%M → M=3000, F=15000 → <span class="ans">1 : 5</span></span>
+        <br><b>Q117:</b> 15280→18428, diff=3148; 15% of 15280=2292 → 856=10%M → M=8560, F=6720 → diff <span class="ans">1840</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="venn" data-kw="venn diagram fail both subjects science maths economics reasoning passed in both n(AUB) formula 100 minus union percentage Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 51 · Pg 120–233</p>
+      <h3>"Dono mein fail X%" → dono mein pass kitne %?</h3>
+      <p class="trigger">Trigger: "a% Science mein fail, b% Maths mein fail, c% dono mein fail — dono subjects mein pass kitne %?"</p>
+      <div class="example">
+        Fail(at least one) = a+b−c → Pass both = 100 − that.<br>
+        <b>Q118:</b> 53+48−40 = 61 → <span class="ans">39% pass</span>
+        <span class="q2"><b>Q119:</b> 35+45−20 = 60 → <span class="ans">40% pass</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="venn" data-kw="venn tea coffee like both at least one drink 55 60 45 union only tea only coffee total number find students Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 52 · Pg 120–233</p>
+      <h3>"At least one" / Only-A / Only-B (Tea-Coffee type)</h3>
+      <p class="trigger">Trigger: "x% ko chai pasand, y% ko coffee, z% ko dono — kam se kam ek pasand karne wale kitne %?"</p>
+      <div class="example">
+        <b>Q120:</b> 55+60−45 = <span class="ans">70%</span>
+        <span class="q2">Only Tea = 55−45 = 10%, Only Coffee = 60−45 = 15%<br>Agar "at least one = 240 students" jaisa number de → 240 = 60% → Total = <span class="ans">400</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="election" data-kw="election chunav winner 70 percent votes margin jeeta total votes 100x simple no invalid difference 40x Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 53 · Pg 120–233</p>
+      <h3>Winner ko x% vote, M margin se jeeta → Total votes?</h3>
+      <p class="trigger">Trigger: "winner ko x% votes mile aur wo M votes se jeeta" — invalid/not-cast ka koi zikr nahi.</p>
+      <div class="example">
+        Total=100x → W=70x, L=30x → diff 40x = 16000 → <span class="ans">Total 40,000</span>
+        <span class="q2">W=62x, L=38x → diff 24x = 7200 → <span class="ans">Total 30,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="election" data-kw="blue print election not casted invalid vote valid vote chain method series method k percent of valid k percent of total blueprint Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 54 · Pg 120–233</p>
+      <h3>Election Blueprint: Not-cast% → Invalid% → W/L (Chain vs Series)</h3>
+      <p class="trigger">Trigger: "x% ne vote nahi dala, y% vote invalid, winner ko k% mile" — dekho k% VALID ka hai (Series) ya TOTAL ka (Chain).</p>
+      <div class="example">
+        T=100x → −not cast% → casted → −invalid% → valid → W/L split.<br>
+        <b>Ex:</b> 8850 votes, 10% invalid, W=40% of valid → 8850×90/100×40/100 = <span class="ans">3186</span>
+        <span class="q2"><b>Ex:</b> 100x −30% = 70x −20% = 56x valid; W64%,L36% of valid → diff 28% = 3136 → <span class="ans">Total 20,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="election" data-kw="fixed number blank ballot invalid votes 80 blank not percent subtract direct minus election total 2000 Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 55 · Pg 120–233</p>
+      <h3>Blueprint mein % ki jagah FIXED number (blank/invalid)</h3>
+      <p class="trigger">Trigger: "20% ne vote nahi dala, phir 80 ballots blank the / 40 vote invalid the" — number diya hai, % nahi.</p>
+      <div class="example">
+        T=100x −20% = 80x −80(blank); W=45% of TV=45x, L=35x−80<br>
+        diff = 10x+80 = 280 → x=20 → <span class="ans">Total 2000</span>
+        <span class="q2">80x −40(invalid); W=42x, L=38x−40 → 4x+40=112 → <span class="ans">Total 1800</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="election" data-kw="reverse election candidate got votes 382500 60 percent of valid find invalid percentage total polled 750000 ulta Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 56 · Pg 120–233</p>
+      <h3>Ulta: Winner ke votes diye → Invalid% / doosre ke votes</h3>
+      <p class="trigger">Trigger: "candidate ko X votes mile jo valid votes ka k% the, total polled diya hai — invalid % kitna?"</p>
+      <div class="example">
+        382500 = 60% of valid → valid = 637500; total = 750000<br>
+        invalid = 112500 → <span class="ans">15%</span>
+        <span class="q2">Total 64000, invalid 20% → valid 51200; X=70% of valid = <span class="ans">35,840</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="election" data-kw="three four candidates ratio split teen char ummedwar 6:7:2 third fourth difference winner votes 42680 10 percent of valid Pg 120 233">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 57 · Pg 120–233</p>
+      <h3>3–4 candidates ke beech election (ratio split)</h3>
+      <p class="trigger">Trigger: "chunav teen/char ummeedwaron ke beech, ek ko x% mila aur baaki ka ratio a:b:c diya hai".</p>
+      <div class="example">
+        Winner 42680 = 55% of valid → valid = 77600; 3rd = 10% of valid = <span class="ans">7760</span>
+        <span class="q2">25% fixed + baaki 75% ratio 6:7:2 → 1 unit = 5%; 3rd−4th = 15% = 69198 → 1% = 4613.2 → winner 35% = <span class="ans">161,462</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exam" data-kw="exam pass fail two students 20% failed by marks more than passing maximum marks total marks pariksha anuttirn utteern student percentage difference Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 58 · Pg 234–305</p>
+      <h3>Do students: ek fail by A, dusra pass se B zyada</h3>
+      <p class="trigger">Trigger: "x% laake A marks se fail, dusra y% laake pass marks se B marks zyada" — maximum marks poocha jaaye.</p>
+      <div class="example">
+        <b>Q140:</b> 32%−20%=12% → 30+42=72 → 12%=72 → <span class="ans">Total=600</span> (P.M=150)
+        <span class="q2"><b>Q142:</b> 12% = 40+47 = 87 → 87/12×100 = <span class="ans">725</span></span>
+        <br><b>Q143:</b> diff% seedha 40% diya → 21+147=168=40% → <span class="ans">Total=420</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exam" data-kw="passing percentage minimum pass marks percent nyuntam utteern ank pratishat john jack 20% 35% Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 59 · Pg 234–305</p>
+      <h3>Same setup, par Passing % poocha jaaye</h3>
+      <p class="trigger">Trigger: "…utteern hone ke liye aavashyak nyuntam ankon ka PRATISHAT gyaat kijiye" — total nahi, pass% chahiye.</p>
+      <div class="example">
+        <b>Q141:</b> 35%−20%=15% = 10+20 = 30 → 1%=2 → Total=200; P.M=20%+10 = 40+10=50<br>
+        P.P% = 20% + (10/200)×100 = <span class="ans">25%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="commission" data-kw="commission bonus salesman total sales over 10000 extra bonus earning kamishan bikri salesman earns find total sales Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 60 · Pg 234–305</p>
+      <h3>Commission + bonus on sales OVER ₹N</h3>
+      <p class="trigger">Trigger: "kul bikri par x% commission aur ₹N se adhik bikri par y% bonus, salesman ₹E kamata hai → total sales?"</p>
+      <div class="example">
+        <b>Q144:</b> 10%+2.5% on (x−10000)=2875 → add back 10000×2.5%=250 → 3125 = 12.5% → <span class="ans">₹25,000</span>
+        <span class="q2"><b>Q145:</b> 5½%+0.5%; 1990+ (10000×0.5%=50) = 2040 = 6% → <span class="ans">₹34,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="commission" data-kw="salesman deposit after deducting commission jama karta hai bacha hua total sales 87% 89% remaining amount Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 61 · Pg 234–305</p>
+      <h3>Commission kaat ke DEPOSIT kiya → total sales</h3>
+      <p class="trigger">Trigger: "commission katauti ke baad ₹D jama karta hai" — yahan D = (100 − c − b)% wala hissa, bonus ka fixed part D mein se ghatao.</p>
+      <div class="example">
+        <b>Q146:</b> 12%+1% over 15000; 52350 − 150 = 52200 = 87% → <span class="ans">₹60,000</span>
+        <span class="q2"><b>Q146b:</b> 10%+1% over 10000; 9000−100=8900 = 89% → <span class="ans">₹10,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="commission" data-kw="slab wise commission first 200000 next remaining agent marketing 2% 1.5% 1% total commission earned Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 62 · Pg 234–305</p>
+      <h3>Slab-wise commission (first/next/remaining)</h3>
+      <p class="trigger">Trigger: "pehle ₹2L par 2%, agle ₹2L par 1.5%, shesh par 1%" — slab tod ke alag-alag % lagao, jodo.</p>
+      <div class="example">
+        <b>Q147:</b> Sales 5,68,000 → 200000×2%=4000, 200000×1.5%=3000, 168000×1%=1680<br>
+        Total = <span class="ans">₹8,680</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="commission" data-kw="two saleswomen kavitha kalyani difference in earnings 12% 15% 3% 5% bonus over 20000 total earning Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 63 · Pg 234–305</p>
+      <h3>Do salespersons ke earning ka DIFFERENCE diya</h3>
+      <p class="trigger">Trigger: "dono ko alag commission%, alag bonus% (₹N se upar), dono ki aay mein antar ₹D" — sales ko (N + 100y) maan ke difference equation banao.</p>
+      <div class="example">
+        <b>Q148:</b> diff = (20000+100y)×3% + 100y×2% = 7600 → 600+5y=7600 → y=1400<br>
+        Kavitha = 160000×12% + 140000×3% = <span class="ans">₹23,400</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="income distribution education household GPF savings remaining EMI monthly income percent bacha hua shesh rashi Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 64 · Pg 234–305</p>
+      <h3>Saare % total income par → bacha hua = answer</h3>
+      <p class="trigger">Trigger: "aay ka 15% shiksha, 40% ghar, 10% GPF, 15% bachat, SHESH EMI" — sab % same income ke hain, seedha 100 − sum.</p>
+      <div class="example">
+        <b>Q149:</b> 15+40+10+15 = 80% → EMI = 20% of 80000 = <span class="ans">₹16,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="spent 30% rent 15% of remaining food 35% of amount now left monthly income shesh rashi ka percent left with him successive Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 65 · Pg 234–305</p>
+      <h3>"Baaki ka x%" chain → bacha hua amount diya</h3>
+      <p class="trigger">Trigger: "rent par 30%, SHESH RASHI ka 15% khaane par, ab bachi rashi ka 35% aur, ₹L bache" — har step pichle bache par, successive multiply.</p>
+      <div class="example">
+        <b>Q150:</b> x×70/100×85/100×65/100 = 162435 → <span class="ans">Income = ₹4,20,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="fresh dry fruit water content pulp grape raisin taaja sukha phal 60% water 20% water how much dry obtained Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 66 · Pg 234–305</p>
+      <h3>Fresh–Dry: PULP ka weight constant</h3>
+      <p class="trigger">Trigger: "taaje phal mein x% paani, sookhe mein y% paani — Wkg fresh se kitna dry milega?" — paani nahi, PULP barabar rakho.</p>
+      <div class="example">
+        <b>Q151:</b> Fresh pulp 40% of 100 = 40 = dry pulp 80% of x → <span class="ans">x = 50 kg</span>
+        <span class="q2"><b>Q152:</b> 180×50% = x×90% → <span class="ans">x = 100 kg</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="same salary saving percent mohan sohan 14% 22% saves 1540 what is savings of other ratio direct Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 67 · Pg 234–305</p>
+      <h3>Same salary, alag saving% → dusre ki saving</h3>
+      <p class="trigger">Trigger: "dono ka vetan barabar hai, ek x% bachata hai dusra y%, ek ki bachat ₹S" — seedha ratio x:y lagao.</p>
+      <div class="example">
+        <b>Q153:</b> 14x : 22x → Mohan = 1540 × 14/22 = <span class="ans">₹980</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="cats dogs biscuits two types animals 7 9 355 45 animals find number linear equation deviation method Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 68 · Pg 234–305</p>
+      <h3>Do type ki cheezein, total count + total value diya</h3>
+      <p class="trigger">Trigger: "kuch billiyan kuch kutte, har billi 7 biscuit har kutta 9, 45 jaanwar ne 355 biscuit khaye" — sabko chhote wale se multiply karke extra baanto.</p>
+      <div class="example">
+        <b>Q154:</b> 45×7 = 315; 355−315 = 40; per-dog extra = 2 → dogs = 20<br>
+        cats = 45−20 = <span class="ans">25 cats, 20 dogs</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="owns 66 2/3% of property 30% of what she owns worth 125000 45% of total value sampatti percent of percent Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 69 · Pg 234–305</p>
+      <h3>"% ka %" wali property/number value</h3>
+      <p class="trigger">Trigger: "uske paas sampatti ka 66⅔% hai, uski 30% sampatti ki keemat ₹V hai, poori sampatti ka 45%?" — pehle total nikalo, phir poocha % lagao.</p>
+      <div class="example">
+        <b>Q155:</b> x × 2/3 × 30% = 125000 → x = 6,25,000<br>
+        45% of x = <span class="ans">₹2,81,250</span> (calc: 625000×0.45)
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="fraction numerator increased denominator increased decreased resultant fraction original bhinn ansh har 60% 40% 16/63 Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 70 · Pg 234–305</p>
+      <h3>Numerator/Denominator % change → original fraction</h3>
+      <p class="trigger">Trigger: "ansh x% badha, har y% badha/ghata, parinaami bhinn = a/b — mool bhinn?" — x/y × (100±x)/(100±y) = given.</p>
+      <div class="example">
+        <b>Q156:</b> (x×160)/(y×140) = 16/63 → x/y = <span class="ans">2/9</span>
+        <span class="q2"><b>Q157:</b> (x×150)/(y×72) = 25/36 → x/y = <span class="ans">1/3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="boys girls passed failed percentage of total students institute 800 600 40% 60% overall fail percent ladke ladkiyan Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 71 · Pg 234–305</p>
+      <h3>Boys/Girls pass-fail → overall %</h3>
+      <p class="trigger">Trigger: "B boys aur G girls, x% boys aur y% girls pass — kul mein fail/pass %?" — count nikaal lo ya alligation (weighted avg) laga do.</p>
+      <div class="example">
+        <b>Q158:</b> Fail = 480+240 = 720 of 1400 → <span class="ans">51.43%</span>
+        <span class="q2"><b>Q172:</b> 35% boys(30% fail), 65% girls(40% fail) → (210+520)/20 = <span class="ans">36.5%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="school X Y 150% more students than X appeared 80% total passed percentage failed from Y vidyalaya 130% more Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 72 · Pg 234–305</p>
+      <h3>School X vs Y: "x% MORE students" + overall pass%</h3>
+      <p class="trigger">Trigger: "X se kuch chhaatra, X se 150% ADHIK chhaatra Y se, kul ka 80% pass — Y ka fail%?" — 150% more matlab 100:250, units mein todo.</p>
+      <div class="example">
+        <b>Q159:</b> X=100,Y=250; total pass=350×80%=280; Px=70 → Py=210 → Fy=40/250 = <span class="ans">16%</span>
+        <span class="q2"><b>Q160:</b> X=100(20% fail),Y=230, 90% pass → y=94.3% pass → fail = <span class="ans">5.7%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="vendor sells 60% apples throws away 15% of remainder next day sells 50% rest thrown percent total phenke gaye seb Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 73 · Pg 234–305</p>
+      <h3>Bech–pheko chain → total % phenka</h3>
+      <p class="trigger">Trigger: "60% bech diya, bache ka 15% phek diya, agle din bache ka 50% becha baaki phek diya — kul kitna % phenka?" — 100 maan ke step-by-step ghatao, phenke hue jodo.</p>
+      <div class="example">
+        <b>Q161:</b> 100 → sell 60, rem 40 → throw 6, rem 34 → sell 17, throw 17<br>
+        Total thrown = 6+17 = <span class="ans">23%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="A is 25% more than B B is 40% less than C C is 20% more than D A percent less than D marks investment chain relation Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 74 · Pg 234–305</p>
+      <h3>A–B–C–D chain: har ek dusre se x% more/less</h3>
+      <p class="trigger">Trigger: "A, B se 25% zyada; B, C se 40% kam; C, D se 20% zyada — A, D se kitna % kam?" — ek base (100) pakdo, chain se values banao.</p>
+      <div class="example">
+        <b>Q162:</b> D=100→C=120→B=72→A=90 → A vs D = <span class="ans">10% less</span>
+        <span class="q2"><b>Q164:</b> C=100→A=90, B=108, D=120 → D vs A = 30/90 = <span class="ans">33⅓% more</span></span>
+        <br><b>Q163:</b> C=8000→B=4800→A=6240 → avg = 19040/3 = <span class="ans">≈₹6,346</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="income of X 42% more than Y Z 45% less than sum of X and Y combined income 30% more C income compare percentage less Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 75 · Pg 234–305</p>
+      <h3>Teesra banda DO ke JOD par based ho</h3>
+      <p class="trigger">Trigger: "Z ki aay, X aur Y ki aay ke YOG se 45% kam" ya "C, A+B ke 30% se 40% adhik" — pehle sum nikalo, phir us par % lagao.</p>
+      <div class="example">
+        <b>Q184:</b> Y=100,X=142, sum=242 → Z=242×55%=133.1 → (142−133.1)/142 = <span class="ans">6.3% less</span>
+        <span class="q2"><b>Q185:</b> B=100,A=60, sum=160 → 30%=48 → C=48×1.4=67.2… units → C vs A = <span class="ans">12% more</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="I = E + S income expenditure savings increased by percent new saving nominal saving down bhushan rumi table method Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 76 · Pg 234–305</p>
+      <h3>I = E + S table (dono % alag-alag badhe)</h3>
+      <p class="trigger">Trigger: "aay x% badhi, vyay y% badha → nai bachat / bachat mein kitna antar" — teen column I, E, S banao aur increase/decrease row likho.</p>
+      <div class="example">
+        <b>Q165:</b> I45000(+22%)=9900, E33000(+11%)=3630 → S=12000+6270 = <span class="ans">₹18,270</span>
+        <span class="q2"><b>Q166:</b> I100x(+30%)=30x, E80x(+40%)=32x → S −2x = 750 → I = <span class="ans">₹37,500</span></span>
+        <br><b>Q183:</b> E=140x,S=100x; +40% I(96x), +60% E(84x) → S+12x=2070 → E = <span class="ans">₹24,150</span>
+        <br><b>Q168:</b> I100x,E85x,S15x; E after +18% = 132500 → S before = <span class="ans">₹19,875</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="savings are 16% of her expenditure percentage increase in income rupa 25% 10.5% I=E+S base 116 Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 77 · Pg 234–305</p>
+      <h3>"Savings, expenditure ka x%" → income ka % change</h3>
+      <p class="trigger">Trigger: "bachat uske vyay ka 16% hai, bachat 25% badhi aur vyay 10.5% badha — aay mein % vriddhi?" — E=100, S=16, I=116 lo.</p>
+      <div class="example">
+        <b>Q167:</b> inc = 10.5 + 4 = 14.5 on 116 → 14.5/116×100 = <span class="ans">12.5%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="alligation income expenditure savings 20.1% 20% x% mixture rule exp sav ratio 65 35 13 7 spends 66 2/3% Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 78 · Pg 234–305</p>
+      <h3>Alligation shortcut: I% ka weighted avg of E% & S%</h3>
+      <p class="trigger">Trigger: teenon (income, expenditure, saving) ke % change mein se koi ek missing ho, decimal ajeeb ho — E:S ratio ko weight maano.</p>
+      <div class="example">
+        <b>Q169/171:</b> E:S = 65:35 = 13:7; 20.1 = (20×13 + 7x)/20 → x = <span class="ans">+20.3%</span>
+        <span class="q2"><b>Q170:</b> E:S = 2:1; x = (10×2 + 25×1)/3 = <span class="ans">15%</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="literate illiterate male female voters constituency senior citizen 55% 40% more less than 2x2 grid table Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 79 · Pg 234–305</p>
+      <h3>2×2 grid: (male/female) × (literate/illiterate)</h3>
+      <p class="trigger">Trigger: "55% purush, 40% purush ashikshit, 40% mahilaayein shikshit — shikshit purush, ashikshit mahilaon se kitna % adhik?" — 100x se 4 boxes banao.</p>
+      <div class="example">
+        <b>Q173:</b> M55x→L=33x; F45x→I=27x → (33−27)/27 = <span class="ans">22²⁄₉% more</span>
+        <span class="q2"><b>Q174:</b> SC40x→L=24x; NSC60x→I=45x → 21x/45x = <span class="ans">46⅔% less</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="alligation" data-kw="factory 400 employees ratio male female 5:3 87.5% regular 92% male regular percentage of regular female employees weighted Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 80 · Pg 234–305</p>
+      <h3>Ratio + overall % diya → ek group ka % missing</h3>
+      <p class="trigger">Trigger: "M:F = 5:3, kul 87.5% regular, 92% male regular — female regular %?" — overall% ko ratio se weighted average likho.</p>
+      <div class="example">
+        <b>Q175:</b> 87.5 = (92×5 + x×3)/8 → 700 = 460+3x → x = <span class="ans">80%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="donate 8% 7% 9% of salaries charitable trust difference between donations equal salaries total donation more than C daan Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 81 · Pg 234–305</p>
+      <h3>A,B,C ka donation % (A,B ki salary same)</h3>
+      <p class="trigger">Trigger: "A,B,C apne vetan ka 8%,7%,9% daan karte hain; A-B ka vetan same, unke daan mein ₹D ka antar; A+B ka daan C se ₹M zyada" — A=B=100x, C=100y lo.</p>
+      <div class="example">
+        <b>Q176:</b> x=259 → A=B=25900; 15% of 25900 = 1185 + 9y → y=300 → C=30000<br>
+        (2072+2700)/81800 = <span class="ans">5.8%</span>
+        <span class="q2"><b>Q177:</b> 3x=900→x=300; 17x−600=9y → y=500 → C = <span class="ans">₹50,000</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="multiple heads food rent education shopping fixed rupees percent of total expenditure swastik saves 20% amount spent on food Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 82 · Pg 234–305</p>
+      <h3>Kuch heads % mein, kuch FIXED ₹ mein</h3>
+      <p class="trigger">Trigger: "20% bachat, 15% khaane par, ₹12800 kiraya, ₹32000 shiksha, ₹7200 shopping jo kul kharch ka 11.25% hai" — fixed amount se 1% nikalo, phir baaki.</p>
+      <div class="example">
+        <b>Q178:</b> 7200 = 11.25% of total exp → 1% = 640 → food 15% of income; income = exp/0.8<br>
+        Food = 7200×15/11.25 = <span class="ans">₹12,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="salary raised 30% P 50% of income E 20% of P T 15% of E nested percent of percent sum of two savings Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 83 · Pg 234–305</p>
+      <h3>Nested %: E = P ka %, T = E ka % (salary badhne par ratio badle)</h3>
+      <p class="trigger">Trigger: "P aay ka 50%, E, P ka 20%, T, E ka 15%; salary 30% badhi to E, P ka 30% aur T, E ka 20% ho gaya" — dono cases alag table banao, savings jodo.</p>
+      <div class="example">
+        <b>Q179:</b> Case1: 80000+16000+2400 → Sav=61,600<br>
+        Case2 (I=208000): 104000+31200+6240 → Sav=66,560 → Sum = <span class="ans">₹1,28,160</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="raw material price increased 25% labour cost 30% to 38% consumption reduced keep cost same manufacturing unit kachcha maal khapat Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 84 · Pg 234–305</p>
+      <h3>Raw material +%, labour% badla → consumption kitna ghataayein</h3>
+      <p class="trigger">Trigger: "kachche maal ki keemat 25% badhi, shram lagat 30% se 38% ho gayi — lagat same rakhne ke liye khapat kitna % kam karein?"</p>
+      <div class="example">
+        <b>Q180:</b> Pehle: 400+120=520 → naya: 500+190=690<br>
+        Cost same rakhna → dec = 170/690×100 = <span class="ans">≈24.6%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="11/5 of A is 22% of B B is 2.5% of C find sum of 80% of A and 40% of B number relation sankhya Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 85 · Pg 234–305</p>
+      <h3>Numbers ka relation chain (A↔B↔C) → mila-jula %</h3>
+      <p class="trigger">Trigger: "A ka 11/5, B ka 22% hai; B, C ka 2.5% hai; C=5500 — A ka 80% + B ka 40%?" — sabko B ke terms mein badlo.</p>
+      <div class="example">
+        <b>Q181:</b> 11/5·A = 22% B → A = 10% of B → ans = 8% B + 40% B = 48% of B<br>
+        B = 2.5% of 5500 = 137.5 → 48% = <span class="ans">66</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="business 60% profit donated 50% of total capital repeated three years left with 15360 initial amount cycle multiplier Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 86 · Pg 234–305</p>
+      <h3>Har saal same cycle (profit → donate) repeat</h3>
+      <p class="trigger">Trigger: "pehle saal 60% laabh, phir kul poonji ka 50% daan; wahi prakriya 2nd aur 3rd saal — ant mein ₹L bache" — ek saal ka multiplier bana ke ghaat n lagao.</p>
+      <div class="example">
+        <b>Q182:</b> multiplier = 8/5 × 1/2 = 4/5 → x×(4/5)³ = 15360 → x×64/125<br>
+        <span class="ans">₹30,000</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="income" data-kw="income of A is 80% of B expenditure 60% of B savings more than percentage two persons compare ratio 9/8 A B saving comparison Pg 234 305">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 87 · Pg 234–305</p>
+      <h3>Do log: I aur E dono % mein compare → savings compare</h3>
+      <p class="trigger">Trigger: "A ki aay B ki aay ka 80%, A ka vyay B ke vyay ka 60%, aur A ki aay B ke vyay ka 90%" — I=80x/100x, E=60y/100y le kar x:y nikalo.</p>
+      <div class="example">
+        <b>Q186:</b> 80x = 90% of 100y → x/y = 9/8 → A(720,480,S=240), B(900,800,S=100)<br>
+        (240−100)/100 = <span class="ans">140% more</span>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <b>87 patterns ab tak</b> — Percentage ke saare notes (Pg 1–50, 61–163, 120–233, 234–305) serially merge kiye gaye hain. Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

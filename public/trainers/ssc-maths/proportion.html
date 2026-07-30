@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Proportion Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Proportion (समानुपात) Class Notes</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'fourth', 'mean', 'continued', 'add', 'third'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="four">4 Numbers</button>
+      <button data-filter="three">3 Numbers</button>
+      <button data-filter="two">2 Numbers</button>
+      <button data-filter="mean">Mean Prop.</button>
+      <button data-filter="continued">Continued</button>
+      <button data-filter="addsub">Add/Subtract</button>
+      <button data-filter="mix">Mix / TCS</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="four" data-kw="base rule proportion extremes means product ad=bc samanupat definition a:b::c:d cross multiply mool niyam">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Base Rule: a:b::c:d → ad = bc</h3>
+      <p class="trigger">Trigger: "are in proportion / समानुपात में हैं" — jahan bhi 4 terms proportion mein ho, extremes ka product = means ka product.</p>
+      <div class="example">
+        a : b :: c : d → a/b = c/d → <span class="ans">ad = bc</span><br>
+        Missing term nikaalne ka pura chapter isi ek line se chalta hai — bas position dekhni hai.
+      </div>
+    </article>
+
+    <article class="card" data-cat="four" data-kw="first proportional pratham anupat x:b::c:d bc/d teen sankhya 6 12 24 7 24 25">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>First proportional (3 numbers diye) → x = bc/d</h3>
+      <p class="trigger">Trigger: "The first proportional of three numbers p, q, r is / तीन संख्याओं का प्रथम अनुपात" — x pehli jagah rakho: x : p :: q : r.</p>
+      <div class="example">
+        <b>Q1:</b> 6, 12, 24 → x:6::12:24 → x = 6×12/24 = <span class="ans">3</span>
+        <span class="q2"><b>Q(class):</b> 7, 24, 25 → x:7::24:25 → x = 7×24/25 = <span class="ans">168/25</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="four" data-kw="second proportional dwitiya anupat a:x::c:d ad/c 28 4 5 6 8 10 35">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Second proportional → x = ad/c</h3>
+      <p class="trigger">Trigger: "The second proportional of three numbers p, q, r / द्वितीय अनुपात" — x doosri jagah: p : x :: q : r.</p>
+      <div class="example">
+        <b>Q2:</b> 28, 4, 5 → 28:x::4:5 → x = 28×5/4 = <span class="ans">35</span>
+        <span class="q2"><b>Q(class):</b> 6, 8, 10 → 6:x::8:10 → x = 6×10/8 = <span class="ans">15/2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="four" data-kw="third proportional tritiya anupat a:b::x:d ad/b 2 3 15 8 9 10 11 12 13">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Third proportional (3 numbers) → x = ad/b</h3>
+      <p class="trigger">Trigger: "The third proportional of three numbers p, q, r / तृतीय अनुपात" — x teesri jagah: p : q :: x : r.</p>
+      <div class="example">
+        <b>Q3:</b> 2, 3, 15 → 2:3::x:15 → x = 2×15/3 = <span class="ans">10</span>
+        <span class="q2"><b>Q(class):</b> 8, 9, 10 → 8:9::x:10 → x = 80/9 · &nbsp;11,12,13 → x = <span class="ans">143/12</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="four" data-kw="fourth proportional chaturthanupati bc/a 7 16 21 48 5 6 8 9.6 5 8 30 last position">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Fourth proportional → x = bc/a</h3>
+      <p class="trigger">Trigger: "The fourth proportional to p, q, r / p, q, r का चतुर्थानुपाती" — x aakhri jagah: p : q :: r : x.</p>
+      <div class="example">
+        <b>Q4:</b> 7,16,21 → 7:16::21:x → x = 16×21/7 = <span class="ans">48</span>
+        <span class="q2"><b>Q5:</b> 5,6,8 → x = 6×8/5 = <span class="ans">9.6</span> &nbsp;·&nbsp; <b>Q6:</b> 5,8,30 → x = 8×30/5 = <span class="ans">48</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="ratio of two fourth proportional do chaturthanupati ka anupat 2 5 6 6 8 9 15:12 5:4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Do alag-alag fourth proportional ka ratio</h3>
+      <p class="trigger">Trigger: "ratio of the fourth proportional of A,B,C and the fourth proportional of D,E,F" — dono alag nikaalo, phir ratio simplify.</p>
+      <div class="example">
+        <b>Q7:</b> 2:5::6:x → x=15 ; 6:8::9:y → y=12<br>
+        x:y = 15:12 = <span class="ans">5 : 4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mix" data-kw="fraction fourth proportional bhinn 1/72 1/168 1/150 reciprocal ulta 1/350">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Fractions ka proportional (1/72, 1/168, …)</h3>
+      <p class="trigger">Trigger: numbers fraction form mein diye ho — same formula lagao, bas division ko reciprocal se multiply karke chalo.</p>
+      <div class="example">
+        <b>Q8:</b> 1/72 : 1/168 :: 1/150 : x → x = (1/168 × 1/150) ÷ (1/72) = <span class="ans">1/350</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="two" data-kw="two numbers first proportional b square by c continued a:b::b:c 2 3 4/3 3 5 1.8">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Sirf 2 numbers diye → beech wala repeat (a:b::b:c)</h3>
+      <p class="trigger">Trigger: "first proportional of two numbers p and q / दो संख्याओं का प्रथम अनुपात" — middle term repeat hota hai, x = b²/c.</p>
+      <div class="example">
+        <b>Q9:</b> 3, 5 → x:3::3:5 → x = 9/5 = <span class="ans">1.8</span>
+        <span class="q2"><b>Q(class):</b> 2, 3 → x:2::2:3 → x = <span class="ans">4/3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="two" data-kw="third proportional two numbers b square by a 32 40 50 15 24 38 2/5 4 5 25/4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Third proportional (2 numbers) → c = b²/a</h3>
+      <p class="trigger">Trigger: "third proportional to p and q / p और q का तृतीय अनुपाती" — sirf do number diye ho toh answer = (doosra)² ÷ (pehla).</p>
+      <div class="example">
+        <b>Q14:</b> 32, 40 → 40²/32 = <span class="ans">50</span>
+        <span class="q2"><b>Q15:</b> 15, 24 → 24²/15 = 576/15 = <span class="ans">38⅖</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mean" data-kw="mean proportional madhya anupati root ac square root 9 16 12 3 27 9 144 225 180">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Mean proportion → √(a×c)</h3>
+      <p class="trigger">Trigger: "mean proportional between p and q / p और q का मध्यानुपाती" — beech wala term: b² = ac.</p>
+      <div class="example">
+        <b>Q10:</b> 3 aur 27 → √81 = <span class="ans">9</span>
+        <span class="q2"><b>Q11:</b> 144 aur 225 → 12×15 = <span class="ans">180</span> &nbsp;·&nbsp; 9 & 16 → <span class="ans">12</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mean" data-kw="decimal mean proportional difference 1.8 3.2 2.4 antar 0.6 kitna adhik">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Decimal mean proportion → phir difference poocha</h3>
+      <p class="trigger">Trigger: "mean proportional of 1.8 and 3.2 is how much more than 1.8" — pehle √ac nikaalo, uske baad hi subtract karo.</p>
+      <div class="example">
+        <b>Q(class):</b> M.P = √(1.8×3.2) = √5.76 = 2.4 → 2.4 − 1.8 = <span class="ans">0.6</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mean" data-kw="algebraic option variable a b mean proportional value put dalke check a+b a-b root 2 1 4 1 shortcut option elimination">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Options mein a, b (variable) ho → value daal ke check</h3>
+      <p class="trigger">Trigger: question aur options dono algebra mein (a+b, (a+b)/(a−b), √(a+b)) — solve mat karo, chhoti values a=2,b=1 ya a=4,b=1 rakh ke option match karo.</p>
+      <div class="example">
+        <b>Q12:</b> a=2, b=1 rakho → expression ka maan 3 → option (a+b)/(a−b) = 3 → <span class="ans">(c)</span>
+        <span class="q2"><b>Q(class):</b> a=4,b=1 → √25 = 5 → jo option 5 de wahi <span class="ans">sahi</span> (b=0 daal ke bhi cross-check)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="continued" data-kw="continued proportion satat samanupat A 36 54 8 20 P Q 2p+q 3A+B find value 24 140">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Continued proportion → phir 3A+B / 2P+Q type expression</h3>
+      <p class="trigger">Trigger: "A, 36, 54 are in continued proportion, find 3A+B" — pehle b²=ac se missing terms nikaalo, phir expression ka maan lagao.</p>
+      <div class="example">
+        <b>Q(TCS):</b> A:36::36:54 → A = 36²/54 = <span class="ans">24</span>
+        <span class="q2"><b>Q(TCS):</b> 8:20::20:P → P = 400/8 = 50, Q = 40 → 2P+Q = <span class="ans">140</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="continued" data-kw="variable term 2y-1 6 12 find y value equation banao unknown expression mean proportion me variable 3 51">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Term ke andar hi variable ho (2y−1 : 6 :: 6 : 12)</h3>
+      <p class="trigger">Trigger: proportion ke kisi term mein hi (2y−1), (y+5) jaisa expression diya ho — pehle us term ki value nikaalo, phir chhota equation solve karo.</p>
+      <div class="example">
+        <b>Q(class):</b> (2y−1):6::6:12 → 2y−1 = 36/12 = 3 → <span class="ans">y = 2</span>
+        <span class="q2"><b>Q(CGL 14/07/23):</b> same method se term nikaal ke solve → <span class="ans">y = 51</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="addsub" data-kw="which number should be added subtracted to each 4 10 12 24 6 7 15 17 proportion banane ke liye jodna ghatana formula ad-bc">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Har number mein kya jode/ghatayein ki proportion ban jaye</h3>
+      <p class="trigger">Trigger: "Which number should be added to/subtracted from each of 4, 10, 12, 24 to make them proportional / प्रत्येक में जोड़ा जाए" — direct formula: x = |(ad−bc) ÷ ((a+d)−(b+c))|.</p>
+      <div class="example">
+        <b>Q23:</b> 4,10,12,24 → |(96−120)/(28−22)| = 24/6 = <span class="ans">4</span> (check: 8/14 = 16/28 ✓)
+        <span class="q2"><b>Q24:</b> 6,7,15,17 → |(102−105)/(23−22)| = <span class="ans">3</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>15 patterns ab tak.</b> (Proportion Class Notes — page 50 tak ke questions cover). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Train (Rail) Trainer — Complete</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Train (रेलगाड़ी) Class Notes</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein. (Notes pages 1–99, Q1–Q66)</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'pole', 'platform', 'opposite', 'tunnel', 'overtake', 'fog'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="pole">Pole/Man</button>
+      <button data-filter="platform">Platform/Bridge</button>
+      <button data-filter="twotrain">Do Trains</button>
+      <button data-filter="samedir">Same Direction</button>
+      <button data-filter="equation">2-Equation</button>
+      <button data-filter="same">Same Dir (p43-99)</button>
+      <button data-filter="opp">Opposite Dir (p43-99)</button>
+      <button data-filter="man">Man / Cyclist</button>
+      <button data-filter="chain">Multi-Train Chain</button>
+      <button data-filter="accident">Accident / Delay</button>
+      <button data-filter="fog">Fog / Visibility</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="pole" data-kw="pole khamba electric pole standing man stationary person crosses passes length speed time D=L basic khambha vyakti">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Pole / khade aadmi ko cross → D = train ki length</h3>
+      <p class="trigger">Trigger: "X m lambi train pole/khambhe ya platform par khade vyakti ko t sec mein paar karti hai" — object ki length zero, D = L<sub>T</sub> hi lagana hai.</p>
+      <div class="example">
+        <b>Q1:</b> 364 m, 26 sec → S = 364/26 = <span class="ans">14 m/s</span>
+        <span class="q2"><b>Q2:</b> 180 m, 54 km/h (=15 m/s) → t = 180/15 = <span class="ans">12 sec</span></span>
+        <br><b>Q3:</b> 63 km/h (=17.5 m/s), 24 sec → L = 17.5×24 = <span class="ans">420 m</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="platform" data-kw="platform bridge tunnel pul surang length of platform D = LT + LP goods train crosses passes through">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Platform / Bridge / Tunnel → D = L<sub>T</sub> + L<sub>P</sub></h3>
+      <p class="trigger">Trigger: "train platform/pul/surang ko t sec mein paar karti hai" — dono lambai jodo, phir speed ya missing length nikaalo.</p>
+      <div class="example">
+        <b>Q4:</b> (350+1250)/80 = 20 m/s ×18/5 = <span class="ans">72 km/h</span>
+        <span class="q2"><b>Q5:</b> (240+360)/30 = 20 m/s = <span class="ans">72 km/h</span></span>
+        <br><b>Q6:</b> 72 km/h = 20 m/s, D=255+745=1000 → t = <span class="ans">50 sec</span>
+        <br><b>Q8:</b> 36 km/h=10 m/s, 50 sec → D=500 → pul = 500−348 = <span class="ans">152 m</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="twotrain" data-kw="standing train station khadi train stationary another train D = L1 + L2 rajdhani express crosses other train">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Chalti train, station par KHADI train ko cross</h3>
+      <p class="trigger">Trigger: "doosri train station par khadi hai" — khadi train sirf ek lambi object hai: D = L₁+L₂, speed sirf chalti train ki.</p>
+      <div class="example">
+        <b>Q7:</b> D = 108+148 = 256 m, S = 128 km/h = 320/9 m/s<br>
+        t = 256×18/(128×5) = <span class="ans">7.2 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="do platform difference method two platforms 400 600 50 60 extra length extra time short trick antar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Ek train, DO alag platforms → difference trick</h3>
+      <p class="trigger">Trigger: "400 m platform 50 sec mein aur 600 m platform 60 sec mein paar karti hai" — extra length ÷ extra time = speed, phir length nikaalo.</p>
+      <div class="example">
+        <b>Q9:</b> Extra 200 m in extra 10 sec → S = 20 m/s = <span class="ans">72 km/h</span>
+        <span class="q2"><b>Q9 (length):</b> L+400 = 20×50 = 1000 → L = <span class="ans">600 m</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="man and platform pole and bridge do case equation length of train 8 sec 264 m 20 sec 750 pole 25 sec bridge unitary">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Pole/aadmi ka time + platform ka time → L ya platform</h3>
+      <p class="trigger">Trigger: "man ko 8 sec mein, 264 m platform ko 20 sec mein paar karti hai" — speed same, do equation banao ya extra-time × speed karo.</p>
+      <div class="example">
+        <b>Q10:</b> L/8 = (L+264)/20 → 20L = 8L+2112 → L = <span class="ans">176 m</span>
+        <span class="q2"><b>Q11:</b> S = 750/15 = 50 m/s, extra 10 sec → bridge = 50×10 = <span class="ans">500 m</span></span>
+        <br><b>Q12:</b> 40½ km/h = 11.25 m/s, L = 11.25×24 = 270 → t = 720/11.25 = <span class="ans">64 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="twotrain" data-kw="opposite direction vipreet disha two trains cross each other relative speed S1+S2 parallel tracks time">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Opposite direction → speeds JODO (S₁+S₂)</h3>
+      <p class="trigger">Trigger: "do trains vipreet disha mein chal rahi hain, ek doosre ko kitne samay mein paar karengi" — D = L₁+L₂, S = S₁+S₂.</p>
+      <div class="example">
+        <b>Q13:</b> D=500, S=90 km/h=25 m/s → t = <span class="ans">20 sec</span>
+        <span class="q2"><b>Q14:</b> D=500, S=144 km/h=40 m/s → t = <span class="ans">12.5 sec</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="twotrain" data-kw="130 m apart gap distance between trains start moving towards each other add gap dono lambai aur beech ki doori">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Beech mein GAP diya ho → gap bhi distance mein jodo</h3>
+      <p class="trigger">Trigger: "do trains 130 m ki doori par hain aur ek doosre ki taraf chalna shuru karti hain" — D = L₁ + gap + L₂.</p>
+      <div class="example">
+        <b>Q15:</b> D = 230+130+240 = 600, S = 360 km/h = 100 m/s<br>
+        t = 600/100 = <span class="ans">6 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="twotrain" data-kw="find speed of other train unknown x km/h opposite direction 9 seconds 220 230 320 240 y seconds reverse nikalo doosri train ki chaal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Opposite direction mein DOOSRI train ki speed/time nikaalo</h3>
+      <p class="trigger">Trigger: "ek train ki speed di hai, dono lambai di hai, t sec mein cross karti hain — doosri train ki chaal (ya y sec) batao" — (S₁+x)×5/18 = D/t se ulta solve karo.</p>
+      <div class="example">
+        <b>Q16:</b> (72+x)×5/18 = 450/9 = 50 → 72+x = 180 → x = <span class="ans">108 km/h</span>
+        <span class="q2"><b>Q19:</b> (90+x)×5/18 = 400/10 → 90+x = 144 → x = <span class="ans">54 km/h</span></span>
+        <br><b>Q17:</b> S = 100.8 km/h = 28 m/s, D = 560 → y = <span class="ans">20 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="twotrain" data-kw="same speed both trains equal length 120 m 8 seconds 2x barabar chaal each train speed opposite">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Dono trains ki speed SAME (ya length same)</h3>
+      <p class="trigger">Trigger: "dono trains ki chaal barabar hai / dono ki lambai 120 m hai, 8 sec mein cross" — relative speed 2x maan ke ek hi equation.</p>
+      <div class="example">
+        <b>Q18:</b> 2x×5/18 = 240/8 = 30 → x = <span class="ans">54 km/h</span>
+        <span class="q2"><b>Q24:</b> 360 m pole 30 sec → S₁=12 m/s; opposite 15 sec → 720/15=48 → S₂ = <span class="ans">36 m/s</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="samedir" data-kw="same direction samaan disha overtake cross faster train difference of speed S1-S2 relative ghatao">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>Same direction → speeds GHATAO (S₁−S₂)</h3>
+      <p class="trigger">Trigger: "dono trains ek hi disha mein chal rahi hain / tez train dheemi ko overtake karti hai" — D = L₁+L₂ par S = S₁−S₂.</p>
+      <div class="example">
+        <b>Q21:</b> A=150 m, B=450 m, relative = 54 km/h = 15 m/s<br>
+        t = 600/15 = <span class="ans">40 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="ratio of lengths L_A = 4/5 L_B k unit length ratio two trains 108 km/h find length anupat lambai">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Lambai RATIO mein di ho (L<sub>A</sub> = 4/5 L<sub>B</sub>)</h3>
+      <p class="trigger">Trigger: "train A ki lambai train B ki 4/5 hai" — 4k : 5k maan lo, relative speed × time = 9k se k nikaalo.</p>
+      <div class="example">
+        <b>Q22:</b> L<sub>A</sub>:L<sub>B</sub> = 4k:5k, relative 108 km/h = 30 m/s<br>
+        9k = 30×15 = 450 → k = 50 → L<sub>A</sub> = <span class="ans">200 m</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="tunnel and opposite train two conditions 18 seconds 240 m 12 seconds 270 m 54 km/h simultaneous equation length of train do sharton">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Tunnel ka time + opposite train ka time → 2 equation</h3>
+      <p class="trigger">Trigger: "train tunnel ko 18 sec mein aur opposite se aa rahi train ko 12 sec mein paar karti hai" — dono se equation banao, L aur S dono unknown.</p>
+      <div class="example">
+        <b>Q23:</b> 18S = L+240 &nbsp;·&nbsp; 12(S+15) = L+270<br>
+        solve → L = <span class="ans">210 m</span>
+      </div>
+    </article>
+
+    <div style="grid-column:1/-1; margin:18px 0 4px 0; padding:10px 0 0 0; border-top:2px dashed var(--paper-line); display:flex; align-items:center; gap:10px;">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; color:var(--margin-red); font-weight:700; text-transform:uppercase;">Notes page 43–99 (Q25 onward)</span>
+    </div>
+
+
+    <article class="card" data-cat="same" data-kw="same direction do train ek hi disha relative speed difference cross each other completely samaan disha L1+L2 total length time">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Do train SAME direction → t = (L₁+L₂)/(S₁−S₂)</h3>
+      <p class="trigger">Trigger: "two trains running in the SAME direction... in how much time will they completely cross each other" — dono lambai jodo, speed ghatao.</p>
+      <div class="example">
+        <b>Q25:</b> 140+120=260m, 78−60=18 → 260÷(18×5/18) = <span class="ans">52 sec</span>
+        <span class="q2"><b>Q26:</b> 320+540=860m, 144−108=36 → 860÷10 = <span class="ans">86 sec</span></span>
+        <br><b>Q28:</b> 70−34=36 → L₁+L₂ = 25×10 = <span class="ans">250 m</span>
+        <br><b>Q30:</b> 3min=180s, 90−80=10 → x+230=500 → <span class="ans">270 m</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="same" data-kw="equal length trains overtake faster train passes slower samaan lambai 2L each train length barabar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Equal length trains → distance = 2L</h3>
+      <p class="trigger">Trigger: "two trains of EQUAL length, faster train overtakes/passes the slower one in t sec — length of EACH train?" — 2L likho.</p>
+      <div class="example">
+        <b>Q27:</b> 46−36=10 → 36 = 2L÷(10×5/18) → <span class="ans">L = 50 m</span>
+        <span class="q2"><b>Q29:</b> 60−42=18 → 40 = 2L÷5 → 2L=200 → <span class="ans">L = 100 m</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="bridge platform pass then cross another train speed nikaalo do step pul lambai 850 m first find speed">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Pehle bridge se SPEED nikalo, phir doosri train cross</h3>
+      <p class="trigger">Trigger: "train X, L m long, crosses a bridge in t min. How much time to cross another train Y running at ... in same direction?" — 2-step question.</p>
+      <div class="example">
+        <b>Q31:</b> (350+850)÷80s = 15 m/s; Y = 42km/h = 35/3 m/s<br>
+        t = 600÷(15−35/3) = 180 sec = <span class="ans">3 min</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="opp" data-kw="same direction time opposite direction time dono diye speed ratio x-y x+y equal length trains anupat">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Same-dir time + Opp-dir time dono diye → speed ratio</h3>
+      <p class="trigger">Trigger: "same direction mein t₁ sec aur opposite direction mein t₂ sec mein cross karti hain" — x−y = D/t₁, x+y = D/t₂ banao.</p>
+      <div class="example">
+        <b>Q32:</b> (x−y)60 = (x+y)10 → 5x=7y → <span class="ans">x:y = 7:5</span>
+        <span class="q2"><b>Q34:</b> x−y=600/20=30, x+y=600/12=50 → x=40, y=10 m/s → <span class="ans">144 & 36 km/h</span></span>
+        <br><b>Q35:</b> x−y=120, x+y=600 → 720/2 : 480/2 = <span class="ans">3:2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pole" data-kw="pole telegraph post cross in t1 t2 sec equal length 2t1t2 formula shortcut same opposite direction khambha">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>Equal-length trains, pole times diye → 2t₁t₂/(t₁∓t₂)</h3>
+      <p class="trigger">Trigger: "two trains of EQUAL length cross a pole in t₁ and t₂ sec — kitne time mein ek doosre ko cross karengi?" Same dir → minus, Opp dir → plus.</p>
+      <div class="example">
+        <b>Q36:</b> same dir → 2×5×7/(7−5) = <span class="ans">35 sec</span>
+        <span class="q2"><b>Q38:</b> opp dir → 2×27×24/51 = 432/17 = <span class="ans">25.4 sec</span></span>
+        <br><b>Q37 (alag length):</b> S₁=160/5=32, S₂=180/6=30 → t=340/2 = <span class="ans">170 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pole" data-kw="man standing platform cross 27 17 sec opposite direction 23 sec ratio of speed alligation trick S1 S2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Man ko t₁,t₂ + aapas mein T → speed ratio (alligation)</h3>
+      <p class="trigger">Trigger: "two trains cross a MAN standing on platform in t₁ & t₂ sec, aur opposite direction mein ek doosre ko T sec mein — ratio of speeds?"</p>
+      <div class="example">
+        <b>Q39:</b> 23 = (27S₁+17S₂)/(S₁+S₂) → 4S₁=3S₂... solve → <span class="ans">3:2</span>
+        <span class="q2"><b>Q40:</b> 18, 24 vs 20 → (24−20):(20−18) = 4:2 = <span class="ans">2:1</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="man" data-kw="train crosses man walking same direction opposite direction relative speed L/(ST-SM) vyakti chal raha hai">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Train ↔ chalta hua aadmi → t = L_train/(S_T ∓ S_M)</h3>
+      <p class="trigger">Trigger: "train crosses/passes a MAN WALKING at x km/h in the same (ya opposite) direction" — sirf train ki length lagti hai.</p>
+      <div class="example">
+        <b>Q41:</b> 6.5 = 130÷((x−12)×5/18) → x−12=72 → <span class="ans">84 km/h</span>
+        <span class="q2"><b>Q42:</b> 252÷((125−17)×5/18) = 252/30 = <span class="ans">8.4 sec</span></span>
+        <br><b>Q44:</b> 6s opp se train speed=131.4; phir 234÷(108×5/18) = <span class="ans">7.8 sec</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="man" data-kw="platform 300 m 30 seconds overtook man walking 20 seconds find x speed two equations LT">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>Platform bhi + Man bhi → do equation, L_T barabar</h3>
+      <p class="trigger">Trigger: "train crossed a P m long platform in t₁ sec AND overtook a man walking at y km/h in t₂ sec — value of x (speed)?"</p>
+      <div class="example">
+        <b>Q43:</b> L=30x·5/18−300 aur L=20(x−6)·5/18<br>
+        25x/9 = 2400/9 → <span class="ans">x = 96 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="man" data-kw="man sitting in another train baitha vyakti dusri train me faster train crosses man in slower train length only one train">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Doosri train mein BAITHA aadmi → sirf ek train ki length</h3>
+      <p class="trigger">Trigger: "faster train crosses a MAN SITTING IN the slower train in t sec" — dusri train ki length count nahi hoti, sirf crossing train ki.</p>
+      <div class="example">
+        <b>Q45:</b> 36 = L÷(18×5/18) → <span class="ans">L = 180 m</span>
+        <span class="q2"><b>Q46:</b> 10 = 50×18/((40−x)×5) → 40−x=18 → <span class="ans">x = 22 km/h</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="opp" data-kw="opposite direction length three times ratio of lengths train A train B 4l total length viprit disha">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Opp direction + lengths ka RATIO diya → l units mein solve</h3>
+      <p class="trigger">Trigger: "length of train B is three times / twice that of A, opposite direction mein t sec mein cross" — l aur 3l maan kar chalo.</p>
+      <div class="example">
+        <b>Q47:</b> 50+58=108 km/h=30 m/s → 15 = 4l/30 → 4l=450 → <span class="ans">l = 112.5 m</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="opp" data-kw="train crosses man opposite direction find speed then platform crossing time do step 150 m 250 m platform">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Opp-dir aadmi se train SPEED nikalo → phir platform time</h3>
+      <p class="trigger">Trigger: "train ek opposite se aa rahe aadmi/train ko t sec mein paar karti hai... ab wo P m platform kitne time mein paar karegi?"</p>
+      <div class="example">
+        <b>Q49:</b> 150×18/((x+60)×5)=5 → x+60=108 → x=48 km/h<br>
+        t = (150+250)÷(48×5/18) = <span class="ans">30 sec</span>
+        <span class="q2"><b>Q50:</b> 30 = 225×18/((90−x)×5) → 90−x=27 → <span class="ans">x = 63 km/h</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="man" data-kw="two cyclists two persons walking different speeds 12 15 seconds length of train speed of train do vyakti equate L">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>DO alag-alag speed wale log/cyclist → L equate karo</h3>
+      <p class="trigger">Trigger: "train passes two persons/cyclists walking at a & b km/h in t₁ & t₂ seconds respectively — length ya speed of train?"</p>
+      <div class="example">
+        <b>Q51:</b> (x−18)12 = (x−21)15 → x=33 km/h → L = <span class="ans">50 m</span>
+        <span class="q2"><b>Q52 (opp dir):</b> (x+5)6 = (x+10)5 → x=20 m/s → L = 25×6 = <span class="ans">150 m</span></span>
+        <br><b>Q53:</b> (x−3)10 = (x−5)11 → <span class="ans">25 km/h</span>
+        <br><b>Q54:</b> (x−4)12 = (x−6)14 → 6x−24=7x−42 → <span class="ans">18 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="man" data-kw="man same direction woman opposite direction 18 sec 12 sec find speed of woman train length bridge">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Same-dir man se L nikalo → opp-dir woman ki speed</h3>
+      <p class="trigger">Trigger: "train crosses a man going in SAME direction in t₁ sec and passes a woman coming from OPPOSITE direction in t₂ sec — woman ki speed?"</p>
+      <div class="example">
+        <b>Q55:</b> L = (48−12)×5/18×18 = 180 m<br>
+        180 = (48+x)×5/18×12 → 54 = 48+x → <span class="ans">x = 6 km/h</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="train X pole 18 seconds train Y opposite 21 seconds then train Z same direction three trains chain multi step ICAR">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <h3>3-train chain: pole → B ki length → B vs C</h3>
+      <p class="trigger">Trigger: "train X passes a POLE in t₁ sec and crosses train Y (opposite) in t₂ sec. How much time will Y take to cross train Z...?" — teen train ki chain.</p>
+      <div class="example">
+        <b>Q56:</b> X speed=240/18→48km/h; 240+L=120×5/18×21=700 → L_Y=460<br>
+        t = (460+140)÷(30×5/18) = <span class="ans">72 sec</span>
+        <span class="q2"><b>Q57:</b> L_A=320; 600=(48+x)×5/18×18 → x=72; t=(280+220)÷(20×5/18)=90s = <span class="ans">1½ min</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="pole" data-kw="speeds in ratio 3:4 7:9 telegraph post pole each takes seconds cross each other opposite direction length ratio units">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 27</p>
+      <h3>Speed RATIO + pole time → lengths units mein banao</h3>
+      <p class="trigger">Trigger: "speeds of two trains are in the ratio a:b, each crosses a telegraph post in t₁ & t₂ sec — kitne time mein ek doosre ko cross karengi?"</p>
+      <div class="example">
+        <b>Q58:</b> 3x,4x; L=9x,12x → t = 21x/7x = <span class="ans">3 sec</span>
+        <span class="q2"><b>Q59:</b> 7x×4=28x, 9x×6=54x → t = 82x/16x = <span class="ans">5⅛ sec</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="fog" data-kw="fog visibility 400 m disappeared 3 minute kohra dikhai dena train length relative speed man sees train behind">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 28</p>
+      <h3>Fog / "dikhna band ho gaya" → distance = vis + L + vis</h3>
+      <p class="trigger">Trigger: "man could see up to X m in fog, train peeche se aayi aur t min mein GAYAB ho gayi, train length L" — total relative distance = X + L + X (agar aage-peeche dono visibility).</p>
+      <div class="example">
+        <b>Q60:</b> (x−4)×5/18 = (400+200+400)/180 → <span class="ans">x = 24 km/h</span>
+        <span class="q2"><b>Q61:</b> (x−6)×5/18 = (1200+300)/120 → x−6=45 → <span class="ans">x = 51 km/h</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="accident" data-kw="engine fails 20% distance delayed 33 minutes increase speed percentage reach on time time ratio inverse">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 29</p>
+      <h3>Engine fail → "kitna % speed badhaye time pe pahunchne ko"</h3>
+      <p class="trigger">Trigger: "after covering x% of distance engine fails, train delayed by m minutes — by what % should speed be increased to reach ON TIME?" — bacha hua time nikaalo, % = delay×100/naya time.</p>
+      <div class="example">
+        <b>Q62:</b> D=54×6=324; bacha time=4.8hr=288min; ab available=288−33=255<br>
+        % = 33×100/255 = <span class="ans">12.94%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="accident" data-kw="accident breakdown 5/6 4/5 2/3 of original speed reached late hours had accident occurred km farther find distance speed durghatna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 30</p>
+      <h3>Accident ke baad speed a/b ho gayi → "agar D km aage hota toh"</h3>
+      <p class="trigger">Trigger: "train met with accident after X km, moved at 5/6 (ya 4/5, 2/3) of speed, reached t₁ late. Had it occurred D km farther, only t₂ late" — dono ka time-difference us D km par lagao.</p>
+      <div class="example">
+        <b>Q64:</b> 18 km ka extra delay = 9 min... S = 18÷(36/60) = <span class="ans">30 km/h, D = 120 km</span>
+        <span class="q2"><b>Q65:</b> 200 km par 10 min ka fark → S=200×60/20=600; total t=22/3 hr → <span class="ans">D = 4400 km</span></span>
+        <br><b>Q63:</b> 300 km par 1 hr fark, speed 5/6 → <span class="ans">50 km/h</span>
+        <br><b>Q66:</b> 1hr baad accident, 50 km aage → 1hr20min late → <span class="ans">D = 112.5 km</span>
+      </div>
+    </article>
+
+  
+  </main>
+
+  <footer>
+    <b>30 patterns ab tak.</b> (Train chapter · PDF page 1–99, Q1–Q66 tak — Pattern 01–12 pages 1–42, Pattern 13–30 pages 43–99). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>
