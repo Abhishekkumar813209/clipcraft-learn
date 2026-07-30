@@ -7,6 +7,8 @@ export const SSC_TOPICS = [
   'percentage', 'profit_loss', 'ratio_proportion', 'average', 'time_work',
   'time_speed_distance', 'number_system', 'algebra', 'geometry', 'trigonometry',
   'data_interpretation', 'simplification', 'mixture_alligation',
+  'simple_interest', 'compound_interest', 'discount', 'partnership',
+  'pipe_cistern', 'ages',
   // Reasoning
   'analogy', 'coding_decoding', 'series', 'blood_relation', 'direction',
   'syllogism', 'puzzle', 'venn_diagram', 'statement_conclusion',
@@ -32,7 +34,7 @@ export const SSC_SUBJECTS: { key: SscSubject; label: string; icon: string; color
 
 export const SUBJECT_TOPICS: Record<SscSubject, SscTopic[]> = {
   english: ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms', 'error_detection', 'sentence_improvement', 'fill_in_blanks', 'cloze_test', 'reading_comprehension', 'active_passive', 'direct_indirect', 'parajumbles', 'spelling_correction'],
-  quant: ['percentage', 'profit_loss', 'ratio_proportion', 'average', 'time_work', 'time_speed_distance', 'mixture_alligation', 'number_system', 'algebra', 'geometry', 'trigonometry', 'data_interpretation', 'simplification'],
+  quant: ['percentage', 'profit_loss', 'discount', 'simple_interest', 'compound_interest', 'ratio_proportion', 'average', 'time_work', 'pipe_cistern', 'time_speed_distance', 'partnership', 'ages', 'mixture_alligation', 'number_system', 'algebra', 'geometry', 'trigonometry', 'data_interpretation', 'simplification'],
   reasoning: ['analogy', 'coding_decoding', 'series', 'blood_relation', 'direction', 'syllogism', 'puzzle', 'venn_diagram', 'statement_conclusion'],
   gk: ['history', 'polity', 'geography', 'economy', 'static_gk', 'current_affairs'],
 };
@@ -104,6 +106,12 @@ export const TOPIC_META: Record<SscTopic, { label: string; icon: string; color: 
   data_interpretation: { label: 'Data Interpretation', icon: '📉', color: 'hsl(210 70% 50%)' },
   simplification: { label: 'Simplification', icon: '➗', color: 'hsl(var(--primary))' },
   mixture_alligation: { label: 'Mixture & Alligation', icon: '🧪', color: 'hsl(190 80% 42%)' },
+  simple_interest: { label: 'Simple Interest', icon: '🏦', color: 'hsl(142 71% 45%)' },
+  compound_interest: { label: 'Compound Interest', icon: '📈', color: 'hsl(262 83% 58%)' },
+  discount: { label: 'Discount', icon: '🏷️', color: 'hsl(25 95% 53%)' },
+  partnership: { label: 'Partnership', icon: '🤝', color: 'hsl(199 89% 48%)' },
+  pipe_cistern: { label: 'Pipe & Cistern', icon: '🚰', color: 'hsl(210 70% 50%)' },
+  ages: { label: 'Ages', icon: '🎂', color: 'hsl(330 81% 60%)' },
   // Reasoning
   analogy: { label: 'Analogy', icon: '🔗', color: 'hsl(262 83% 58%)' },
   coding_decoding: { label: 'Coding Decoding', icon: '🔐', color: 'hsl(25 95% 53%)' },
