@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Geometric Progression Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Geometric Progression Class Notes</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'nth term', 'common ratio', 'infinite', 'ball', 'mean'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="term">nth Term</button>
+      <button data-filter="ratio">Find a &amp; r</button>
+      <button data-filter="sum">Sum (Sn)</button>
+      <button data-filter="infinite">Infinite GP</button>
+      <button data-filter="mean">AM-GM-HM</button>
+      <button data-filter="word">Word/Geometry</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="term" data-kw="nth term of GP ar^(n-1) 6th term 11th term 4th term common ratio series 4 12 36 gunottar shreni pad nikalo 216 5/6">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Series di hai → koi bhi term (a·rⁿ⁻¹)</h3>
+      <p class="trigger">Trigger: "6, 12, 24, … ka 11th term?" ya "a=216, r=5/6 → 4th term?" — a aur r saamne hain, seedha power lagao.</p>
+      <div class="example">
+        <b>Q2:</b> 6,12,24 → r=2 → a₁₁ = 6×2¹⁰ = <span class="ans">6144</span>
+        <span class="q2"><b>Q:</b> 4,12,36 → r=3 → a₆ = 4×3⁵ = <span class="ans">972</span></span>
+        <br><b>Q:</b> 216×(5/6)³ = <span class="ans">125</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="term" data-kw="nth term as power expression 8 4 2 2^(4-n) general term exponent form option based">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Answer power-expression mein chahiye (2⁴⁻ⁿ type)</h3>
+      <p class="trigger">Trigger: options mein 2⁴⁻ⁿ, 3ⁿ⁺¹ jaise expression ho — sab kuch ek hi base mein likh ke powers jod do.</p>
+      <div class="example">
+        <b>Ex:</b> 8,4,2… → 8×(1/2)ⁿ⁻¹ = 2³·2¹⁻ⁿ = <span class="ans">2⁴⁻ⁿ</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="term" data-kw="which term how many terms 1/128 39366 equate powers same base kaunsa pad n nikalo count of terms">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>"Kaunsa term hai / kitne terms hain?" → base same karke power match</h3>
+      <p class="trigger">Trigger: "GP 6, 18, 54, …, 39366 mein kitne terms hain?" / "2, 1, ½, … ka kaunsa term 1/128 hai?"</p>
+      <div class="example">
+        <b>Q3:</b> 6·3ⁿ⁻¹=39366 → 3ⁿ⁻¹=6561=3⁸ → <span class="ans">n = 9</span>
+        <span class="q2"><b>Q1:</b> 2(½)ⁿ⁻¹=1/128 → (½)ⁿ⁻¹=(½)⁸ → <span class="ans">n = 9</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="two terms given 2nd 5th term 24 81 divide equations find r cube root find a GP banao ar ar^4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Do term diye → DIVIDE karo (AP mein subtract, GP mein bhaag)</h3>
+      <p class="trigger">Trigger: "2nd term 24 aur 5th term 81 hai, GP nikaalo" — bade term ko chhote se divide karo, r^(farq) mil jayega.</p>
+      <div class="example">
+        <b>Ex:</b> ar⁴/ar = 81/24 → r³=27/8 → r=3/2 → a=16<br>
+        GP = <span class="ans">16, 24, 36, 54…</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="three terms in GP b^2 = ac x 2x+2 3x+3 first three terms find 4th term middle term square condition">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>Teen term GP mein → b² = ac</h3>
+      <p class="trigger">Trigger: "x, 2x+2, 3x+3 GP ke pehle teen term hain, 4th term?" — beech wale ka square = dono ka product.</p>
+      <div class="example">
+        <b>Q2:</b> (2x+2)²=x(3x+3) → 4(x+1)=3x → x=−4<br>
+        Terms −4,−6,−9, r=3/2 → 4th = <span class="ans">−27/2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="middle term doubled becomes AP increasing GP common ratio quadratic 2+root3 mixed AP GP condition">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>GP ka term badla → AP ban gaya (mixed condition)</h3>
+      <p class="trigger">Trigger: "increasing GP ka middle term double kar do toh numbers AP mein aa jaate hain, r?" — GP wali assumption + AP wali 2b=a+c dono lagao.</p>
+      <div class="example">
+        <b>Q3:</b> a, 2ar, ar² AP mein → 4ar = a+ar² → r²−4r+1=0<br>
+        r = 2±√3; increasing hai isliye <span class="ans">r = 2+√3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="term" data-kw="product of terms GP middle term power a3 product of first 5 terms a4 a5 product of 8 terms pair shortcut">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Terms ka PRODUCT poocha → middle/pair ki power</h3>
+      <p class="trigger">Trigger: "a₃=2 hai toh first 5 terms ka product?" / "4th aur 5th term 2 & 8 hain toh first 8 terms ka product?" — odd terms → (middle)ⁿ, even terms → (pair ka product)^(n/2).</p>
+      <div class="example">
+        <b>Q7:</b> a₃=2 → product₅ = 2⁵ = <span class="ans">32</span>
+        <span class="q2"><b>Q8:</b> (a₄·a₅)⁴ = (2×8)⁴ = <span class="ans">16⁴ = 4⁸</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="assume three terms a/r a ar sum 19 product 216 find numbers quadratic 4 6 9 symmetric assumption">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Sum + Product diya → terms ko a/r, a, ar maano</h3>
+      <p class="trigger">Trigger: "teen numbers GP mein hain, sum 19 aur product 216 hai" — product se a seedha (cube root) mil jaata hai.</p>
+      <div class="example">
+        <b>Q14:</b> a³=216 → a=6; 6/r+6r=13 → 6r²−13r+6=0 → r=3/2 ya 2/3<br>
+        Numbers = <span class="ans">4, 6, 9</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="sum of GP formula a(r^n-1)/(r-1) 3+3^2+3^8 finite sum 2/5 2/25 n terms yog">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Finite sum: Sn = a(rⁿ−1)/(r−1)</h3>
+      <p class="trigger">Trigger: "3 + 3² + … + 3⁸ ka sum" ya "2/5 + 2/25 + … n terms tak" — r&gt;1 par (rⁿ−1)/(r−1), r&lt;1 par (1−rⁿ)/(1−r).</p>
+      <div class="example">
+        <b>Q9:</b> 3(3⁸−1)/2 = 3×3280 = <span class="ans">9840</span>
+        <span class="q2"><b>Q10:</b> a=2/5, r=1/5 → (2/5)(1−(1/5)ⁿ)/(4/5) = <span class="ans">½[1−(1/5)ⁿ]</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="infinite" data-kw="sum to infinity a/(1-r) infinite GP 100 50 25 forever ram gives son total amount anant yog">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>"…forever / infinity tak" → S∞ = a/(1−r)</h3>
+      <p class="trigger">Trigger: "pehle din ₹100, doosre din ₹50, teesre din ₹25… agar wo hamesha jiye toh total kitna?" — half-half hota ja raha hai matlab infinite GP.</p>
+      <div class="example">
+        <b>Q15:</b> a=100, r=1/2 → 100/(1−½) = <span class="ans">₹200</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="infinite" data-kw="mixed series alternate terms two GPs split 1/2 1/3^2 1/2^3 infinity separate odd even 19/24">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>Alternate terms alag-alag base ke → do GP mein todo</h3>
+      <p class="trigger">Trigger: "1/2 + 1/3² + 1/2³ + 1/3⁴ + … ∞" — ek ke baad ek do alag base chal rahe hain, dono ko alag GP maan ke sum karo aur jodo.</p>
+      <div class="example">
+        <b>Q11:</b> (½+⅛+…)=(½)/(¾)=2/3; (1/9+1/81+…)=(1/9)/(8/9)=1/8<br>
+        Total = 2/3 + 1/8 = <span class="ans">19/24</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="4+44+444 repeating digits 0.7+0.77+0.777 nine trick multiply divide by 9 repunit series n terms">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>4 + 44 + 444 … / 0.7 + 0.77 + 0.777 … (9 se guna-bhaag)</h3>
+      <p class="trigger">Trigger: same digit repeat ho rahi ho — digit bahar nikaalo, 9 se multiply-divide karke (10ⁿ−1) wali GP bana lo.</p>
+      <div class="example">
+        <b>Q12:</b> 4/9[(10−1)+(10²−1)+…] = <span class="ans">4/9[10(10ⁿ−1)/9 − n]</span>
+        <span class="q2"><b>Q13:</b> 0.7+0.77+… = 7/9[n − (1−10⁻ⁿ)/9] = <span class="ans">7/81[9n − 1 + 10⁻ⁿ]</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="word" data-kw="ball rebounds bounce height 4/5 total distance travelled before coming to rest H(a+b)/(a-b) 120 metre 1080">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Ball bounce → Total distance = H(a+b)/(a−b)</h3>
+      <p class="trigger">Trigger: "ball girti hai aur har baar height ka 4/5 wapas uchhalti hai, rest tak total distance?" — rebound ratio b/a lo, formula seedha lagao.</p>
+      <div class="example">
+        <b>Q16:</b> H=120, ratio 4/5 → 120×(5+4)/(5−4) = <span class="ans">1080 m</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="word" data-kw="midpoints square triangle inside infinite figures sum of areas half quarter ratio geometry equilateral 18 cm 10 cm perimeter">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Midpoints jod kar andar figure banate jao → areas ka infinite sum</h3>
+      <p class="trigger">Trigger: "square/equilateral triangle ke midpoints jodke naya figure, process infinitely chalta hai — saare areas ka sum?" — square par r=1/2, triangle par r=1/4.</p>
+      <div class="example">
+        <b>Q17:</b> side 10 → a=100, r=½ → 100/(1−½) = <span class="ans">200 cm²</span>
+        <span class="q2"><b>Q18:</b> side 18 → a=81√3, r=¼ → 81√3/(¾) = <span class="ans">108√3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="S13 = S11 sum equal terms r = -1 negative common ratio 21st term 1200 S63 S61 trick zero pair">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Sₙ = Sₙ₋₂ diya ho → r = −1 (trap question)</h3>
+      <p class="trigger">Trigger: "first 13 terms ka sum = first 11 terms ka sum" — matlab do extra terms ka sum zero, yaani r = −1. Aage sab isi se.</p>
+      <div class="example">
+        <b>Q21:</b> ar¹¹(r+1)=0 → r=−1; S₁₅ = a = 1200 → a₂₁ = 1200(−1)²⁰ = <span class="ans">1200</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mean" data-kw="arithmetic mean geometric mean harmonic mean AM GM HM GM^2 = AM x HM two numbers 8 6.4 sum S product P 2P/S x^3+y^3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>AM–GM–HM: GM² = AM × HM</h3>
+      <p class="trigger">Trigger: "do numbers ka GM 8 aur HM 6.4 hai" / "AM aur GM diya hai toh x³+y³?" — AM=(a+b)/2, GM=√(ab), HM=2ab/(a+b); sum aur product nikaalte hi kaam khatam.</p>
+      <div class="example">
+        <b>Q22:</b> ab=64, a+b=2×64/6.4=20 → numbers = <span class="ans">4, 16</span>
+        <span class="q2"><b>Q23:</b> AM = GM²/HM = 144/10 = <span class="ans">14.4</span></span>
+        <br><b>Q24:</b> sum S, product P → HM = <span class="ans">2P/S</span>
+        <br><b>Q25:</b> x+y=16, xy=63 → 7,9 → x³+y³ = <span class="ans">1072</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>16 patterns ab tak.</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

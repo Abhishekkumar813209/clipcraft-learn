@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | C.I. Installment Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · C.I. Installment Class Notes</p>
+    <h1>C.I. Installment: question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'two equal installments', 'sum borrowed', 'total interest', 'down payment'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="two">2 Equal Kist</button>
+      <button data-filter="three">3 Equal Kist</button>
+      <button data-filter="sum">Sum Borrowed</button>
+      <button data-filter="interest">Total Interest</button>
+      <button data-filter="period">Half-yearly / Odd r</button>
+      <button data-filter="unequal">Unequal Payments</button>
+      <button data-filter="balance">Part Payment / Balance</button>
+      <button data-filter="down">Down Payment</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="two" data-kw="two equal annual installments find installment do barabar vaarshik kist chakravriddhi byaj 10% 40% ratio 100 121 210 242 kist gyaat karo compounded annually">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Sum diya → 2 barabar vaarshik kist nikalo</h3>
+      <p class="trigger">Trigger: "₹P ki raashi 2 barabar vaarshik kishton mein chukayi jaani hai, r% compounded annually — pratyek kist kitni?" → r=1/n mano; column banao: left = n(n+1) & n², right = (n+1)² & (n+1)²; Kist = P × (n+1)² / (left ka sum).</p>
+      <div class="example">
+        <b>Q1:</b> 4620, 10%=1/10 → 100+110=210 | 121 → 4620×121/210 = <span class="ans">₹2662</span>
+        <span class="q2"><b>Q2:</b> 1500, 40%=2/5 → 25+35=60 | 49 → 1500×49/60 = <span class="ans">₹1225</span></span>
+        <br><b>Q9:</b> 6800, 12½%=1/8 → 64+72=136 | 81 → 6800×81/136 = <span class="ans">₹4050</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sum" data-kw="installment given find sum borrowed udhaar li gayi raashi reverse 3025 1089 980 35280 x value paid back in two equal installments">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Kist di hui → SUM BORROWED (ulta)</h3>
+      <p class="trigger">Trigger: "₹x ki do samaan vaarshik kishton mein wapas kar diya, dar r% — udhaar li gayi raashi gyaat karo" → Sum = Kist × (left column sum) / (n+1)².</p>
+      <div class="example">
+        <b>Q3:</b> 3025, 10% → 3025×210/121 = <span class="ans">₹5250</span>
+        <span class="q2"><b>Q6:</b> 1089, 10% → 1089×210/121 = <span class="ans">₹1890</span></span>
+        <br><b>Q7:</b> 980, 4%=1/25 → 625+650=1275 | 676 → 980×1275/676 ≈ <span class="ans">₹1850</span>
+        <br><b>Q8:</b> 35280, 5%=1/20 → 400+420=820 | 441 → 35280×820/441 = <span class="ans">₹65,600</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="interest" data-kw="total interest charged kul byaj 60% of interest 6897 6534 5547 5808 difference right column left column 32 installment two equal yearly">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Kist di hui → TOTAL INTEREST (difference trick)</h3>
+      <p class="trigger">Trigger: "pratyek kist ₹x hai, dar r% compounded annually — kul liya gaya byaj gyaat karo" (ya "kul byaj ka 60%") → Interest = Kist × (right sum − left sum) / (n+1)².</p>
+      <div class="example">
+        <b>Q4:</b> 6897, 10% → 242−210=32 → 6897×32/121 = <span class="ans">₹1824</span>
+        <span class="q2"><b>Q5:</b> 6534, 10% → 6534×32/121 = <span class="ans">₹1728</span></span>
+        <br><b>Q10:</b> 5547, 7½%=3/40 → 3698−3320=378 → 5547×378/1849 = <span class="ans">₹1134</span>
+        <br><b>Q13:</b> 5808, 10% → interest=5808×32/121=1536 → 60% = <span class="ans">≈₹922</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="period" data-kw="half yearly compounded ardhvaarshik 8% per annum becomes 4% odd rate 7 4/5 39/5 fraction convert r=1/n installment">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Half-yearly compounding ya ajeeb fraction rate → pehle r ko 1/n banao</h3>
+      <p class="trigger">Trigger: "do samaan ardhvaarshik (half-yearly) kisten, 8% p.a. half-yearly compounded" ya rate 7⅘%, 12½% jaisi fraction mein — r ko period ke hisaab se aadha karo, phir fraction a/b bana ke wahi column method.</p>
+      <div class="example">
+        <b>Q12:</b> 8925, 8% half-yearly → r=4%=1/25 → 625+650=1275 | 676 → 8925×676/1275 = <span class="ans">₹4732</span>
+        <span class="q2"><b>Q11:</b> 519500, 7⅘%=39/500 → 500²+539×500=519500 | 539² → 519500×539²/519500 = <span class="ans">₹2,90,521</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="three" data-kw="three equal annual installments teen samaan vaarshik kist 32760 2196 3993 21970 cost of item cube power 216 244 455 3310 20% 25% 30%">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>3 barabar vaarshik kisten → kist ya sum (3-row column)</h3>
+      <p class="trigger">Trigger: "teen samaan vaarshik kishton mein bhugtan, r% compounded annually" — 2 ki jagah 3 rows: n(n+1)², n²(n+1), n³ | dono taraf (n+1)³; Kist = Sum × (n+1)³ / (teen rows ka sum).</p>
+      <div class="example">
+        <b>Q14:</b> 32760, 20%=1/5 → 180+150+125=455 | 216 → 32760×216/455 = <span class="ans">₹15,552</span>
+        <span class="q2"><b>Q15:</b> 2196, 25%=1/4 → 100+80+64=244 | 125 → 2196×125/244 = <span class="ans">₹1125</span></span>
+        <br><b>Q16 (ulta):</b> kist 3993, 10% → 3993×3310/1331 = <span class="ans">₹9930</span>
+        <br><b>Q17 (H.W):</b> kist 21970, 30% → <span class="ans">₹39,990</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="unequal" data-kw="unequal payments 4000 first year 7700 second year find sum rate 4800 9240 4200 4410 chain method P x 11/10 minus payment zero">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>Kisten BARABAR nahi (alag-alag payment) → sum ya rate (chain method)</h3>
+      <p class="trigger">Trigger: "pehle saal ke ant mein ₹A aur doosre saal ke ant mein ₹B dekar chuka diya" — kist barabar nahi hai, toh formula chhodo: (P×(1+r) − A)×(1+r) − B = 0 bana ke solve karo.</p>
+      <div class="example">
+        <b>Q18:</b> A=4000, B=7700, 10% → (11P/10−4000)×11/10=7700 → <span class="ans">P=₹10,000</span>
+        <span class="q2"><b>Q22:</b> A=4200, B=4410, 5% → (21P/20−4200)×21/20=4410 → <span class="ans">P=₹8000</span></span>
+        <br><b>Q19 (rate poochha):</b> P=12000, A=4800, B=9240 → 12000×11/10−4800=8400 → 8400×11/10=9240 ✓ → <span class="ans">r=10%</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="balance" data-kw="pays fixed amount every year part payment balance still owe remaining 9000 3000 50000 15000 4000 2000 third year clear debt reducing compound">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Har saal fixed part-payment → bacha hua balance / antim payment</h3>
+      <p class="trigger">Trigger: "har saal ke ant mein ₹X part payment karta hai — 3rd saal ke ant mein kitna aur dena hoga / kitna bakaya hai" → step-by-step: balance × (1+r), minus X, repeat.</p>
+      <div class="example">
+        <b>Q20:</b> 9000, 10%, −3000/yr → 9900−3000=6900 → 7590−3000=4590 → ×11/10 = <span class="ans">₹5049</span>
+        <span class="q2"><b>Q23:</b> 50000, 10%, −15000/yr ×3 → 55000−15000=40000 → 44000−15000=29000 → 31900−15000 = <span class="ans">₹16,900 bakaya</span></span>
+        <br><b>Q21:</b> 4000, 8%, −2000 do saal → 4320−2000=2320 → 2505.6−2000=505.6 → ×27/25 = <span class="ans">₹546.05</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="down" data-kw="cash payment down payment three equal yearly installments mobile phone music player 39300 7450 4510 1200 present value 5/6 25/36 125/216 nagad agrim bhugtan">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Cash price vs down payment + CI kisten → kist ki raashi</h3>
+      <p class="trigger">Trigger: "vastu ₹M nagad ya ₹D nagad agrim bhugtan aur 3 samaan vaarshik kisten, r% compounded annually" → Remaining = M−D, phir Remaining = x[1/(1+r) + 1/(1+r)² + 1/(1+r)³] — yaani wahi 3-row column ratio.</p>
+      <div class="example">
+        <b>Q24:</b> 39300−7450=31850, 20% → 31850 = x×455/216 → <span class="ans">₹15,120</span>
+        <span class="q2"><b>Q25:</b> 4510−1200=3310, 10% → 3310 = x×3310/1331 → <span class="ans">₹1331</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>8 patterns ab tak.</b> Source: C.I. Installment Class Notes (Aditya Ranjan Sir) — Q1 se Q25 tak, page 34 tak extract kiya gaya. Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>
