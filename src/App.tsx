@@ -82,6 +82,8 @@ import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
 import SscGrammar from "./pages/SscGrammar";
 import SscGrammarTopic from "./pages/SscGrammarTopic";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
+import SscAlphabetHub from "./pages/SscAlphabetHub";
+import SscAlphabetQuiz from "./pages/SscAlphabetQuiz";
 import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
 import SscMathsCalculation from "./pages/SscMathsCalculation";
