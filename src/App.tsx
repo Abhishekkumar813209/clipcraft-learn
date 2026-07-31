@@ -82,6 +82,8 @@ import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
 import SscGrammar from "./pages/SscGrammar";
 import SscGrammarTopic from "./pages/SscGrammarTopic";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
+import SscAlphabetHub from "./pages/SscAlphabetHub";
+import SscAlphabetQuiz from "./pages/SscAlphabetQuiz";
 import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
 import SscMathsCalculation from "./pages/SscMathsCalculation";
@@ -151,6 +153,8 @@ const App = () => (
               <Route path="english/grammar" element={<SscGrammar />} />
               <Route path="english/grammar/:pos" element={<SscGrammarTopic />} />
               <Route path="english/grammar/:pos/basic" element={<SscGrammarSetup />} />
+              <Route path="english/practice/alphabet" element={<SscAlphabetHub />} />
+              <Route path="english/practice/alphabet/:mode" element={<SscAlphabetQuiz />} />
               <Route path="english/grammar/:pos/basic/practice" element={<SscPosVerbBasicPractice />} />
               <Route path="maths" element={<SscSubject />} />
               <Route path="maths/calculation" element={<SscMathsCalculation />} />
