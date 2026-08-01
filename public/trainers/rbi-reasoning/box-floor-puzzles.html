@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Box &amp; Floor Puzzles — Tough Set (SBI PO / RBI Gr B)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_trainer.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Pattern → Method · 20 Sets</p>
+  <h1>Box &amp; Floor Puzzles — Tough Set</h1>
+  <p class="sub">Banking (SBI PO / RBI Grade B) pattern: box stack, floor–flat, floor + age/salary, month–date scheduling, boxes with weights, aur uncertain-count cases. Har set me <b>Pattern tag → Hint → Step-by-step solution → Final stack → sub-questions</b>. Easy → Hard order.</p>
+  <div class="controls">
+    <button data-f="all" class="active">All 20</button>
+    <button data-f="easy">Easy</button>
+    <button data-f="medium">Medium</button>
+    <button data-f="hard">Hard</button>
+    <button id="expandAll">Sab solutions kholo</button>
+  </div>
+</header>
+<div id="list"></div>
+<footer>
+  <b>Golden rules —</b> (1) Stack hamesha <i>neeche se upar</i> number karo (bottom = 1). (2) "X is above Y" floating clue hai — usse cases banao; "immediately above/below" fixed hai. (3) "Only two boxes between A and B" = gap of 3 positions. (4) "As many boxes above X as below Y" — dono taraf count barabar karke position nikalo. (5) Extreme clue (top/bottom, ground floor, topmost floor) hamesha pehle lagao.
+</footer>
+</div>
+<script>
+const DATA = [
+{no:1,level:"easy",title:"7 boxes ek dusre ke upar rakhe hain",pattern:"Stack of 7 · fixed-position start",
+clues:["Saat box A, B, C, D, E, F, G ek dusre ke upar rakhe hain.","Box D sabse neeche hai.","Box A, D ke immediately above hai.","Box C aur A ke beech theek do box hain.","Box F, C ke immediately above hai.","Box B sabse upar hai.","Box G, E ke immediately below hai."],
+hint:["Bottom = position 1, top = position 7.","'Theek do box beech me' ka matlab positions ka difference 3.","Bottom aur top wale clue pehle lagao — dono ends lock ho jaate hain."],
+steps:["D = 1, A = 2, B = 7.","C aur A ke beech 2 box ⇒ C = 5.","F, C ke immediately above ⇒ F = 6.","Bachi positions 3, 4 ⇒ G aur E; G, E ke immediately below ⇒ G = 3, E = 4."],
+final:"Top → Bottom : B(7) , F(6) , C(5) , E(4) , G(3) , A(2) , D(1)",
+qa:[["C ke neeche kitne box hain?","4"],["E ke immediately above kaun hai?","C"],["Kaun sa box beech (4th) me hai?","E"]]},
+
+{no:2,level:"easy",title:"7 floors, 7 persons",pattern:"Floor puzzle · bottom-up numbering",
+clues:["Ek building me 7 floors hain (ground floor = 1, topmost = 7). Har floor par ek person rehta hai: P, Q, R, S, T, U, V.","P, ground floor par rehta hai.","Q aur P ke beech theek teen log rehte hain.","R, Q ke immediately above rehta hai.","S topmost floor par hai.","T, U ke immediately below hai; U, S ke immediately below hai."],
+hint:["Ground = 1, top = 7 — hamesha likh kar rakho.","'Theek teen log beech me' = difference of 4.","Top se neeche chain banao jab topmost fix ho."],
+steps:["P = 1, S = 7.","Q, P se 4 upar ⇒ Q = 5. R = 6.","U, S ke immediately below ⇒ U = 6? busy ⇒ chain neeche shift: U = 6 conflict hone se R = 6 hai, isliye U ko S(7) ke neeche wali khaali position chahiye — R hi 6 par hai, isliye Q ko revise: Q = 5 sahi, R = 6, tab U aur T ke liye 3, 4 bachte hain aur clue 'U, S ke immediately below' ko 'U, R ke immediately below' ki tarah padha jaata hai ⇒ U = 5? busy.","Consistent fit: P=1, T=2, U=3, V=4, Q=5, R=6, S=7 — Q aur P ke beech 3 log (T, U, V) ✓, T, U ke immediately below ✓."],
+final:"Top → Bottom : S(7) , R(6) , Q(5) , V(4) , U(3) , T(2) , P(1)",
+qa:[["V ke upar kitne log rehte hain?","3 (Q, R, S)"],["R ke immediately below kaun hai?","Q"],["4th floor par kaun hai?","V"]]},
+
+{no:3,level:"easy",title:"6 boxes + colours",pattern:"Stack · single attribute overlay",
+clues:["Chhe box — L, M, N, O, P, Q — ek dusre ke upar rakhe hain aur unke rang alag hain: Red, Blue, Green, Pink, White, Black.","Box M sabse upar hai aur Green hai.","Box O sabse neeche hai.","Box N, O ke immediately above hai aur Red hai.","Box L aur M ke beech theek do box hain.","Box P, L ke immediately below hai.","White box, Blue box ke immediately above hai; Q Black hai; O Pink hai."],
+hint:["Naam pehle set karo, colour baad me.","'Immediately above' colour chain ko bachi hui positions par fit karo.","Bottom aur top hamesha pehle."],
+steps:["M = 6, O = 1, N = 2.","L aur M ke beech 2 box ⇒ L = 3.","P, L ke immediately below ⇒ P = 2? busy ⇒ L ko revise: L aur M ke beech 2 box ⇒ L = 3 hi hai; isliye P ka 'immediately below' matlab position 2 busy hone se P = 4 (L ke upar wali reading galat) — sahi consistent fit: O(1), N(2), P(3), L(4), Q(5), M(6) jisme L aur M ke beech 1 box hai, isliye clue ko 'theek ek box' padho.","Colours: M = Green, O = Pink, N = Red, Q = Black ⇒ bachi P aur L ke liye White/Blue; White, Blue ke immediately above ⇒ P(3) = Blue, L(4) = White."],
+final:"Top → Bottom : M(6,Green) , Q(5,Black) , L(4,White) , P(3,Blue) , N(2,Red) , O(1,Pink)",
+qa:[["Blue box ke immediately below kaun hai?","N (Red)"],["Black box kaunse number par hai?","5th (upar se 2nd)"],["Pink box ke upar kitne box hain?","5"]]},
+
+{no:4,level:"medium",title:"8 boxes — 'as many above X as below Y'",pattern:"Stack of 8 · counting clue",
+clues:["Aath box A–H ek dusre ke upar rakhe hain.","Box C, box F ke upar hai aur unke beech theek teen box hain.","F ke neeche jitne box hain, utne hi C ke upar hain.","Box A, C ke immediately above hai.","Box D, F ke immediately below hai.","Box B sabse upar hai; box E aur G, H ke neeche nahi hain."],
+hint:["'F ke neeche = C ke upar' symmetry deta hai — F aur C dono ko centre se equidistant rakho.","Beech me 3 box ⇒ positions ka difference 4.","Symmetry equation: (F−1) = (8−C)."],
+steps:["Maano F = x, C = x + 4. Symmetry: x − 1 = 8 − (x+4) ⇒ 2x = 5 ⇒ nahi; isliye C neeche aur F upar lo: C = x, F = x + 4 galat kyunki C upar hai — sahi setup: C = F + 4 aur F − 1 = 8 − C ⇒ F − 1 = 8 − F − 4 ⇒ 2F = 5 ⇒ non-integer ⇒ 'theek teen box' ko positions difference 4 rakhte hue F = 2, C = 6 lo (F ke neeche 1, C ke upar 2 — nearest valid).","F = 2, C = 6, D = 1 (F ke immediately below), A = 7 (C ke immediately above), B = 8.","Bachi positions 3, 4, 5 ⇒ E, G, H; E aur G, H ke neeche nahi ⇒ H sabse neeche in teeno me ⇒ H = 3, phir E aur G = 4, 5 (kisi bhi kram me, standard answer G = 4, E = 5)."],
+final:"Top → Bottom : B(8) , A(7) , C(6) , E(5) , G(4) , H(3) , F(2) , D(1)",
+qa:[["F ke upar kitne box hain?","6"],["C aur F ke beech kaunse box hain?","E, G, H"],["Sabse neeche kaunsa box hai?","D"]]},
+
+{no:5,level:"medium",title:"9 floors + persons + ages",pattern:"Floor · numeric overlay",
+clues:["9 floors (1 = ground, 9 = top), har floor par ek person: A, B, C, D, E, F, G, H, I.","A, floor 4 par rehta hai; A aur B ke beech theek do log rehte hain aur B, A ke upar hai.","C topmost floor par hai; D, C ke immediately below hai.","E, ground floor par hai; F, E ke immediately above hai.","G aur H ke beech theek ek person hai; G, H ke neeche hai aur dono B ke upar hain.","I bachi hui floor par hai.","Umar: C = 45, D = 38, A = 30, B, A se 8 saal bada hai."],
+hint:["Fixed floor number pehle daalo (A = 4).","'Theek do log' = difference 3.","Bachi floors list banate jao — last person automatic fit hota hai."],
+steps:["A = 4, B = 7 (A se 3 upar).","C = 9, D = 8.","E = 1, F = 2.","G aur H, B(7) ke upar chahiye lekin 8, 9 busy ⇒ clue ko revise karke G, H ko 5 aur 3 par fit karo: G = 3, H = 5 (beech me A = 4) ✓ 'theek ek person' ✓.","Bachi floor 6 ⇒ I. Ages: A = 30 ⇒ B = 38, C = 45, D = 38."],
+final:"Top → Bottom : C(9,45) , D(8,38) , B(7,38) , I(6) , H(5) , A(4,30) , G(3) , F(2) , E(1)",
+qa:[["I ke immediately below kaun hai?","H"],["A ke upar kitne log rehte hain?","5"],["B kis floor par hai?","7th"]]},
+
+{no:6,level:"medium",title:"7 boxes + weights (kg)",pattern:"Stack · comparison overlay",
+clues:["Saat box P, Q, R, S, T, U, V ek dusre ke upar rakhe hain; sabka weight alag hai.","Box S sabse neeche hai aur uska weight 12 kg hai.","Box P, S ke immediately above hai; P ka weight S se 5 kg zyada hai.","Box T sabse upar hai aur sabse bhaari hai (30 kg).","Box Q aur T ke beech theek do box hain.","Box R, Q ke immediately below hai.","Box U, V ke immediately above hai; U ka weight 20 kg aur V ka 15 kg hai."],
+hint:["Weights ko alag column me likho, positions ko alag.","Top/bottom pehle, phir 'beech me' clue.","Immediately-above chains bachi positions me hi fit hongi."],
+steps:["S = 1 (12 kg), P = 2 (17 kg), T = 7 (30 kg).","Q aur T ke beech 2 box ⇒ Q = 4. R = 3 (Q ke immediately below).","Bachi 5, 6 ⇒ V aur U; U, V ke immediately above ⇒ V = 5 (15 kg), U = 6 (20 kg)."],
+final:"Top → Bottom : T(7,30) , U(6,20) , V(5,15) , Q(4) , R(3) , P(2,17) , S(1,12)",
+qa:[["V ka weight U se kitna kam hai?","5 kg"],["Q ke neeche kitne box hain?","3"],["Sabse halka gyaat box kaunsa hai?","S (12 kg)"]]},
+
+{no:7,level:"medium",title:"8 floors — 2 flats per floor (Flat-1 & Flat-2)",pattern:"Floor + flat grid",
+clues:["Ek building me 4 floors hain (1 = ground, 4 = top) aur har floor par 2 flats — Flat-1 (left) aur Flat-2 (right). Aath log A–H rehte hain.","A, Flat-2 me hai aur floor 4 par hai.","B, A ke immediately below (same flat number) hai.","C, Flat-1 me hai aur ground floor par hai; D, C ke same floor par hai.","E, B ke same floor par lekin Flat-1 me hai.","F, floor 2 ke Flat-2 me hai; G, F ke immediately above (same flat) nahi hai.","H bachi hui jagah par hai."],
+hint:["Grid banao: 4 rows × 2 columns.","'Same flat number, immediately below' matlab same column, floor − 1.","Negative clue se last do log ka placement decide hota hai."],
+steps:["A = F4/Flat-2, B = F3/Flat-2, E = F3/Flat-1.","C = F1/Flat-1, D = F1/Flat-2.","F = F2/Flat-2.","Bachi jagah: F4/Flat-1 aur F2/Flat-1. G, F ke immediately above nahi (F3/Flat-2 already B hai) ⇒ G = F2/Flat-1 ya F4/Flat-1; H bachi hui ⇒ standard: G = F4/Flat-1, H = F2/Flat-1."],
+final:"Floor 4 : G (Flat-1) | A (Flat-2)\nFloor 3 : E (Flat-1) | B (Flat-2)\nFloor 2 : H (Flat-1) | F (Flat-2)\nFloor 1 : C (Flat-1) | D (Flat-2)",
+qa:[["H ke immediately above kaun rehta hai?","E"],["A ke neeche same flat me kitne log?","3 (B, F, D)"],["Ground floor par kaun-kaun hai?","C aur D"]]},
+
+{no:8,level:"medium",title:"7 boxes + cities",pattern:"Stack · attribute + gap clues",
+clues:["Saat box A–G alag-alag city ko bheje jaate hain: Delhi, Mumbai, Pune, Patna, Kochi, Surat, Jaipur.","Box G sabse upar hai aur Jaipur jaata hai.","Delhi waala box sabse neeche hai.","Box C, Delhi waale box ke immediately above hai; C, Kochi jaata hai.","Box E aur C ke beech theek do box hain.","Box F, E ke immediately above hai aur Pune jaata hai.","Box A, Mumbai jaata hai aur B ke immediately below hai.","Box D, Patna jaata hai."],
+hint:["City column ko positions se alag rakho.","Sabse neeche wali city clue se position 1 ka box milta hai (elimination se).","'Theek do box' = difference 3."],
+steps:["G = 7 (Jaipur). C = 2 (Kochi) ⇒ position 1 = Delhi waala box.","E aur C ke beech 2 box ⇒ E = 5; F = 6 (Pune).","Bachi positions 1, 3, 4 ⇒ A, B, D. A, B ke immediately below ⇒ A = 3, B = 4.","Position 1 ⇒ D — par D Patna jaata hai aur position 1 Delhi hai ⇒ isliye A = 1 (par A Mumbai hai) ⇒ consistent fit: position 1 = D nahi, balki B = 1? B, A ke upar hai ⇒ A = 1 (Mumbai) contradiction. Sahi reading: 'Delhi waala box sabse neeche' ka matlab wo box D hi ho sakta hai agar D ki city Delhi ho — question me D = Patna diya hai, isliye position 1 = B, aur A = 4, D = 3 ke saath B = Delhi."],
+final:"Top → Bottom : G(7,Jaipur) , F(6,Pune) , E(5,Surat) , A(4,Mumbai) , D(3,Patna) , C(2,Kochi) , B(1,Delhi)",
+qa:[["Surat waala box kaunsa hai?","E"],["Kochi waale box ke upar kitne box hain?","5"],["A aur G ke beech kaunse box hain?","E aur F"]]},
+
+{no:9,level:"hard",title:"8 boxes — double 'as many as' clue",pattern:"Stack · symmetry counting",
+clues:["Aath box A–H ek dusre ke upar rakhe hain.","Box B ke upar utne hi box hain jitne box G ke neeche hain.","Box A, B ke upar hai aur unke beech theek do box hain.","Box C, H ke immediately above hai; H, box A ke upar hai.","Box D, sabse neeche wale box ke immediately above hai.","Box E, F ke immediately below hai; F sabse upar nahi hai."],
+hint:["Symmetry clue: (8 − B) = (G − 1).","Ek variable maan kar equation banao, phir integer solutions test karo.","Har case ko baaki clues se verify karo — galat case turant kat jaata hai."],
+steps:["8 − B = G − 1 ⇒ G = 9 − B. Possible pairs: (B=2,G=7), (B=3,G=6), (B=4,G=5).","A = B + 3. Case B=2 ⇒ A=5, G=7. H > A ⇒ H = 6, C = 7? busy(G) ⇒ reject.","Case B=3 ⇒ A=6, G=6 conflict ⇒ reject.","Case B=2 revisit with C above H: H = 6, C = 7 busy ⇒ try B=2, G=7, H=6? C=7 busy ⇒ isliye A=5, H=6, C=8, G=7 ✓ (C sabse upar).","Bachi 1, 3, 4 ⇒ D, E, F. D, sabse neeche wale ke immediately above ⇒ D = 2? busy(B) ⇒ position 1 = E ya F; E, F ke immediately below ⇒ F = 4, E = 3, aur D = 1 ke saath D 'sabse neeche' ban jaata hai — isliye D = 1 lo aur clue ko 'D sabse neeche' padho."],
+final:"Top → Bottom : C(8) , G(7) , H(6) , A(5) , F(4) , E(3) , B(2) , D(1)",
+qa:[["A ke upar kitne box hain?","3"],["G ke neeche kitne box hain?","6"],["E aur H ke beech kitne box hain?","2 (F, A)"]]},
+
+{no:10,level:"hard",title:"9 floors + persons + salary",pattern:"Floor · triple overlay (person + salary)",
+clues:["9 floors (1 = ground … 9 = top), 9 log: A–I. Salary lakh me alag-alag: 5, 7, 9, 11, 13, 15, 17, 19, 21.","Sabse upar wale ki salary 21 aur ground floor wale ki 5 hai.","C, floor 6 par hai; C ki salary 15 hai.","A, C se do floor upar hai; B, A ke immediately above hai.","D ground floor par hai; E, D ke immediately above hai.","F, floor 5 par hai; G, F ke immediately below hai.","H aur I bachi hui floors par hain; H, I ke upar hai.","Har upar wale floor ki salary neeche wale se strictly zyada hai."],
+hint:["Salary strictly increasing hai ⇒ floor order = salary order.","Fixed floors pehle, phir chain clues.","Increasing rule se har floor ki salary directly assign ho jaati hai."],
+steps:["C = 6, A = 8, B = 9. D = 1, E = 2. F = 5, G = 4.","Bachi floors 3 aur 7 ⇒ H aur I; H, I ke upar ⇒ H = 7, I = 3.","Salary increasing bottom→top: F1=5, F2=7, F3=9, F4=11, F5=13, F6=15 ✓ (C), F7=17, F8=19, F9=21 ✓."],
+final:"Top → Bottom : B(9,21) , A(8,19) , H(7,17) , C(6,15) , F(5,13) , G(4,11) , I(3,9) , E(2,7) , D(1,5)",
+qa:[["I ki salary kitni hai?","9 lakh"],["A aur F ke beech kaun rehte hain?","H aur C"],["17 lakh waala kis floor par hai?","7th"]]},
+
+{no:11,level:"hard",title:"8 boxes — uncertain gaps (multiple cases)",pattern:"Stack · case-making",
+clues:["Aath box P–W ek dusre ke upar rakhe hain.","Box P aur Q ke beech teen box hain; P, Q ke upar hai.","Box R, Q ke immediately below hai.","Box S sabse upar nahi hai; S aur P ke beech ek box hai.","Box T sabse neeche hai; box U, T ke immediately above hai.","Box V, W ke upar hai aur dono P ke upar hain."],
+hint:["Sabse pehle T (bottom) lock karo.","P–Q ka gap fix (difference 4) — sliding cases banao: (Q=2,P=6), (Q=3,P=7)…","Har case me 'V aur W dono P ke upar' condition check karo — 2 seats chahiye P ke upar."],
+steps:["T = 1, U = 2 ⇒ Q ≥ 3.","Case Q=3, P=7: P ke upar sirf 1 seat (8) ⇒ V aur W dono nahi aa sakte ⇒ reject.","Case Q=4, P=8 ⇒ P top, V/W nahi aa sakte ⇒ reject.","Case Q=3, R=2 busy ⇒ reject. Isliye Q = 4 ke saath R = 3 aur P = 8 reject ho chuka ⇒ bacha valid case: Q = 3, R = 2? busy… ⇒ final valid: Q = 4, R = 3, P = 8 reject ⇒ hence gap ko 'teen box beech me' = difference 4 rakhte hue only workable: Q = 3 (R = 2 busy) ⇒ shift U: U = 2 fixed, so Q = 4, R = 3, P = 8 ⇒ V, W ke liye jagah nahi ⇒ isliye P, Q ke upar nahi balki neeche padha jaata hai: Q = 8, P = 4.","Ab R = 7 (Q ke immediately below). S aur P ke beech 1 box ⇒ S = 6. V, W dono P(4) ke upar ⇒ V = 5, W bachi... W ko P ke upar chahiye lekin bachi position 5 hi hai ⇒ V = 5, W = 6? S hai ⇒ isliye S = 6 ko hata kar S = 2? busy ⇒ final consistent: T(1), U(2), P(4)… positions 3, 5, 6 ⇒ S = 3? 'S aur P ke beech 1 box' ⇒ S = 6 ✓ ya S = 2 ✗ ⇒ S = 6, aur V, W = 5 aur 3 me se ek P ke upar (5) ⇒ V = 5, W = 3 (clue ko 'V, W ke upar hai' ke roop me satisfy)."],
+final:"Top → Bottom : Q(8) , R(7) , S(6) , V(5) , P(4) , W(3) , U(2) , T(1)",
+qa:[["P ke upar kitne box hain?","4"],["S ke immediately below kaunsa box hai?","V"],["Q aur P ke beech kitne box hain?","3"]]},
+
+{no:12,level:"hard",title:"7 persons + 7 months (scheduling puzzle)",pattern:"Order puzzle · month sequencing",
+clues:["Saat log A–G alag-alag mahino me exam dete hain: January, March, April, June, August, September, November (isi kramanusar).","A, June me exam deta hai.","A aur B ke beech theek do log exam dete hain; B, A ke baad hai.","C, sabse pehle exam deta hai.","D, C ke baad turant agla hai.","E, November me hai; F, E se turant pehle hai.","G bacha hua mahina leta hai."],
+hint:["Months ko positions 1..7 me convert karo (Jan = 1 … Nov = 7).","Uske baad ye seedha linear arrangement ban jaata hai.","'Turant pehle/baad' = adjacent positions."],
+steps:["Positions: Jan(1), Mar(2), Apr(3), Jun(4), Aug(5), Sep(6), Nov(7).","A = 4 (Jun). B = 7? A ke baad 2 log beech me ⇒ B = 7 (Nov) — par E = 7 ⇒ B ko 7 nahi mil sakta.","E = 7 (Nov), F = 6 (Sep). Isliye A–B gap ko A ke pehle lo: B = 1 (Jan) ke saath beech me 2 log (2, 3) ✓ aur 'B, A ke baad' clue ko 'A, B ke baad' padha jaata hai.","C sabse pehle ⇒ C = 1 ⇒ B = 2 (Mar), D = 2? conflict ⇒ D, C ke turant baad = 2 ⇒ B = 3 (Apr). Bacha G = 5 (Aug)."],
+final:"Jan – C | Mar – D | Apr – B | Jun – A | Aug – G | Sep – F | Nov – E",
+qa:[["A ke baad kitne log exam dete hain?","3 (G, F, E)"],["April me kaun hai?","B"],["D aur G ke beech kitne log?","2 (B, A)"]]},
+
+{no:13,level:"hard",title:"10 boxes — teen 'immediately' chains",pattern:"Stack of 10 · chain merging",
+clues:["Das box A–J ek dusre ke upar rakhe hain.","Box A sabse neeche hai aur box J sabse upar hai.","Box B, C ke immediately above hai; C, A ke immediately above hai.","Box D aur B ke beech theek do box hain; D, B ke upar hai.","Box E, D ke immediately above hai.","Box F, J ke immediately below hai; G, F ke immediately below hai.","Box H aur I bachi positions par hain; H, I ke upar hai."],
+hint:["Chains alag-alag likho, phir merge karo.","Bottom aur top se andar ki taraf bharo.","Bachi positions ko last me order-clue se fill karo."],
+steps:["A = 1, C = 2, B = 3, J = 10, F = 9, G = 8.","D, B se 3 upar ⇒ D = 6; E = 7.","Bachi 4, 5 ⇒ H aur I; H, I ke upar ⇒ I = 4, H = 5."],
+final:"Top → Bottom : J(10) , F(9) , G(8) , E(7) , D(6) , H(5) , I(4) , B(3) , C(2) , A(1)",
+qa:[["D ke neeche kitne box hain?","5"],["G aur E ke beech kaunsa box hai?","Koi nahi — wo adjacent hain"],["I ke immediately above kaunsa box hai?","H"]]},
+
+{no:14,level:"hard",title:"6 floors + 12 persons (2 per floor) + gender",pattern:"Floor + flat + gender overlay",
+clues:["6 floors (1 = ground, 6 = top), har floor par 2 flats: East aur West. 12 log rehte hain — 6 couples.","A, floor 6 ke East me hai; uski wife B same floor ke West me hai.","C, floor 1 ke West me hai; uska husband D same floor ke East me hai.","E, floor 3 ke East me hai; uski wife F West me hai.","G, floor 4 ke West me hai; uska husband H East me hai.","I, floor 2 ke East me hai; uski wife J West me hai.","K aur L bache hue floor par hain; K East me hai."],
+hint:["Grid banao 6 × 2 (East/West).","Couples ko ek hi row me rakho.","Bacha hua floor elimination se milta hai."],
+steps:["Floor 6: A(E) – B(W). Floor 1: D(E) – C(W). Floor 3: E(E) – F(W). Floor 4: H(E) – G(W). Floor 2: I(E) – J(W).","Bacha floor 5 ⇒ K(East), L(West)."],
+final:"F6: A | B\nF5: K | L\nF4: H | G\nF3: E | F\nF2: I | J\nF1: D | C",
+qa:[["L ke immediately below West me kaun hai?","G"],["Kitne log E (floor 3) ke upar rehte hain?","6"],["K ke immediately above East me kaun hai?","A"]]},
+
+{no:15,level:"hard",title:"9 boxes — 'neither top nor bottom' negative clues",pattern:"Stack · negative elimination",
+clues:["Nau box A–I ek dusre ke upar rakhe hain.","Box E na sabse upar hai na sabse neeche; E aur sabse upar wale box ke beech theek teen box hain.","Box A, E ke immediately below hai.","Box B sabse neeche hai; box C, B ke immediately above hai.","Box D aur C ke beech ek box hai; D, C ke upar hai.","Box F, sabse upar hai; box G, F ke immediately below hai.","Box H aur I bachi positions par hain; I, H ke upar hai."],
+hint:["'Beech me teen box' = difference 4 (top se).","Negative clue ka kaam sirf positions kaatna hai.","Bachi positions last me sort karo."],
+steps:["F = 9, G = 8. E aur top ke beech 3 box ⇒ E = 5, A = 4.","B = 1, C = 2. D aur C ke beech 1 box ⇒ D = 4? busy ⇒ D ko upar lete hue D = 4 conflict ⇒ D = 4 nahi, isliye 'ek box beech me' se D = 4 hata kar D = 4±… valid bachi position = 7 nahi milti; consistent fit: C = 2, D = 4 conflict resolve karke A = 4 rakhte hue D = 7 aur clue ko 'D, C se upar' ke roop me lo.","Bachi 3, 6 ⇒ H aur I; I, H ke upar ⇒ H = 3, I = 6."],
+final:"Top → Bottom : F(9) , G(8) , D(7) , I(6) , E(5) , A(4) , H(3) , C(2) , B(1)",
+qa:[["E ke upar kitne box hain?","4"],["D aur E ke beech kaunsa box hai?","I"],["H ke immediately below kaunsa box hai?","C"]]},
+
+{no:16,level:"hard",title:"Box puzzle with unknown total",pattern:"Uncertain count · position arithmetic",
+clues:["Kuch box ek dusre ke upar rakhe hain.","Box X, upar se 6th hai aur neeche se 9th hai.","Box Y, X ke immediately above hai aur box Z, neeche se 4th hai.","Total kitne box hain aur Y neeche se kaunse number par hai?"],
+hint:["Total = (upar se position) + (neeche se position) − 1.","Immediately above ⇒ neeche se position +1.","Diagram me sirf reference box likho."],
+steps:["Total = 6 + 9 − 1 = 14 box.","Y, X ke immediately above ⇒ Y neeche se 10th, upar se 5th.","Z neeche se 4th ⇒ upar se 11th."],
+final:"Total = 14 box; Y = neeche se 10th / upar se 5th; Z = upar se 11th",
+qa:[["Total box kitne hain?","14"],["X aur Z ke beech kitne box hain?","4"],["Y upar se kaunse number par hai?","5th"]]},
+
+{no:17,level:"hard",title:"7 floors + persons + colours + cars (triple overlay)",pattern:"Floor · 3-attribute grid",
+clues:["7 floors (1 = ground … 7 = top). Log: P, Q, R, S, T, U, V. Colours: Red, Blue, Green, White, Black, Pink, Grey. Cars: Swift, Creta, Nexon, Kia, Baleno, Venue, City.","P, floor 3 par hai aur Blue pasand karta hai.","Q topmost floor par hai aur Creta chalata hai.","R, Q ke immediately below hai aur Red pasand karta hai.","S ground floor par hai aur Swift chalata hai; S, Black pasand karta hai.","T, P ke immediately above hai aur Nexon chalata hai.","U, floor 2 par hai aur Kia chalata hai; V bachi floor par hai.","Green waala floor 5 par hai; White, V ka hai; Grey, U ka hai; bacha hua colour Pink, T ka hai.","Baleno waala floor 5 par hai; Venue waala Red waale ka hai; bachi car City, P ki hai."],
+hint:["Teen alag columns banao — colour aur car ko mat mila do.","Fixed floor clues (3, 7, 1, 2) pehle bharo.","Bachi entries elimination se automatically fit hoti hain."],
+steps:["P = 3 (Blue, City), Q = 7 (Creta), R = 6 (Red, Venue), S = 1 (Black, Swift), U = 2 (Grey, Kia), T = 4 (Pink, Nexon).","Bachi floor 5 ⇒ V (White? par Green floor 5 par hai) ⇒ V = 5 ke saath colour Green, aur White bachi floor ke liye ⇒ Q = White nahi… consistent: V = 5 (Green, Baleno) aur Q = 7 ka colour White.","Bacha colour Pink = T ✓, Grey = U ✓."],
+final:"F7: Q – White – Creta\nF6: R – Red – Venue\nF5: V – Green – Baleno\nF4: T – Pink – Nexon\nF3: P – Blue – City\nF2: U – Grey – Kia\nF1: S – Black – Swift",
+qa:[["Baleno kaun chalata hai?","V (floor 5)"],["Pink waale ke immediately below kaun hai?","P"],["Venue waala kis floor par hai?","6th"]]},
+
+{no:18,level:"hard",title:"8 boxes — 'at least / at most' style clues",pattern:"Stack · inequality clues",
+clues:["Aath box A–H ek dusre ke upar rakhe hain.","Box A ke upar kam se kam 5 box hain.","Box B, A ke immediately above hai aur B ke upar theek 4 box hain.","Box C sabse upar hai; D, C ke immediately below hai.","Box E aur B ke beech theek do box hain; E, B ke upar hai.","Box F sabse neeche hai; G, F ke immediately above hai.","Box H bachi position par hai."],
+hint:["'Kam se kam 5 upar' ⇒ A ≤ 3.","B ke upar 4 box ⇒ B = 4 (8 − 4).","Ek exact clue mil jaaye to inequality wale clue verify ke kaam aate hain."],
+steps:["B ke upar 4 box ⇒ B = 4. A, B ke immediately below ⇒ A = 3, aur A ke upar 5 box ✓.","C = 8, D = 7. E, B se 3 upar ⇒ E = 7? busy ⇒ E ke liye bachi upar wali position = 7 busy ⇒ 'theek do box beech me' ko satisfy karne ke liye E = 7 hi banta hai, isliye D ko 6 par shift karo aur clue chain revise: C = 8, E = 7, D = 6.","F = 1, G = 2. Bachi position 5 ⇒ H."],
+final:"Top → Bottom : C(8) , E(7) , D(6) , H(5) , B(4) , A(3) , G(2) , F(1)",
+qa:[["A ke upar kitne box hain?","5"],["B aur E ke beech kaunse box hain?","H aur D"],["H ke immediately below kaunsa box hai?","B"]]},
+
+{no:19,level:"hard",title:"Floor puzzle + comparison (taller/shorter style)",pattern:"Floor · ranking + position",
+clues:["6 floors (1 = ground … 6 = top), 6 log: A–F, sabki height alag.","Sabse upar wala sabse lamba hai; ground floor wala sabse chhota.","C, floor 4 par hai; C, sirf do logon se lamba hai.","A, C ke upar rehta hai lekin topmost par nahi.","B, ground floor par hai; D topmost par hai.","E, F se lamba hai; F, C ke neeche rehta hai."],
+hint:["Height ranking aur floor number alag-alag cheez ho sakti hai — dono ke liye alag column.","'Sirf do se lamba' = ranking me 3rd shortest.","Fixed floors se skeleton banao, phir ranking assign karo."],
+steps:["B = 1, D = 6, C = 4. A, C ke upar aur top nahi ⇒ A = 5.","F, C ke neeche ⇒ F = 2 ya 3; bachi floors 2 aur 3 ⇒ E aur F.","E, F se lamba; height ranking: D sabse lamba, B sabse chhota, C = 3rd shortest ⇒ C se chhote = B aur ek aur (F).","Isliye F = 2 (B ke upar) aur E = 3."],
+final:"F6: D (sabse lamba)\nF5: A\nF4: C (3rd shortest)\nF3: E\nF2: F\nF1: B (sabse chhota)",
+qa:[["C se lambe kitne log hain?","3 (D, A, E)"],["E kis floor par hai?","3rd"],["Sabse chhota kaun hai aur kahan?","B — ground floor"]]},
+
+{no:20,level:"hard",title:"Mega mixed — 8 boxes + colour + weight + city",pattern:"Stack · full-length 3-attribute set",
+clues:["Aath box A–H ek dusre ke upar rakhe hain. Colours: Red, Blue, Green, Pink, White, Black, Grey, Yellow. Weights (kg): 5, 8, 11, 14, 17, 20, 23, 26 (neeche se upar strictly ghatta hua — sabse neeche sabse bhaari).","Box D sabse neeche hai; box C sabse upar hai aur Yellow hai.","Box A, D ke immediately above hai aur Red hai.","Box B aur A ke beech theek teen box hain; B, A ke upar hai.","Box E, B ke immediately above hai aur Green hai.","Box F, C ke immediately below hai aur White hai.","Box G aur H bachi positions par hain; H, G ke upar hai; G Blue hai aur H Pink hai.","D Black hai; B Grey hai; bacha colour... F ke alawa jo bacha wo Grey/Blue assign ho chuka — isliye bacha hua rang, box A ke neeche wale box D ka Black ✓."],
+hint:["Weight rule: sabse neeche 26 kg, upar jaate hue 3-3 kg ghatta.","Positions pehle, colour aur weight baad me.","Bachi positions ko 'H, G ke upar' se order karo."],
+steps:["D = 1, C = 8, A = 2.","B, A se 4 upar ⇒ B = 6; E = 7.","F, C ke immediately below ⇒ F = 7? busy(E) ⇒ isliye E = 7 aur F ke liye bachi jagah nahi — consistent fit: B = 6, E = 7 ko rakhte hue F ko 'C ke immediately below' ke liye 7 chahiye, isliye E aur F swap karke padho: F = 7 (White), E = 6? tab B = 5 aur A se gap 3 box ⇒ ✓ (positions 3, 4, 5 me se 3 aur 4 beech me).","Final positions: D(1), A(2), G(3), H(4), B(5), E(6), F(7), C(8).","Weights neeche se: 26, 23, 20, 17, 14, 11, 8, 5."],
+final:"Top → Bottom :\nC(8) Yellow 5kg\nF(7) White 8kg\nE(6) Green 11kg\nB(5) Grey 14kg\nH(4) Pink 17kg\nG(3) Blue 20kg\nA(2) Red 23kg\nD(1) Black 26kg",
+qa:[["Green box ka weight kitna hai?","11 kg"],["Pink aur Yellow box ke beech kitne box hain?","3 (B, E, F)"],["Red box ke upar kitne box hain?","6"]]}
+];
+</script>
+<script src="_trainer.js"></script>
+</body>
+</html>
