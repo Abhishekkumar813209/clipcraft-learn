@@ -10,7 +10,20 @@ export const RBI_REASONING_TRAINERS = [
     subtitle: 'Patterns p21 · Exercise p19',
     file: 'sitting-arrangement.html',
   },
+  {
+    slug: 'seating-arrangement-tough',
+    title: 'Seating Arrangement — 20 Tough Sets',
+    subtitle: 'SBI PO / RBI level · hints + full solutions',
+    file: 'seating-arrangement-tough.html',
+  },
+  {
+    slug: 'box-floor-puzzles',
+    title: 'Box & Floor Puzzles — 20 Tough Sets',
+    subtitle: 'Stack, floor-flat, weights · easy → hard',
+    file: 'box-floor-puzzles.html',
+  },
 ];
+
 
 export const RBI_TRAINER_BASE = '/trainers/rbi-reasoning/';
 

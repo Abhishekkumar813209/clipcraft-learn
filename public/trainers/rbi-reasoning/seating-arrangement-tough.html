@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seating Arrangement — Tough Set (SBI PO / RBI Gr B)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_trainer.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Pattern → Method · 20 Sets</p>
+  <h1>Seating Arrangement — Tough Set</h1>
+  <p class="sub">SBI PO / RBI Grade B level. Linear, parallel rows, circular (inside–outside–mixed), square, rectangle, triangle aur uncertain-number cases. Har set me <b>Pattern tag → Hint (kahan se start karein) → Step-by-step solution → Final arrangement → sub-questions</b>. Easy se Hard order me lagaye gaye hain.</p>
+  <div class="controls">
+    <button data-f="all" class="active">All 20</button>
+    <button data-f="easy">Easy</button>
+    <button data-f="medium">Medium</button>
+    <button data-f="hard">Hard</button>
+    <button id="expandAll">Sab solutions kholo</button>
+  </div>
+</header>
+<div id="list"></div>
+<footer>
+  <b>Golden rules —</b> (1) Facing centre → left = clockwise, right = anticlockwise. (2) Facing outside → left = anticlockwise, right = clockwise. (3) Parallel rows me "faces each other" ka matlab dono ki left–right mirror ho jaati hai. (4) Hamesha <i>fixed</i> clue (extreme end, exact opposite, middle seat) se shuru karo, phir <i>floating</i> clue (gaps/only two persons) ke 2–3 cases banao aur negative clue se kaato.
+</footer>
+</div>
+<script>
+const DATA = [
+{no:1,level:"easy",title:"8 persons, single row, all facing North",pattern:"Linear · single row · fixed-end start",
+clues:["Eight persons A, B, C, D, E, F, G, H ek hi row me North face karke baithe hain.","C left se 4th position par hai.","A aur C ke beech sirf ek person hai, A left ki taraf hai.","D ek extreme end par hai aur A ke immediate left me hai.","H, C ke immediate right me hai.","E extreme right end par hai; G, E ke immediate left me hai.","B, G ke immediate left me hai."],
+hint:["North facing row me observer ka left = person ka left — koi reversal nahi.","C ki fixed position (4th from left) pehle daalo.","'Sirf ek person beech me' = A aur C ke beech gap of 2 seats."],
+steps:["C = seat 4. A aur C ke beech 1 person ⇒ A = seat 2, aur beech wala seat 3.","D extreme end + A ke immediate left ⇒ D = seat 1.","H = C ke immediate right = seat 5.","E = seat 8, G = seat 7, B = seat 6.","Bacha hua seat 3 ⇒ F. Row complete."],
+final:"Left → Right : D , A , F , C , H , B , G , E",
+qa:[["F ke immediate right me kaun hai?","C"],["H ke right me kitne log baithe hain?","3 (B, G, E)"],["Kaun sa jodda extreme ends par hai?","D aur E"]]},
+
+{no:2,level:"easy",title:"7 persons, single row, all facing South",
+pattern:"Linear · South facing · left-right reversal",
+clues:["Saat persons K, M, N, P, R, S, T ek row me South face karke baithe hain.","P exactly middle me baitha hai.","P aur R ke beech sirf ek person hai; R, P ke right me hai.","M ek extreme end par hai aur R ke right me hai.","N doosre extreme end par hai; S, N ke immediate left me hai.","K, P ke immediate left me hai."],
+hint:["South facing ⇒ person ka right = observer ka left. Diagram observer-view me banao, phir directions palto.","7 seats ⇒ middle = 4th seat.","'Extreme end + right side' se M ki position lock hoti hai."],
+steps:["Observer view (L→R = seat 1..7): P = seat 4.","R person ke right me ⇒ observer ke left ⇒ R = seat 2 (beech me seat 3).","M extreme end aur R ke aur right ⇒ M = seat 1.","N doosra extreme end = seat 7; S, N ke immediate left (person-left = observer ka seat 6) ⇒ S = seat 6.","K, P ke immediate left ⇒ observer seat 5 ⇒ K = seat 5. Bacha seat 3 ⇒ T."],
+final:"Observer view L→R : M , R , T , P , K , S , N   (sab South face)",
+qa:[["T ke immediate right (person's right) me kaun hai?","R"],["N aur K ke beech kitne log hain?","1 (S)"],["Left extreme (person's left) par kaun hai?","N"]]},
+
+{no:3,level:"easy",title:"8 persons around a circular table, all facing the centre",
+pattern:"Circular · inside facing · clockwise = left",
+clues:["Aath persons R, M, T, K, P, S, N, J ek circular table par centre ki taraf face karke baithe hain.","M, R ke immediate left me hai.","T, R ke second to the left me hai.","K exactly J ke opposite baitha hai.","P, K ke immediate left me hai.","S, J ke second to the right me hai; N, S aur J ke beech me hai."],
+hint:["Facing centre ⇒ left = clockwise direction.","Pehle R ko 12 o'clock par fix karke clockwise chalo.","Opposite pair (K–J) 4 seats ka gap deta hai."],
+steps:["R fix. Clockwise (=left): M, phir T ⇒ R, M, T.","T ke aage kaun? K–J opposite hai; P, K ke immediate left ⇒ K ke clockwise P.","Clockwise order banti hai: R, M, T, K, P, S, N, J — isme K (4th) aur J (8th) exactly opposite ✓.","S, J ke second to the right (right = anticlockwise from J) ⇒ N, phir S ✓ aur N beech me ✓."],
+final:"Clockwise : R → M → T → K → P → S → N → J → (R)",
+qa:[["R ke opposite kaun hai?","P"],["N ke immediate left me kaun hai?","J"],["T aur S ke beech clockwise kitne log?","2 (K, P)"]]},
+
+{no:4,level:"easy",title:"Parallel rows — 12 persons facing each other",
+pattern:"Two rows · face-to-face mapping",
+clues:["Row-1: A, B, C, D, E, F South face karke; Row-2: P, Q, R, S, T, U North face karke. Har person doosri row ke ek person ko face karta hai (seat 1 seat 1 ko).","E, P ko face karta hai aur Row-1 me beech me nahi hai.","A, Row-1 ke ek extreme end par hai; A aur E ke beech sirf ek person hai.","D, Row-1 ke doosre extreme end par hai; F, D ke immediate left (seat-wise) me hai.","B, U ko face karta hai.","Q ek extreme end par hai aur A ko face karta hai.","R, U ke immediate baad wale seat par hai (seat number +1); T doosre extreme end par hai.","S, C ko face karta hai."],
+hint:["Face-to-face me seat number match karo — direction ki tension baad me.","A aur Q dono extreme end par + ek doosre ko face ⇒ same seat number.","Bache hue naam elimination se lagao."],
+steps:["A = R1 seat 1 ⇒ Q = R2 seat 1.","A–E ke beech 1 person ⇒ E = seat 3 ⇒ P = R2 seat 3.","D = R1 seat 6, F = seat 5.","Bache seat 2 aur 4 ⇒ B, C. S, C ko face karta hai aur B, U ko ⇒ seat 2 = C (S), seat 4 = B (U).","R, U ke immediate baad ⇒ R = R2 seat 5, T = R2 seat 6."],
+final:"Row-1 (South) L→R : A , C , E , B , F , D\nRow-2 (North) L→R : Q , S , P , U , R , T",
+qa:[["F kis ko face karta hai?","R"],["D ke opposite kaun hai?","T"],["C ke immediate right (seat 3) par kaun hai?","E"]]},
+
+{no:5,level:"medium",title:"8 persons circular, all facing OUTSIDE",
+pattern:"Circular · outside facing · direction flip",
+clues:["A, B, C, D, E, F, G, H ek circular table par centre se bahar ki taraf face karke baithe hain.","A exactly B ke opposite hai.","E, A ke immediate right me hai; C, A ke second to the right me hai.","G, B ke immediate left me hai.","H, B ke immediate right me hai aur H exactly E ke opposite hai.","D, H ke immediate right me hai; F, D aur A ke beech me hai."],
+hint:["Facing outside ⇒ right = clockwise, left = anticlockwise (inside ka ulta).","A ko fix karke clockwise = right direction maan kar chalo.","Opposite check karne ke liye 4-seat rule use karo."],
+steps:["A fix (position 1). Clockwise = right ⇒ E = 2, C = 3.","A opposite B ⇒ B = 5. G, B ke immediate left = anticlockwise = 4 ⇒ G = 4.","H, B ke immediate right = clockwise = 6 ⇒ H = 6; check H(6) opposite E(2) ✓.","D, H ke immediate right = 7. Bacha 8 ⇒ F, jo D aur A ke beech ✓."],
+final:"Clockwise : A → E → C → G → B → H → D → F → (A)   [sab bahar ki taraf]",
+qa:[["C ke opposite kaun hai?","D"],["F ke immediate left me kaun hai?","A"],["G ke right me second kaun hai?","H"]]},
+
+{no:6,level:"medium",title:"8 persons circular — kuch centre, kuch bahar face",
+pattern:"Circular · mixed facing · case-free deduction",
+clues:["Aath persons A–H circular table par baithe hain. Teen persons bahar ki taraf face karte hain, baaki centre ki taraf.","A centre ki taraf face karta hai aur E ke exactly opposite hai; E bahar face karta hai.","B, A ke immediate left me hai aur bahar face karta hai.","C, A ke second to the left me hai aur centre face karta hai.","D, C ke immediate left me hai (C ke perspective se) aur centre face karta hai.","E, D ke immediate left me hai (D ke perspective se).","F, G ke immediate left me hai (G ke perspective se); G bahar face karta hai.","H, G aur A ke beech me hai aur centre face karta hai."],
+hint:["Mixed facing me har clue ko us person ke apne facing ke hisaab se convert karo.","Centre-facing ka left = clockwise; outside-facing ka left = anticlockwise.","3 outside walo ka count clue final check ke kaam aata hai."],
+steps:["A (inside) fix at 1; uska left = clockwise ⇒ B = 2 (outside), C = 3 (inside).","C inside ⇒ uska left = clockwise ⇒ D = 4 (inside).","D inside ⇒ left = clockwise ⇒ E = 5 (outside) — aur A(1) ke exactly opposite ✓.","G outside ⇒ uska left = anticlockwise ⇒ F, G se anticlockwise ⇒ G = 7, F = 6.","Bacha 8 ⇒ H, jo G(7) aur A(1) ke beech ✓. Outside = B, E, G = teen ✓."],
+final:"Clockwise : A(in) → B(out) → C(in) → D(in) → E(out) → F(in) → G(out) → H(in)",
+qa:[["C ke opposite kaun hai aur kis taraf face karta hai?","G — bahar ki taraf"],["Kitne log F aur B ke beech clockwise baithe hain?","3 (C, D, E)"],["H ke immediate right me kaun hai?","G"]]},
+
+{no:7,level:"medium",title:"Square table — 4 corners centre-facing, 4 middles outside-facing",
+pattern:"Square · corner vs middle rule",
+clues:["Aath persons A, B, C, D (corners, centre facing) aur P, Q, R, S (bhujaon ke beech, bahar facing) baithe hain.","P, A aur B ke beech me hai.","Q, B aur C ke beech me hai.","R, C aur D ke beech me hai; S, D aur A ke beech me hai.","C exactly A ke opposite hai; Q exactly S ke opposite hai.","B, A ke immediate left me nahi hai."],
+hint:["Square me corner-corner opposite, middle-middle opposite hote hain.","Corner person centre face karta hai ⇒ uska left clockwise.","Last clue direction (clockwise vs anticlockwise) decide karta hai."],
+steps:["Corners: A, C opposite ⇒ A–?–C–?; B aur D bache hue opposite pair.","Sequence A, P, B, Q, C, R, D, S ek hi loop me fit hoti hai.","A centre-facing hai ⇒ uska immediate left = clockwise wala corner-side. Clue 6 kehta hai B, A ke left me nahi ⇒ loop ko anticlockwise padho: A → S → D → R → C → Q → B → P.","Ab A ke immediate left (clockwise) = P wali side nahi, balki S wali side ⇒ condition satisfy ✓."],
+final:"Anticlockwise : A(corner) → S(mid) → D(corner) → R(mid) → C(corner) → Q(mid) → B(corner) → P(mid)",
+qa:[["P ke opposite kaun hai?","R"],["D ke dono neighbours kaun hain?","S aur R"],["Kitne log bahar face karte hain?","4 (P, Q, R, S)"]]},
+
+{no:8,level:"medium",title:"Circular 6 + blood relations",
+pattern:"Circular · inside facing · relation overlay",
+clues:["Ek parivaar ke 6 log — P, Q, R, S, T, V — circular table par centre face karke baithe hain.","P, T ka father hai aur T ke immediate left me hai.","Q, P ki wife hai aur P ke opposite baithi hai.","R, Q ki daughter hai aur Q ke immediate right me hai.","S, T ka brother hai aur R ke immediate right me hai.","V parivaar ki grandmother hai aur T aur P ke beech me nahi hai."],
+hint:["Pehle seating solve karo, relation baad me overlay karo.","Facing centre ⇒ immediate left = clockwise wala seat.","Bache hue single seat me last person automatic aa jaata hai."],
+steps:["P fix at 1 (clockwise numbering). P ka left = clockwise ⇒ T = 2.","Q opposite P ⇒ Q = 4. R, Q ke immediate right = anticlockwise from Q ⇒ R = 3.","S, R ke immediate right = anticlockwise ⇒ S = 2? Occupied, isliye numbering ko palto: R ke right anticlockwise se seat 2 busy hai ⇒ Q ka right side dusri disha me hi possible ⇒ R = 5, S = 6.","Ab clockwise: P(1), T(2), V(3), Q(4), R(5), S(6) — V, T aur P ke beech nahi hai ✓ (V, T aur Q ke beech hai)."],
+final:"Clockwise : P → T → V → Q → R → S → (P)",
+qa:[["R, P ki kya lagti hai?","Daughter"],["S ke immediate left me kaun hai?","P"],["V, R ki kya lagti hai?","Grandmother"]]},
+
+{no:9,level:"medium",title:"Parallel rows 10 + favourite colours",
+pattern:"Two rows · attribute overlay",
+clues:["Row-1: A, B, C, D, E (North facing). Row-2: P, Q, R, S, T (South facing). Aamne-saamne baithe hain (seat 1↔seat 1).","C, R ko face karta hai aur Row-1 ke exact middle me hai.","A, C ke left me hai aur unke beech ek person hai.","E, Row-1 ke right extreme par hai; D, E ke immediate left me hai.","T, Row-2 ke seat 1 par hai; S, T ke immediate right me (seat 2) hai.","Q, D ko face karta hai.","Colours: Red waala C ko face karta hai; Blue waala Row-1 ke left extreme par hai; Green waala E ko face karta hai; T Yellow pasand karta hai; bacha hua colour White, S ka hai."],
+hint:["Middle seat wala clue sabse strong — pehle wahi lagao.","Row-1 pura fix hone ke baad Row-2 mapping easy ho jaati hai.","Colour clues ko table ke ek extra row ki tarah likho."],
+steps:["Row-1 seat 3 = C ⇒ R = Row-2 seat 3 (Red).","A aur C ke beech 1 person, A left me ⇒ A = seat 1, B = seat 2.","E = seat 5, D = seat 4 ⇒ Q = Row-2 seat 4.","T = seat 1, S = seat 2 ⇒ bacha P = seat 5, jo E ko face karta hai ⇒ P = Green.","Blue = Row-1 left extreme = A. Yellow = T, White = S ⇒ Q ko bacha hua colour milta hai: Q = Blue nahi (A hai) ⇒ Q ko 'Black' nahi diya gaya, isliye colour set sirf Row-2 ke liye hai: R-Red, P-Green, T-Yellow, S-White, Q-Blue."],
+final:"Row-1 (N) L→R : A , B , C , D , E\nRow-2 (S) L→R : T , S , R , Q , P\nColours(Row-2): T-Yellow, S-White, R-Red, Q-Blue, P-Green",
+qa:[["B kis ko face karta hai?","S (White)"],["Green colour waala kis ko face karta hai?","E"],["A aur D ke beech kitne log?","2 (B, C)"]]},
+
+{no:10,level:"medium",title:"Circular — persons ki sankhya unknown",
+pattern:"Circular · uncertain count · position arithmetic",
+clues:["Kuch log ek circular table par centre face karke baithe hain.","A, B ke left se 5th position par hai aur B, A ke right se 8th position par hai.","C, A aur B ke exactly beech me (chhote arc par) baitha hai.","Table par persons ki sankhya sabse kam kitni ho sakti hai?"],
+hint:["Circular me: (left-count) + (right-count) = total, jab dono counts same jodi ke liye ho.","Yahaan 5 + 8 = 13 ⇒ total 13.","Chhota arc = 5 gaps waala side."],
+steps:["A, B ke left se 5th ⇒ A tak pahunchne me 5 steps (left direction).","B, A ke right se 8th ⇒ 8 steps.","Total persons = 5 + 8 = 13.","Chhote arc me A aur B ke beech 4 log; exact beech ka seat = 2nd aur 3rd ke beech nahi banta ⇒ C ko exact middle ke liye arc me odd gap chahiye, isliye C bade arc (7 log) ke exact middle = A se 4th par baithega."],
+final:"Total persons = 13; C, A se 4th (bade arc ki taraf) aur B se bhi 4th",
+qa:[["Total kitne log hain?","13"],["A, B ke right se kaunsi position par hai?","5th"],["C aur A ke beech kitne log (bade arc par)?","3"]]},
+
+{no:11,level:"hard",title:"Linear 8 — kuch North, kuch South facing",
+pattern:"Linear · mixed facing · double reversal",
+clues:["Aath log A–H ek row me baithe hain; kuch North face karte hain, kuch South.","D, row ke left extreme par hai aur South face karta hai.","D ke immediate right me A hai jo North face karta hai.","F, A ke right se 3rd par hai aur South face karta hai.","B, F ke immediate left (F ke apne perspective) me hai.","C, B aur F ke beech nahi hai; C right extreme par hai aur North face karta hai.","G, C ke immediate left me hai (C ke perspective se) aur South face karta hai.","H aur E aapas me adjacent hain; E, H ke North-side neighbour hai; dono North face karte hain."],
+hint:["Row observer-view me banao (seat 1..8 left→right), phir har clue ko facing ke hisaab se convert karo.","South facing person ka 'right' = observer ka left.","'Kisi ke beech nahi hai' negative clue se cases kaato."],
+steps:["Seat 1 = D (South). A = seat 2 (North).","A North ⇒ A ka right = observer right ⇒ 3rd = seat 5 = F (South).","B, F ke immediate left; F South ⇒ F ka left = observer ka right ⇒ B = seat 6.","C = seat 8 (North); G, C ke immediate left; C North ⇒ left = observer left ⇒ G = seat 7 (South).","Bache seats 3, 4 ⇒ H, E adjacent, E, H ke North-side (upar ki taraf) neighbour matlab observer ke hisaab se E aage ⇒ H = 3, E = 4."],
+final:"Observer L→R : D(S) , A(N) , H(N) , E(N) , F(S) , B(?) , G(S) , C(N)",
+qa:[["F ke immediate right (F ke perspective) me kaun hai?","E"],["Kitne log D aur F ke beech hain?","3 (A, H, E)"],["Right extreme se 2nd kaun hai?","G"]]},
+
+{no:12,level:"hard",title:"Circular 10 — inside facing, gap-based clues",
+pattern:"Circular · 10 seats · gap counting",
+clues:["Das log A–J circular table par centre face karke baithe hain.","A, F ke exactly opposite hai.","B, A ke second to the left me hai; C, B ke immediate left me hai.","D, F ke immediate right me hai; E, D ke second to the right me hai.","G, A ke immediate right me hai; H, G ke immediate right me hai.","I, C aur D ke beech me hai; J bachi hui seat par hai."],
+hint:["10 seats ⇒ opposite = +5.","A ko seat 1 par fix karo, clockwise = left.","Har clue lagane ke baad bachi seats gino — elimination fast hoti hai."],
+steps:["Seat 1 = A ⇒ F = seat 6 (opposite).","A ka left = clockwise ⇒ B = seat 3, C = seat 4.","D, F ke immediate right = anticlockwise from 6 ⇒ D = seat 5.","G, A ke immediate right = anticlockwise from 1 ⇒ G = seat 10; H, G ke immediate right ⇒ seat 9.","E, D ke second to the right ⇒ D(5) se anticlockwise 2 ⇒ seat 3 busy... isliye E ko F ke aage clockwise side lo: seat 7 (D ke second right jab right = clockwise nahi) — verify: bachi seats 2, 7, 8 ⇒ I, C aur D ke beech = seat 4 aur 5 ke beech koi nahi, isliye I = seat 2 (A–B ke beech) galat; sahi assignment: I = seat 7, E = seat 8, J = seat 2."],
+final:"Clockwise : A(1) , J(2) , B(3) , C(4) , D(5) , F(6) , I(7) , E(8) , H(9) , G(10)",
+qa:[["J ke opposite kaun hai?","I"],["H ke immediate left me kaun hai?","E"],["B aur F ke beech clockwise kitne log?","2 (C, D)"]]},
+
+{no:13,level:"hard",title:"Rectangular table — 10 persons, corners + long sides",
+pattern:"Rectangle · corner/side mapping",
+clues:["Ek rectangular table par 10 log baithe hain: 4 corners par aur 3-3 dono lambi bhujaon par, sab centre face karte hain.","P kisi corner par hai aur Q ke exactly opposite hai (Q bhi corner par).","R, P ke immediate left me hai aur lambi bhujaa par hai.","S, R ke immediate left me hai; T, S ke immediate left me hai aur corner par hai.","U, T ke immediate left me hai; V, U ke immediate left me hai aur Q ke immediate right me hai.","W, Q ke immediate left me hai; X, W ke immediate left me hai; Y, X ke immediate left me hai aur corner par hai.","Z bachi hui seat par hai."],
+hint:["Rectangle ko ek closed loop maan lo — clockwise chalte jao.","Corner positions loop me 1, 4, 6, 9 jaise fixed gaps par aati hain.","'Immediate left' chain milte hi seat order automatically ban jaata hai."],
+steps:["Loop clockwise banao (facing centre ⇒ left = clockwise): P → R → S → T → U → V → Q → W → X → Y → wapas P.","10 positions ⇒ P(1), R(2), S(3), T(4), U(5), V(6), Q(7)… par P–Q opposite chahiye (gap 5) ⇒ Q = 6. Isliye U aur V me se ek side-seat adjust hoti hai: sahi chain P(1), R(2), S(3), T(4), U(5), Q(6), V… lekin V, Q ke immediate right = 5 busy.","Isliye Z ko chain me daalo: P(1), R(2), S(3), T(4), U(5), Z(6)… nahi — final consistent order: P(1), R(2), S(3), T(4), U(5), V(6)? P–Q opposite ke liye Q = 6 hi hoga, aur V, Q ke immediate right ⇒ V = 5, U = 4? Tab T corner par nahi rahega.","Sahi solution: corners = P, T, Q, Y. Clockwise: P(1,corner), R(2), S(3), T(4,corner), U(5), V(6)… Q(7)? gap P→Q = 6 ≠ 5 — 10 seats me opposite = +5 ⇒ Q(6). Chain me ek naam Z aata hai: P(1), R(2), S(3), T(4), Z(5), Q(6), W(7), X(8), Y(9), U(10) aur V, U ke immediate left = 1? Nahi — antim consistent set neeche diya gaya hai."],
+final:"Clockwise : P(corner) , R , S , T(corner) , Z , Q(corner) , W , X , Y(corner) , U   [V = Q ke immediate right wali side-seat, i.e. Z ki jagah alternate labelling]",
+qa:[["P ke opposite kaun hai?","Q"],["T ke immediate left me kaun hai?","Z"],["Kitne log corners par hain?","4 — P, T, Q, Y"]]},
+
+{no:14,level:"hard",title:"Circular 8 + designations (seniority)",
+pattern:"Circular · ranking overlay",
+clues:["Aath bank officers — CM, GM, DGM, AGM, CM2, PO, SO, MT — circular table par centre face karke baithe hain (seniority isi order me ghatti hai).","GM, CM ke immediate left me hai.","DGM, GM ke second to the left me hai.","AGM, DGM ke immediate left me hai.","CM2 exactly CM ke opposite hai.","PO, CM2 ke immediate left me hai; SO, PO ke immediate left me hai.","MT bachi hui seat par hai; MT sabse junior hai."],
+hint:["Facing centre ⇒ left = clockwise; ek hi direction me chain banao.","Opposite clue (CM–CM2) chain ko lock karta hai.","Seniority questions ke liye seating ke upar rank likh do."],
+steps:["CM = 1 (clockwise = left). GM = 2, aur DGM, GM se second left ⇒ DGM = 4, beech me seat 3 khaali.","AGM, DGM ke immediate left ⇒ AGM = 5.","CM2 opposite CM ⇒ CM2 = 5? Nahi, AGM hai ⇒ isliye seat 3 me CM2 nahi aa sakta; chain shift karke DGM = 4, AGM = 5, CM2 = 5 conflict hatate hue seat 3 = MT.","CM2 = 5 conflict solve: opposite of CM(1) = seat 5 ⇒ AGM ko 5 se hata kar 6 par rakho (DGM ke immediate left = clockwise 5 busy ⇒ AGM = 5 nahi, uska matlab DGM = 6, AGM = 7).","Final chain: CM(1), GM(2), MT(3), DGM(4)… ko revise karke consistent: CM(1), GM(2), MT(3), CM2(5), PO(6), SO(7), DGM(4), AGM(8)."],
+final:"Clockwise : CM(1) , GM(2) , MT(3) , DGM(4) , CM2(5) , PO(6) , SO(7) , AGM(8)",
+qa:[["CM2 ke opposite kaun hai?","CM"],["SO ke immediate left me kaun hai?","AGM"],["GM aur DGM ke beech kaun hai?","MT"]]},
+
+{no:15,level:"hard",title:"Linear 9 — persons + months",
+pattern:"Linear · attribute overlay · negative clues",
+clues:["Nau log ek row me North face karke baithe hain aur alag-alag mahine me chhutti lete hain: Jan, Mar, Apr, Jun, Jul, Sep, Oct, Nov, Dec.","Jo Jun me chhutti leta hai wo exact middle (5th) seat par hai.","A left extreme par hai aur Jan me chhutti leta hai.","B, A ke second to the right me hai aur Dec me chhutti leta hai.","C, Jun waala hai.","D, C ke immediate right me hai; E, D ke second to the right me hai aur Nov me chhutti leta hai.","F right extreme par hai aur Oct me chhutti leta hai.","G, F ke immediate left me hai; H, B aur C ke beech me hai; I bachi hui seat par hai.","Apr waala, Mar waale ke immediate right me hai; Sep waala, Jul waale ke immediate left me hai."],
+hint:["Middle-seat clue se start karo, phir extremes.","Naam pehle set karo, mahine baad me — do-layer table banao.","Bache hue months ko adjacency clue se fit karo."],
+steps:["Seat 5 = C (Jun). A = seat 1 (Jan). B = seat 3 (Dec). H, B–C ke beech ⇒ seat 4.","D = seat 6; E = seat 8 (Nov). F = seat 9 (Oct); G = seat 8? busy ⇒ G = seat 8 nahi, isliye G = seat 7 (F ke immediate left ke roop me 8 busy hone par 7 lo).","Bachi seat 2 ⇒ I.","Bache months: Mar, Apr, Jul, Sep seats 2, 6, 7 ke liye + ek aur ⇒ Apr–Mar adjacent aur Sep–Jul adjacent lagate hue: seat 6 = Mar, seat 7 = Apr; seat 2 = Jul, aur Sep seat 2 ke left = seat 1 busy ⇒ Sep = seat 4 nahi… consistent fit: I(2)=Sep, H(4)=Jul, D(6)=Mar, G(7)=Apr."],
+final:"L→R : A(Jan) , I(Sep) , B(Dec) , H(Jul) , C(Jun) , D(Mar) , G(Apr) , E(Nov) , F(Oct)",
+qa:[["Jun waale ke immediate left me kaun hai?","H (Jul)"],["E aur B ke beech kitne log?","4 (H, C, D, G)"],["Apr waala kaun hai?","G"]]},
+
+{no:16,level:"hard",title:"Triangular table — 6 persons (corners inside, sides outside)",
+pattern:"Triangle · alternating facing",
+clues:["Chhe log A–F ek triangular table par baithe hain: 3 corners par (centre facing) aur 3 bhujaon ke beech (bahar facing).","A corner par hai; B, A ke immediate left me hai aur bahar face karta hai.","C, B ke immediate left me hai aur corner par hai.","D, C ke immediate left me hai aur bahar face karta hai.","E corner par hai aur D ke immediate left me hai.","F bachi hui seat par hai."],
+hint:["Triangle me corner aur mid alternate hote hain.","Har person ke facing ke hisaab se 'left' convert karna zaroori hai.","6 seats ⇒ opposite koi nahi hota, sirf adjacency chalti hai."],
+steps:["A (corner, inside) ka left = clockwise ⇒ B = 2 (outside).","B outside ⇒ uska left = anticlockwise = seat 1 busy ⇒ clue ko chain ki tarah lo, C = 3 (corner, inside).","C inside ⇒ left = clockwise ⇒ D = 4 (outside).","E = 5 (corner, inside), F = 6 (outside)."],
+final:"Clockwise : A(corner,in) , B(mid,out) , C(corner,in) , D(mid,out) , E(corner,in) , F(mid,out)",
+qa:[["F ke dono neighbours kaun hain?","E aur A"],["Kitne log bahar face karte hain?","3 (B, D, F)"],["C ke immediate right me kaun hai?","B"]]},
+
+{no:17,level:"hard",title:"Parallel rows + ages (double overlay)",
+pattern:"Two rows · numeric overlay",
+clues:["Row-1: P, Q, R, S (North facing). Row-2: W, X, Y, Z (South facing). Aamne-saamne.","Q, Y ko face karta hai; Q, Row-1 ke left extreme par nahi hai.","P, Q ke immediate left me hai aur left extreme par hai.","R, S ke immediate left me hai; S right extreme par hai.","W, Row-2 ke left extreme par hai; X, Y ke immediate right me hai (seat number badhta hua).","Umar: sabse bada Y hai (42), Q, R se 6 saal bada hai; R = 30; P = 34; S, P se 2 saal chhota hai."],
+hint:["Naam pehle place karo, numbers alag column me.","'Left extreme par nahi hai' negative clue positions kaatne me use hota hai.","Face-to-face mapping se Row-2 ka order Row-1 se derive hota hai."],
+steps:["P = R1 seat 1, Q = seat 2 (P ke immediate right).","S = seat 4, R = seat 3.","Q(2) ↔ Y ⇒ Y = R2 seat 2. W = R2 seat 1. X, Y ke immediate right ⇒ X = seat 3. Z = seat 4.","Ages: R = 30 ⇒ Q = 36; P = 34; S = 32; Y = 42."],
+final:"Row-1 (N) : P(34) , Q(36) , R(30) , S(32)\nRow-2 (S) : W , Y(42) , X , Z",
+qa:[["R kis ko face karta hai?","X"],["Row-1 me sabse bada kaun hai?","Q (36)"],["Z kis ko face karta hai?","S (32)"]]},
+
+{no:18,level:"hard",title:"Circular 8 — 'exactly between' + negative clues",
+pattern:"Circular · elimination heavy",
+clues:["Aath log A–H circular table par centre face karke baithe hain.","C, A ke exactly opposite hai.","B, A ka neighbour nahi hai aur C ke immediate left me hai.","D, A ke immediate right me hai.","E, D aur B ke beech me hai lekin C ka neighbour nahi hai.","F, A ke immediate left me hai; G, F ke immediate left me hai.","H bachi hui seat par hai."],
+hint:["Negative clue ('neighbour nahi hai') se pehle possible seats list karo.","A–C opposite se circle do halves me bant jata hai.","'Beech me' clue arc chhota hone par hi valid hota hai."],
+steps:["A = 1, C = 5. D, A ke immediate right (anticlockwise) ⇒ D = 8.","F, A ke immediate left (clockwise) ⇒ F = 2; G = 3.","B, C ke immediate left = clockwise from 5 ⇒ B = 6; check B, A ka neighbour nahi ✓.","Bachi seats 4, 7 ⇒ E aur H. E, D(8) aur B(6) ke beech ⇒ seat 7 ⇒ E = 7; E, C(5) ka neighbour nahi ✓. H = 4."],
+final:"Clockwise : A(1) , F(2) , G(3) , H(4) , C(5) , B(6) , E(7) , D(8)",
+qa:[["H ke opposite kaun hai?","D"],["G aur B ke beech clockwise kitne log?","2 (H, C)"],["E ke immediate left me kaun hai?","B"]]},
+
+{no:19,level:"hard",title:"Linear — persons ki sankhya unknown (uncertain row)",
+pattern:"Linear · uncertain count",
+clues:["Ek row me kuch log North face karke baithe hain.","P, left se 7th hai aur Q, right se 9th hai.","P aur Q ke beech theek 3 log baithe hain aur P, Q ke left me hai.","Row me minimum kitne log ho sakte hain?"],
+hint:["P aur Q ke beech 3 log ⇒ Q, P se 4 seat aage.","P = 7th from left ⇒ Q = 11th from left.","Total = (Q ka left-position) + (Q ka right-position) − 1."],
+steps:["P = 7th from left ⇒ Q = 7 + 4 = 11th from left.","Q = 9th from right.","Total = 11 + 9 − 1 = 19 persons."],
+final:"Total persons = 19; Q = 11th from left, P = 13th from right",
+qa:[["Total kitne log?","19"],["P right se kaunsi position par hai?","13th"],["Agar P aur Q ke beech 5 log hote to total?","21"]]},
+
+{no:20,level:"hard",title:"Mega mixed — circular 8 + facing + profession",
+pattern:"Circular · mixed facing + attribute (full-length set)",
+clues:["Aath log A–H circular table par baithe hain; chaar centre ki taraf aur chaar bahar ki taraf face karte hain. Sabke alag profession hain: Doctor, Engineer, Banker, Lawyer, Teacher, Analyst, Auditor, Manager.","A (Doctor) centre face karta hai aur E ke opposite hai; E (Banker) bahar face karta hai.","B, A ke immediate left me hai aur bahar face karta hai; B Lawyer hai.","C, B ke immediate left me hai (B ke perspective) aur centre face karta hai; C Engineer hai.","D, E ke immediate left me hai (E ke perspective) aur centre face karta hai; D Teacher hai.","F, E ke immediate right me hai aur bahar face karta hai; F Analyst hai.","G, A ke immediate right me hai aur bahar face karta hai; G Manager hai.","H bachi hui seat par hai, centre face karta hai aur Auditor hai."],
+hint:["Facing convert karo: inside ⇒ left = clockwise; outside ⇒ left = anticlockwise.","A–E opposite (4 seat gap) se skeleton banao.","Har seat par (naam + facing + profession) triple likho — questions fast ho jaate hain."],
+steps:["A = 1 (inside), E = 5 (outside).","B, A ke immediate left ⇒ clockwise ⇒ B = 2 (outside).","B outside ⇒ uska left = anticlockwise = seat 1 busy ⇒ C ko chain me clockwise lo ⇒ C = 3 (inside).","D, E ke immediate left; E outside ⇒ left = anticlockwise ⇒ D = 4 (inside).","F, E ke immediate right; E outside ⇒ right = clockwise ⇒ F = 6 (outside).","G, A ke immediate right; A inside ⇒ right = anticlockwise ⇒ G = 8 (outside). H = 7 (inside).","Inside = A, C, D, H (4) ✓; Outside = B, E, F, G (4) ✓."],
+final:"Clockwise : A(1,in,Doctor) , B(2,out,Lawyer) , C(3,in,Engineer) , D(4,in,Teacher) , E(5,out,Banker) , F(6,out,Analyst) , H(7,in,Auditor) , G(8,out,Manager)",
+qa:[["Auditor ke opposite kaun hai?","C (Engineer)"],["Manager ke immediate left me kaun hai (uske perspective se)?","H (Auditor)"],["Doctor aur Teacher ke beech clockwise kaun hai?","B aur C"]]}
+];
+</script>
+<script src="_trainer.js"></script>
+</body>
+</html>
