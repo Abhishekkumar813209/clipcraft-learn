@@ -87,7 +87,7 @@ ${block}
 
   const res = await callGemini(
     {
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: userPrompt },
