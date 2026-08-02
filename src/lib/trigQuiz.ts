@@ -175,22 +175,25 @@ function genIdentities(count: number): CalcQ[] {
 }
 
 /* ---------------- 5. Special Values (only 10) ---------------- */
-const SPECIAL: { q: string; a: string; e: string }[] = [
-  { q: 'sin 0° = ?', a: '0', e: 'sin 0° = 0' },
-  { q: 'cos 0° = ?', a: '1', e: 'cos 0° = 1' },
-  { q: 'tan 0° = ?', a: '0', e: 'tan 0° = 0' },
-  { q: 'sin 90° = ?', a: '1', e: 'sin 90° = 1' },
-  { q: 'cos 90° = ?', a: '0', e: 'cos 90° = 0' },
-  { q: 'tan 90° = ?', a: 'undefined', e: 'tan 90° = sin90/cos90 = 1/0 → undefined' },
-  { q: 'Kis angle par sin ki value 0 hai?', a: '0°', e: 'sin 0° = 0' },
-  { q: 'Kis angle par cos ki value 0 hai?', a: '90°', e: 'cos 90° = 0' },
-  { q: '0° se 90° tak sin, tan, sec ki value…', a: 'badhti hai', e: 'sin, tan, sec increasing hain 0° → 90°' },
-  { q: '0° se 90° tak cos, cot, cosec ki value…', a: 'ghatti hai', e: 'cos, cot, cosec decreasing hain 0° → 90°' },
+const VAL_POOL = ['0', '1', '−1', '1/2', '√3/2', 'undefined'];
+const ANG_POOL = ['0°', '30°', '45°', '60°', '90°'];
+const TREND_POOL = ['badhti hai', 'ghatti hai', 'same rehti hai', 'pehle badhti phir ghatti hai'];
+
+const SPECIAL: { q: string; a: string; e: string; pool: string[] }[] = [
+  { q: 'sin 0° = ?', a: '0', e: 'sin 0° = 0', pool: VAL_POOL },
+  { q: 'cos 0° = ?', a: '1', e: 'cos 0° = 1', pool: VAL_POOL },
+  { q: 'tan 0° = ?', a: '0', e: 'tan 0° = 0', pool: VAL_POOL },
+  { q: 'sin 90° = ?', a: '1', e: 'sin 90° = 1', pool: VAL_POOL },
+  { q: 'cos 90° = ?', a: '0', e: 'cos 90° = 0', pool: VAL_POOL },
+  { q: 'tan 90° = ?', a: 'undefined', e: 'tan 90° = sin90/cos90 = 1/0 → undefined', pool: VAL_POOL },
+  { q: 'Kis angle par sin ki value 0 hai?', a: '0°', e: 'sin 0° = 0', pool: ANG_POOL },
+  { q: 'Kis angle par cos ki value 0 hai?', a: '90°', e: 'cos 90° = 0', pool: ANG_POOL },
+  { q: '0° se 90° tak sin, tan, sec ki value…', a: 'badhti hai', e: 'sin, tan, sec increasing hain 0° → 90°', pool: TREND_POOL },
+  { q: '0° se 90° tak cos, cot, cosec ki value…', a: 'ghatti hai', e: 'cos, cot, cosec decreasing hain 0° → 90°', pool: TREND_POOL },
 ];
-const SPECIAL_POOL = ['0', '1', '−1', '1/2', 'undefined', '∞', '0°', '30°', '45°', '60°', '90°', 'badhti hai', 'ghatti hai', 'same rehti hai'];
 
 function genSpecial(): CalcQ[] {
-  return SPECIAL.map((s) => mk(s.q, s.a, SPECIAL_POOL, s.e));
+  return SPECIAL.map((s) => mk(s.q, s.a, s.pool, s.e));
 }
 
 export const TRIG_CHAPTERS = ['trig-ratios', 'trig-table', 'trig-comp', 'trig-identities', 'trig-special'] as const;
