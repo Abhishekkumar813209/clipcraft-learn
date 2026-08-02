@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Upload, ListChecks, Users } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Upload, ListChecks, Users, BookOpenText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
@@ -8,6 +8,7 @@ const links = [
   { to: '/admin/upload', label: 'Upload PDF', icon: Upload },
   { to: '/admin/questions', label: 'Questions', icon: ListChecks },
   { to: '/admin/users', label: 'Users (7d)', icon: Users },
+  { to: '/admin/upsc-theory', label: 'UPSC Theory', icon: BookOpenText },
 ];
 
 export default function AdminLayout() {
