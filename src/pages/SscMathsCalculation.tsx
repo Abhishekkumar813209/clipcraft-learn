@@ -17,6 +17,14 @@ const PERCENT: ChapterCard[] = [
   { slug: 'pct-calc', icon: '✖️', title: '% / Decimal Multiplication',  desc: '33.33% of 90, 125% of 54, 88.88% of 45', count: '200+ questions' },
 ];
 
+const TRIG: ChapterCard[] = [
+  { slug: 'trig-ratios',     icon: '📐', title: 'Profile 1 · Trigonometric Ratios', desc: 'sin θ = P/H, reciprocals, tan = sin/cos', count: '200 questions' },
+  { slug: 'trig-table',      icon: '📊', title: 'Profile 2 · Standard Angle Table', desc: '0°, 30°, 45°, 60°, 90° ki saari values',   count: '200 questions' },
+  { slug: 'trig-comp',       icon: '🔁', title: 'Profile 3 · Complementary Angles', desc: 'sin(90°−θ) = cos θ type conversions',      count: '200 questions' },
+  { slug: 'trig-identities', icon: '🧩', title: 'Profile 4 · Identities',           desc: 'sin²+cos²=1, sec²−tan²=1 & rearranged',    count: '200 questions' },
+  { slug: 'trig-special',    icon: '⭐', title: 'Profile 5 · Special Values',       desc: 'sin 0°, cos 90°, tan 90° & increasing/decreasing', count: '10 questions' },
+];
+
 const ADD: ChapterCard[] = [
   { slug: 'add-2-2', icon: '➕', title: '2-digit + 2-digit', desc: 'Speed addition drills', count: '100 questions' },
   { slug: 'add-2-3', icon: '➕', title: '2-digit + 3-digit', desc: 'Mixed-width addition',  count: '100 questions' },
@@ -93,6 +101,7 @@ export default function SscMathsCalculation() {
 
       <Section title="Powers & Roots" subtitle="Configurable range · Serial or Random · Easy / Medium" cards={POWERS} onOpen={open} />
       <Section title="Percentage" cards={PERCENT} onOpen={open} />
+      <Section title="Trigonometry · Formula Recall" subtitle="Class 10 formula sheet · 5 profiles · Serial or Random" cards={TRIG} onOpen={open} />
       <Section title="Mental Maths · Addition"       cards={ADD} onOpen={open} />
       <Section title="Mental Maths · Subtraction"    cards={SUB} onOpen={open} />
       <Section title="Mental Maths · Multiplication" cards={MUL} onOpen={open} />
