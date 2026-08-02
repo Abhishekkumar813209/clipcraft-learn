@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { BookOpen, ListChecks, Layers, Sparkles, Loader2 } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { BookOpen, ListChecks, Layers } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [counts, setCounts] = useState({ books: 0, topics: 0, subtopics: 0, questions: 0 });
@@ -56,74 +54,9 @@ export default function AdminDashboard() {
           <p>1. Create a book under <strong>Books &amp; Topics</strong> and add its topics + subtopics.</p>
           <p>2. Go to <strong>Upload PDF</strong>, pick book → topic → subtopic, drop the PDF, review and save.</p>
           <p>3. Users can then take a <strong>Daily Quiz</strong> from subtopics they marked as studied.</p>
+          <p>4. For UPSC, open <strong>UPSC Theory</strong> to generate chapter-wise Hinglish theory from questions.</p>
         </CardContent>
       </Card>
-      <EnrichPanel />
     </div>
-  );
-}
-
-function EnrichPanel() {
-  const [status, setStatus] = useState<Record<string, string>>({});
-  const [running, setRunning] = useState<string | null>(null);
-
-  async function runLoop(name: string, fn: string, body: Record<string, unknown> = {}) {
-    setRunning(name);
-    setStatus((s) => ({ ...s, [name]: 'starting…' }));
-    try {
-      let totalProcessed = 0;
-      for (let iter = 0; iter < 500; iter++) {
-        const { data, error } = await supabase.functions.invoke(fn, { body });
-        if (error) throw error;
-        const d = data as { processed?: number; remaining?: number; error?: string };
-        if (d.error) throw new Error(d.error);
-        totalProcessed += d.processed || 0;
-        setStatus((s) => ({ ...s, [name]: `processed ${totalProcessed} · remaining ${d.remaining ?? '?'}` }));
-        if (!d.processed || (d.remaining ?? 0) === 0) break;
-        await new Promise((r) => setTimeout(r, 400));
-      }
-      setStatus((s) => ({ ...s, [name]: `done · processed ${totalProcessed}` }));
-      toast({ title: `${name} complete`, description: `Processed ${totalProcessed} items.` });
-    } catch (e) {
-      setStatus((s) => ({ ...s, [name]: `error: ${String(e).slice(0, 120)}` }));
-      toast({ title: `${name} failed`, description: String(e).slice(0, 200), variant: 'destructive' });
-    } finally {
-      setRunning(null);
-    }
-  }
-
-  const jobs = [
-    { name: 'Roots Hindi + examples', fn: 'ssc-roots-enrich', body: {} },
-    { name: 'Idiom fill — Top 200 (missing hints)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'top_200', mode: 'fill' } },
-    { name: 'Idiom fill — All (hint + fix hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'all', mode: 'fill' } },
-    { name: '✨ Idiom UPGRADE hints — Top 200 (scene = meaning Hinglish)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'top_200', mode: 'upgrade_hints' } },
-    { name: '✨ Idiom UPGRADE hints — All (scene = meaning Hinglish)', fn: 'bb-hint-enrich', body: { category: 'idiom', subcategory: 'all', mode: 'upgrade_hints' } },
-    { name: 'OWS fill — Top 200 (missing hints)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'top_200', mode: 'fill' } },
-    { name: 'OWS fill — All Repeated (hint + hinglish + english)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'all_repeated', mode: 'fill' } },
-    { name: '✨ OWS UPGRADE Hinglish — All Repeated (descriptive)', fn: 'bb-hint-enrich', body: { category: 'ows', subcategory: 'all_repeated', mode: 'upgrade_hinglish' } },
-  ];
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> AI Enrichment</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">Backfills root-word Hindi/examples and batch-generates short guessable hints for idioms. Safe to re-run — only fills rows with missing values.</p>
-        <div className="grid gap-2">
-          {jobs.map((j) => (
-            <div key={j.name} className="flex items-center justify-between gap-3 border rounded-md p-3">
-              <div>
-                <div className="text-sm font-medium">{j.name}</div>
-                <div className="text-xs text-muted-foreground">{status[j.name] || 'idle'}</div>
-              </div>
-              <Button size="sm" disabled={!!running} onClick={() => runLoop(j.name, j.fn, j.body)}>
-                {running === j.name ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Run'}
-              </Button>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
   );
 }

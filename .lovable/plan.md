@@ -1,51 +1,59 @@
 ## Goal
 
-`/ssc/maths` ke har topic card par click karne se ab ek **topic hub** khulega jisme 2 cards honge:
+Admin panel se purane AI-enrichment buttons hata do. Unki jagah ek single **"UPSC Theory Generator"** button — subject + chapter choose karo, click karo, aur us chapter ke saare questions + solutions + NCERT extra points se ek book-jaisi **Hinglish theory** ban jaye, jo user side pe padhi ja sake.
 
-1. **Practice Questions** — existing MCQ practice (`/ssc/practice/:topic`)
-2. **Pattern Trainer** — tumhara uploaded HTML file, website ke andar hi render hoga
+## 1. Admin panel cleanup
 
-## Upload guidance (tumhare sawaal ka jawaab)
+- `src/pages/admin/AdminDashboard.tsx` se poora `EnrichPanel` (Roots / Idiom hints / OWS jobs) hata do.
+- Uski jagah naya `UpscTheoryPanel` component.
+- Sidebar (`AdminLayout.tsx`) me ek entry: **UPSC Theory**.
 
-- **Chapter/topic-wise upload karo — ek HTML per chapter.** Yahi best hai: har file apne topic card ke neeche map ho jaayegi, aur agar ek topic ke multiple chapters hain (e.g. Percentage Part 1 / Part 2), to us topic ke hub me multiple trainer cards dikh jaayenge.
-- Ek hi giant merged file mat bhejo — usse na filtering hoti hai, na progress tracking.
-- Jo 9 files abhi upload ki hain unka mapping:
-  - percentage-p1-305 → Percentage
-  - profit-loss-complete → Profit & Loss
-  - time-and-work-merged → Time & Work
-  - average-merged → Average
-  - proportion-till-page50 → Ratio & Proportion
-  - time-speed-distance-merged → Time Speed Distance
-  - train-pattern-trainer-full → Time Speed Distance (Train chapter)
-  - boat-and-stream-50 → Time Speed Distance (Boat & Stream chapter)
-  - mixture-alligation-merged → **naya topic card** (Mixture & Alligation) banega
+## 2. Theory generator UI (admin)
 
-## Kaise render hoga
+- Subject dropdown (History / Geography / Polity / Economy — `upscSubjects` se).
+- Chapter list with: chapter no, chapter name, question count, aur status badge (`Not generated` / `Generated · <date>`).
+- Har chapter row pe **Generate** / **Regenerate** button, plus ek **Generate all pending** loop button (ek-ek karke, progress text ke saath, taki API quota safe rahe).
+- Generate hone ke baad inline **Preview** (rendered theory).
 
-- Har HTML file `public/trainers/ssc-maths/<slug>.html` me rakhi jaayegi (files self-contained hain — apna CSS/JS andar hi hai).
-- App ke andar ek full-height `<iframe>` me load hoga, upar ek slim header bar (back button + title + "Open full screen"), taaki trainer ka apna paper-style design bilkul waisa hi dikhe jaisa tumne banaya hai.
-- Mobile par bhi iframe full-width, scroll trainer ke andar.
+## 3. Theory kaise banegi (content rules)
 
-## Screens
+Chapter ke saare `upsc_questions` rows lo, **`serial_no` ke serial order me** (chahe DB me MCQ/statement/match mixed ho). Har row se sirf yeh feed karo:
+- `question_text`, `statements`, `list_i`/`list_ii`, options + `correct_option`
+- `explanation_hinglish`, `why_a..why_d`, `ncert_source`, `ncert_extra`
 
-```text
-/ssc/maths                 -> topic cards (jaisa abhi hai)
-/ssc/maths/:topic          -> NEW hub: [Practice Questions] [Pattern Trainer(s)]
-/ssc/maths/:topic/trainer/:slug -> NEW: iframe viewer
-```
+Model ko instructions:
+- Output **Hinglish** me, markdown.
+- Structure = actual history/NCERT book jaisa **chronological / logical serial flow** — random question order ko re-sequence karke topic-wise timeline banao (e.g. Prehistory → Indus → Vedic → Mahajanapadas …), na ki "Q1, Q2, Q3" style.
+- **Bold subheadings** (`##` / `###`) har section pe, uske andar short paragraphs + bullet points.
+- Facts sirf diye gaye questions/solutions/NCERT extra se — koi bahar ka naya content invent nahi.
+- **Bahut kam visual charts** (1–3 per chapter max): simple markdown tables (timeline, ruler–dynasty, list-I/list-II match wale data se) — yahi "visual chart" ka role karenge.
+- Chapter ke end me ek chhota **"Yaad rakhne wale points"** bullet block.
+- Bade chapters ke liye questions ko batches me bhej ke section-wise generate karenge, phir merge — taki output truncate na ho.
 
-Agar kisi topic ka trainer nahi hai, uska trainer card "Coming soon" state me dikhega; agar questions 0 hain to questions card disabled dikhega.
+## 4. Backend
 
-## Technical details
+**Naya table** `public.upsc_chapter_theory`:
+- `id`, `subject`, `chapter_no`, `chapter_name`, `theory_md` (text), `question_count`, `generated_at`, `updated_at`
+- unique (`subject`, `chapter_no`)
+- RLS: sabhi logged-in users ko `SELECT`; insert/update sirf `is_admin()`. GRANTs ke saath (authenticated + service_role).
 
-- **New file** `src/data/mathsTrainers.ts` — registry: `{ topic, slug, title, subtitle, file }` ka array. Naye HTML aane par bas yahan ek entry + file drop.
-- **New page** `src/pages/SscMathsTopicHub.tsx` — topic ke liye 2 (ya zyada) cards, existing card design reuse.
-- **New page** `src/pages/SscMathsTrainer.tsx` — header + `<iframe src={/trainers/...} className="w-full h-[calc(100vh-56px)]" />`, sandbox `allow-scripts allow-same-origin`.
-- `src/types/ssc.ts` me `mixture_alligation` topic + TOPIC_META entry add.
-- `src/pages/SscSubject.tsx` — quant topics ka navigate target `/ssc/maths/:topic` (baaki subjects untouched).
-- `src/App.tsx` me 2 naye routes; `maths/calculation` routes pehle match hone chahiye (order maintain).
-- Koi DB change nahi; trainers pure static assets.
+**Nayi edge function** `upsc-theory-generate`:
+- Input: `subject`, `chapter_no`, optional `force`
+- Questions serial-wise fetch → batches → existing Gemini key-rotation helper (`_shared/gemini.ts`, 32 keys + HF fallback) se Hinglish theory generate → merge → table me upsert
+- Response: `{ ok, chars, question_count }`
+- Admin-only check (JWT email / `is_admin`).
 
-## Next step
+## 5. User side (padhne ke liye)
 
-Plan approve karo, main ye 9 files integrate kar dunga. Aage jo bhi naya chapter HTML bhejoge, ek-ek karke us topic ke neeche add hota jaayega.
+- `UpscSubjectPage` ke chapter cards pe ek **"📖 Theory"** button (sirf tab dikhe jab us chapter ki theory generated ho).
+- Nayi route `/upsc/:subject/theory/:chapterNo` → `UpscTheory.tsx`:
+  - Book-style reading layout (amber/white theme jaisa abhi UPSC me hai), max-width prose, bold subheadings, tables styled.
+  - Top pe sticky bar: chapter name + **"Practice this chapter"** button (seedha us chapter ke serial range wali practice pe le jaye).
+  - Mobile responsive.
+- Markdown rendering ke liye `react-markdown` + `remark-gfm` (tables ke liye) add karenge.
+
+## Technical notes
+
+- Theory DB me store hoti hai, isliye ek baar generate → uske baad zero AI cost pe padhna.
+- Regenerate se purani theory overwrite hogi.
+- Long chapters ke liye batch+merge, aur per-request delay taaki daily quota na phate.

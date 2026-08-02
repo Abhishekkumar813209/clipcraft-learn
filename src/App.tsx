@@ -66,6 +66,7 @@ import AdminBooks from "./pages/admin/AdminBooks";
 import AdminUpload from "./pages/admin/AdminUpload";
 import AdminQuestions from "./pages/admin/AdminQuestions";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminUpscTheory from "./pages/admin/AdminUpscTheory";
 import DailyQuiz from "./pages/DailyQuiz";
 import BlackBookHub from "./pages/BlackBookHub";
 import BlackBookPractice from "./pages/BlackBookPractice";
@@ -96,6 +97,7 @@ import UpscLayout from "./pages/upsc/UpscLayout";
 import UpscHome from "./pages/upsc/UpscHome";
 import UpscSubjectPage from "./pages/upsc/UpscSubjectPage";
 import UpscPractice from "./pages/upsc/UpscPractice";
+import UpscTheory from "./pages/upsc/UpscTheory";
 
 
 const queryClient = new QueryClient({
@@ -173,6 +175,7 @@ const App = () => (
               <Route index element={<UpscHome />} />
               <Route path=":subject" element={<UpscSubjectPage />} />
               <Route path=":subject/practice" element={<UpscPractice />} />
+              <Route path=":subject/theory/:chapterNo" element={<UpscTheory />} />
             </Route>
             <Route path="/nqt" element={<ProtectedRoute><NqtLayout /></ProtectedRoute>}>
               <Route index element={<NqtDashboard />} />
@@ -220,6 +223,7 @@ const App = () => (
               <Route path="upload" element={<AdminUpload />} />
               <Route path="questions" element={<AdminQuestions />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="upsc-theory" element={<AdminUpscTheory />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

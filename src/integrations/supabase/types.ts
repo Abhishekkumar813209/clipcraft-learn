@@ -1355,6 +1355,39 @@ export type Database = {
           },
         ]
       }
+      upsc_chapter_theory: {
+        Row: {
+          chapter_name: string
+          chapter_no: number
+          generated_at: string
+          id: string
+          question_count: number
+          subject: string
+          theory_md: string
+          updated_at: string
+        }
+        Insert: {
+          chapter_name: string
+          chapter_no: number
+          generated_at?: string
+          id?: string
+          question_count?: number
+          subject: string
+          theory_md: string
+          updated_at?: string
+        }
+        Update: {
+          chapter_name?: string
+          chapter_no?: number
+          generated_at?: string
+          id?: string
+          question_count?: number
+          subject?: string
+          theory_md?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       upsc_questions: {
         Row: {
           chapter_name: string
