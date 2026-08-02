@@ -3,9 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Layers } from 'lucide-react';
+import { Sparkles, Layers, BookOpenText } from 'lucide-react';
 import { fetchUpscChapters, UpscChapterInfo } from '@/lib/upscQuiz';
 import { getUpscSubject } from '@/lib/upscSubjects';
+import { supabase } from '@/integrations/supabase/client';
 
 const numeric = (v: string) => v.replace(/[^0-9]/g, '');
 
@@ -22,6 +23,16 @@ export default function UpscSubjectPage() {
   const [to, setTo] = useState('');
   const [count, setCount] = useState('');
   const [order, setOrder] = useState<'serial' | 'random'>('serial');
+
+  const [theoryChapters, setTheoryChapters] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    supabase
+      .from('upsc_chapter_theory' as never)
+      .select('chapter_no')
+      .eq('subject', cfg.subject)
+      .then(({ data }) => setTheoryChapters(new Set(((data as unknown as { chapter_no: number }[]) || []).map((r) => r.chapter_no))));
+  }, [cfg.subject]);
 
   useEffect(() => {
     setLoading(true);
@@ -157,6 +168,14 @@ export default function UpscSubjectPage() {
                     onClick={() => nav(`${base}?chapter=${c.chapter_no}&order=random`)}
                   >Random</Button>
                 </div>
+                {theoryChapters.has(c.chapter_no) && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100"
+                    onClick={() => nav(`/upsc/${cfg.slug}/theory/${c.chapter_no}`)}
+                  ><BookOpenText className="w-4 h-4 mr-1" /> Theory padho</Button>
+                )}
               </CardContent>
             </Card>
           ))}
