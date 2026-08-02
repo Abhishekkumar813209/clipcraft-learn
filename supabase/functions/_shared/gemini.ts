@@ -4,7 +4,7 @@ const HF_MODEL = "meta-llama/Llama-3.1-8B-Instruct";
 
 function getKeys(): string[] {
   const keys: string[] = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 32; i++) {
     const k = Deno.env.get(`GEMINI_KEY_${i}`);
     if (k) keys.push(k);
   }
