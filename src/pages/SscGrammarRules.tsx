@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Play, BookOpen, ChevronDown, Search } from 'lucide-react';
+import { ArrowLeft, Play, BookOpen, ChevronDown, Search, Shuffle, ListOrdered } from 'lucide-react';
 
 export interface GrammarRule {
   rule_id: number;
@@ -30,10 +30,11 @@ export default function SscGrammarRules() {
   const [rules, setRules] = useState<GrammarRule[]>([]);
   const [counts, setCounts] = useState<Record<number, number>>({});
   const [q, setQ] = useState('');
+  const [openGroup, setOpenGroup] = useState<number | null>(null);
   const [open, setOpen] = useState<number | null>(null);
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(153);
-  const [n, setN] = useState(20);
+  const [order, setOrder] = useState<'serial' | 'random'>('serial');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -64,7 +65,97 @@ export default function SscGrammarRules() {
       (r.rule_details || '').toLowerCase().includes(s));
   }, [rules, q]);
 
+  const groups = useMemo(() => {
+    const g: { start: number; end: number; items: GrammarRule[] }[] = [];
+    const sorted = [...filtered].sort((a, b) => a.rule_id - b.rule_id);
+    sorted.forEach(r => {
+      const start = Math.floor((r.rule_id - 1) / 5) * 5 + 1;
+      let bucket = g.find(x => x.start === start);
+      if (!bucket) { bucket = { start, end: start + 4, items: [] }; g.push(bucket); }
+      bucket.items.push(r);
+    });
+    return g.sort((a, b) => a.start - b.start);
+  }, [filtered]);
+
   const totalQ = Object.values(counts).reduce((a, b) => a + b, 0);
+  const go = (f: number, t: number) =>
+    nav(`/ssc/english/rules/practice?from=${f}&to=${t}&order=${order}`);
+
+  const renderRule = (r: GrammarRule) => {
+    const isOpen = open === r.rule_id;
+    return (
+      <div key={r.rule_id} className="rounded-lg border border-border bg-card overflow-hidden">
+        <button
+          className="w-full text-left p-3 sm:p-4 flex items-start gap-3"
+          onClick={() => setOpen(isOpen ? null : r.rule_id)}
+        >
+          <span className="shrink-0 w-9 h-9 rounded-lg bg-emerald-600 text-white grid place-items-center text-sm font-bold">{r.rule_id}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-semibold">{r.rule_title}</h3>
+              <span className={`text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded ${diffColor(r.difficulty)}`}>{r.difficulty}</span>
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">{counts[r.rule_id] || 0} Qs</span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{r.rule_statement_hinglish}</p>
+          </div>
+          <ChevronDown className={`w-4 h-4 mt-1 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {isOpen && (
+          <div className="px-3 sm:px-4 pb-4 space-y-4 border-t pt-4">
+            {r.formula_short && (
+              <div className="text-sm font-mono bg-indigo-50 text-indigo-800 border border-indigo-200 rounded-md px-3 py-2 overflow-x-auto">
+                {r.formula_short}
+              </div>
+            )}
+            {r.rule_details && (
+              <div>
+                <h4 className="text-xs uppercase font-semibold text-slate-500 mb-1.5">Details</h4>
+                <ul className="space-y-1.5">
+                  {lines(r.rule_details).map((l, i) => (
+                    <li key={i} className="text-sm flex gap-2"><span className="text-emerald-600">•</span><span>{l}</span></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {r.exception_note && (
+              <div className="rounded-md bg-amber-50 border border-amber-200 p-3">
+                <h4 className="text-xs uppercase font-semibold text-amber-700 mb-1">Exception</h4>
+                <ul className="space-y-1">
+                  {lines(r.exception_note).map((l, i) => (
+                    <li key={i} className="text-sm text-amber-900">{l}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {r.examples && (
+              <div>
+                <h4 className="text-xs uppercase font-semibold text-slate-500 mb-1.5">Examples</h4>
+                <ul className="space-y-2">
+                  {lines(r.examples).map((l, i) => (
+                    <li key={i} className="text-sm bg-emerald-50/60 border border-emerald-100 rounded-md px-3 py-2 leading-relaxed">{l}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Button
+                size="sm"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                disabled={!counts[r.rule_id]}
+                onClick={() => go(r.rule_id, r.rule_id)}
+              >
+                <Play className="w-4 h-4 mr-1.5" />Practice {counts[r.rule_id] || 0} questions
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => setOpen(null)}>
+                <BookOpen className="w-4 h-4 mr-1.5" />Close
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-5">
@@ -87,17 +178,26 @@ export default function SscGrammarRules() {
               <span className="text-sm text-slate-600">to</span>
               <Input type="number" min={1} max={153} value={to} onChange={e => setTo(Number(e.target.value))} className="w-20 bg-white" />
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-600">Questions</span>
-              <Input type="number" min={1} max={500} value={n} onChange={e => setN(Number(e.target.value))} className="w-24 bg-white" />
+            <div className="flex items-center gap-2 bg-white rounded-lg border p-1">
+              <Button size="sm" variant={order === 'serial' ? 'default' : 'ghost'}
+                className={order === 'serial' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : ''}
+                onClick={() => setOrder('serial')}>
+                <ListOrdered className="w-4 h-4 mr-1.5" />Serial
+              </Button>
+              <Button size="sm" variant={order === 'random' ? 'default' : 'ghost'}
+                className={order === 'random' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : ''}
+                onClick={() => setOrder('random')}>
+                <Shuffle className="w-4 h-4 mr-1.5" />Random
+              </Button>
             </div>
             <Button
               className="bg-emerald-600 hover:bg-emerald-500 text-white"
-              onClick={() => nav(`/ssc/english/rules/practice?from=${Math.max(1, from)}&to=${Math.max(from, to)}&n=${Math.max(1, n)}`)}
+              onClick={() => go(Math.max(1, from), Math.max(from, to))}
             >
               <Play className="w-4 h-4 mr-2" />Start
             </Button>
           </div>
+          <p className="text-xs text-slate-500">Is range ke saare questions practice honge.</p>
         </CardContent>
       </Card>
 
@@ -109,77 +209,37 @@ export default function SscGrammarRules() {
       {loading && <p className="text-sm text-muted-foreground">Loading rules...</p>}
 
       <div className="space-y-3">
-        {filtered.map(r => {
-          const isOpen = open === r.rule_id;
+        {groups.map(g => {
+          const isOpen = openGroup === g.start;
+          const gQs = g.items.reduce((a, r) => a + (counts[r.rule_id] || 0), 0);
           return (
-            <Card key={r.rule_id} className="border-border">
+            <Card key={g.start} className="border-border overflow-hidden">
               <CardContent className="p-0">
                 <button
-                  className="w-full text-left p-4 flex items-start gap-3"
-                  onClick={() => setOpen(isOpen ? null : r.rule_id)}
+                  className="w-full text-left p-4 flex items-center gap-3 bg-indigo-50/50 hover:bg-indigo-50"
+                  onClick={() => { setOpenGroup(isOpen ? null : g.start); setOpen(null); }}
                 >
-                  <span className="shrink-0 w-9 h-9 rounded-lg bg-emerald-600 text-white grid place-items-center text-sm font-bold">{r.rule_id}</span>
+                  <span className="shrink-0 px-2.5 h-9 rounded-lg bg-indigo-600 text-white grid place-items-center text-sm font-bold">
+                    {g.start}–{g.end}
+                  </span>
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold">{r.rule_title}</h3>
-                      <span className={`text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded ${diffColor(r.difficulty)}`}>{r.difficulty}</span>
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">{counts[r.rule_id] || 0} Qs</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{r.rule_statement_hinglish}</p>
+                    <h3 className="font-semibold">Rules {g.start} to {g.end}</h3>
+                    <p className="text-xs text-muted-foreground">{g.items.length} rules · {gQs} questions</p>
                   </div>
-                  <ChevronDown className={`w-4 h-4 mt-1 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => { e.stopPropagation(); go(g.start, g.end); }}
+                    className="hidden sm:inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-md bg-emerald-600 text-white hover:bg-emerald-500"
+                  >
+                    <Play className="w-3.5 h-3.5 mr-1" />Practice all
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 pb-4 space-y-4 border-t pt-4">
-                    {r.formula_short && (
-                      <div className="text-sm font-mono bg-slate-900 text-emerald-300 rounded-md px-3 py-2 overflow-x-auto">
-                        {r.formula_short}
-                      </div>
-                    )}
-                    {r.rule_details && (
-                      <div>
-                        <h4 className="text-xs uppercase font-semibold text-slate-500 mb-1.5">Details</h4>
-                        <ul className="space-y-1.5">
-                          {lines(r.rule_details).map((l, i) => (
-                            <li key={i} className="text-sm flex gap-2"><span className="text-emerald-600">•</span><span>{l}</span></li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {r.exception_note && (
-                      <div className="rounded-md bg-amber-50 border border-amber-200 p-3">
-                        <h4 className="text-xs uppercase font-semibold text-amber-700 mb-1">Exception</h4>
-                        <ul className="space-y-1">
-                          {lines(r.exception_note).map((l, i) => (
-                            <li key={i} className="text-sm text-amber-900">{l}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {r.examples && (
-                      <div>
-                        <h4 className="text-xs uppercase font-semibold text-slate-500 mb-1.5">Examples</h4>
-                        <ul className="space-y-2">
-                          {lines(r.examples).map((l, i) => (
-                            <li key={i} className="text-sm bg-emerald-50/60 border border-emerald-100 rounded-md px-3 py-2 leading-relaxed">{l}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      <Button
-                        size="sm"
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white"
-                        disabled={!counts[r.rule_id]}
-                        onClick={() => nav(`/ssc/english/rules/practice?from=${r.rule_id}&to=${r.rule_id}&n=${counts[r.rule_id] || 10}`)}
-                      >
-                        <Play className="w-4 h-4 mr-1.5" />Practice {counts[r.rule_id] || 0} questions
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => setOpen(null)}>
-                        <BookOpen className="w-4 h-4 mr-1.5" />Close
-                      </Button>
-                    </div>
+                  <div className="p-3 space-y-2 border-t bg-muted/20">
+                    {g.items.map(renderRule)}
                   </div>
                 )}
               </CardContent>

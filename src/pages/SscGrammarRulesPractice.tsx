@@ -36,7 +36,7 @@ export default function SscGrammarRulesPractice() {
   const [sp] = useSearchParams();
   const from = Number(sp.get('from') || 1);
   const to = Number(sp.get('to') || 153);
-  const n = Number(sp.get('n') || 20);
+  const order = sp.get('order') === 'random' ? 'random' : 'serial';
 
   const [qs, setQs] = useState<Parsed[]>([]);
   const [ruleTitles, setRuleTitles] = useState<Record<number, string>>({});
@@ -58,10 +58,10 @@ export default function SscGrammarRulesPractice() {
         rows.push(...chunk);
         if (chunk.length < 1000) break;
       }
-      const picked = rows.length > n
-        ? [...rows].sort(() => Math.random() - 0.5).slice(0, n).sort((a, b) => a.question_id - b.question_id)
+      const ordered = order === 'random'
+        ? [...rows].sort(() => Math.random() - 0.5)
         : rows;
-      setQs(picked.map(r => ({ ...r, parts: parseParts(r.question_text) })));
+      setQs(ordered.map(r => ({ ...r, parts: parseParts(r.question_text) })));
       setPicked([]);
       setIdx(0);
 
@@ -72,7 +72,8 @@ export default function SscGrammarRulesPractice() {
       setRuleTitles(t);
       setLoading(false);
     })();
-  }, [from, to, n]);
+  }, [from, to, order]);
+
 
   const cur = qs[idx];
   const answer = picked[idx] ?? null;
