@@ -945,6 +945,92 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_grammar_rule_questions: {
+        Row: {
+          correct_answer_word: string | null
+          correct_option: string
+          created_at: string
+          explanation_hinglish: string | null
+          id: string
+          q_order: number
+          question_id: number
+          question_text: string
+          rule_id: number
+          source: string | null
+        }
+        Insert: {
+          correct_answer_word?: string | null
+          correct_option: string
+          created_at?: string
+          explanation_hinglish?: string | null
+          id?: string
+          q_order?: number
+          question_id: number
+          question_text: string
+          rule_id: number
+          source?: string | null
+        }
+        Update: {
+          correct_answer_word?: string | null
+          correct_option?: string
+          created_at?: string
+          explanation_hinglish?: string | null
+          id?: string
+          q_order?: number
+          question_id?: number
+          question_text?: string
+          rule_id?: number
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ssc_grammar_rule_questions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "ssc_grammar_rules"
+            referencedColumns: ["rule_id"]
+          },
+        ]
+      }
+      ssc_grammar_rules: {
+        Row: {
+          created_at: string
+          difficulty: string | null
+          examples: string | null
+          exception_note: string | null
+          formula_short: string | null
+          id: string
+          rule_details: string | null
+          rule_id: number
+          rule_statement_hinglish: string | null
+          rule_title: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: string | null
+          examples?: string | null
+          exception_note?: string | null
+          formula_short?: string | null
+          id?: string
+          rule_details?: string | null
+          rule_id: number
+          rule_statement_hinglish?: string | null
+          rule_title: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: string | null
+          examples?: string | null
+          exception_note?: string | null
+          formula_short?: string | null
+          id?: string
+          rule_details?: string | null
+          rule_id?: number
+          rule_statement_hinglish?: string | null
+          rule_title?: string
+        }
+        Relationships: []
+      }
       ssc_pos_spot_error: {
         Row: {
           correct_form: string | null
