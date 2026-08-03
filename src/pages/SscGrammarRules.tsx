@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Play, BookOpen, ChevronDown, Search, Shuffle, ListOrdered } from 'lucide-react';
+import { ArrowLeft, Play, BookOpen, ChevronDown, Search, Shuffle, ListOrdered, Brain } from 'lucide-react';
+import { ruleDrills } from '@/data/grammarRuleDrills';
 
 export interface GrammarRule {
   rule_id: number;
