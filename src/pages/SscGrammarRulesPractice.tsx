@@ -115,7 +115,12 @@ export default function SscGrammarRulesPractice() {
           <div className="text-[11px] uppercase font-semibold tracking-wide text-emerald-700 bg-emerald-50 inline-block px-2 py-0.5 rounded">
             Rule {cur.rule_id} · {ruleTitles[cur.rule_id] || ''}
           </div>
-          <p className="text-sm text-slate-500">Galat part chuno (spot the error):</p>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500">Spot the error:</p>
+            <p className="text-base font-medium text-slate-800 leading-relaxed">
+              {cur.parts.map(p => p.text).filter(t => t && t !== '—').join(' ')}
+            </p>
+          </div>
 
           <div className="space-y-2">
             {cur.parts.map(p => {
