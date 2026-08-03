@@ -122,6 +122,26 @@ export default function SscSubjectPage() {
           </Card>
         )}
 
+        {subject === 'english' && (
+          <Card
+            className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
+            onClick={() => navigate('/ssc/english/rules')}
+          >
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">🚀</span>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-amber-700 bg-amber-100 px-2 py-0.5 rounded mb-1.5">New</span>
+                  <h3 className="font-semibold text-foreground">153 Grammar Rules</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">Theory + 2828 PYQ practice questions</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+
+
 
         {subject === 'quant' && (
           <Card
