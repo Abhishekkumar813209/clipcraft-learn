@@ -47,12 +47,17 @@ export default function SscGrammarRulesPractice() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await supabase.from('ssc_grammar_rule_questions' as never)
-        .select('question_id,rule_id,question_text,correct_option,correct_answer_word,explanation_hinglish,source')
-        .gte('rule_id', from).lte('rule_id', to)
-        .order('rule_id').order('q_order')
-        .limit(20000);
-      const rows = ((data as unknown as Row[]) || []);
+      const rows: Row[] = [];
+      for (let page = 0; page < 10; page++) {
+        const { data } = await supabase.from('ssc_grammar_rule_questions' as never)
+          .select('question_id,rule_id,question_text,correct_option,correct_answer_word,explanation_hinglish,source')
+          .gte('rule_id', from).lte('rule_id', to)
+          .order('rule_id').order('q_order')
+          .range(page * 1000, page * 1000 + 999);
+        const chunk = (data as unknown as Row[]) || [];
+        rows.push(...chunk);
+        if (chunk.length < 1000) break;
+      }
       const picked = rows.length > n
         ? [...rows].sort(() => Math.random() - 0.5).slice(0, n).sort((a, b) => a.question_id - b.question_id)
         : rows;
