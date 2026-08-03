@@ -83,6 +83,8 @@ import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
 import SscGrammar from "./pages/SscGrammar";
 import SscGrammarTopic from "./pages/SscGrammarTopic";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
+import SscGrammarRules from "./pages/SscGrammarRules";
+import SscGrammarRulesPractice from "./pages/SscGrammarRulesPractice";
 import SscAlphabetHub from "./pages/SscAlphabetHub";
 import SscAlphabetQuiz from "./pages/SscAlphabetQuiz";
 import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
