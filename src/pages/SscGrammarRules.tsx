@@ -41,10 +41,14 @@ export default function SscGrammarRules() {
       const { data } = await supabase.from('ssc_grammar_rules' as never)
         .select('*').order('rule_id');
       setRules((data as unknown as GrammarRule[]) || []);
-      const { data: qs } = await supabase.from('ssc_grammar_rule_questions' as never)
-        .select('rule_id').limit(20000);
       const c: Record<number, number> = {};
-      ((qs as unknown as { rule_id: number }[]) || []).forEach(r => { c[r.rule_id] = (c[r.rule_id] || 0) + 1; });
+      for (let page = 0; page < 10; page++) {
+        const { data: qs } = await supabase.from('ssc_grammar_rule_questions' as never)
+          .select('rule_id').order('question_id').range(page * 1000, page * 1000 + 999);
+        const rows = (qs as unknown as { rule_id: number }[]) || [];
+        rows.forEach(r => { c[r.rule_id] = (c[r.rule_id] || 0) + 1; });
+        if (rows.length < 1000) break;
+      }
       setCounts(c);
       setLoading(false);
     })();
