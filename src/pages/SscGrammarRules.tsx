@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Play, BookOpen, ChevronDown, Search, Shuffle, ListOrdered } from 'lucide-react';
+import { ArrowLeft, Play, BookOpen, ChevronDown, Search, Shuffle, ListOrdered, Brain } from 'lucide-react';
+import { ruleDrills } from '@/data/grammarRuleDrills';
 
 export interface GrammarRule {
   rule_id: number;
@@ -136,6 +137,22 @@ export default function SscGrammarRules() {
                     <li key={i} className="text-sm bg-emerald-50/60 border border-emerald-100 rounded-md px-3 py-2 leading-relaxed">{l}</li>
                   ))}
                 </ul>
+              </div>
+            )}
+            {(ruleDrills[r.rule_id] || []).length > 0 && (
+              <div className="rounded-md bg-indigo-50/60 border border-indigo-200 p-3">
+                <h4 className="text-xs uppercase font-semibold text-indigo-700 mb-2 flex items-center gap-1.5">
+                  <Brain className="w-3.5 h-3.5" />Yaad karo (word-list / cases drill)
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {(ruleDrills[r.rule_id] || []).map((d, i) => (
+                    <Button key={i} size="sm" variant="outline"
+                      className="border-indigo-300 text-indigo-700 hover:bg-indigo-100"
+                      onClick={() => nav(`/ssc/english/rules/drill?rule=${r.rule_id}&d=${i}`)}>
+                      {d.title}
+                    </Button>
+                  ))}
+                </div>
               </div>
             )}
             <div className="flex flex-wrap gap-2 pt-1">
