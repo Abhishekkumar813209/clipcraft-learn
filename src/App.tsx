@@ -85,6 +85,7 @@ import SscGrammarTopic from "./pages/SscGrammarTopic";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
 import SscGrammarRules from "./pages/SscGrammarRules";
 import SscGrammarRulesPractice from "./pages/SscGrammarRulesPractice";
+import SscGrammarRuleDrill from "./pages/SscGrammarRuleDrill";
 import SscAlphabetHub from "./pages/SscAlphabetHub";
 import SscAlphabetQuiz from "./pages/SscAlphabetQuiz";
 import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
