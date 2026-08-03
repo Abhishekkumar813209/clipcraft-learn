@@ -160,6 +160,7 @@ const App = () => (
               <Route path="english/grammar/:pos/basic" element={<SscGrammarSetup />} />
               <Route path="english/rules" element={<SscGrammarRules />} />
               <Route path="english/rules/practice" element={<SscGrammarRulesPractice />} />
+              <Route path="english/rules/drill" element={<SscGrammarRuleDrill />} />
               <Route path="english/practice/alphabet" element={<SscAlphabetHub />} />
               <Route path="english/practice/alphabet/:mode" element={<SscAlphabetQuiz />} />
               <Route path="english/grammar/:pos/basic/practice" element={<SscPosVerbBasicPractice />} />
