@@ -86,6 +86,24 @@ export default function SscSubjectPage() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {subject === 'gk' && (
+          <Card
+            className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-emerald-300"
+            onClick={() => navigate('/ssc/gk/biology')}
+          >
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">🧬</span>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1.5">New</span>
+                  <h3 className="font-semibold text-foreground">Biology</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">Chapter &amp; subtopic wise quiz + Hinglish theory</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {subject === 'english' && (
           <Card
             className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-primary/30"
