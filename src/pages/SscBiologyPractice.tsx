@@ -124,10 +124,13 @@ export default function SscBiologyPractice() {
               <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500" disabled={!all.length} onClick={start}>
                 Start Quiz
               </Button>
-              <Button variant="outline" onClick={() => nav(theoryHref)}>
-                <BookOpenText className="w-4 h-4 mr-1" /> Theory
-              </Button>
+              {chapter && (
+                <Button variant="outline" onClick={() => nav(theoryHref)}>
+                  <BookOpenText className="w-4 h-4 mr-1" /> Theory
+                </Button>
+              )}
             </div>
+
           </CardContent>
         </Card>
       </div>
