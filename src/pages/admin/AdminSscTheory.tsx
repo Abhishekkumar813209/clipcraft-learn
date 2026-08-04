@@ -82,15 +82,14 @@ export default function AdminSscTheory() {
     }
   }
 
-  async function generateAllPending() {
+  async function runQueue(jobs: { chapter: string; subtopic: string }[]) {
     setBulk(true);
     try {
-      for (const c of chapters) {
-        if (!theories[keyOf(c.chapter)]) {
-          const ok = await generate(c.chapter, '', false);
-          if (!ok) break;
-          await new Promise((r) => setTimeout(r, 800));
-        }
+      let fails = 0;
+      for (const j of jobs) {
+        const ok = await generate(j.chapter, j.subtopic, false);
+        if (!ok && ++fails >= 3) break;
+        await new Promise((r) => setTimeout(r, 800));
       }
       toast({ title: 'Bulk generation finished' });
     } finally {
@@ -98,7 +97,31 @@ export default function AdminSscTheory() {
     }
   }
 
+  const generateAllPending = () =>
+    runQueue(chapters.filter((c) => !theories[keyOf(c.chapter)]).map((c) => ({ chapter: c.chapter, subtopic: '' })));
+
+  const generateAllPendingSubtopics = () =>
+    runQueue(
+      chapters.flatMap((c) =>
+        c.subtopics
+          .filter((s) => !theories[keyOf(c.chapter, s.name)])
+          .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
+      ),
+    );
+
+  const generateChapterSubtopics = (c: ChapterInfo) =>
+    runQueue(
+      c.subtopics
+        .filter((s) => !theories[keyOf(c.chapter, s.name)])
+        .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
+    );
+
   const pending = chapters.filter((c) => !theories[keyOf(c.chapter)]).length;
+  const pendingSubs = chapters.reduce(
+    (n, c) => n + c.subtopics.filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
+    0,
+  );
+
 
   return (
     <div className="p-6 space-y-6">
