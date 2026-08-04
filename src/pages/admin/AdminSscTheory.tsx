@@ -181,7 +181,16 @@ export default function AdminSscTheory() {
                   <div className="flex items-center gap-2 shrink-0">
                     {t ? <Badge variant="secondary">Ready</Badge> : <Badge variant="outline">Pending</Badge>}
                     {t && <Button size="sm" variant="ghost" onClick={() => setPreview(t)}><Eye className="w-4 h-4" /></Button>}
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={!!running || bulk || !c.subtopics.some((s) => !theories[keyOf(c.chapter, s.name)])}
+                      onClick={() => generateChapterSubtopics(c)}
+                    >
+                      All subtopics
+                    </Button>
                     <Button size="sm" variant={t ? 'outline' : 'default'} disabled={!!running || bulk} onClick={() => generate(c.chapter, '', !!t)}>
+
                       {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : (t ? 'Regenerate' : 'Generate')}
                     </Button>
                   </div>
