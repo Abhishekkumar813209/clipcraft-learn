@@ -82,15 +82,14 @@ export default function AdminSscTheory() {
     }
   }
 
-  async function generateAllPending() {
+  async function runQueue(jobs: { chapter: string; subtopic: string }[]) {
     setBulk(true);
     try {
-      for (const c of chapters) {
-        if (!theories[keyOf(c.chapter)]) {
-          const ok = await generate(c.chapter, '', false);
-          if (!ok) break;
-          await new Promise((r) => setTimeout(r, 800));
-        }
+      let fails = 0;
+      for (const j of jobs) {
+        const ok = await generate(j.chapter, j.subtopic, false);
+        if (!ok && ++fails >= 3) break;
+        await new Promise((r) => setTimeout(r, 800));
       }
       toast({ title: 'Bulk generation finished' });
     } finally {
@@ -98,7 +97,31 @@ export default function AdminSscTheory() {
     }
   }
 
+  const generateAllPending = () =>
+    runQueue(chapters.filter((c) => !theories[keyOf(c.chapter)]).map((c) => ({ chapter: c.chapter, subtopic: '' })));
+
+  const generateAllPendingSubtopics = () =>
+    runQueue(
+      chapters.flatMap((c) =>
+        c.subtopics
+          .filter((s) => !theories[keyOf(c.chapter, s.name)])
+          .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
+      ),
+    );
+
+  const generateChapterSubtopics = (c: ChapterInfo) =>
+    runQueue(
+      c.subtopics
+        .filter((s) => !theories[keyOf(c.chapter, s.name)])
+        .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
+    );
+
   const pending = chapters.filter((c) => !theories[keyOf(c.chapter)]).length;
+  const pendingSubs = chapters.reduce(
+    (n, c) => n + c.subtopics.filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
+    0,
+  );
+
 
   return (
     <div className="p-6 space-y-6">
@@ -126,15 +149,22 @@ export default function AdminSscTheory() {
       </div>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <CardTitle className="text-base">
-            {loading ? 'Loading chapters…' : `${chapters.length} chapters · ${pending} pending`}
+            {loading ? 'Loading chapters…' : `${chapters.length} chapters · ${pending} chapter pending · ${pendingSubs} subtopic pending`}
           </CardTitle>
-          <Button size="sm" disabled={loading || bulk || !!running || !pending} onClick={generateAllPending}>
-            {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
-            Generate all pending chapters
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" disabled={loading || bulk || !!running || !pending} onClick={generateAllPending}>
+              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
+              All pending chapters
+            </Button>
+            <Button size="sm" variant="outline" disabled={loading || bulk || !!running || !pendingSubs} onClick={generateAllPendingSubtopics}>
+              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
+              All pending subtopics
+            </Button>
+          </div>
         </CardHeader>
+
         <CardContent className="space-y-2">
           {chapters.map((c) => {
             const t = theories[keyOf(c.chapter)];
@@ -151,7 +181,16 @@ export default function AdminSscTheory() {
                   <div className="flex items-center gap-2 shrink-0">
                     {t ? <Badge variant="secondary">Ready</Badge> : <Badge variant="outline">Pending</Badge>}
                     {t && <Button size="sm" variant="ghost" onClick={() => setPreview(t)}><Eye className="w-4 h-4" /></Button>}
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={!!running || bulk || !c.subtopics.some((s) => !theories[keyOf(c.chapter, s.name)])}
+                      onClick={() => generateChapterSubtopics(c)}
+                    >
+                      All subtopics
+                    </Button>
                     <Button size="sm" variant={t ? 'outline' : 'default'} disabled={!!running || bulk} onClick={() => generate(c.chapter, '', !!t)}>
+
                       {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : (t ? 'Regenerate' : 'Generate')}
                     </Button>
                   </div>
