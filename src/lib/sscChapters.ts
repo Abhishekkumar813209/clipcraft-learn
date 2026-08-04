@@ -77,6 +77,26 @@ export async function fetchSscChapterQuestions(
   return rows;
 }
 
+export async function fetchSscSubjectRange(
+  subject: string,
+  from?: number,
+  to?: number,
+): Promise<ChapterQuestion[]> {
+  const rows: ChapterQuestion[] = [];
+  const PAGE = 1000;
+  for (let off = 0; ; off += PAGE) {
+    let q = supabase.from('ssc_chapter_questions' as never).select('*').eq('subject', subject);
+    if (from) q = q.gte('serial_no', from);
+    if (to) q = q.lte('serial_no', to);
+    const { data, error } = await q.order('serial_no', { ascending: true }).range(off, off + PAGE - 1);
+    if (error) throw error;
+    const page = (data as unknown as ChapterQuestion[]) || [];
+    rows.push(...page);
+    if (page.length < PAGE) break;
+  }
+  return rows;
+}
+
 export async function fetchSscTheory(subject: string, chapter: string, subtopic = '') {
   const { data } = await supabase
     .from('ssc_chapter_theory' as never)
