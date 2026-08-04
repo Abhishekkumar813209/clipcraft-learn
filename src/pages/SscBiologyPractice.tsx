@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
-import { fetchSscChapterQuestions, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
+import { fetchSscChapterQuestions, fetchSscSubjectRange, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
 import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } from 'lucide-react';
 
 const SUBJECT = 'biology';
@@ -14,11 +14,16 @@ export default function SscBiologyPractice() {
   const [params] = useSearchParams();
   const chapter = params.get('chapter') || '';
   const subtopic = params.get('subtopic') || '';
+  const pFrom = params.get('from') || '';
+  const pTo = params.get('to') || '';
+  const pCount = params.get('n') || '';
+  const pOrder = params.get('order') === 'random' ? 'random' : 'serial';
+  const globalMode = !chapter;
 
   const [all, setAll] = useState<ChapterQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
-  const [order, setOrder] = useState<'serial' | 'random'>('serial');
+  const [order, setOrder] = useState<'serial' | 'random'>(pOrder);
   const [from, setFrom] = useState('1');
   const [to, setTo] = useState('');
 
@@ -29,12 +34,25 @@ export default function SscBiologyPractice() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const rows = await fetchSscChapterQuestions(SUBJECT, chapter, subtopic || undefined);
+      const rows = globalMode
+        ? await fetchSscSubjectRange(SUBJECT, Number(pFrom) || undefined, Number(pTo) || undefined)
+        : await fetchSscChapterQuestions(SUBJECT, chapter, subtopic || undefined);
       setAll(rows);
       setTo(String(rows.length));
       setLoading(false);
+      if (globalMode) {
+        let list = rows;
+        if (pOrder === 'random') list = shuffle(list);
+        const n = Number(pCount);
+        if (n > 0) list = list.slice(0, n);
+        setQueue(list);
+        setPicked(new Array(list.length).fill(null));
+        setIdx(0);
+        setStarted(true);
+      }
     })();
-  }, [chapter, subtopic]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapter, subtopic, pFrom, pTo, pCount, pOrder]);
 
   function start() {
     const f = Math.max(1, Number(from) || 1);
@@ -61,6 +79,7 @@ export default function SscBiologyPractice() {
 
   const theoryHref = `/ssc/gk/biology/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
 
+
   if (loading) {
     return (
       <div className="p-6 flex items-center gap-2 text-sm text-muted-foreground">
@@ -78,10 +97,11 @@ export default function SscBiologyPractice() {
         <Card>
           <CardContent className="p-5 space-y-4">
             <div>
-              <h1 className="text-lg font-bold">{chapter}</h1>
+              <h1 className="text-lg font-bold">{chapter || 'Biology — full serial'}</h1>
               {subtopic && <p className="text-sm text-muted-foreground">{subtopic}</p>}
               <p className="text-xs text-muted-foreground mt-1">{all.length} questions available</p>
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <label className="text-sm">
                 From
@@ -104,10 +124,13 @@ export default function SscBiologyPractice() {
               <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500" disabled={!all.length} onClick={start}>
                 Start Quiz
               </Button>
-              <Button variant="outline" onClick={() => nav(theoryHref)}>
-                <BookOpenText className="w-4 h-4 mr-1" /> Theory
-              </Button>
+              {chapter && (
+                <Button variant="outline" onClick={() => nav(theoryHref)}>
+                  <BookOpenText className="w-4 h-4 mr-1" /> Theory
+                </Button>
+              )}
             </div>
+
           </CardContent>
         </Card>
       </div>

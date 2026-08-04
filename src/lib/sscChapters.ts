@@ -19,39 +19,46 @@ export interface ChapterQuestion {
 export interface ChapterInfo {
   chapter: string;
   count: number;
+  minSerial: number;
+  maxSerial: number;
   subtopics: { name: string; count: number }[];
 }
 
 export async function fetchSscChapters(subject: string): Promise<ChapterInfo[]> {
-  const rows: { chapter: string; subtopic: string }[] = [];
+  const rows: { chapter: string; subtopic: string; serial_no: number }[] = [];
   const PAGE = 1000;
   for (let off = 0; ; off += PAGE) {
     const { data, error } = await supabase
       .from('ssc_chapter_questions' as never)
-      .select('chapter,subtopic')
+      .select('chapter,subtopic,serial_no')
       .eq('subject', subject)
+      .order('serial_no', { ascending: true })
       .range(off, off + PAGE - 1);
     if (error) throw error;
-    const page = (data as unknown as { chapter: string; subtopic: string }[]) || [];
+    const page = (data as unknown as { chapter: string; subtopic: string; serial_no: number }[]) || [];
     rows.push(...page);
     if (page.length < PAGE) break;
   }
-  const map = new Map<string, Map<string, number>>();
+  const map = new Map<string, { subs: Map<string, number>; min: number; max: number }>();
   for (const r of rows) {
-    if (!map.has(r.chapter)) map.set(r.chapter, new Map());
-    const sub = map.get(r.chapter)!;
+    if (!map.has(r.chapter)) map.set(r.chapter, { subs: new Map(), min: r.serial_no, max: r.serial_no });
+    const e = map.get(r.chapter)!;
     const key = r.subtopic || '—';
-    sub.set(key, (sub.get(key) || 0) + 1);
+    e.subs.set(key, (e.subs.get(key) || 0) + 1);
+    e.min = Math.min(e.min, r.serial_no);
+    e.max = Math.max(e.max, r.serial_no);
   }
   return [...map.entries()]
-    .map(([chapter, subs]) => ({
+    .map(([chapter, e]) => ({
       chapter,
-      count: [...subs.values()].reduce((a, b) => a + b, 0),
-      subtopics: [...subs.entries()]
+      count: [...e.subs.values()].reduce((a, b) => a + b, 0),
+      minSerial: e.min,
+      maxSerial: e.max,
+      subtopics: [...e.subs.entries()]
         .map(([name, count]) => ({ name, count }))
         .sort((a, b) => a.name.localeCompare(b.name)),
     }))
-    .sort((a, b) => a.chapter.localeCompare(b.chapter));
+    .sort((a, b) => a.minSerial - b.minSerial);
 }
 
 export async function fetchSscChapterQuestions(
@@ -68,6 +75,26 @@ export async function fetchSscChapterQuestions(
       .eq('subject', subject)
       .eq('chapter', chapter);
     if (subtopic) q = q.eq('subtopic', subtopic);
+    const { data, error } = await q.order('serial_no', { ascending: true }).range(off, off + PAGE - 1);
+    if (error) throw error;
+    const page = (data as unknown as ChapterQuestion[]) || [];
+    rows.push(...page);
+    if (page.length < PAGE) break;
+  }
+  return rows;
+}
+
+export async function fetchSscSubjectRange(
+  subject: string,
+  from?: number,
+  to?: number,
+): Promise<ChapterQuestion[]> {
+  const rows: ChapterQuestion[] = [];
+  const PAGE = 1000;
+  for (let off = 0; ; off += PAGE) {
+    let q = supabase.from('ssc_chapter_questions' as never).select('*').eq('subject', subject);
+    if (from) q = q.gte('serial_no', from);
+    if (to) q = q.lte('serial_no', to);
     const { data, error } = await q.order('serial_no', { ascending: true }).range(off, off + PAGE - 1);
     if (error) throw error;
     const page = (data as unknown as ChapterQuestion[]) || [];
