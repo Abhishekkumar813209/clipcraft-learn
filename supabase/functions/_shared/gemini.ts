@@ -13,6 +13,17 @@ function getKeys(): string[] {
 
 let currentIndex = 0;
 
+// Some Gemini model ids get retired for new API keys (404 NOT_FOUND).
+// Try these in order and remember the one that works for this instance.
+const MODEL_FALLBACKS = [
+  "gemini-2.5-flash",
+  "gemini-flash-latest",
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-001",
+];
+let workingModel: string | null = null;
+
+
 export interface CallOptions {
   /** If true, skip Gemini entirely and use Hugging Face. */
   preferHuggingFace?: boolean;
