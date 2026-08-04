@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
-import { fetchSscChapterQuestions, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
+import { fetchSscChapterQuestions, fetchSscSubjectRange, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
 import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } from 'lucide-react';
 
 const SUBJECT = 'biology';
@@ -14,11 +14,16 @@ export default function SscBiologyPractice() {
   const [params] = useSearchParams();
   const chapter = params.get('chapter') || '';
   const subtopic = params.get('subtopic') || '';
+  const pFrom = params.get('from') || '';
+  const pTo = params.get('to') || '';
+  const pCount = params.get('n') || '';
+  const pOrder = params.get('order') === 'random' ? 'random' : 'serial';
+  const globalMode = !chapter;
 
   const [all, setAll] = useState<ChapterQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
-  const [order, setOrder] = useState<'serial' | 'random'>('serial');
+  const [order, setOrder] = useState<'serial' | 'random'>(pOrder);
   const [from, setFrom] = useState('1');
   const [to, setTo] = useState('');
 
@@ -29,12 +34,25 @@ export default function SscBiologyPractice() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const rows = await fetchSscChapterQuestions(SUBJECT, chapter, subtopic || undefined);
+      const rows = globalMode
+        ? await fetchSscSubjectRange(SUBJECT, Number(pFrom) || undefined, Number(pTo) || undefined)
+        : await fetchSscChapterQuestions(SUBJECT, chapter, subtopic || undefined);
       setAll(rows);
       setTo(String(rows.length));
       setLoading(false);
+      if (globalMode) {
+        let list = rows;
+        if (pOrder === 'random') list = shuffle(list);
+        const n = Number(pCount);
+        if (n > 0) list = list.slice(0, n);
+        setQueue(list);
+        setPicked(new Array(list.length).fill(null));
+        setIdx(0);
+        setStarted(true);
+      }
     })();
-  }, [chapter, subtopic]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapter, subtopic, pFrom, pTo, pCount, pOrder]);
 
   function start() {
     const f = Math.max(1, Number(from) || 1);
@@ -60,6 +78,7 @@ export default function SscBiologyPractice() {
   const score = statuses.filter((s) => s === 'correct').length;
 
   const theoryHref = `/ssc/gk/biology/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
+
 
   if (loading) {
     return (
