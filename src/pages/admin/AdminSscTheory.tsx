@@ -149,15 +149,22 @@ export default function AdminSscTheory() {
       </div>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <CardTitle className="text-base">
-            {loading ? 'Loading chapters…' : `${chapters.length} chapters · ${pending} pending`}
+            {loading ? 'Loading chapters…' : `${chapters.length} chapters · ${pending} chapter pending · ${pendingSubs} subtopic pending`}
           </CardTitle>
-          <Button size="sm" disabled={loading || bulk || !!running || !pending} onClick={generateAllPending}>
-            {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
-            Generate all pending chapters
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" disabled={loading || bulk || !!running || !pending} onClick={generateAllPending}>
+              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
+              All pending chapters
+            </Button>
+            <Button size="sm" variant="outline" disabled={loading || bulk || !!running || !pendingSubs} onClick={generateAllPendingSubtopics}>
+              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
+              All pending subtopics
+            </Button>
+          </div>
         </CardHeader>
+
         <CardContent className="space-y-2">
           {chapters.map((c) => {
             const t = theories[keyOf(c.chapter)];
