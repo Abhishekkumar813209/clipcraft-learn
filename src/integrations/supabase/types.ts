@@ -945,6 +945,96 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_chapter_questions: {
+        Row: {
+          chapter: string
+          correct_option: string
+          created_at: string
+          exam_name: string | null
+          explanation_hinglish: string | null
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_text: string
+          serial_no: number
+          source: string | null
+          subject: string
+          subtopic: string
+          updated_at: string
+        }
+        Insert: {
+          chapter: string
+          correct_option: string
+          created_at?: string
+          exam_name?: string | null
+          explanation_hinglish?: string | null
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_text: string
+          serial_no: number
+          source?: string | null
+          subject: string
+          subtopic?: string
+          updated_at?: string
+        }
+        Update: {
+          chapter?: string
+          correct_option?: string
+          created_at?: string
+          exam_name?: string | null
+          explanation_hinglish?: string | null
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question_text?: string
+          serial_no?: number
+          source?: string | null
+          subject?: string
+          subtopic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ssc_chapter_theory: {
+        Row: {
+          chapter: string
+          generated_at: string
+          id: string
+          question_count: number
+          subject: string
+          subtopic: string
+          theory_md: string
+          updated_at: string
+        }
+        Insert: {
+          chapter: string
+          generated_at?: string
+          id?: string
+          question_count?: number
+          subject: string
+          subtopic?: string
+          theory_md: string
+          updated_at?: string
+        }
+        Update: {
+          chapter?: string
+          generated_at?: string
+          id?: string
+          question_count?: number
+          subject?: string
+          subtopic?: string
+          theory_md?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ssc_grammar_rule_questions: {
         Row: {
           correct_answer_word: string | null
