@@ -67,6 +67,10 @@ import AdminUpload from "./pages/admin/AdminUpload";
 import AdminQuestions from "./pages/admin/AdminQuestions";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminUpscTheory from "./pages/admin/AdminUpscTheory";
+import AdminSscTheory from "./pages/admin/AdminSscTheory";
+import SscBiology from "./pages/SscBiology";
+import SscBiologyPractice from "./pages/SscBiologyPractice";
+import SscBiologyTheory from "./pages/SscBiologyTheory";
 import DailyQuiz from "./pages/DailyQuiz";
 import BlackBookHub from "./pages/BlackBookHub";
 import BlackBookPractice from "./pages/BlackBookPractice";
@@ -171,6 +175,9 @@ const App = () => (
               <Route path="maths/:topic/trainer/:slug" element={<SscMathsTrainer />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
+              <Route path="gk/biology" element={<SscBiology />} />
+              <Route path="gk/biology/practice" element={<SscBiologyPractice />} />
+              <Route path="gk/biology/theory" element={<SscBiologyTheory />} />
               <Route path="bookmarks" element={<SscBookmarks />} />
               <Route path="history" element={<SscHistory />} />
 
@@ -230,6 +237,7 @@ const App = () => (
               <Route path="questions" element={<AdminQuestions />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="upsc-theory" element={<AdminUpscTheory />} />
+              <Route path="ssc-theory" element={<AdminSscTheory />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

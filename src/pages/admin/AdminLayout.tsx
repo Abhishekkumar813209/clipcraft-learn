@@ -9,6 +9,7 @@ const links = [
   { to: '/admin/questions', label: 'Questions', icon: ListChecks },
   { to: '/admin/users', label: 'Users (7d)', icon: Users },
   { to: '/admin/upsc-theory', label: 'UPSC Theory', icon: BookOpenText },
+  { to: '/admin/ssc-theory', label: 'SSC Theory', icon: BookOpenText },
 ];
 
 export default function AdminLayout() {
