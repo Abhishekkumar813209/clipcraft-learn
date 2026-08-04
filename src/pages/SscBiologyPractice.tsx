@@ -97,10 +97,11 @@ export default function SscBiologyPractice() {
         <Card>
           <CardContent className="p-5 space-y-4">
             <div>
-              <h1 className="text-lg font-bold">{chapter}</h1>
+              <h1 className="text-lg font-bold">{chapter || 'Biology — full serial'}</h1>
               {subtopic && <p className="text-sm text-muted-foreground">{subtopic}</p>}
               <p className="text-xs text-muted-foreground mt-1">{all.length} questions available</p>
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <label className="text-sm">
                 From
