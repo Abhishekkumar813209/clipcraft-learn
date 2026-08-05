@@ -108,11 +108,12 @@ export function useTrainerEditor(trainerKey: string) {
     [trainerKey],
   );
 
-  // "E" shortcut se edit mode toggle (sirf admin ke liye)
+  // "E" = edit mode on, "D" = done (sirf admin ke liye)
   useEffect(() => {
     if (!isAdmin) return;
     const handler = (ev: KeyboardEvent) => {
-      if (ev.key.toLowerCase() !== 'e') return;
+      const k = ev.key.toLowerCase();
+      if (k !== 'e' && k !== 'd') return;
       if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
       const doc = (ev.target as Node | null)?.ownerDocument ?? document;
       const el = doc.activeElement as HTMLElement | null;
@@ -121,8 +122,9 @@ export function useTrainerEditor(trainerKey: string) {
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable) return;
       }
       ev.preventDefault();
-      setEditMode((v) => !v);
+      setEditMode(k === 'e');
     };
+
     document.addEventListener('keydown', handler);
     const idoc = iframeRef.current?.contentDocument;
     idoc?.addEventListener('keydown', handler);
