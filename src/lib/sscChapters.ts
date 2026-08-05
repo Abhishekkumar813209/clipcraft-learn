@@ -24,6 +24,19 @@ export interface ChapterInfo {
   subtopics: { name: string; count: number }[];
 }
 
+/**
+ * Chapters jinke andar subtopic-level theory generate karni hai.
+ * Baaki sab chapters ke liye sirf ek chapter-level theory kaafi hai.
+ */
+export const SUBTOPIC_THEORY_CHAPTERS: Record<string, string[]> = {
+  biology: ['Human Body', 'Animal Kingdom', 'Plant Kingdom', 'Plant Physiology'],
+};
+
+export function allowsSubtopicTheory(subject: string, chapter: string): boolean {
+  return (SUBTOPIC_THEORY_CHAPTERS[subject] || []).includes(chapter);
+}
+
+
 export async function fetchSscChapters(subject: string): Promise<ChapterInfo[]> {
   const rows: { chapter: string; subtopic: string; serial_no: number }[] = [];
   const PAGE = 1000;

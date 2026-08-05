@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
+import { fetchSscChapters, allowsSubtopicTheory, type ChapterInfo } from '@/lib/sscChapters';
 import { BookOpenText, Loader2, RefreshCw, Eye } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
@@ -97,13 +97,19 @@ export default function AdminSscTheory() {
     }
   }
 
+  // Sirf real subtopics (placeholder '—' nahi) aur sirf eligible chapters
+  const eligibleSubs = (c: ChapterInfo) =>
+    allowsSubtopicTheory(subject, c.chapter)
+      ? c.subtopics.filter((s) => s.name !== '—' && c.subtopics.length >= 2)
+      : [];
+
   const generateAllPending = () =>
     runQueue(chapters.filter((c) => !theories[keyOf(c.chapter)]).map((c) => ({ chapter: c.chapter, subtopic: '' })));
 
   const generateAllPendingSubtopics = () =>
     runQueue(
       chapters.flatMap((c) =>
-        c.subtopics
+        eligibleSubs(c)
           .filter((s) => !theories[keyOf(c.chapter, s.name)])
           .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
       ),
@@ -111,16 +117,17 @@ export default function AdminSscTheory() {
 
   const generateChapterSubtopics = (c: ChapterInfo) =>
     runQueue(
-      c.subtopics
+      eligibleSubs(c)
         .filter((s) => !theories[keyOf(c.chapter, s.name)])
         .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
     );
 
   const pending = chapters.filter((c) => !theories[keyOf(c.chapter)]).length;
   const pendingSubs = chapters.reduce(
-    (n, c) => n + c.subtopics.filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
+    (n, c) => n + eligibleSubs(c).filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
     0,
   );
+
 
 
   return (
@@ -168,27 +175,30 @@ export default function AdminSscTheory() {
         <CardContent className="space-y-2">
           {chapters.map((c) => {
             const t = theories[keyOf(c.chapter)];
-            const isOpen = open === c.chapter;
+            const subs = eligibleSubs(c);
+            const isOpen = !!subs.length && open === c.chapter;
             return (
               <div key={c.chapter} className="border rounded-md p-3 space-y-2">
                 <div className="flex items-center justify-between gap-3">
-                  <button className="min-w-0 text-left flex-1" onClick={() => setOpen(isOpen ? null : c.chapter)}>
+                  <button className="min-w-0 text-left flex-1" disabled={!subs.length} onClick={() => setOpen(isOpen ? null : c.chapter)}>
                     <div className="text-sm font-medium truncate">{c.chapter}</div>
                     <div className="text-xs text-muted-foreground">
-                      {c.count} questions · {c.subtopics.length} subtopics · {status[keyOf(c.chapter)] || (t ? `generated ${new Date(t.generated_at).toLocaleDateString()}` : 'not generated')}
+                      {c.count} questions · {subs.length ? `${subs.length} subtopics` : 'chapter-level only'} · {status[keyOf(c.chapter)] || (t ? `generated ${new Date(t.generated_at).toLocaleDateString()}` : 'not generated')}
                     </div>
                   </button>
                   <div className="flex items-center gap-2 shrink-0">
                     {t ? <Badge variant="secondary">Ready</Badge> : <Badge variant="outline">Pending</Badge>}
                     {t && <Button size="sm" variant="ghost" onClick={() => setPreview(t)}><Eye className="w-4 h-4" /></Button>}
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      disabled={!!running || bulk || !c.subtopics.some((s) => !theories[keyOf(c.chapter, s.name)])}
-                      onClick={() => generateChapterSubtopics(c)}
-                    >
-                      All subtopics
-                    </Button>
+                    {!!subs.length && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={!!running || bulk || !subs.some((s) => !theories[keyOf(c.chapter, s.name)])}
+                        onClick={() => generateChapterSubtopics(c)}
+                      >
+                        All subtopics
+                      </Button>
+                    )}
                     <Button size="sm" variant={t ? 'outline' : 'default'} disabled={!!running || bulk} onClick={() => generate(c.chapter, '', !!t)}>
 
                       {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : (t ? 'Regenerate' : 'Generate')}
@@ -198,7 +208,7 @@ export default function AdminSscTheory() {
 
                 {isOpen && (
                   <div className="space-y-1.5 pt-1">
-                    {c.subtopics.map((s) => {
+                    {subs.map((s) => {
                       const st = theories[keyOf(c.chapter, s.name)];
                       const k = keyOf(c.chapter, s.name);
                       return (
@@ -220,6 +230,7 @@ export default function AdminSscTheory() {
                     })}
                   </div>
                 )}
+
               </div>
             );
           })}

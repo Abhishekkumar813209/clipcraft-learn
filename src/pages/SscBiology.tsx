@@ -131,7 +131,9 @@ export default function SscBiology() {
 
         <div className="grid md:grid-cols-2 gap-4">
           {chapters.map((c) => {
-            const isOpen = open === c.chapter;
+            const subs = c.subtopics.filter((s) => s.name !== '—');
+            const expandable = subs.length >= 2;
+            const isOpen = expandable && open === c.chapter;
             const hasTheory = theoryKeys.has(`${c.chapter}||`);
             return (
               <Card key={c.chapter} className="bg-white/80 border-emerald-100 backdrop-blur shadow-sm">
@@ -139,13 +141,19 @@ export default function SscBiology() {
                   <div className="flex items-start justify-between gap-3">
                     <button
                       className="flex items-start gap-2 text-left min-w-0 flex-1"
+                      disabled={!expandable}
                       onClick={() => setOpen(isOpen ? null : c.chapter)}
                     >
-                      {isOpen ? <ChevronDown className="w-4 h-4 mt-1 text-emerald-600" /> : <ChevronRight className="w-4 h-4 mt-1 text-emerald-600" />}
+                      {expandable ? (
+                        isOpen ? <ChevronDown className="w-4 h-4 mt-1 text-emerald-600" /> : <ChevronRight className="w-4 h-4 mt-1 text-emerald-600" />
+                      ) : (
+                        <span className="w-4 h-4 mt-1 shrink-0" />
+                      )}
                       <div className="min-w-0">
                         <h3 className="font-semibold text-slate-900 truncate">{c.chapter}</h3>
                         <p className="text-xs text-slate-500 mt-0.5">
-                          Serial {c.minSerial}–{c.maxSerial} · {c.subtopics.length} subtopics
+                          Serial {c.minSerial}–{c.maxSerial}
+                          {expandable ? ` · ${subs.length} subtopics` : ' · single topic'}
                         </p>
                       </div>
                     </button>
@@ -168,22 +176,27 @@ export default function SscBiology() {
 
                   {isOpen && (
                     <div className="space-y-2 pt-1">
-                      {c.subtopics.map((s) => (
-                        <div key={s.name} className="border border-emerald-100 rounded-lg p-3 flex items-center justify-between gap-2 bg-emerald-50/50">
-                          <div className="min-w-0">
-                            <div className="text-sm font-medium truncate">{s.name}</div>
-                            <div className="text-[11px] text-slate-500">{s.count} questions</div>
+                      {subs.map((s) => {
+                        const subTheory = theoryKeys.has(`${c.chapter}||${s.name}`);
+                        return (
+                          <div key={s.name} className="border border-emerald-100 rounded-lg p-3 flex items-center justify-between gap-2 bg-emerald-50/50">
+                            <div className="min-w-0">
+                              <div className="text-sm font-medium truncate">{s.name}</div>
+                              <div className="text-[11px] text-slate-500">{s.count} questions</div>
+                            </div>
+                            <div className="flex gap-1.5 shrink-0">
+                              {subTheory && (
+                                <Button size="sm" variant="ghost" className="text-emerald-700" onClick={() => nav(t(c.chapter, s.name))}>
+                                  <BookOpenText className="w-4 h-4" />
+                                </Button>
+                              )}
+                              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500" onClick={() => nav(q(c.chapter, s.name))}>
+                                <Play className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
-                          <div className="flex gap-1.5 shrink-0">
-                            <Button size="sm" variant="ghost" className="text-emerald-700" onClick={() => nav(t(c.chapter, s.name))}>
-                              <BookOpenText className="w-4 h-4" />
-                            </Button>
-                            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500" onClick={() => nav(q(c.chapter, s.name))}>
-                              <Play className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </CardContent>
@@ -192,6 +205,7 @@ export default function SscBiology() {
           })}
           {!loading && chapters.length === 0 && <p className="text-sm text-slate-500">Abhi koi chapter load nahi hua.</p>}
         </div>
+
       </div>
     </div>
   );
