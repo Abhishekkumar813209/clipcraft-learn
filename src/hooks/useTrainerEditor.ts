@@ -183,11 +183,16 @@ export function useTrainerEditor(trainerKey: string) {
       const el = doc.activeElement as HTMLElement | null;
       if (!el || el.getAttribute?.('contenteditable') !== 'true') return;
       if (ev.key === 'Escape') el.blur();
+      if (ev.key === 'Enter' && ev.shiftKey) {
+        ev.preventDefault();
+        doc.execCommand('insertLineBreak');
+      }
       if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's') {
         ev.preventDefault();
         el.blur();
       }
     };
+
 
     doc.addEventListener('dblclick', onDblClick, true);
     doc.addEventListener('blur', onBlur, true);
