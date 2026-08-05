@@ -1,59 +1,74 @@
-## Goal
+# Biology subtopics cleanup + theory strategy
 
-Admin panel se purane AI-enrichment buttons hata do. Unki jagah ek single **"UPSC Theory Generator"** button — subject + chapter choose karo, click karo, aur us chapter ke saare questions + solutions + NCERT extra points se ek book-jaisi **Hinglish theory** ban jaye, jo user side pe padhi ja sake.
+## Problem (data se confirmed)
 
-## 1. Admin panel cleanup
+Biology me 2,566 questions, 22 chapters, lekin **135 alag subtopic labels** hain. Zyadatar duplicate ya noise hain:
 
-- `src/pages/admin/AdminDashboard.tsx` se poora `EnrichPanel` (Roots / Idiom hints / OWS jobs) hata do.
-- Uski jagah naya `UpscTheoryPanel` component.
-- Sidebar (`AdminLayout.tsx`) me ek entry: **UPSC Theory**.
+- Numbering prefix: `(vii) Arthropoda` vs `Arthropoda`, `(i) Protozoa` vs `Protozoa`
+- Source notes: `(ix) Chordata - (d) Mammalia [printed as (vii)(d)]`
+- Spelling/case variants: `Platyhelmintnes`, `Animal Tissue` vs `Animal Tissues`, `Angiosperm` vs `Angiosperms`, `Nutrient in Plant` vs `Nutrients in plants`, `Flower/ Fruits` vs `Flower/Fruits`
+- Placeholder labels: `General`, `Miscellaneous`, `VERIFY: ...`, aur chapter ka apna naam subtopic ke roop me (`Plant Kingdom` ke andar `Plant Kingdom`)
+- Ek hi cheez ke tukde: Human Body me `Blood`, `Blood Circulatory System`, `Blood Circulatory System/ Blood` teen alag
 
-## 2. Theory generator UI (admin)
+Isi wajah se har chhote subtopic ke liye alag theory banani pad rahi thi — bekaar ka kaam.
 
-- Subject dropdown (History / Geography / Polity / Economy — `upscSubjects` se).
-- Chapter list with: chapter no, chapter name, question count, aur status badge (`Not generated` / `Generated · <date>`).
-- Har chapter row pe **Generate** / **Regenerate** button, plus ek **Generate all pending** loop button (ek-ek karke, progress text ke saath, taki API quota safe rahe).
-- Generate hone ke baad inline **Preview** (rendered theory).
+## Decision (recommendation)
 
-## 3. Theory kaise banegi (content rules)
+**Theory ka default unit = CHAPTER.** Subtopic theory sirf un chapters ke liye jahan genuinely bade, alag concepts hain.
 
-Chapter ke saare `upsc_questions` rows lo, **`serial_no` ke serial order me** (chahe DB me MCQ/statement/match mixed ho). Har row se sirf yeh feed karo:
-- `question_text`, `statements`, `list_i`/`list_ii`, options + `correct_option`
-- `explanation_hinglish`, `why_a..why_d`, `ncert_source`, `ncert_extra`
+Cleanup ke baad sirf 4 chapters me subtopic-level theory rakhi jayegi:
 
-Model ko instructions:
-- Output **Hinglish** me, markdown.
-- Structure = actual history/NCERT book jaisa **chronological / logical serial flow** — random question order ko re-sequence karke topic-wise timeline banao (e.g. Prehistory → Indus → Vedic → Mahajanapadas …), na ki "Q1, Q2, Q3" style.
-- **Bold subheadings** (`##` / `###`) har section pe, uske andar short paragraphs + bullet points.
-- Facts sirf diye gaye questions/solutions/NCERT extra se — koi bahar ka naya content invent nahi.
-- **Bahut kam visual charts** (1–3 per chapter max): simple markdown tables (timeline, ruler–dynasty, list-I/list-II match wale data se) — yahi "visual chart" ka role karenge.
-- Chapter ke end me ek chhota **"Yaad rakhne wale points"** bullet block.
-- Bade chapters ke liye questions ko batches me bhej ke section-wise generate karenge, phir merge — taki output truncate na ho.
+- **Human Body** (~440 Qs) — Digestive, Nervous, Circulatory, Endocrine, Skeleton, Excretory, Respiratory, Reproductive
+- **Animal Kingdom** (~270 Qs) — Protozoa, Porifera, Coelenterata, Platyhelminthes, Annelida, Mollusca, Arthropoda, Echinodermata, Chordata
+- **Plant Kingdom** (~215 Qs) — Algae, Fungi, Bryophyta, Pteridophyta, Gymnosperm, Angiosperm, Bacteria
+- **Plant Physiology** (~130 Qs) — Photosynthesis, Transpiration, Transportation, Nutrition, Hormones, Adaptation, Respiration, Plant Disease
 
-## 4. Backend
+Baaki 18 chapters: **sirf ek chapter-level theory**, koi subtopic theory nahi. Isse ~135 theory jobs se ghat kar ~50 ho jayenge.
 
-**Naya table** `public.upsc_chapter_theory`:
-- `id`, `subject`, `chapter_no`, `chapter_name`, `theory_md` (text), `question_count`, `generated_at`, `updated_at`
-- unique (`subject`, `chapter_no`)
-- RLS: sabhi logged-in users ko `SELECT`; insert/update sirf `is_admin()`. GRANTs ke saath (authenticated + service_role).
+## Step 1 — Database normalization
 
-**Nayi edge function** `upsc-theory-generate`:
-- Input: `subject`, `chapter_no`, optional `force`
-- Questions serial-wise fetch → batches → existing Gemini key-rotation helper (`_shared/gemini.ts`, 32 keys + HF fallback) se Hinglish theory generate → merge → table me upsert
-- Response: `{ ok, chars, question_count }`
-- Admin-only check (JWT email / `is_admin`).
+`ssc_chapter_questions` (subject = biology) ke `subtopic` column ko in rules se update karenge:
 
-## 5. User side (padhne ke liye)
+**Global rules**
+- Leading roman-numeral prefix hatao: `(vii) Arthropoda` -> `Arthropoda`
+- `[printed as ...]` jaisa bracket note hatao
+- `VERIFY: ` prefix hatao
+- `General`, `Miscellaneous`, chapter-ka-apna-naam, aur khaali value -> sab `General` me merge (single bucket per chapter)
 
-- `UpscSubjectPage` ke chapter cards pe ek **"📖 Theory"** button (sirf tab dikhe jab us chapter ki theory generated ho).
-- Nayi route `/upsc/:subject/theory/:chapterNo` → `UpscTheory.tsx`:
-  - Book-style reading layout (amber/white theme jaisa abhi UPSC me hai), max-width prose, bold subheadings, tables styled.
-  - Top pe sticky bar: chapter name + **"Practice this chapter"** button (seedha us chapter ke serial range wali practice pe le jaye).
-  - Mobile responsive.
-- Markdown rendering ke liye `react-markdown` + `remark-gfm` (tables ke liye) add karenge.
+**Chapter-specific merges**
+
+| Chapter | Merge |
+|---|---|
+| Animal Kingdom | `Chordata - Mammalia/Reptiles/Amphibia/Aves/Pisces`, aur standalone `Mammalia/Reptiles/Amphibia/Aves/Pisces` -> `Chordata`; `Platyhelmintnes` -> `Platyhelminthes`; `Aschelminthes`, `Animal Physiology`, `Animal Classification` -> `General` |
+| Tissues | sirf `Animal Tissues` aur `Plant Tissues` (singular variants merge) |
+| Chromosome | sab -> single (koi subtopic nahi, chapter-level) |
+| Genetics | sab -> single |
+| Organic-Evolution | sab -> single |
+| Taxonomy | sab -> single (`Protozoa` bhi General me) |
+| Origin of Life | single |
+| Biomolecule | `Nucleic Acids R.N.A./D.N.A` variants -> `Nucleic Acids (DNA/RNA)`; baaki as-is |
+| Cell | `Cell Structure and Organelles`, `Genetics and Plasmids`, chapter-naam -> `General`; `Animal Cell` / `Plant Cell` rahenge |
+| Human Body | `Blood`, `Blood Circulatory System`, `Blood Circulatory System/ Blood` -> `Circulatory System & Blood`; `(i) Digestive System` -> `Digestive System`; `VERIFY: Respiratory System` -> `Respiratory System`; `Life Processes`, `General`, `Miscellaneous` -> `General` |
+| Human Diseases | `Bacterial Infections`, `Viral Diseases` -> `Disease and Symptoms`; `Treatments` alag rahega |
+| Vitamins and Nutrition | `Vitamin and Nutrition` + `Vitamins and Nutrition` + `General` + `Miscellaneous` + `Minerals` + `Carbohydrate` + `Biomolecules & Artificial Sweeteners` + `Nutrient in Plant` -> ek `Vitamins and Nutrition`; `Disease and Symptoms` + `Nutritional Deficiency Diseases` -> `Deficiency Diseases` |
+| Plant Kingdom | `Angiosperms` -> `Angiosperm`; `Fungi & Economic Importance` -> `Fungi`; chapter-naam -> `General` |
+| Plant Morphology | `Flower/ Fruits` -> `Flower/Fruits`; chapter-naam -> `General` |
+| Plant Physiology | `Nutrients in plants` -> `Nutrient in Plant`; `Plant Movements` -> `Adaptation in Plants` |
+| Ecology and Environment | `Ecosystem and Food Chain`, `Abiotic & Biotic Components`, `Trophic Levels` -> `Ecosystem` |
+| Reproduction in flowering Plants | sab -> single |
+| Economical Importance / Major Biologist / Major Branches / Miscellaneous / Genetic Engineering | sab -> single |
+
+Purani `ssc_chapter_theory` rows jinke subtopic ab exist nahi karte, wo delete kar denge (stale theory).
+
+## Step 2 — UI changes
+
+- `src/pages/SscBiology.tsx`: chapter card tabhi expandable hoga jab us chapter me 2+ real subtopics hon. Single-subtopic chapters seedha Quiz + Theory buttons dikhayenge, koi expand arrow nahi.
+- Subtopic row par Theory button tabhi dikhega jab us subtopic ki theory actually exist karti ho; warna sirf Quiz.
+- `src/pages/admin/AdminSscTheory.tsx`: "All pending subtopics" ab sirf un chapters ke subtopics queue karega jo subtopic-theory ke liye eligible hain (upar wale 4 chapters). Header me ye count clearly dikhega.
 
 ## Technical notes
 
-- Theory DB me store hoti hai, isliye ek baar generate → uske baad zero AI cost pe padhna.
-- Regenerate se purani theory overwrite hogi.
-- Long chapters ke liye batch+merge, aur per-request delay taaki daily quota na phate.
+- Step 1 ek data-update operation hai (`UPDATE ... SET subtopic = ...`), schema change nahi — table structure waisa hi rahega.
+- `fetchSscChapters` already subtopic ke naam se group karta hai, to normalization ke baad UI automatically clean list dikhayega — us function me change ki zarurat nahi.
+- Eligible-chapters ki list `src/lib/sscChapters.ts` me ek exported constant hogi, taki UI aur admin dono ek hi source use karein.
+- Questions, serial numbers, aur existing chapter-level theory par koi asar nahi — sirf subtopic labels badlenge.
