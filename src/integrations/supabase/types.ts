@@ -1531,6 +1531,36 @@ export type Database = {
           },
         ]
       }
+      trainer_content_edits: {
+        Row: {
+          created_at: string
+          html: string
+          id: string
+          selector: string
+          trainer_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          html: string
+          id?: string
+          selector: string
+          trainer_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          html?: string
+          id?: string
+          selector?: string
+          trainer_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       upsc_chapter_theory: {
         Row: {
           chapter_name: string
