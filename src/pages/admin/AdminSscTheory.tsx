@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
+import { fetchSscChapters, allowsSubtopicTheory, type ChapterInfo } from '@/lib/sscChapters';
 import { BookOpenText, Loader2, RefreshCw, Eye } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
@@ -97,13 +97,19 @@ export default function AdminSscTheory() {
     }
   }
 
+  // Sirf real subtopics (placeholder '—' nahi) aur sirf eligible chapters
+  const eligibleSubs = (c: ChapterInfo) =>
+    allowsSubtopicTheory(subject, c.chapter)
+      ? c.subtopics.filter((s) => s.name !== '—' && c.subtopics.length >= 2)
+      : [];
+
   const generateAllPending = () =>
     runQueue(chapters.filter((c) => !theories[keyOf(c.chapter)]).map((c) => ({ chapter: c.chapter, subtopic: '' })));
 
   const generateAllPendingSubtopics = () =>
     runQueue(
       chapters.flatMap((c) =>
-        c.subtopics
+        eligibleSubs(c)
           .filter((s) => !theories[keyOf(c.chapter, s.name)])
           .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
       ),
@@ -111,16 +117,17 @@ export default function AdminSscTheory() {
 
   const generateChapterSubtopics = (c: ChapterInfo) =>
     runQueue(
-      c.subtopics
+      eligibleSubs(c)
         .filter((s) => !theories[keyOf(c.chapter, s.name)])
         .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
     );
 
   const pending = chapters.filter((c) => !theories[keyOf(c.chapter)]).length;
   const pendingSubs = chapters.reduce(
-    (n, c) => n + c.subtopics.filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
+    (n, c) => n + eligibleSubs(c).filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
     0,
   );
+
 
 
   return (
