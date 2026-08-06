@@ -36,7 +36,16 @@ export const MATHS_TRAINERS: MathsTrainer[] = [
   { topic: 'partnership', slug: 'partnership', title: 'Partnership — Pattern Trainer', subtitle: 'Till page 77', file: 'partnership.html' },
   { topic: 'pipe_cistern', slug: 'pipe-cistern', title: 'Pipe & Cistern — Pattern Trainer', subtitle: 'Till page 37', file: 'pipe-cistern.html' },
   { topic: 'ages', slug: 'ages', title: 'Ages — Pattern Trainer', subtitle: '27 patterns', file: 'ages.html' },
+  { topic: 'algebra', slug: 'algebra-merged', title: 'Algebra — Full Sheet', subtitle: 'Pages 1–170 merged patterns', file: 'algebra-merged.html' },
+  { topic: 'algebra', slug: 'algebra-p1-92', title: 'Algebra — Pages 1–92', subtitle: 'Pattern → Method set', file: 'algebra-p1-92.html' },
+  { topic: 'algebra', slug: 'algebra-sheet02', title: 'Algebra — Sheet 02', subtitle: '25 patterns', file: 'algebra-sheet02.html' },
+  { topic: 'trigonometry', slug: 'trig-25-patterns', title: 'Trigonometry — 25 Patterns', subtitle: 'Q1–Q32 pattern set', file: 'trig-25-patterns.html' },
+  { topic: 'trigonometry', slug: 'trig-sheet01', title: 'Trigonometry — Sheet 01', subtitle: 'Q1–Q70', file: 'trig-sheet01.html' },
+  { topic: 'trigonometry', slug: 'trig-sheet04', title: 'Trigonometry — Sheet 04', subtitle: 'Pages 1–79', file: 'trig-sheet04.html' },
+  { topic: 'trigonometry', slug: 'trig-identities', title: 'Trigonometric Identities', subtitle: 'Pages 1–103', file: 'trig-identities.html' },
+  { topic: 'geometry', slug: 'centers-of-triangle', title: 'Centers of Triangle', subtitle: 'Q1–Q61 pattern set', file: 'centers-of-triangle.html' },
 ];
+
 
 export function trainersForTopic(topic: string): MathsTrainer[] {
   return MATHS_TRAINERS.filter((t) => t.topic === topic);
