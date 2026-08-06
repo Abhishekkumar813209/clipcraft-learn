@@ -108,6 +108,7 @@ export default function SscMathsCalculation() {
       <Section title="Powers & Roots" subtitle="Configurable range · Serial or Random · Easy / Medium" cards={POWERS} onOpen={open} />
       <Section title="Percentage" cards={PERCENT} onOpen={open} />
       <Section title="Trigonometry · Formula Recall" subtitle="Class 10 formula sheet · 5 profiles · Serial or Random" cards={TRIG} onOpen={open} />
+      <Section title="Algebra · x ± 1/x Formula Recall" subtitle="Powers ki poori chain — formula aur numeric dono" cards={ALGEBRA} onOpen={open} />
       <Section title="Mental Maths · Addition"       cards={ADD} onOpen={open} />
       <Section title="Mental Maths · Subtraction"    cards={SUB} onOpen={open} />
       <Section title="Mental Maths · Multiplication" cards={MUL} onOpen={open} />
