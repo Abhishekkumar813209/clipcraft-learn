@@ -487,7 +487,7 @@ export function genMental(op: Op, dA: number, dB: number, count = 100): CalcQ[] 
 }
 
 // ============ Meta / dispatcher ============
-export type ChapterKind = 'ranged' | 'percent' | 'mental' | 'trig';
+export type ChapterKind = 'ranged' | 'percent' | 'mental' | 'trig' | 'algebra';
 
 export interface ChapterMeta {
   title: string;
