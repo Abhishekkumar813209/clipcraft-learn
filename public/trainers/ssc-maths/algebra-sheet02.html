@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra Sheet-02 · 25 Pattern Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+
+  .secttl{ font-family:'Kalam',cursive; font-size:26px; margin:46px 0 14px 64px; color:var(--margin-red); }
+  .secttl .cnt{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:.08em; }
+  @media (max-width:640px){ .secttl{margin-left:36px;} }
+</style>
+<style>
+  .card code{ font-family:'JetBrains Mono',monospace; font-size:12.5px; background:#F2F6FF; border:1px solid #dfe7f5; color:#1d3f8f; border-radius:6px; padding:2px 6px; display:inline-block; margin:2px 0; }
+  .card code.ans{ background:#FFF3F1; border-color:#f3d3ce; color:#C0392B; font-weight:600; }
+  .lbl2{ display:block; margin-top:8px; color:#2F7D4F; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; }
+  .card .example{ overflow-wrap:anywhere; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Algebra Sheet-02 · Pattern Trainer</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Sheet-02 ke Q1–Q56 ko 25 patterns mein grouped — har pattern ke saath question numbers aur formula.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'cube', 'AP', 'identity', 'Q23', 'F-3'...">
+    </div>
+  </header>
+<h2 class="secttl">Algebra Sheet-02 · Q1–Q56 <span class="cnt">25 patterns</span></h2>
+<main class="grid">
+<article class="card" data-kw="perfect square sum = 0 q1, q2, q3 (a−p)² + (b−q)² + (c−r)² = 0 ⇒ a=p, b=q, c=r. put values in asked expression. key: each bracket = 0 separately">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 01</p>
+  <h3>Perfect square sum = 0</h3>
+  <p class="method-pill">Q1, Q2, Q3</p>
+  <div class="example">(a−p)² + (b−q)² + (c−r)² = 0 ⇒ a=p, b=q, c=r. Put values in asked expression. <b class="lbl2">Key:</b> <code class="ans">Each bracket = 0 separately</code></div>
+</article>
+<article class="card" data-kw="sum of squares of linear expressions = 0 q4 (x+y−z)² + (y+z−x)² + (z+x−y)² = 0 ⇒ each = 0 ⇒ add all ⇒ x+y+z = 0.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 02</p>
+  <h3>Sum of squares of linear expressions = 0</h3>
+  <p class="method-pill">Q4</p>
+  <div class="example">(x+y−z)² + (y+z−x)² + (z+x−y)² = 0 ⇒ each = 0 ⇒ add all ⇒ x+y+z = 0.</div>
+</article>
+<article class="card" data-kw="a²+b²+c² = 2(…) ± k (hidden perfect square) q5, q6, q7, q8, q9 convert to (a−α)²+(b−β)²+(c−γ)²=0. shortcut: variable = half the coefficient of that variable on rhs (with sign). shortcut: a = coeff of a ÷ 2 (from 2(…) form)">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 03</p>
+  <h3>a²+b²+c² = 2(…) ± k (hidden perfect square)</h3>
+  <p class="method-pill">Q5, Q6, Q7, Q8, Q9</p>
+  <div class="example">Convert to (a−α)²+(b−β)²+(c−γ)²=0. Shortcut: variable = half the coefficient of that variable on RHS (with sign). <b class="lbl2">Shortcut:</b> <code class="ans">a = coeff of a ÷ 2 (from 2(…) form)</code></div>
+</article>
+<article class="card" data-kw="(a+b+c) &amp;amp; (a²+b²+c²) given → (ab+bc+ca) q10 (a+b+c)² = a²+b²+c² + 2(ab+bc+ca)">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 04</p>
+  <h3>(a+b+c) &amp; (a²+b²+c²) given → (ab+bc+ca)</h3>
+  <p class="method-pill">Q10</p>
+  <div class="example"><code>(a+b+c)² = a²+b²+c² + 2(ab+bc+ca)</code></div>
+</article>
+<article class="card" data-kw="sign-variant identity (a+b−c) q11 (a+b−c)² = a²+b²+c² + 2(ab−bc−ac)">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 05</p>
+  <h3>Sign-variant identity (a+b−c)</h3>
+  <p class="method-pill">Q11</p>
+  <div class="example"><code>(a+b−c)² = a²+b²+c² + 2(ab−bc−ac)</code></div>
+</article>
+<article class="card" data-kw="find (a+b+c) with sign condition q12 square root gives ±; choose sign from given condition (a+b+c &amp;lt; 0 ⇒ negative value).">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 06</p>
+  <h3>Find (a+b+c) with sign condition</h3>
+  <p class="method-pill">Q12</p>
+  <div class="example">Square root gives ±; choose sign from given condition (a+b+c &lt; 0 ⇒ negative value).</div>
+</article>
+<article class="card" data-kw="sum, sum of squares &amp;amp; xz = y² → |z − x| q13 use (x+y+z)² to get y, then x+z and xz → factor pairs → difference.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 07</p>
+  <h3>Sum, sum of squares &amp; xz = y² → |z − x|</h3>
+  <p class="method-pill">Q13</p>
+  <div class="example">Use (x+y+z)² to get y, then x+z and xz → factor pairs → difference.</div>
+</article>
+<article class="card" data-kw="1/a + 1/b + 1/c given → abc q14 1/a+1/b+1/c = (ab+bc+ca)/abc with (a+b+c)² identity.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 08</p>
+  <h3>1/a + 1/b + 1/c given → abc</h3>
+  <p class="method-pill">Q14</p>
+  <div class="example"><code>1/a+1/b+1/c = (ab+bc+ca)/abc</code> with <code>(a+b+c)²</code> identity.</div>
+</article>
+<article class="card" data-kw="a³+b³+c³−3abc (form f-1) q15, q16 (a+b+c)[a²+b²+c² − (ab+bc+ca)]">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 09</p>
+  <h3>a³+b³+c³−3abc (Form F-1)</h3>
+  <p class="method-pill">Q15, Q16</p>
+  <div class="example"><code class="ans">(a+b+c)[a²+b²+c² − (ab+bc+ca)]</code></div>
+</article>
+<article class="card" data-kw="factorisation of x³+27y³+64z³−36xyz q17 a³+b³+c³−3abc = (a+b+c)(a²+b²+c²−ab−bc−ca)">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 10</p>
+  <h3>Factorisation of x³+27y³+64z³−36xyz</h3>
+  <p class="method-pill">Q17</p>
+  <div class="example"><code>a³+b³+c³−3abc = (a+b+c)(a²+b²+c²−ab−bc−ca)</code></div>
+</article>
+<article class="card" data-kw="big decimal fraction simplification q18 (a³+b³+c³−3abc) ÷ (a²+b²+c²−ab−bc−ca) = a+b+c">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 11</p>
+  <h3>Big decimal fraction simplification</h3>
+  <p class="method-pill">Q18</p>
+  <div class="example"><code class="ans">(a³+b³+c³−3abc) ÷ (a²+b²+c²−ab−bc−ca) = a+b+c</code></div>
+</article>
+<article class="card" data-kw="form f-2: (a+b+c) &amp;amp; (ab+bc+ca) q19, q20 (a+b+c)[(a+b+c)² − 3(ab+bc+ca)]">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 12</p>
+  <h3>Form F-2: (a+b+c) &amp; (ab+bc+ca)</h3>
+  <p class="method-pill">Q19, Q20</p>
+  <div class="example"><code class="ans">(a+b+c)[(a+b+c)² − 3(ab+bc+ca)]</code></div>
+</article>
+<article class="card" data-kw="form f-3: (a+b+c) &amp;amp; (a²+b²+c²) q21, q22 ((a+b+c)/2)[3(a²+b²+c²) − (a+b+c)²] — also used in reverse to find a²+b²+c².">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 13</p>
+  <h3>Form F-3: (a+b+c) &amp; (a²+b²+c²)</h3>
+  <p class="method-pill">Q21, Q22</p>
+  <div class="example"><code class="ans">((a+b+c)/2)[3(a²+b²+c²) − (a+b+c)²]</code> — also used in reverse to find a²+b²+c².</div>
+</article>
+<article class="card" data-kw="sum, sum of squares &amp;amp; sum of cubes → ∛(xyz) q23 use f-3 with x³+y³+z³ − 3xyz to extract xyz, then cube root.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 14</p>
+  <h3>Sum, sum of squares &amp; sum of cubes → ∛(xyz)</h3>
+  <p class="method-pill">Q23</p>
+  <div class="example">Use F-3 with x³+y³+z³ − 3xyz to extract xyz, then cube root.</div>
+</article>
+<article class="card" data-kw="consecutive / ap numbers → a³+b³+c³−3abc q24, q25, q26, q27, q31 = 9bd² (b = middle term, d = common difference). general: ((a+b+c)/2)[(a−b)²+(b−c)²+(c−a)²].">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 15</p>
+  <h3>Consecutive / AP numbers → a³+b³+c³−3abc</h3>
+  <p class="method-pill">Q24, Q25, Q26, Q27, Q31</p>
+  <div class="example"><code class="ans">= 9bd²</code> (b = middle term, d = common difference). General: ((a+b+c)/2)[(a−b)²+(b−c)²+(c−a)²].</div>
+</article>
+<article class="card" data-kw="ap numbers → a²+b²+c²−ab−bc−ca q28, q29, q30 = 3d² &amp;nbsp;|&amp;nbsp; = ½[(a−b)²+(b−c)²+(c−a)²]">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 16</p>
+  <h3>AP numbers → a²+b²+c²−ab−bc−ca</h3>
+  <p class="method-pill">Q28, Q29, Q30</p>
+  <div class="example"><code class="ans">= 3d²</code> &nbsp;|&nbsp; = ½[(a−b)²+(b−c)²+(c−a)²]</div>
+</article>
+<article class="card" data-kw="value of ½(a+b+c)[(a−b)²+(b−c)²+(c−a)²] q32 equals (a+b+c)[a²+b²+c²−(ab+bc+ca)]; get a+b+c from the (a+b+c)² identity.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 17</p>
+  <h3>Value of ½(a+b+c)[(a−b)²+(b−c)²+(c−a)²]</h3>
+  <p class="method-pill">Q32</p>
+  <div class="example">Equals (a+b+c)[a²+b²+c²−(ab+bc+ca)]; get a+b+c from the (a+b+c)² identity.</div>
+</article>
+<article class="card" data-kw="find (a−b)²+(b−c)²+(c−a)² q33 = 3(a²+b²+c²) − (a+b+c)²">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 18</p>
+  <h3>Find (a−b)²+(b−c)²+(c−a)²</h3>
+  <p class="method-pill">Q33</p>
+  <div class="example"><code class="ans">= 3(a²+b²+c²) − (a+b+c)²</code></div>
+</article>
+<article class="card" data-kw="link between (a³+b³+c³−3abc), (a+b+c) &amp;amp; sum of squared differences q34, q35 a³+b³+c³−3abc = ((a+b+c)/2)[(a−b)²+(b−c)²+(c−a)²] — solve for any missing part.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 19</p>
+  <h3>Link between (a³+b³+c³−3abc), (a+b+c) &amp; sum of squared differences</h3>
+  <p class="method-pill">Q34, Q35</p>
+  <div class="example"><code class="ans">a³+b³+c³−3abc = ((a+b+c)/2)[(a−b)²+(b−c)²+(c−a)²]</code> — solve for any missing part.</div>
+</article>
+<article class="card" data-kw="big-number expression simplification (form f-4) q36, q37 dividing by (a+b+c) → ½[(a−b)²+…]; dividing by [(a−b)²+…] → (a+b+c)/2.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 20</p>
+  <h3>Big-number expression simplification (Form F-4)</h3>
+  <p class="method-pill">Q36, Q37</p>
+  <div class="example">Dividing by (a+b+c) → ½[(a−b)²+…]; dividing by [(a−b)²+…] → (a+b+c)/2.</div>
+</article>
+<article class="card" data-kw="condition results of a³+b³+c³−3abc = 0 q38, q39, q40 a+b+c = 0 ⇒ a³+b³+c³ = 3abc. sign variants: a³−b³−c³−3abc = 0 ⇒ a = b+c.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 21</p>
+  <h3>Condition results of a³+b³+c³−3abc = 0</h3>
+  <p class="method-pill">Q38, Q39, Q40</p>
+  <div class="example">a+b+c = 0 ⇒ a³+b³+c³ = 3abc. Sign variants: a³−b³−c³−3abc = 0 ⇒ a = b+c.</div>
+</article>
+<article class="card" data-kw="cubic equation type → find x q41, q42, q43, q44 if a³+b³+c³ − 3abc = 0, then a+b+c = 0 → solve linear equation in x.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 22</p>
+  <h3>Cubic equation type → find x</h3>
+  <p class="method-pill">Q41, Q42, Q43, Q44</p>
+  <div class="example">If A³+B³+C³ − 3ABC = 0, then A+B+C = 0 → solve linear equation in x.</div>
+</article>
+<article class="card" data-kw="a³ ± b³ with (a ± b) and ab q45, q46, q47, q48, q49, q50 a³+b³ = (a+b)[(a+b)²−3ab] &amp;nbsp; a³−b³ = (a−b)[(a−b)²+3ab]">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 23</p>
+  <h3>a³ ± b³ with (a ± b) and ab</h3>
+  <p class="method-pill">Q45, Q46, Q47, Q48, Q49, Q50</p>
+  <div class="example"><code class="ans">a³+b³ = (a+b)[(a+b)²−3ab]</code> &nbsp; <code class="ans">a³−b³ = (a−b)[(a−b)²+3ab]</code></div>
+</article>
+<article class="card" data-kw="division type → find a, b, c q51, q52, q53, q54 (a³−b³)÷(a−b) = a²+ab+b² &amp;nbsp; (a³+b³)÷(a+b) = a²−ab+b² → compare coefficients.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 24</p>
+  <h3>Division type → find A, B, C</h3>
+  <p class="method-pill">Q51, Q52, Q53, Q54</p>
+  <div class="example"><code>(a³−b³)÷(a−b) = a²+ab+b²</code> &nbsp; <code>(a³+b³)÷(a+b) = a²−ab+b²</code> → compare coefficients.</div>
+</article>
+<article class="card" data-kw="expanded cubes of (x+y), (x−y) → a, b, c q55, q56 take a = k(x+y), b = m(x−y); expand (a³±b³) = (a∓b)(a²∓ab+b²), then match x², y², xy coefficients.">
+  <div class="tag">✓</div>
+  <p class="no">PATTERN 25</p>
+  <h3>Expanded cubes of (x+y), (x−y) → A, B, C</h3>
+  <p class="method-pill">Q55, Q56</p>
+  <div class="example">Take a = k(x+y), b = m(x−y); expand (a³±b³) = (a∓b)(a²∓ab+b²), then match x², y², xy coefficients.</div>
+</article>
+</main>
+  <footer>
+    <b>Total 56 questions · 25 patterns.</b> Search box se keyword ya question number (jaise "Q41") dhoondh sakte ho.
+  </footer>
+</div>
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  searchBox.addEventListener('input', () => {
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const kw = ((card.dataset.kw||'') + ' ' + card.textContent).toLowerCase();
+      card.classList.toggle('hidden', !(q === '' || kw.includes(q)));
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra (Pg 1–92) | Pattern → Method Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Algebra Class Notes 03 · Page 1–92 (Q1–Q70)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'symmetry', 'a+b+c=0', 'exponent', 'surd', 'cube', 'reciprocal'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="symmetry">Symmetry</button>
+      <button data-filter="identity">Identity</button>
+      <button data-filter="exponent">Exponent</button>
+      <button data-filter="surd">Surd</button>
+      <button data-filter="equation">Equation</button>
+      <button data-filter="misc">Misc</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="symmetry" data-kw="symmetry a=b=c put karo equal value putting a2+b2+c2=ab+bc+ca cyclic fraction 1/(1+a) abc denominator">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01 · Q1, Q2, Q3, Q4, Q5, Q8, Q9</p>
+      <h3>Concept of Symmetry → a = b = c rakh do</h3>
+      <p class="trigger">Trigger: expression poori tarah symmetric hai (a,b,c aapas mein badal do to same dikhe) aur condition bhi symmetric — seedha a=b=c=1 (ya jo condition allow kare) put karke value nikaalo.</p>
+      <div class="example">
+        <b>Q3:</b> a²+b²+c²=ab+bc+ca → a=b=c → (a+c)/b = <span class="ans">2</span>
+        <span class="q2"><b>Q2:</b> symmetric ratio (3x²+7y²+5z²)/(5x²y²+7y²z²+3z²x²) → put x=y=z=1 → <span class="ans">1</span></span>
+        <br><b>Q5:</b> a+b+c=4 wala (2+a)(2+b)(2+c)/abc type → a=b=c=4/3 → <span class="ans">option match</span>
+        <br><b>Q9:</b> 1/(1+a)+1/(1+b)+1/(1+c) → symmetric put → <span class="ans">1</span>
+        <br><b>Q1:</b> xy+yz+zx=1 → (x+y)(y+z) = y²+1 = <span class="ans">1+y²</span>
+      </div>
+    </article>
+
+    
+    <article class="card" data-cat="identity" data-kw="find x each term add 1 jodo denominator sum b+c c+a a+b equal zero three fractions">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02 · Q6, Q7</p>
+      <h3>"Find x" — har term mein 1 jodo/ghatao</h3>
+      <p class="trigger">Trigger: teen fractions ka sum 0 (ya 3) diya ho, denominators (b+c), (c+a), (a+b) — har term mein 1 add/subtract karke numerator common banao, phir x nikal aata hai.</p>
+      <div class="example">
+        <b>Q6:</b> (x+b²+2a²)/(c+a) + … = 0 → <span class="ans">−(a²+b²+c²)</span>
+        <span class="q2"><b>Q7:</b> (x−a²)/(b+c) + (x−b²)/(c+a) + (x−c²)/(a+b) = 3 → <span class="ans">a²+b²+c²</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="a+1/b=1 b+1/c=1 cyclic chain reciprocal abc=-1 ab+bc+ca">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03 · Q10</p>
+      <h3>Cyclic reciprocal: a + 1/b = 1, b + 1/c = 1</h3>
+      <p class="trigger">Trigger: do-teen cyclic reciprocal relations diye ho — ek variable ko value do (ya c ko a ke terms mein likho), chain solve karo; standard result abc = −1.</p>
+      <div class="example">
+        <b>Q10:</b> a+1/b = 1, b+1/c = 1 → (i) c+1/a = <span class="ans">1</span>, (ii) abc = <span class="ans">−1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exponent" data-kw="a^x=(x+y+z)^y exponent power multiply a^m=b^m x+y+z value 1">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04 · Q11</p>
+      <h3>aˣ = (x+y+z)ʸ chain → teeno multiply karo</h3>
+      <p class="trigger">Trigger: aˣ, aʸ, a^z alag-alag powers of (x+y+z) ke barabar diye ho — teeno equations multiply karo, a^(x+y+z) = (x+y+z)^(x+y+z) → base compare.</p>
+      <div class="example">
+        <b>Q11:</b> aˣ=(x+y+z)ʸ, aʸ=(x+y+z)^z, a^z=(x+y+z)ˣ → x+y+z = <span class="ans">1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="a+b+c=0 a3+b3+c3=3abc a2-bc special concept ratio 3 1">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05 · Q12, Q13, Q14</p>
+      <h3>a+b+c = 0 → a³+b³+c³ = 3abc (special concept)</h3>
+      <p class="trigger">Trigger: condition a+b+c=0 aur expression mein cubes ya (a²−bc) type denominators — put a=1, b=1, c=−2 (ya 1,−1,0 nahi) se seedha value.</p>
+      <div class="example">
+        <b>Q12:</b> (a³+b³+c³)/(a²−bc) type → <span class="ans">3</span>
+        <span class="q2"><b>Q13:</b> (a²−bc)/(b²−ca) → <span class="ans">1</span></span>
+        <br><b>Q14:</b> (a²+b²+c²)/(ab+bc+ca) → <span class="ans">−2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="value putting x+y=1 x3+3xy+y3 ssc cgl mains 2022 substitute 1 0">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06 · Q15</p>
+      <h3>Concept of Value Putting</h3>
+      <p class="trigger">Trigger: chhoti condition (x+y=1) aur bada expression — condition satisfy karne wali sabse aasan values (x=1, y=0) daal do, seedha answer.</p>
+      <div class="example">
+        <b>Q15:</b> x+y=1 → x³+3xy+y³ = 1+0+0 = <span class="ans">1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="a+b ab given a2+b2 a3+b3 formula (a+b)^2-2ab (a+b)^3-3ab(a+b) sum product">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07 · Q16, Q35, Q36</p>
+      <h3>(a+b) aur ab diya → a²+b², a³+b³</h3>
+      <p class="trigger">Trigger: sum aur product dono diye ho — a²+b² = (a+b)²−2ab, a³+b³ = (a+b)³−3ab(a+b). Bas plug karo.</p>
+      <div class="example">
+        <b>Q16:</b> a+b=6, ab=5 → 216−90 = <span class="ans">126</span>
+        <span class="q2"><b>Q35:</b> a+b=5, ab=10 → 25−20 = <span class="ans">5</span></span>
+        <br><b>Q36:</b> a+b=11, ab=28 → 1331−924 = <span class="ans">407</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="a3+b3=217 a+b=7 find ab reverse cube formula">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08 · Q17</p>
+      <h3>a³+b³ aur (a+b) diya → ab nikalo (reverse)</h3>
+      <p class="trigger">Trigger: cube ka sum diya hai aur ab poocha — a³+b³ = (a+b)³ − 3ab(a+b) ko ulta chalao.</p>
+      <div class="example">
+        <b>Q17:</b> 217 = 343 − 21ab → ab = <span class="ans">6</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="r+1/r=16 r3+1/r3 ladder square cube a2+16/a2 reciprocal power">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09 · Q18, Q19</p>
+      <h3>r + 1/r ka ladder → r² , r³ , r⁴</h3>
+      <p class="trigger">Trigger: koi cheez apne reciprocal ke saath di ho — square karke r²+1/r², cube karke r³+1/r³ (= k³−3k). Coefficient wale case mein pehle form banao.</p>
+      <div class="example">
+        <b>Q18:</b> r+1/r = 16 → r³+1/r³ = 4096 − 48 = <span class="ans">4048</span>
+        <span class="q2"><b>Q19:</b> a²+16/a² wala → ladder se <span class="ans">17</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="x+6y=8 xy=2 x3+216y3 x2+9y2=40 xy=4 x3+27y3 coefficient cube a3+b3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10 · Q20, Q22</p>
+      <h3>Coefficient wale cubes: x³ + 216y³, x³ + 27y³</h3>
+      <p class="trigger">Trigger: (x + ky) ya (x² + k²y²) aur xy diya ho, aur x³ + k³y³ poocha ho — a = x, b = ky maan lo, phir standard a³+b³ formula.</p>
+      <div class="example">
+        <b>Q20:</b> x+6y=8, xy=2 → 512 − 3·12·8 = <span class="ans">224</span>
+        <span class="q2"><b>Q22:</b> x²+9y²=40, xy=4 → x+3y=8 → 512−3·12·8 = <span class="ans">224</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="a2+b2=65 ab=8 a2-b2 difference a-b a+b 65 63">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11 · Q21</p>
+      <h3>a²+b² aur ab diya → a²−b²</h3>
+      <p class="trigger">Trigger: a²+b² aur ab diya, difference poocha — (a+b)² = 65+16 = 81, (a−b)² = 65−16 = 49 → a²−b² = (a+b)(a−b).</p>
+      <div class="example">
+        <b>Q21:</b> (a+b)=9, (a−b)=7 → 9×7 = <span class="ans">63</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="xy=-6 x3+y3=19 integers x+y value 1 sum cube reverse">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12 · Q23</p>
+      <h3>xy aur x³+y³ diya → (x+y) nikalo</h3>
+      <p class="trigger">Trigger: product aur cube-sum diya, integers bola hai — x³+y³ = (x+y)³ − 3xy(x+y), s³+18s = 19 → s ka integer root try karo.</p>
+      <div class="example">
+        <b>Q23:</b> s³ + 18s − 19 = 0 → s = <span class="ans">1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="symmetry" data-kw="a+b+c=0 cyclic fraction (a+b)/c (b+c)^2/bc value 3 -3 9 product of two sums chsl cgl 2019 2021 2022">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13 · Q24, Q26, Q27, Q28, Q29</p>
+      <h3>a+b+c = 0 → cyclic fraction sums (−3 / 3 / 9)</h3>
+      <p class="trigger">Trigger: condition a+b+c=0 (ya a+b−c=0) aur (a+b)/c, (b+c)²/bc jaise cyclic fractions — a=b=1, c=−2 put karke seedha value; do sums ka product ho to dono alag nikaal kar multiply.</p>
+      <div class="example">
+        <b>Q24:</b> (a+b)/c + (b+c)/a + (c+a)/b = <span class="ans">−3</span>
+        <span class="q2"><b>Q26:</b> (b+c)²/bc + (c+a)²/ca + (a+b)²/ab = <span class="ans">3</span></span>
+        <br><b>Q27:</b> a+b−c=0 wala /4bc chain = <span class="ans">3/4</span>
+        <br><b>Q28:</b> x+y+z=0 → (x³+y³+z³)/xyz × (…) = <span class="ans">6</span>
+        <br><b>Q29:</b> (−3) × (−3) = <span class="ans">9</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="symmetry" data-kw="1/x-1/y+1/z=0 x2/2yz y2/2xz z2/2xy value 3/2 reciprocal condition">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14 · Q25</p>
+      <h3>1/x − 1/y + 1/z = 0 → x²/2yz + … type</h3>
+      <p class="trigger">Trigger: reciprocals ka sum zero diya ho — 1/x, 1/y, 1/z ko a, b, c maan lo (a+b+c=0 ban gaya), phir a³+b³+c³=3abc lagakar answer 3/2.</p>
+      <div class="example">
+        <b>Q25:</b> put x=1, y=2, z=−2 style → value = <span class="ans">3/2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="symmetry" data-kw="xyz-x2-y2-z2 reciprocal chain x=a/b+b/a y=b/c+c/b z=c/a+a/c value 4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15 · Q30</p>
+      <h3>x = a/b + b/a chain → xyz − x² − y² − z²</h3>
+      <p class="trigger">Trigger: x, y, z alag-alag reciprocal jodon se bane ho — a=b=c=1 put karo → x=y=z=2 → 8−4−4−4.</p>
+      <div class="example">
+        <b>Q30:</b> 8 − 12 = <span class="ans">−4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="positive integers find c a2+b2+c2 ab-bc-ca -2 a+b=5c value of c trial 1024 602">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16 · Q31, Q67</p>
+      <h3>Positive integers diye ho → c ki value trial se</h3>
+      <p class="trigger">Trigger: "a, b, c are positive integers" likha ho aur ek equation/ratio diya ho — options ko back-substitute karo ya condition (a+b = kc) ko relation mein daal do.</p>
+      <div class="example">
+        <b>Q31:</b> equation satisfy karne wala integer c = <span class="ans">option verify se</span>
+        <span class="q2"><b>Q67:</b> (a²+b²+c²−1024)/(ab−bc−ca) = −2, a+b = 5c → c = <span class="ans">8</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="x=a+1/a y=a-1/a x4+y4-2x2y2 (x2-y2)^2 16a2 square difference">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17 · Q32</p>
+      <h3>x = a + 1/a, y = a − 1/a → √(x⁴+y⁴−2x²y²)</h3>
+      <p class="trigger">Trigger: x⁴+y⁴−2x²y² dikhe to turant (x²−y²)² pehchano — root lene par |x²−y²| = |(x+y)(x−y)| = 2a × 2/a wala simple form.</p>
+      <div class="example">
+        <b>Q32:</b> (x²−y²) = 4 → hmm x+y = 2a, x−y = 2/a → x²−y² = 4 → <span class="ans">4</span> (a-form option ke hisaab se)
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="x=2-p x3+6xp+p3 (x+p)^3 identity product a+b+2c a2+b2+4c2-ab-2bc-2ca a3+b3+8c3-6abc">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18 · Q33, Q34</p>
+      <h3>(x+p)³ trick aur a³+b³+c³−3abc identity</h3>
+      <p class="trigger">Trigger: x = k − p diya ho aur x³ + 3xp·(…) + p³ poocha — (x+p)³ bana lo. Ya (a+b+c)(a²+b²+c²−ab−bc−ca) dikhe to seedha a³+b³+c³−3abc.</p>
+      <div class="example">
+        <b>Q33:</b> x = 2 − p → x³+6xp+p³ = (x+p)³ = <span class="ans">8</span>
+        <span class="q2"><b>Q34:</b> (a+b+2c)(a²+b²+4c²−ab−2bc−2ca) = <span class="ans">a³+b³+8c³−6abc</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="p(p2+3p+3) (p+1)^3-1 p=11 1727 p=38 59318 x=9 x5-10x4+10x3-10x2+10x-1 value 8">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19 · Q37, Q38, Q39</p>
+      <h3>p(p²+3p+3) = (p+1)³ − 1 · aur x=9 wala polynomial</h3>
+      <p class="trigger">Trigger: p³+3p²+3p pattern dikhe → (p+1)³−1. Bada polynomial with 10 coefficients aur x=9 → 10 ko (x+1) likh kar har step mein cancel karte jao.</p>
+      <div class="example">
+        <b>Q37:</b> p=11 → 12³−1 = <span class="ans">1727</span>
+        <span class="q2"><b>Q38:</b> p=38 → 39³−1 = <span class="ans">59318</span></span>
+        <br><b>Q39:</b> x=9, 10 = x+1 → x⁵−10x⁴+10x³−10x²+10x−1 = <span class="ans">8</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="a4+a2b2+b4 factorisation (a2+ab+b2)(a2-ab+b2) x4+x2y2+y4=21 x2+xy+y2=7 273 13 16a4+36a2b2+81b4 a6-b6 cube difference">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20 · Q40, Q41, Q51, Q52, Q53, Q61</p>
+      <h3>a⁴ + a²b² + b⁴ = (a²+ab+b²)(a²−ab+b²)</h3>
+      <p class="trigger">Trigger: x⁴ + x²y² + y⁴ (ya 16a⁴+36a²b²+81b⁴) diya ho aur ek bracket ki value bhi di ho — divide karke dusra bracket nikaalo, phir dono ko jod/ghata kar xy ya x/y+y/x.</p>
+      <div class="example">
+        <b>Q51:</b> 21 ÷ 7 = 3 → x/y + y/x = <span class="ans">5/2</span>
+        <span class="q2"><b>Q52:</b> 273 ÷ 13 = 21 → xy = <span class="ans">4</span></span>
+        <br><b>Q53:</b> 91 ÷ 13 = 7 → 6ab = −6 → 3ab = <span class="ans">−3</span>
+        <br><b>Q40/Q41:</b> a⁶+b⁶ / (x−y) wale — isi factorisation se
+        <br><b>Q61:</b> (a⁶−b⁶)³ sum ÷ sum → 5/2 × 3(a³−b³)(b³−c³)(c³−a³) = <span class="ans">5/2 (a³−b³)(b³−c³)(c³−a³)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exponent" data-kw="2^x=3^y=6^z 1/x+1/y-1/z=0 3^a=27^b=81^c abc=144 12x3 exponent k method x^a/x^b product of powers">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21 · Q42, Q43, Q60, Q66</p>
+      <h3>aˣ = bʸ = cᶻ → k-method (1/x + 1/y = 1/z)</h3>
+      <p class="trigger">Trigger: alag-alag base ki equal powers — sabko k maan lo, a = k^(1/x) etc.; agar a·b = c ho to 1/x + 1/y = 1/z. Powers ka product ho to exponents add karke x⁰ = 1.</p>
+      <div class="example">
+        <b>Q42:</b> 2ˣ=3ʸ=6ᶻ → 1/x + 1/y − 1/z = <span class="ans">0</span>
+        <span class="q2"><b>Q43/Q66:</b> 3ᵃ=27ᵇ=81ᶜ, abc=144 → a:b:c = 12:4:3 → value = <span class="ans">option (ratio se)</span></span>
+        <br><b>Q60:</b> x^(a−b)·x^(b−c)·x^(c−a) type product = <span class="ans">1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="exponent" data-kw="5^x+12^x=13^x 6^x+8^x=10^x pythagorean triplet value of x 2 triplet 3 4 5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22 · Q45, Q46</p>
+      <h3>aˣ + bˣ = cˣ → Pythagorean triplet pehchano</h3>
+      <p class="trigger">Trigger: teen numbers jo triplet bante hain (5,12,13 / 6,8,10) — jis power par triplet satisfy hota hai wahi x. Yahan hamesha square, so x = 2 (RHS ki power dekh ke adjust karo).</p>
+      <div class="example">
+        <b>Q45:</b> 5ˣ+12ˣ=13ˣ form → x = <span class="ans">2</span>
+        <span class="q2"><b>Q46:</b> 6ˣ+8ˣ=10^(x+2)? → triplet se x = <span class="ans">8</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="surd" data-kw="86-60root2 a-b root2 nested surd x=root(1+root3/2)-root(1-root3/2) cube root 27 rationalise decimal place cgl tier 2 2019">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23 · Q47, Q48, Q50, Q54, Q55, Q57</p>
+      <h3>Surd banao perfect square / rationalise karo</h3>
+      <p class="trigger">Trigger: √(86−60√2) jaisa nested surd → 2ab form mein todo (a−b)². x = √(1+√3/2) − √(1−√3/2) type mein pehle x² nikaalo, phir expression mein daal kar rationalise.</p>
+      <div class="example">
+        <b>Q47:</b> 86 − 2·30√2 → (√50 − √36)² → a=√50, b=6 → √(a²+b²) ≈ <span class="ans">8.2</span>
+        <span class="q2"><b>Q48/Q57:</b> x² se x nikaalo → (√3−x)/(√3+x) ≈ <span class="ans">0.27</span> / <span class="ans">1.2</span></span>
+        <br><b>Q50:</b> cube-root wale x, y → x³ = y³ relation → x²+y² = <span class="ans">option</span>
+        <br><b>Q54/Q55:</b> ganda surd equation → x aur y solve karke expression mein daalo (<span class="ans">12</span>)
+      </div>
+    </article>
+
+    <article class="card" data-cat="equation" data-kw="x2-5x+25=0 x3=-125 x2+4x=8 x4+64/x2 8k3+15k2-2=0 k+1/k x=7+7^1/3+7^2/3 cubic equation higher power">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24 · Q56, Q62, Q63, Q64, Q69</p>
+      <h3>Equation se x³ ya (k + 1/k) → higher power banao</h3>
+      <p class="trigger">Trigger: quadratic/cubic equation di ho aur bahut badi power poochi ho — equation ko (x+a) se multiply karke x³ ka simple value banao, ya factorise karke k ki value nikaalo; x = a + a^⅓ + a^⅔ ho to (x−a) ka cube lo.</p>
+      <div class="example">
+        <b>Q63:</b> x²−5x+25=0 → x³ = −125 → x⁵−5x⁴−3100 = <span class="ans">25</span>
+        <span class="q2"><b>Q56:</b> 8k³+15k²−2=0 → (k+2)(8k²−1)=0 → k+1/k = <span class="ans">25/8 wala positive value</span></span>
+        <br><b>Q62:</b> x²+4x=8 → x⁴+64/x² = <span class="ans">128</span>
+        <br><b>Q64:</b> quadratic se (x²+5x) block bana kar solve → <span class="ans">6</span>
+        <br><b>Q69:</b> x = 7+7^⅓+7^⅔ → (x−7)³ = 7(…) → <span class="ans">x³−21x²+126x−252 = 0</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="misc" data-kw="chained equal fractions 2x+3y+5z divisibility px3+x2+3x+q x+2 x-2 remainder theorem ab+bc+ca=0 ax+by=8 ay-bx=6 a3-b3=602 assertion reason ab(a-b)+bc(b-c)+ca(c-a)">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25 · Q44, Q49, Q58, Q59, Q65, Q68, Q70</p>
+      <h3>Misc: chained fractions, divisibility, identity-based misc</h3>
+      <p class="trigger">Trigger: chapter-end miscellaneous — equal chained fractions (sab = k), remainder theorem (x = ±2 put karo), ab+bc+ca=0 → 1/a+1/b+1/c type, aur (ax+by)²+(ay−bx)² = (a²+b²)(x²+y²) identity.</p>
+      <div class="example">
+        <b>Q44:</b> chained fractions = k → 2x+3y+5z = <span class="ans">44</span>
+        <span class="q2"><b>Q49:</b> ab(a−b)+bc(b−c)+ca(c−a) = <span class="ans">−(a−b)(b−c)(c−a)</span></span>
+        <br><b>Q58:</b> ab+bc+ca = 0 → 1/(a+b) type sum = <span class="ans">0</span>
+        <br><b>Q59:</b> px³+x²+3x+q ÷ (x+2)(x−2) → x=±2 se <span class="ans">p, q dono nikal aate</span>
+        <br><b>Q65:</b> (ax+by)²+(ay−bx)² = 100 = (a²+b²)(x²+y²), sum 29 → <span class="ans">option</span>
+        <br><b>Q68:</b> a³−b³=602, a−b=2 → 3ab = 297 → a²+b² = <span class="ans">202</span>
+        <br><b>Q70:</b> Assertion-Reason: (a+b)³ & (x+y)² identities → <span class="ans">A aur R dono sahi, R correct explanation</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>25 patterns ab tak</b> — Algebra Class Notes 03, page 1 se 92 tak (Q1–Q70). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

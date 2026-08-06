@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pattern → Method | Discount Trainer</title>
+<title>Pattern → Method | Discount Trainer (Class Notes p1–132)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -55,7 +55,7 @@
     margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
   }
   @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
-  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:680px; }
   @media (max-width:640px){ .sub{margin-left:36px;} }
 
   .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
@@ -74,6 +74,12 @@
   }
   .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
 
+  .secttl{
+    font-family:'Kalam',cursive; font-size:24px; margin:34px 0 10px 64px;
+    color:var(--margin-red); grid-column:1/-1;
+  }
+  @media (max-width:640px){ .secttl{margin-left:0;} }
+
   .grid{
     margin-left:64px;
     display:grid; grid-template-columns:1fr 1fr; gap:14px;
@@ -85,6 +91,7 @@
     background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
     padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
   }
+  .card.lesson{ border-left:4px solid var(--ink-blue); background:#FBFCFE; }
   .card .tag{
     position:absolute; top:14px; right:14px;
     width:26px; height:26px; border-radius:50%;
@@ -100,10 +107,10 @@
   .card h3{
     font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
   }
-  .method-pill{
-    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
-    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
-    margin:0 0 10px 0; font-weight:600;
+  .src{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; line-height:1.5;
+    color:var(--muted); background:#F4F6FA; border:1px dashed var(--paper-line);
+    border-radius:7px; padding:5px 8px; margin:0 0 9px 0;
   }
   .trigger{
     font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
@@ -116,8 +123,11 @@
   .example b{ color:var(--check-green); }
   .example .ans{ color:var(--margin-red); font-weight:700; }
   .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+  .example ul{ margin:6px 0 0 0; padding-left:18px; }
+  .example li{ margin-bottom:3px; }
+  .mono{ font-family:'JetBrains Mono',monospace; font-size:12.5px; }
 
-  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:680px; line-height:1.7; }
   @media (max-width:640px){ footer{margin-left:36px;} }
   footer b{ color:var(--ink-blue-dark); }
 
@@ -127,274 +137,342 @@
 <body>
 <div class="wrap">
   <header>
-    <p class="eyebrow">Aditya Ranjan Sir · Discount (बट्टा) Class Notes</p>
+    <p class="eyebrow">Maths · Discount · Class Notes p1–132 (Q1–Q84)</p>
     <h1>Question dekho, pattern pakdo.</h1>
-    <p class="sub">Trigger line padho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <p class="sub">Poore Discount chapter ke 84 solved questions ko 25 genuine patterns mein nichoda gaya hai. Har card par SRC line = kaunse page par kaunsa question number hai.</p>
     <div class="controls">
-      <input type="text" id="searchBox" placeholder="Search: 'buy get free', 'successive', 'marked price', 'profit', 'scheme'...">
+      <input type="text" id="searchBox" placeholder="Search: 'buy get free', 'successive', 'equal discount', 'MP nikalna', 'profit', 'GST'...">
       <button data-filter="all" class="active">Sab</button>
-      <button data-filter="free">Buy-Get-Free</button>
-      <button data-filter="succ">Successive D</button>
-      <button data-filter="ratio">Ratio Method</button>
-      <button data-filter="basic">MP-SP-D%</button>
-      <button data-filter="scheme">Scheme Compare</button>
-      <button data-filter="profit">D + Profit</button>
+      <button data-filter="basic">Basic + Buy-Get-Free</button>
+      <button data-filter="succ">Successive</button>
+      <button data-filter="reverse">Reverse / Missing</button>
+      <button data-filter="profit">Discount + Profit</button>
+      <button data-filter="mixed">Mixed / Odd</button>
     </div>
   </header>
 
   <main class="grid" id="cardGrid">
 
-    <article class="card" data-cat="free" data-kw="buy x get y free muft scheme bangles shirts chudiyan discount percent y/(x+y) खरीदें मुफ्त छूट">
+    <h2 class="secttl" data-sec="basic">A · BASE + BUY-GET-FREE (P1–P4)</h2>
+
+    <article class="card lesson" data-cat="basic" data-kw="discount formula MP SP marked price selling price छूट अंकित मूल्य विक्रय मूल्य ratio basic base">
       <div class="tag">✓</div>
       <p class="no">PATTERN 01</p>
-      <h3>"Buy x get y free" → D% = y/(x+y)</h3>
-      <p class="trigger">Trigger: "x vastu khareedne par y vastu muft" / "buy 3 get 2 free" — seedha discount % poocha jaaye.</p>
+      <p class="src">SRC · p4 (definitions) · p5–p6 (ratio method)</p>
+      <h3>Base formula — D% hamesha MP par</h3>
+      <p class="trigger">Trigger: "marked price / अंकित मूल्य ... discount ... selling price" — koi bhi discount question.</p>
       <div class="example">
-        <b>Q1:</b> Buy 7 get 2 free → 2/9×100 = <span class="ans">22²⁄₉%</span>
-        <span class="q2"><b>Q2:</b> Buy 3 get 2 free → 2/5×100 = <span class="ans">40%</span></span>
-        <br><b>Q3:</b> 24 bangles par 6 free → 6/30×100 = <span class="ans">20%</span>
+        <b>Formula:</b> <span class="mono">D = MP − SP</span>, <span class="mono">D% = (MP−SP)/MP × 100</span>. Discount CP par kabhi nahi lagta.
+        <span class="q2"><b>Ratio trick (p5):</b> MP:SP = 4:3 → D% = 1/4 × 100 = <span class="ans">25%</span>. Ratio dikhte hi difference/MP kar do.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="free" data-kw="buy get free compare scheme A B maximum discount which better dono yojana tulna">
+    <article class="card" data-cat="basic" data-kw="buy get free x free scheme मुफ्त discount percentage bangles shirts 7 get 2">
       <div class="tag">✓</div>
       <p class="no">PATTERN 02</p>
-      <h3>Do "Buy-Get-Free" schemes mein kaunsi badi?</h3>
-      <p class="trigger">Trigger: "Scheme A: buy 3 get 4 free, Scheme B: buy 5 get 6 free — kis scheme mein discount% maximum?"</p>
+      <p class="src">SRC · p7 Q1 · p8 Q2 · p9 Q3</p>
+      <h3>"Buy x get y free" → y/(x+y) × 100</h3>
+      <p class="trigger">Trigger: "Buy 7 get 2 free", "3 खरीदो 2 मुफ्त", "24 bangles par 6 free" — paise sirf x ke, saaman x+y.</p>
       <div class="example">
-        <b>Q4:</b> A = 4/7×100 = 57¹⁄₇%, B = 6/11×100 = 54⁶⁄₁₁% → <span class="ans">Scheme A</span>
+        <b>Q1 (p7):</b> Buy 7 get 2 free → 2/9 × 100 = <span class="ans">22.22%</span> (14.28% trap = 1/7, galat).
+        <span class="q2"><b>Q2 (p8):</b> Buy 3 get 2 free → 2/5 = <span class="ans">40%</span>. &nbsp;<b>Q3 (p9):</b> 24 par 6 free → 6/30 = <span class="ans">20%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="free" data-kw="buy get free plus additional discount extra off combine single equivalent 11 get 3 free 12.5% ratio MP SP">
+    <article class="card" data-cat="basic" data-kw="which scheme maximum discount compare best scheme buy get free comparison सबसे ज्यादा छूट">
       <div class="tag">✓</div>
       <p class="no">PATTERN 03</p>
-      <h3>Buy-Get-Free + upar se aur % off → single D%</h3>
-      <p class="trigger">Trigger: "buy x get y free + z% additional discount" — equivalent single discount poocha jaaye. Free wale ko fraction bana ke ratio chain karo.</p>
+      <p class="src">SRC · p10 Q4 · p57 Q31 · p58 Q32</p>
+      <h3>Scheme comparison — sabko D% mein convert karo</h3>
+      <p class="trigger">Trigger: "Which scheme has maximum discount percentage?", "किस योजना में अधिकतम छूट?" — 2–4 options.</p>
       <div class="example">
-        <b>Q7:</b> Buy 11 get 3 free (14:11) + 12.5% (8:7) → MP:SP = 16:11 → 5/16×100 = <span class="ans">31.25%</span>
-        <span class="q2"><b>Q(HW):</b> Buy 3 get 2 free (5:3) + 20% (5:4) + 25% (4:3) → 25:9 → <span class="ans">64%</span></span>
-        <br><b>Q(HW):</b> Buy 4 get 3 free (7:4→5:4 chain) → 25:14 → <span class="ans">44%</span>
+        <b>Q4 (p10):</b> Buy3get4free = 4/7 = 57.1% vs Buy5get6free = 6/11 = 54.5% → <span class="ans">A</span>.
+        <span class="q2"><b>Q31 (p57):</b> 6get4 = 40%, 5get5 = 50%, (18%,24%) = 37.68% → <span class="ans">Only B</span>. &nbsp;<b>Q32 (p58):</b> 40% vs (15,15)=27.75% vs 2get1=33.33% vs 5get3=37.5% → <span class="ans">40% wali</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="succ" data-kw="two successive discounts equal single discount 10% 10% 25% 25% formula a+b-ab/100 kramik chhut">
+    <article class="card" data-cat="basic" data-kw="buy get free plus additional discount extra off 12.5% additional 11 get 3 combo scheme">
       <div class="tag">✓</div>
       <p class="no">PATTERN 04</p>
-      <h3>Do successive discount → single equivalent (a+b−ab/100)</h3>
-      <p class="trigger">Trigger: "x% ki do/do alag kramik chhut dena kitne % ki ek chhut ke barabar hai?"</p>
+      <p class="src">SRC · p17–p18 Q7 · p19–p21 (buy3get2 + 10% off)</p>
+      <h3>Buy-get-free + upar se extra discount</h3>
+      <p class="trigger">Trigger: "Buy 11 get 3 free <b>+ 12.5% additional discount</b>" — do stage.</p>
       <div class="example">
-        <b>Q5:</b> 10%+10% → 20−1 = <span class="ans">19%</span>
-        <span class="q2"><b>Q6:</b> 25%+25% → 50−6.25 = <span class="ans">43.75%</span></span>
-        <br><b>Q9:</b> 9%+17% → 26−1.53 = <span class="ans">24.47%</span>
+        <b>Q7 (p17):</b> 3/14 = 21.43%, phir a+b−ab/100 with 12.5% → <span class="ans">31.25%</span>.
+        <span class="q2"><b>p21 shortcut:</b> MP:SP ratio banao — buy3get2 → 5:3, phir 10% off → 5:2.7 → D = 2.3/5 = <span class="ans">46%</span>. Ratio route hamesha safe.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="succ" data-kw="three successive discounts 12 18 25 single equivalent formula abc/10000 teen kramik chhut 20 35 10">
+    <h2 class="secttl" data-sec="succ">B · SUCCESSIVE DISCOUNT (P12–P34, P52–P76)</h2>
+
+    <article class="card lesson" data-cat="succ" data-kw="successive discount two a+b-ab/100 क्रमिक छूट equivalent single discount 10 20">
       <div class="tag">✓</div>
       <p class="no">PATTERN 05</p>
-      <h3>Teen successive discounts → single D%</h3>
-      <p class="trigger">Trigger: "12%, 18% aur 25% ki teen kramik chhut ke barabar single discount?" — (a+b+c) − (ab+bc+ca)/100 + abc/10000.</p>
+      <p class="src">SRC · p12–p13 (method) · p15 Q5 · p16 Q6 · p23 Q8 · p24 Q9 · p25 Q10</p>
+      <h3>Do successive discount → <span class="mono">a+b−ab/100</span></h3>
+      <p class="trigger">Trigger: "two successive discounts of a% and b%", "equivalent to a single discount of ___%".</p>
       <div class="example">
-        <b>Q12:</b> 12,18,25 → step-wise: 12+18−2.16 = 24.84; 24.84+25−6.21 = <span class="ans">45.88%</span>
-        <span class="q2"><b>Q14:</b> 20,35,10 → 65 − (7+3.5+2) + 0.7 = <span class="ans">53.2%</span></span>
+        <b>Q5 (p15):</b> 10,10 → 20−1 = <span class="ans">19%</span>. &nbsp;<b>Q6 (p16):</b> 25,25 → 50−6.25 = <span class="ans">43.75%</span>.
+        <span class="q2"><b>Q8 (p23):</b> 10,20 → <span class="ans">28%</span>. &nbsp;<b>Q9 (p24):</b> 9,17 → 26−1.53 = <span class="ans">24.47%</span>. &nbsp;<b>Q10 (p25):</b> 20,10 → <span class="ans">28%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="ratio" data-kw="ratio method MP SP fraction 10% = 1/10 chain multiply column method 100:81 unit">
+    <article class="card" data-cat="succ" data-kw="fraction percentage 14 2/7 16 2/3 mixed fraction discount भिन्न प्रतिशत ratio method">
       <div class="tag">✓</div>
       <p class="no">PATTERN 06</p>
-      <h3>Ratio Method: har discount ko fraction bana ke MP:SP chain</h3>
-      <p class="trigger">Trigger: discount values aise ho jo aasan fraction bane (10%=1/10, 20%=1/5, 12.5%=1/8, 25%=1/4) — formula ki jagah column chain karo.</p>
+      <p class="src">SRC · p26 Q11</p>
+      <h3>Fraction-type % (14 2/7%, 16 2/3%) → fraction mein todo</h3>
+      <p class="trigger">Trigger: Discount mein mixed fraction dikhe — "14 2/7% और 16 2/3% की छूट".</p>
       <div class="example">
-        <b>Ex:</b> 10%+10% → MP:SP = 10:9 × 10:9 = 100:81 → D = 19/100 = <span class="ans">19%</span>
-        <span class="q2"><b>Ex:</b> 20%+20% → 5:4 × 5:4 = 25:16 → 9/25 = <span class="ans">36%</span></span>
+        <b>Q11 (p26):</b> 14 2/7% = 1/7 → MP:SP = 7:6; 16 2/3% = 1/6 → 6:5. Chain: 7:5 → D = 2/7 × 100 = <span class="ans">28.57%</span>.
+        <span class="q2"><b>Rule:</b> a+b−ab/100 mat lagao jab fraction clean ho — ratio chain 5 second mein answer deti hai.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="basic" data-kw="find discount percent MP SP given 3800 3496 marked price selling price D% = D/MP x 100 chhut pratishat">
+    <article class="card lesson" data-cat="succ" data-kw="three successive discounts formula abc triple 12 18 25 tin chhut क्रमिक तीन">
       <div class="tag">✓</div>
       <p class="no">PATTERN 07</p>
-      <h3>MP aur SP diya → D% nikalo</h3>
-      <p class="trigger">Trigger: "vastu ka ankit mulya Rs A hai, becha Rs B mein — chhut pratishat kya hai?"</p>
+      <p class="src">SRC · p27 (method) · p28–p31 Q12 · p32 Q13 · p33–p34 Q14</p>
+      <h3>Teen successive → (a+b+c) − (ab+bc+ca)/100 + abc/10000</h3>
+      <p class="trigger">Trigger: "successive discounts of 12%, 18% and 25%" — teen values, "single equivalent discount".</p>
       <div class="example">
-        <b>Q15:</b> MP=3800, SP=3496 → D=304 → 304/3800×100 = <span class="ans">8%</span>
-        <span class="q2"><b>Ex:</b> MP=900, discount Rs 135 → 135/900×100 = <span class="ans">15%</span></span>
+        <b>Q12 (p28):</b> 12,18,25 → 55 − 10.06 + 0.54 = <span class="ans">45.8%</span>.
+        <span class="q2"><b>Q13 (p32):</b> 12,20,25 → <span class="ans">47.2%</span>. &nbsp;<b>Q14 (p33):</b> 20,35,10 → <span class="ans">53.2%</span>. Shortcut: sabko fraction mein (25%=1/4) le kar multiply karo.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="basic" data-kw="find marked price from SP and discount reverse MP = SP x 100/(100-D) 87500 44% 1554 26% ankit mulya nikalo">
+    <article class="card" data-cat="succ" data-kw="which scheme best maximum minimum selling price way A way B compare successive scheme सबसे अच्छी योजना">
       <div class="tag">✓</div>
       <p class="no">PATTERN 08</p>
-      <h3>SP + D% diya → MP (reverse)</h3>
-      <p class="trigger">Trigger: "D% chhut ke baad vastu Rs X mein bikti hai, ankit mulya kya hai?" → MP = SP×100/(100−D).</p>
+      <p class="src">SRC · p52 Q27 · p53 Q28 · p54–p55 Q29 · p56 Q30</p>
+      <h3>Kaunsi scheme best — sirf equivalent D% compare</h3>
+      <p class="trigger">Trigger: "Which will yield maximum discount?", "Under which scheme will the SP be maximum?", "Way A / Way B".</p>
       <div class="example">
-        <b>Q16:</b> SP=87500, D=44% → 87500×100/56 = <span class="ans">₹1,56,250</span>
-        <span class="q2"><b>Q17:</b> SP=1554, D=26% → 1554×100/74 = <span class="ans">₹2,100</span></span>
+        <b>Q27 (p52):</b> (5,5)=9.75, single 10, (8,2)=9.84 → <span class="ans">single 10%</span> sabse bada.
+        <span class="q2"><b>Q28 (p53):</b> SP maximum = discount minimum → (15,15)=27.75% → <span class="ans">Scheme I</span>. &nbsp;<b>Q29 (p54):</b> 24% vs (16,10)=24.4% → <span class="ans">Way B, ₹21168</span>. &nbsp;<b>Q30 (p56):</b> 29.6 / 28.75 / 32.1 → <span class="ans">Scheme (iii)</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="basic" data-kw="find SP from MP and discount 1940 15% 600 20% payment amount kitna bhugtan karna hoga customer pays">
+    <article class="card" data-cat="succ" data-kw="two equal successive discounts x% and x% same equal barabar 36% 78.4% three equal">
       <div class="tag">✓</div>
       <p class="no">PATTERN 09</p>
-      <h3>MP + D% (ya kai D%) diya → customer kitna dega?</h3>
-      <p class="trigger">Trigger: "printed/marked price Rs X hai, dealer 10% aur 5% ki chhut deta hai — grahak ko kitna bhugtan karna hoga?"</p>
+      <p class="src">SRC · p59+p61 Q33 · p64 Q34 · p75 Q40 · p76 Q41</p>
+      <h3>Equal successive discounts → (1−x)ⁿ wala square/cube</h3>
+      <p class="trigger">Trigger: "two <b>equal</b> successive discounts", "each of x%", "three equal successive discounts".</p>
       <div class="example">
-        <b>Q18:</b> MP=1940, D=15% → 1940×85/100 = <span class="ans">₹1,649</span>
-        <span class="q2"><b>Q22:</b> 57200×90/100×95/100 = <span class="ans">₹48,906</span></span>
-        <br><b>Q23:</b> online 10% + credit card 5% → 60000×90/100×95/100 = <span class="ans">₹51,300</span>
+        <b>Q33 (p59):</b> total 36% → SP factor 0.64 = (0.8)² → each <span class="ans">20%</span>.
+        <span class="q2"><b>Q34 (p64):</b> 78.4% → 0.216 = (0.6)³ → <span class="ans">40%</span>. &nbsp;<b>Q40 (p75):</b> MP:SP = 25:16 = (5:4)² → <span class="ans">x = 20%</span>. &nbsp;<b>Q41 (p76):</b> 720 → D 259.20 = 36% → <span class="ans">x = 20</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="basic" data-kw="same article different discount new SP proportion 716 10.5% 6.5% agar itni chhut di jaye to kitne me beche">
+    <article class="card" data-cat="succ" data-kw="one discount known find second equivalent single discount 25% first 10% second reverse successive">
       <div class="tag">✓</div>
       <p class="no">PATTERN 10</p>
-      <h3>D badal gaya → naya SP (same MP proportion)</h3>
-      <p class="trigger">Trigger: "d₁% chhut dekar Rs X mein becha; agar d₂% chhut di jaye to kitne mein bechna chahiye?" → SP₂ = SP₁×(100−d₂)/(100−d₁).</p>
+      <p class="src">SRC · p66 Q35 · p68 Q36</p>
+      <h3>Equivalent single diya, ek discount diya → doosra nikalo</h3>
+      <p class="trigger">Trigger: "two successive discounts … equivalent to a single discount of 25%. If the first is 10%, find the second."</p>
       <div class="example">
-        <b>Q24:</b> 716 × 93.5/89.5 = <span class="ans">₹748</span>
-        <span class="q2"><b>Ex:</b> Loss 10% par SP=180 → loss 20% par 180×80/90 = <span class="ans">160</span></span>
+        <b>Q35 (p66):</b> 0.75 = 0.90 × k → k = 5/6 → second = <span class="ans">16.66%</span>.
+        <span class="q2"><b>Q36 (p68):</b> total 22 2/9%, first 12.5% (=1/8) → SP factor 7/9 ÷ 7/8 = 8/9 → second = <span class="ans">11 1/9%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="basic" data-kw="find MP from SP after three successive discounts 2592 10 20 25 4800 697.68 credit card x value reverse chain">
+    <article class="card" data-cat="succ" data-kw="list price 900 available 612 second discount 15 find first discount 4500 3132 20000 10166 three">
       <div class="tag">✓</div>
       <p class="no">PATTERN 11</p>
-      <h3>Kai successive discounts ke baad SP diya → MP (ulta chain)</h3>
-      <p class="trigger">Trigger: "10%, 20%, 25% ki teen chhut ke baad SP Rs X hai, MP batao" / "x ka maan gyaat karo" — x × har fraction = SP.</p>
+      <p class="src">SRC · p69–p71 Q37 · p72 Q38 · p73–p74 Q39</p>
+      <h3>MP aur final SP diya → missing discount</h3>
+      <p class="trigger">Trigger: "After getting two successive discounts, a ₹900 item is available at ₹612. If second is 15%, find first."</p>
       <div class="example">
-        <b>Q25:</b> x×9/10×8/10×3/4 = 2592 → <span class="ans">MP = ₹4,800</span>
-        <span class="q2"><b>Q26:</b> x×85/100×90/100×95/100 = 697.68 → <span class="ans">x = 960</span></span>
+        <b>Q37 (p69):</b> 612/900 = 0.68; ÷0.85 = 0.80 → first = <span class="ans">20%</span>.
+        <span class="q2"><b>Q38 (p72):</b> 3132/4500 = 0.696 ÷ 0.87 = 0.80 → <span class="ans">20%</span>. &nbsp;<b>Q39 (p73):</b> 10166/20000 ÷ 0.65 ÷ 0.85 = 0.92 → <span class="ans">8%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="scheme" data-kw="sum same rule which scheme maximum discount minimum SP compare 5+5 10 8+2 15 15 25 5 30 difference product">
+    <h2 class="secttl" data-sec="reverse">C · REVERSE / MISSING VALUE (P35–P50, P77–P84)</h2>
+
+    <article class="card" data-cat="reverse" data-kw="find marked price from selling price MP nikalna SP diya 87500 44% 1554 26% 54120">
       <div class="tag">✓</div>
       <p class="no">PATTERN 12</p>
-      <h3>Sum Same → jinka difference zyada, discount utna kam</h3>
-      <p class="trigger">Trigger: "in mein se kaunsi scheme par maximum discount / maximum selling price milegi?" jab sabhi options ka % ka sum barabar ho.</p>
+      <p class="src">SRC · p36 Q16 · p37 Q17 · p40–p43 Q20 · p49 Q25</p>
+      <h3>SP + D% diya → MP = SP × 100/(100−D)</h3>
+      <p class="trigger">Trigger: "…is sold for ₹87,500 by allowing a discount of 44%. The marked price is?"</p>
       <div class="example">
-        <b>Q27:</b> (5,5)diff0, (10,0)diff10, (8,2)diff6 → sabse kam diff = max discount → <span class="ans">5% + 5%</span>
-        <span class="q2"><b>Q28:</b> (15,15)0, (25,5)20, (20,10)10, (30)30 → SP maximum = sabse bada diff → <span class="ans">Scheme IV (30%)</span></span>
+        <b>Q17 (p37):</b> 1554 × 100/74 = <span class="ans">₹2100</span>. &nbsp;<b>Q16 (p36):</b> 87500 × 100/56 = <span class="ans">₹1,56,250</span>.
+        <span class="q2"><b>Q20 (p40):</b> 54120 ÷ (0.88 × 0.82) = <span class="ans">₹75,000</span>. &nbsp;<b>Q25 (p49):</b> 2592 ÷ (0.9×0.8×0.75) = <span class="ans">₹4,800</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="scheme" data-kw="way A way B which is better cheaper amount paid buyer benefit dono tarike tulna 21168 21280">
+    <article class="card" data-cat="reverse" data-kw="find selling price from marked price SP nikalna 1940 15% 25000 12 10 57200 customer pay">
       <div class="tag">✓</div>
       <p class="no">PATTERN 13</p>
-      <h3>Way A vs Way B → kaunsa sasta + kitna dena hoga</h3>
-      <p class="trigger">Trigger: "customer do tarike se kharid sakta hai (A: ek set of discounts, B: dusra set) — konsa faydemand aur kitne rupaye lagenge?"</p>
+      <p class="src">SRC · p38 Q18 · p44 Q21 · p45 Q22 · p48 Q24</p>
+      <h3>MP + D% diya → SP = MP × (100−D)/100</h3>
+      <p class="trigger">Trigger: "…find the price which a customer has to pay", "at what price was the item sold?"</p>
       <div class="example">
-        <b>Q29:</b> A ka net = 24%, B ka net thoda zyada → dono ke net D% nikalo, jiska D% bada wahi sasta → <span class="ans">Way B, ₹21,168</span>
+        <b>Q18 (p38):</b> 1940 × 0.85 = <span class="ans">₹1649</span>. &nbsp;<b>Q21 (p44):</b> 25000 × 0.88 × 0.90 = <span class="ans">₹19,800</span>.
+        <span class="q2"><b>Q22 (p45):</b> 57200 × 0.90 × 0.95 = <span class="ans">₹48,906</span>. &nbsp;<b>Q24 (p48):</b> 716/0.895 × 0.935 = <span class="ans">₹748</span> (MP common rakho).</span>
       </div>
     </article>
 
-    <article class="card" data-cat="succ" data-kw="equal x% x% two successive total 57.75% find x 2D 1D square root ratio 400 169 20 13 barabar chhut">
+    <article class="card" data-cat="reverse" data-kw="find discount percent y% 3800 3496 dono price diya discount nikalo">
       <div class="tag">✓</div>
       <p class="no">PATTERN 14</p>
-      <h3>x%, x% barabar chhut se total D% diya → x nikalo</h3>
-      <p class="trigger">Trigger: "do barabar (x% each) kramik chhut milkar 57.75%/36% ki ek chhut ke barabar hai — x kya hai?" → 2D ratio ka square-root lo.</p>
+      <p class="src">SRC · p35 Q15</p>
+      <h3>MP aur SP dono diye → seedha D%</h3>
+      <p class="trigger">Trigger: "An item with MP ₹3,800 was sold for ₹3,496 after a discount of y%. Value of y?"</p>
       <div class="example">
-        <b>Q:</b> total 57.75% → MP:SP = 400:169 → root = 20:13 → D = 7/20×100 = <span class="ans">35%</span>
-        <span class="q2"><b>Q:</b> total 36% → 100:64 → 10:8 → <span class="ans">20%</span></span>
+        <b>Q15 (p35):</b> D = 304; 304/3800 × 100 = <span class="ans">8%</span>.
+        <span class="q2"><b>Speed:</b> 3496/3800 = 92 → 100−92 = 8. Division se pehle dono ko 4 ya 8 se kaato.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="succ" data-kw="find third unknown discount x% when total given 10 25 x 40 percent teesri chhut nikalo missing discount">
+    <article class="card" data-cat="reverse" data-kw="online payment discount credit card additional 5% chain 60000 watch x value 697.68 multi stage">
       <div class="tag">✓</div>
       <p class="no">PATTERN 15</p>
-      <h3>Do discount + ek unknown x%, total diya → x?</h3>
-      <p class="trigger">Trigger: "10% aur 25% ke saath ek aur chhut di gayi, kul chhut 40% ho gayi — teesri chhut kitni?" → ratio chain karke bache hue part se x nikalo.</p>
+      <p class="src">SRC · p46 Q23 · p50 Q26</p>
+      <h3>Online + card wala 3-stage chain</h3>
+      <p class="trigger">Trigger: "10% discount if paid online, <b>additional</b> 5% for credit card holders" — teen alag-alag stage.</p>
       <div class="example">
-        <b>Q:</b> 10%(10:9) × 25%(4:3) → 40:27; total 40% → 100:60 = 40:24 → x = 3/27×100 = <span class="ans">11¹⁄₉%</span>
+        <b>Q23 (p46):</b> 60000 × 0.90 × 0.95 = <span class="ans">₹51,300</span>.
+        <span class="q2"><b>Q26 (p50):</b> x × 0.85 × 0.90 × 0.95 = 697.68 → x = <span class="ans">₹960</span>. "Further/additional" = pichhli SP par, MP par nahi.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="profit" data-kw="discount and profit MP CP ratio formula 100+P/100-D markup profit percent chhut ke baad labh">
+    <article class="card" data-cat="reverse" data-kw="how many pairs can be bought quantity dozen 7200 1440 items count kitne kharid sakte">
       <div class="tag">✓</div>
       <p class="no">PATTERN 16</p>
-      <h3>Master formula: MP/CP = (100 ± P/L)/(100 − D)</h3>
-      <p class="trigger">Trigger: "x% chhut dene ke baad bhi y% labh" — MP:CP, D%, P% mein se koi do diye ho, teesra poocha jaaye.</p>
+      <p class="src">SRC · p39 Q19</p>
+      <h3>"Itne paise mein kitne items?" → per-unit SP</h3>
+      <p class="trigger">Trigger: "There is 20% discount on a dozen pairs marked ₹7,200. How many pairs with ₹1,440?"</p>
       <div class="example">
-        <b>Q52:</b> D=10%, P=20% → MP/CP = 120/90 = <span class="ans">4 : 3</span>
-        <span class="q2"><b>Q53:</b> D=12.5%, P=20% → 120/87.5 → CP:MP = <span class="ans">35 : 48</span></span>
-        <br><b>Q55:</b> D=30%, P=20% → 120/70 → markup = 5/7×100 = <span class="ans">71³⁄₇%</span>
+        <b>Q19 (p39):</b> dozen SP = 7200 × 0.8 = 5760 → 1 pair = 480 → 1440/480 = <span class="ans">3 pairs</span>.
+        <span class="q2"><b>Trap:</b> "dozen" ko 12 se divide karna mat bhoolna — warna 1 aa jayega.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="profit" data-kw="MP SP CP three column chain method discount profit rupees gain 30.90 marked price nearest 80 profit CP ratio 4:7">
+    <article class="card lesson" data-cat="reverse" data-kw="x and 2x 1.5x single discount twist two successive each x% then single 2x% 587.4 538.56 612.50">
       <div class="tag">✓</div>
       <p class="no">PATTERN 17</p>
-      <h3>MP → SP → CP teen column chain (profit Rs mein diya)</h3>
-      <p class="trigger">Trigger: "x% chhut, y% labh, aur ek vastu par Rs Z ka laabh hua — MP/CP nikalo" ya "CP:MP = 4:7 diya + 20% discount + profit Rs 80".</p>
+      <p class="src">SRC · p81 Q43 · p82 Q44 · p83 Q45 · p84 Q46 · p126–p127 Q79 · p128 Q80</p>
+      <h3>Pehle x nikalo, phir 2x / 1.5x / (k+20) lagao</h3>
+      <p class="trigger">Trigger: "…two successive discounts each of x% … if a single discount of <b>2x%</b> is given, then SP will be?"</p>
       <div class="example">
-        <b>Q49:</b> D=28%, P=30% → MP:SP:CP = 325:234:180 → P=54u = 30.90 → MP = <span class="ans">≈ ₹186</span>
-        <span class="q2"><b>Q50:</b> CP:MP = 4:7 → 70x−20% = 56x, P = 16x = 80 → CP = 40x = <span class="ans">₹200</span></span>
-        <br><b>Q51:</b> MP=1000, D=20% → SP=800, P=300 → CP=500 → <span class="ans">60%</span>
+        <b>Q46 (p84):</b> 800 → 612.50 = (1−x)² → x = 12.5 → 2x = 25% → SP = <span class="ans">₹600</span>.
+        <span class="q2"><b>Q44 (p82):</b> 20,10,k → 6120 → k = 15 → single 35% → <span class="ans">₹6500</span>. &nbsp;<b>Q45 (p83):</b> x = 15 → 30% → <span class="ans">₹560</span>. &nbsp;<b>Q43 (p81):</b> 1500 → x = 10 → SP <span class="ans">₹1170</span>. &nbsp;<b>Q80 (p128):</b> x = 8 → 16% → gain <span class="ans">5%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="profit" data-kw="markup percent no profit no loss maximum discount 28% marked up 21.875 break even adhiktam chhut">
+    <article class="card" data-cat="reverse" data-kw="total discount in rupees 259.20 coupon x% off 400 216 amount se percent nikalna">
       <div class="tag">✓</div>
       <p class="no">PATTERN 18</p>
-      <h3>Markup diya, na labh na haani → maximum discount?</h3>
-      <p class="trigger">Trigger: "vyapari ne m% badha kar mulya ankit kiya, bina laabh-haani bechne ke liye adhiktam kitni chhut de sakta hai?" → m/(100+m)×100.</p>
+      <p class="src">SRC · p76 Q41 · p77 Q42</p>
+      <h3>Discount ₹ mein diya → pehle % mein badlo</h3>
+      <p class="trigger">Trigger: "…the total discount is ₹259.20. If MP is ₹720, then x = ?", "coupon of 10% … price becomes ₹216".</p>
       <div class="example">
-        <b>Q54:</b> markup 28% → CP=100, MP=128 → 28/128×100 = <span class="ans">21.875%</span>
+        <b>Q41 (p76):</b> 259.20/720 = 36% total = (1−x)² → <span class="ans">x = 20</span>.
+        <span class="q2"><b>Q42 (p77):</b> 400 × (1−x/100) × 0.90 = 216 → 1−x/100 = 0.6 → <span class="ans">x = 40</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="profit" data-kw="two discounts then profit CP MP given 150 10% 20% find profit percent extra discount second discount labh pratishat">
+    <h2 class="secttl" data-sec="profit">D · DISCOUNT + PROFIT (P89–P115, P132)</h2>
+
+    <article class="card lesson" data-cat="profit" data-kw="MP CP ratio formula 100+P/100-D markup profit discount relation master formula अंकित लागत">
       <div class="tag">✓</div>
       <p class="no">PATTERN 19</p>
-      <h3>CP & MP diye + do discount → final profit/loss %</h3>
-      <p class="trigger">Trigger: "CP=100, MP=150, pehle 10% fir 20% chhut — laabh/haani % kya?" — SP nikaal ke CP se compare karo.</p>
+      <p class="src">SRC · p93 (derivation) · p92+p94 Q52 · p95 Q53 · p97 Q55 · p100 Q58 · p101 Q59</p>
+      <h3>Master relation: <span class="mono">MP/CP = (100+P)/(100−D)</span></h3>
+      <p class="trigger">Trigger: Question mein sirf <b>%</b> ho, koi rupee value na ho — "discount 10%, profit 20%, find ratio / markup / profit%".</p>
       <div class="example">
-        <b>Q:</b> 150×9/10×8/10 = 108 → CP=100 → <span class="ans">P = 8%</span>
-        <span class="q2"><b>Q:</b> MP=1200, CP=750, −20% then −x% → SP=710.4 → 249.6 par gin ke <span class="ans">L = 2.4%</span></span>
+        <b>Q52 (p92):</b> D 10, P 20 → 120/90 = <span class="ans">MP:CP = 4:3</span>. &nbsp;<b>Q53 (p95):</b> D 12.5, P 20 → 120/87.5 → CP:MP = <span class="ans">35:48</span>.
+        <span class="q2"><b>Q55 (p97):</b> D 30, P 20 → 120/70 → markup <span class="ans">71 3/7%</span>. &nbsp;<b>Q58 (p100):</b> markup 40, D 10 → 1.4×0.9 = 1.26 → <span class="ans">26%</span>. &nbsp;<b>Q59 (p101):</b> 1.42×0.85 = 1.207 → <span class="ans">≈21%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="profit" data-kw="D1 P1 given find P2 for new discount 20% 10% profit 23.75 ratio constant CP fixed alag chhut par naya labh">
+    <article class="card" data-cat="profit" data-kw="find cost price CP nikalna 7200 15% 20% printed price 500 17% 840 19% MP profit value">
       <div class="tag">✓</div>
       <p class="no">PATTERN 20</p>
-      <h3>D₁ par P₁ diya → D₂ par naya P₂?</h3>
-      <p class="trigger">Trigger: "20% chhut par 10% laabh milta hai, agar sirf 10% chhut de to laabh kitna?" → MP/CP fix rakh ke dono taraf formula lagao.</p>
+      <p class="src">SRC · p90 Q50 · p91 Q51 · p98 Q56 · p99 Q57 · p106 Q62</p>
+      <h3>Ek rupee value di ho → CP/MP ki actual value</h3>
+      <p class="trigger">Trigger: "MP is ₹7,200, discount 15%, profit 20% — what does the shopkeeper pay?"</p>
       <div class="example">
-        <b>Q:</b> MP/CP = 110/80; ab D=10% → P = (110×90/80) − 100 → <span class="ans">23.75%</span>
+        <b>Q56 (p98):</b> SP = 7200 × 0.85 = 6120 → CP = 6120/1.2 = <span class="ans">₹5100</span>. &nbsp;<b>Q57 (p99):</b> 500 × 1.17 / 0.9 = <span class="ans">₹650</span>.
+        <span class="q2"><b>Q62 (p106):</b> 840 × 0.85 / 1.19 = <span class="ans">₹600</span>. &nbsp;<b>Q50 (p90):</b> CP:MP = 4:7, 20% off → SP = 5.6 → P = 1.6 units = 80 → CP = <span class="ans">₹200</span>. &nbsp;<b>Q51 (p91):</b> 1000×0.8 = 800, P = 300 → <span class="ans">60%</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="succ" data-kw="discount plus increase in price successive mixed sign 5 20 20 36 39.2 net effect combined percent MP badhaya">
+    <article class="card" data-cat="profit" data-kw="profit in rupees 90 30.80 30.90 94.85 unit method ratio se rupee nikalna gains difference">
       <div class="tag">✓</div>
       <p class="no">PATTERN 21</p>
-      <h3>Discount + price-increase mix (sign ka khel)</h3>
-      <p class="trigger">Trigger: "pehle MP x% badhaya, fir y% aur z% chhut di — net kitna % increase/decrease?" — sign ke saath a+b−ab/100 lagao.</p>
+      <p class="src">SRC · p86 Q47 · p87–p88 Q48 · p89 Q49 · p132 Q84</p>
+      <h3>Profit ₹ mein diya → MP:SP:CP unit method</h3>
+      <p class="trigger">Trigger: "…gains ₹30.80 on the sale of one article", "his profit is ₹90, then discount in ₹ is".</p>
       <div class="example">
-        <b>Q:</b> 20% & 20% chhut → 36%; ab 5% aur 36% → 5+36−1.8 = <span class="ans">39.2% net discount</span>
-        <span class="q2"><b>Q:</b> +60% markup, −20%, −x% → chain se final SP nikaal kar CP se compare → <span class="ans">2.4% loss</span></span>
+        <b>Q47 (p86):</b> D 25, P 30 → MP:SP:CP = 52:39:30; profit 9 units = 90 → 1 unit = 10 → discount 13 units = <span class="ans">₹130</span>.
+        <span class="q2"><b>Q48 (p87):</b> 28% off, 20% profit → 150:108:90; P 18u = 30.80 → CP = <span class="ans">₹154</span>. &nbsp;<b>Q49 (p89):</b> 28% off, 30% profit → MP ≈ <span class="ans">₹186</span>. &nbsp;<b>Q84 (p132):</b> markup 40, D 15 vs 20 → gap = 0.07CP = 94.85 → CP = <span class="ans">₹1355</span>.</span>
       </div>
     </article>
 
-    <article class="card" data-cat="ratio" data-kw="nD to 1D 2D 3D 1000 729 900 810 same rate repeated discount cube root square root har baar same chhut">
+    <article class="card lesson" data-cat="profit" data-kw="discount change new profit D1 P1 D2 P2 no discount 100-D1/100+P1 = 100-D2/100+P2 badal jaye">
       <div class="tag">✓</div>
       <p class="no">PATTERN 22</p>
-      <h3>Same % baar-baar (2D/3D) → root nikaal ke 1D</h3>
-      <p class="trigger">Trigger: "MP=1000, teen barabar chhut ke baad SP=729 — ek/do chhut ke baad SP kya hoga?" → 729/1000 = (9/10)³ → 1D = 10%.</p>
+      <p class="src">SRC · p108 Q63 · p109 Q64 · p110 Q65 · p111 Q66 · p112 Q67 · p114 Q69 · p115 Q70</p>
+      <h3>Discount badla → naya profit% (CP & MP same)</h3>
+      <p class="trigger">Trigger: "At 5% discount profit is 14%. If discount is 11%, what will be the profit?" / "if no discount is allowed…"</p>
       <div class="example">
-        <b>Q:</b> 3D: 1000→729 → ratio 9/10 → 1D SP = <span class="ans">900</span>, 2D SP = <span class="ans">810</span>
+        <b>Golden rule:</b> <span class="mono">(100−D₁)/(100+P₁) = (100−D₂)/(100+P₂)</span> — MP/CP dono case mein same.
+        <span class="q2"><b>Q63 (p108):</b> (5,14) → D 11 → <span class="ans">6.8%</span>. &nbsp;<b>Q65 (p110):</b> (10,12.5) → no discount → <span class="ans">25%</span>. &nbsp;<b>Q66 (p111):</b> (12,25) → <span class="ans">42.05%</span>. &nbsp;<b>Q67 (p112):</b> (10,30) → D 5 → <span class="ans">37 2/9%</span>. &nbsp;<b>Q64 (p109):</b> (17.5,32) → P 36 → <span class="ans">d = 14%</span>. &nbsp;<b>Q69 (p114):</b> CP 20% badha, P 12% → naya D = <span class="ans">21.6%</span>. &nbsp;<b>Q70 (p115):</b> MP +10%, D 37.5% → <span class="ans">23.75%</span>.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="profit" data-kw="maximum discount no profit no loss markup 28% kitna upar mark kare 20% gain 6.25 successive">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <p class="src">SRC · p96 Q54 · p113 Q68</p>
+      <h3>Max discount (no profit no loss) & required markup</h3>
+      <p class="trigger">Trigger: "maximum % discount so that he sells at no profit or loss", "by how much above CP should it be marked?"</p>
+      <div class="example">
+        <b>Q54 (p96):</b> markup 28% → CP 100, MP 128 → D = 28/128 × 100 = <span class="ans">21.875%</span>.
+        <span class="q2"><b>Q68 (p113):</b> D total = 20+6.25−1.25 = 25%; markup = (120/75 − 1) = <span class="ans">60%</span>. Formula wahi: MP/CP = (100+P)/(100−D).</span>
+      </div>
+    </article>
+
+    <h2 class="secttl" data-sec="mixed">E · MIXED / ODD-BALL (P102–P131)</h2>
+
+    <article class="card" data-cat="mixed" data-kw="price increased 45% then discounts net effect increase decrease SP doubled profit triples 70% hike">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <p class="src">SRC · p102–p103 Q60 · p116 Q71 · p117–p118 Q72</p>
+      <h3>Price hike + discount ka NET effect</h3>
+      <p class="trigger">Trigger: "price is raised by 45% and then two discounts of 15% each — ultimately price increased/decreased by?"</p>
+      <div class="example">
+        <b>Q71 (p116):</b> 1.45 × 0.85 × 0.85 = 1.047625 → <span class="ans">4.7625% increase</span>.
+        <span class="q2"><b>Q60 (p102):</b> +70%, phir 5%,20%,20% off → 1.7×0.95×0.8×0.8 = 1.0336 → gain <span class="ans">3.36%</span>. &nbsp;<b>Q72 (p117):</b> SP double → profit triple → CP = 100, SP = 200 mein P = 3x, x → profit <span class="ans">100%</span>.</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="mixed" data-kw="GST reward points cash surcharge credit card mixture pulses saree membership card equality of items unique odd">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <p class="src">SRC · p105 Q61 · p119 Q73 · p120 Q74 · p121 Q75 · p122 Q76 · p123 Q77 · p124–p125 Q78 · p129 Q81 · p130 Q82 · p131 Q83</p>
+      <h3>Odd-ball set — base price nikalo, phir naya rate lagao</h3>
+      <p class="trigger">Trigger: GST badla, reward points, cash vs card surcharge, mixture, "MP of 42 items = CP of 70 items".</p>
+      <div class="example">
+        <b>GST:</b> Q77 (p123) 604.80/1.08 × 1.10 = <span class="ans">₹616</span>; Q78 (p124) 7071.84/1.08 × 1.10 = <span class="ans">₹7202.80</span>.
+        <span class="q2"><b>Q74 (p120):</b> 72000 × 0.8 × 0.75 = 43200 − (2850 × 0.10) = <span class="ans">₹42,915</span>. &nbsp;<b>Q73 (p119):</b> 42MP = 70CP, 25SP = 21MP → <span class="ans">40% profit</span>. &nbsp;<b>Q75 (p121):</b> 3750×0.8 = 3000 → +15% = <span class="ans">₹3450</span>. &nbsp;<b>Q76 (p122):</b> profit ratio = <span class="ans">65%</span>. &nbsp;<b>Q83 (p131):</b> MP 5800, CP 4000, SP 4496 → <span class="ans">12.4%</span>. &nbsp;<b>Q81 (p129):</b> cash 13.5% off + card 6.25% surcharge → y = <span class="ans">38,752</span>. &nbsp;<b>Q82 (p130):</b> mixture 9:2:1, D = 1/7, P 40% → y = <span class="ans">192</span>. &nbsp;<b>Q61 (p105):</b> 900−9x = 720 + 12x → x = <span class="ans">60/7</span>.</span>
       </div>
     </article>
 
   </main>
 
   <footer>
-    <b>22 patterns ab tak</b> (Discount Class Notes, page 1–132 tak ke questions). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+    <b>25 patterns — Discount chapter (Aditya Ranjan Sir Class Notes), page 1–132, Q1–Q84 tak sab cover.</b> Har card ki <code>SRC</code> line batati hai ki wo trick PDF ke kaunse page aur kaunse question number se aayi hai (p = notes page, Q = question number). Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — <code>data-cat</code> aur <code>data-kw</code> update karna mat bhoolna taaki search/filter kaam kare.
   </footer>
 </div>
 
 <script>
   const cards = Array.from(document.querySelectorAll('.card'));
+  const sections = Array.from(document.querySelectorAll('.secttl'));
   const searchBox = document.getElementById('searchBox');
   const filterBtns = Array.from(document.querySelectorAll('.controls button'));
   let activeFilter = 'all';
@@ -408,6 +486,11 @@
       const matchesSearch = q === '' || kw.includes(q);
       card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
     });
+    sections.forEach(sec => {
+      const sc = sec.dataset.sec;
+      const anyVisible = cards.some(c => c.dataset.cat === sc && !c.classList.contains('hidden'));
+      sec.classList.toggle('hidden', !anyVisible);
+    });
   }
 
   searchBox.addEventListener('input', applyFilters);
@@ -419,6 +502,7 @@
       applyFilters();
     });
   });
+  applyFilters();
 </script>
 </body>
 </html>
