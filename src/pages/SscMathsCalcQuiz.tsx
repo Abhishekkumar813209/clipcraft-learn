@@ -39,7 +39,7 @@ export default function SscMathsCalcQuiz() {
       const s = Math.max(meta.minAllowed ?? 1, Math.min(meta.maxAllowed ?? 100, Number(start) || (meta.defaultStart ?? 2)));
       const e = Math.max(meta.minAllowed ?? 1, Math.min(meta.maxAllowed ?? 100, Number(end) || (meta.defaultEnd ?? 20)));
       setPool(generateQuiz(chapter, { start: s, end: e, mode, difficulty }));
-    } else if (chapter === 'pct-frac' || meta.kind === 'trig') {
+    } else if (chapter === 'pct-frac' || (meta.kind === 'trig' || meta.kind === 'algebra')) {
       setPool(generateQuiz(chapter, { mode }));
     } else {
       setPool(generateQuiz(chapter));
@@ -97,7 +97,7 @@ export default function SscMathsCalcQuiz() {
       const s = Number(start) || (meta.defaultStart ?? 2);
       const e = Number(end)   || (meta.defaultEnd   ?? 20);
       setPool(generateQuiz(chapter, { start: s, end: e, mode, difficulty }));
-    } else if (chapter === 'pct-frac' || meta?.kind === 'trig') {
+    } else if (chapter === 'pct-frac' || (meta?.kind === 'trig' || meta?.kind === 'algebra')) {
       setPool(generateQuiz(chapter, { mode }));
     } else {
       setPool(generateQuiz(chapter));
@@ -112,7 +112,7 @@ export default function SscMathsCalcQuiz() {
   // ---------- START SCREEN ----------
   if (!started) {
     const isRanged = meta.kind === 'ranged';
-    const showOrderOnly = chapter === 'pct-frac' || meta.kind === 'trig';
+    const showOrderOnly = chapter === 'pct-frac' || (meta.kind === 'trig' || meta.kind === 'algebra');
     return (
       <div className="p-6 max-w-2xl mx-auto space-y-6">
         <Button variant="ghost" size="sm" onClick={() => nav('/ssc/maths/calculation')} className="text-slate-700">
@@ -206,7 +206,7 @@ export default function SscMathsCalcQuiz() {
                   ))}
                 </div>
                 <p className="text-xs text-slate-500">
-                  {meta.kind === 'trig'
+                  {(meta.kind === 'trig' || meta.kind === 'algebra')
                     ? 'Serial: formula sheet ke order me. Random: shuffled.'
                     : 'Serial: 1/2 → 1/3 → 1/4 … (grouped by fraction). Random: shuffled.'}
                 </p>

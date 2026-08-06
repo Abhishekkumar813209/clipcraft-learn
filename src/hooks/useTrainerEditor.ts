@@ -3,6 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { toast } from '@/hooks/use-toast';
 
+/** "x^5" ya "x^{10}" ko x<sup>5</sup> me badal deta hai (editing ke baad). */
+function applySuperscripts(html: string): string {
+  return html
+    .replace(/\^\{([^}]{1,6})\}/g, '<sup>$1</sup>')
+    .replace(/\^(-?[0-9a-zA-Z]{1,3})/g, '<sup>$1</sup>');
+}
+
 interface EditRow {
   selector: string;
   html: string;
@@ -174,9 +181,11 @@ export function useTrainerEditor(trainerKey: string) {
       const selector = pathOf(el, doc.body);
       el.removeAttribute('contenteditable');
       if (!selector) return;
+      const html = applySuperscripts(el.innerHTML);
+      if (html !== el.innerHTML) el.innerHTML = html;
       const prev = editsRef.current.find((e) => e.selector === selector);
-      if (prev && prev.html === el.innerHTML) return;
-      void save(selector, el.innerHTML);
+      if (prev && prev.html === html) return;
+      void save(selector, html);
     };
 
     const onKeyDown = (ev: KeyboardEvent) => {
@@ -186,6 +195,12 @@ export function useTrainerEditor(trainerKey: string) {
       if (ev.key === 'Enter' && ev.shiftKey) {
         ev.preventDefault();
         doc.execCommand('insertLineBreak');
+      }
+      // Ctrl/Cmd + ↑ = superscript toggle, Ctrl/Cmd + ↓ = subscript toggle
+      if ((ev.ctrlKey || ev.metaKey) && (ev.key === 'ArrowUp' || ev.key === 'ArrowDown')) {
+        ev.preventDefault();
+        doc.execCommand(ev.key === 'ArrowUp' ? 'superscript' : 'subscript');
+        return;
       }
       if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's') {
         ev.preventDefault();

@@ -25,6 +25,12 @@ const TRIG: ChapterCard[] = [
   { slug: 'trig-special',    icon: '⭐', title: 'Profile 5 · Special Values',       desc: 'sin 0°, cos 90°, tan 90° & increasing/decreasing', count: '10 questions' },
 ];
 
+const ALGEBRA: ChapterCard[] = [
+  { slug: 'alg-xplus',  icon: '➕', title: 'x + 1/x = n · Formula Drill', desc: 'x²+1/x², x³+1/x³ … x⁷+1/x⁷ recall + numeric', count: '220 questions' },
+  { slug: 'alg-xminus', icon: '➖', title: 'x − 1/x = n · Formula Drill', desc: 'x²+1/x² = n²+2, x³−1/x³ = n³+3n type', count: '220 questions' },
+  { slug: 'alg-mixed',  icon: '🔀', title: 'Mixed x ± 1/x Drill',        desc: 'Dono families shuffle — exam jaisa pressure', count: '240 questions' },
+];
+
 const ADD: ChapterCard[] = [
   { slug: 'add-2-2', icon: '➕', title: '2-digit + 2-digit', desc: 'Speed addition drills', count: '100 questions' },
   { slug: 'add-2-3', icon: '➕', title: '2-digit + 3-digit', desc: 'Mixed-width addition',  count: '100 questions' },
@@ -102,6 +108,7 @@ export default function SscMathsCalculation() {
       <Section title="Powers & Roots" subtitle="Configurable range · Serial or Random · Easy / Medium" cards={POWERS} onOpen={open} />
       <Section title="Percentage" cards={PERCENT} onOpen={open} />
       <Section title="Trigonometry · Formula Recall" subtitle="Class 10 formula sheet · 5 profiles · Serial or Random" cards={TRIG} onOpen={open} />
+      <Section title="Algebra · x ± 1/x Formula Recall" subtitle="Powers ki poori chain — formula aur numeric dono" cards={ALGEBRA} onOpen={open} />
       <Section title="Mental Maths · Addition"       cards={ADD} onOpen={open} />
       <Section title="Mental Maths · Subtraction"    cards={SUB} onOpen={open} />
       <Section title="Mental Maths · Multiplication" cards={MUL} onOpen={open} />

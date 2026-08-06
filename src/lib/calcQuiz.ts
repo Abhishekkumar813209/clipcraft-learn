@@ -1,4 +1,5 @@
 import { generateTrigQuiz } from './trigQuiz';
+import { generateAlgebraQuiz } from './algebraQuiz';
 
 // Client-side question generators for calculation & mental-maths speed drills.
 export interface CalcQ {
@@ -487,7 +488,7 @@ export function genMental(op: Op, dA: number, dB: number, count = 100): CalcQ[] 
 }
 
 // ============ Meta / dispatcher ============
-export type ChapterKind = 'ranged' | 'percent' | 'mental' | 'trig';
+export type ChapterKind = 'ranged' | 'percent' | 'mental' | 'trig' | 'algebra';
 
 export interface ChapterMeta {
   title: string;
@@ -541,6 +542,11 @@ export const CHAPTER_META: Record<string, ChapterMeta> = {
   'trig-comp':       { title: 'Profile 3 · Complementary Angles',   icon: '🔁', perQSeconds: 12, kind: 'trig', count: 200 },
   'trig-identities': { title: 'Profile 4 · Identities',             icon: '🧩', perQSeconds: 14, kind: 'trig', count: 200 },
   'trig-special':    { title: 'Profile 5 · Special Values',         icon: '⭐', perQSeconds: 10, kind: 'trig', count: 10 },
+
+  // Algebra formula recall (x ± 1/x family)
+  'alg-xplus':  { title: 'x + 1/x = n · Formula Drill', icon: '➕', perQSeconds: 20, kind: 'algebra', count: 220 },
+  'alg-xminus': { title: 'x − 1/x = n · Formula Drill', icon: '➖', perQSeconds: 20, kind: 'algebra', count: 220 },
+  'alg-mixed':  { title: 'Mixed x ± 1/x Drill',         icon: '🔀', perQSeconds: 22, kind: 'algebra', count: 240 },
 };
 
 export interface GenerateParams extends RangedParams {}
@@ -562,6 +568,9 @@ export function generateQuiz(slug: string, params: GenerateParams = {}): CalcQ[]
   }
   if (meta.kind === 'trig') {
     return generateTrigQuiz(slug, params.mode ?? 'serial');
+  }
+  if (meta.kind === 'algebra') {
+    return generateAlgebraQuiz(slug, params.mode ?? 'serial');
   }
   if (meta.kind === 'mental' && meta.op && meta.digitsA && meta.digitsB) {
     return genMental(meta.op, meta.digitsA, meta.digitsB, meta.count ?? 100);
