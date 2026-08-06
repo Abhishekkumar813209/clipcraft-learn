@@ -1,4 +1,5 @@
 import { generateTrigQuiz } from './trigQuiz';
+import { generateAlgebraQuiz } from './algebraQuiz';
 
 // Client-side question generators for calculation & mental-maths speed drills.
 export interface CalcQ {
@@ -567,6 +568,9 @@ export function generateQuiz(slug: string, params: GenerateParams = {}): CalcQ[]
   }
   if (meta.kind === 'trig') {
     return generateTrigQuiz(slug, params.mode ?? 'serial');
+  }
+  if (meta.kind === 'algebra') {
+    return generateAlgebraQuiz(slug, params.mode ?? 'serial');
   }
   if (meta.kind === 'mental' && meta.op && meta.digitsA && meta.digitsB) {
     return genMental(meta.op, meta.digitsA, meta.digitsB, meta.count ?? 100);
