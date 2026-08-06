@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Centers of Triangle Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .fig{
+    background:#FCFDFF; border:1px dashed var(--paper-line); border-radius:10px;
+    padding:6px; margin:0 0 10px 0; text-align:center;
+  }
+  .fig svg{ max-width:100%; height:auto; }
+  .fig text{ font-family:'Kalam',cursive; font-size:13px; fill:var(--ink-blue-dark); }
+  .fig .lbl{ font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--margin-red); }
+  .fig .sd{ stroke:var(--ink-blue); stroke-width:1.8; fill:none; }
+  .fig .cev{ stroke:var(--margin-red); stroke-width:1.4; fill:none; stroke-dasharray:4 3; }
+  .fig .cir{ stroke:var(--check-green); stroke-width:1.4; fill:none; }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Complete Maths Course · CENTERS OF TRIANGLE (Q1–Q61)</p>
+    <h1>Centers of Triangle: question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, figure dekho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'bisector', 'incentre', 'BIC', 'circumradius', 'orthocentre', 'Euler'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="bisector">Angle Bisector</button>
+      <button data-filter="incentre">Incentre</button>
+      <button data-filter="inradius">Inradius</button>
+      <button data-filter="circum">Circumcentre</button>
+      <button data-filter="circumradius">Circumradius</button>
+      <button data-filter="ortho">Orthocentre</button>
+      <button data-filter="centroid">Centroid / Median</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="bisector" data-kw="internal angle bisector theorem AB/AC=BD/DC aantarik kon samdvibhajak ratio BD DC आंतरिक कोण समद्विभाजक अनुपात">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Internal bisector → AB/AC = BD/DC</h3>
+      <p class="trigger">Trigger: "AD is the internal bisector of ∠A meeting BC at D" / "XQ bisects ∠X" — turant sides ka ratio = base ke tukdon ka ratio.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="60,15 15,110 210,110"/>
+        <line class="cev" x1="60" y1="15" x2="95" y2="110"/>
+        <text x="52" y="12">A</text><text x="4" y="124">B</text><text x="208" y="124">C</text><text x="88" y="126">D</text>
+        <text class="lbl" x="20" y="70">AB</text><text class="lbl" x="150" y="60">AC</text>
+      </svg></div>
+      <div class="example">
+        <b>Q1:</b> BD=5, BC=7.5 → DC=2.5; AB:AC = 5:2.5 = <span class="ans">2 : 1</span>
+        <span class="q2"><b>Q2:</b> XY=5, XZ=7 → YQ:QZ = <span class="ans">5 : 7</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="bisector" data-kw="DC=2BD AC-AB=5 difference of sides bisector unit method bhujaon ka antar ekai विधि">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>DC = k·BD diya ho + sides ka ANTAR diya ho</h3>
+      <p class="trigger">Trigger: "DC = 2BD" aur "AC − AB = 5 cm" — ratio se AB=1u, AC=2u; antar = 1u.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="70,15 15,110 215,110"/>
+        <line class="cev" x1="70" y1="15" x2="82" y2="110"/>
+        <text x="62" y="12">A</text><text x="4" y="124">B</text><text x="213" y="124">C</text><text x="76" y="126">D</text>
+        <text class="lbl" x="40" y="124">1u</text><text class="lbl" x="140" y="124">2u</text>
+      </svg></div>
+      <div class="example">
+        <b>Q3:</b> AB:AC = BD:DC = 1:2 → AC−AB = 1u = 5 → AB = <span class="ans">5 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="bisector" data-kw="distance of D from midpoint of BC madhya bindu se doori bisector AB=5 AC=7.5 BC=10 मध्य बिंदु दूरी">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>D ki doori BC ke MID-POINT se</h3>
+      <p class="trigger">Trigger: "distance of D from the mid-point of BC" — pehle BD nikalo ratio se, phir |BD − BC/2|.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="70,15 15,110 215,110"/>
+        <line class="cev" x1="70" y1="15" x2="95" y2="110"/>
+        <line x1="115" y1="102" x2="115" y2="118" stroke="#2F7D4F" stroke-width="1.6"/>
+        <text x="62" y="12">A</text><text x="4" y="124">B</text><text x="213" y="124">C</text>
+        <text x="88" y="126">D</text><text x="118" y="128">M</text>
+      </svg></div>
+      <div class="example">
+        <b>Q4:</b> AB:AC = 5:7.5 = 2:3 → BD = 10×2/5 = 4; mid = 5 → DM = <span class="ans">1 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="bisector" data-kw="median AD bisectors of ADB ADC meet AB AC at E F EF parallel BC thales AE:BE माध्यिका समद्विभाजक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Median + ∠ADB, ∠ADC ke bisectors → EF ∥ BC</h3>
+      <p class="trigger">Trigger: "AD is a median, bisectors of ∠ADB and ∠ADC meet AB and AC at E and F" — EF ∥ BC, so EF/BC = AE/AB.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="115,12 20,110 210,110"/>
+        <line class="cev" x1="115" y1="12" x2="115" y2="110"/>
+        <line class="cir" x1="62" y1="66" x2="163" y2="66"/>
+        <text x="108" y="10">A</text><text x="10" y="124">B</text><text x="208" y="124">C</text>
+        <text x="112" y="126">D</text><text x="48" y="64">E</text><text x="167" y="64">F</text>
+      </svg></div>
+      <div class="example">
+        <b>Q5:</b> AE:BE = 3:4 → AE:AB = 3:7 → EF : BC = <span class="ans">3 : 7</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="bisector" data-kw="angle A 90 bisector DE perpendicular to AC similar triangles thales AB=10 AC=15 समकोण द्विभाजक लम्ब">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>∠A = 90° ka bisector + DE ⊥ AC → similar triangle</h3>
+      <p class="trigger">Trigger: "∠A = 90°, AD bisector, DE ⊥ AC" — BD:DC = AB:AC, phir DE/AB = DC/BC.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="30,20 30,110 215,110"/>
+        <line class="cev" x1="30" y1="20" x2="122" y2="110"/>
+        <line class="cir" x1="122" y1="110" x2="122" y2="72"/>
+        <text x="20" y="18">A</text><text x="18" y="124">B</text><text x="213" y="124">C</text>
+        <text x="126" y="70">D</text><text class="lbl" x="34" y="70">10</text>
+      </svg></div>
+      <div class="example">
+        <b>Q6:</b> AB:AC = 10:15 = 2:3 → DE/AB = 3/5 → DE = 10×3/5 = <span class="ans">6 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="bisector" data-kw="external angle bisector theorem bahya kon samdvibhajak produced BE/CE AB/AC external division बाह्य कोण समद्विभाजक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>External bisector → AB/AC = BE/CE (BC produced par)</h3>
+      <p class="trigger">Trigger: "BA is produced to D and bisector of ∠CAD meets BC produced at E" — same ratio, par E bahar.</p>
+      <div class="fig"><svg viewBox="0 0 250 130" width="250" height="130">
+        <polygon class="sd" points="70,20 20,100 150,100"/>
+        <line class="cev" x1="70" y1="20" x2="225" y2="100"/>
+        <line class="sd" x1="150" y1="100" x2="230" y2="100"/>
+        <text x="62" y="16">A</text><text x="10" y="114">B</text><text x="146" y="114">C</text><text x="228" y="114">E</text>
+      </svg></div>
+      <div class="example">
+        <b>Q8:</b> AB:AC = 5:2, BC = 9 → 5/2 = (9+y)/y → y = CE = <span class="ans">6 cm</span>
+        <span class="q2"><b>Q7:</b> 8/AC = 64/24 → AC = <span class="ans">3 cm</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incentre" data-kw="BIC 90 + A/2 incentre angle bisectors meet at I O antah kendra कोण अन्तःकेंद्र 90+A/2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>∠BIC = 90 + ∠A/2 (incentre ka king formula)</h3>
+      <p class="trigger">Trigger: "I is the incentre" ya "bisectors of ∠B and ∠C meet at O" — bas 90 + (opposite angle)/2.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="115,12 20,110 210,110"/>
+        <line class="cev" x1="20" y1="110" x2="130" y2="66"/>
+        <line class="cev" x1="210" y1="110" x2="100" y2="66"/>
+        <circle cx="115" cy="72" r="3" fill="#C0392B"/>
+        <text x="108" y="10">A</text><text x="10" y="124">B</text><text x="208" y="124">C</text><text x="120" y="70">I</text>
+      </svg></div>
+      <div class="example">
+        <b>Q9:</b> ∠A = 88° → ∠BIC = 90+44 = <span class="ans">134°</span>
+        <span class="q2"><b>Q10:</b> ∠BOC = 125° → 125 = 90+A/2 → ∠A = <span class="ans">70°</span></span>
+        <br><b>Q11:</b> ∠O=50°,∠P=70° → ∠Q=60° pe nahi, ∠PRQ = 90+50/2 = <span class="ans">115°</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incentre" data-kw="BAO half angle BPC - PCA reverse incentre find half angle 108 = 90 + theta आधा कोण उल्टा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>Ulta case: ∠BIC diya → HALF angle (∠BAO / ∠PCA) poocha</h3>
+      <p class="trigger">Trigger: "∠BOC = 108°, then ∠BAO = ?" — pehle poora ∠A nikalo, phir /2. Mixed poocha ho toh dono nikaal ke ghatao.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="115,12 20,110 210,110"/>
+        <line class="cev" x1="115" y1="12" x2="115" y2="98"/>
+        <line class="cev" x1="20" y1="110" x2="140" y2="60"/>
+        <line class="cev" x1="210" y1="110" x2="90" y2="60"/>
+        <text x="108" y="10">A</text><text x="10" y="124">B</text><text x="208" y="124">C</text>
+        <text x="120" y="76">O</text><text class="lbl" x="126" y="94">108°</text>
+      </svg></div>
+      <div class="example">
+        <b>Q12:</b> 108 = 90 + θ → θ = ∠BAO = <span class="ans">18°</span>
+        <span class="q2"><b>Q13:</b> ∠A=66°,∠B=50° → ∠BPC = 90+33 = 123°, ∠PCA = 64/2 = 32° → <span class="ans">91°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incentre" data-kw="external bisectors of B and C meet at P 90 - A/2 sides produced CBD BCE excentre bahya samdvibhajak">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>Sides PRODUCED + external bisectors → ∠P = 90 − ∠A/2</h3>
+      <p class="trigger">Trigger: "Sides AB and AC are produced to D and E, bisectors of ∠CBD and ∠BCE meet at P" — internal wala ulta.</p>
+      <div class="fig"><svg viewBox="0 0 250 130" width="250" height="130">
+        <polygon class="sd" points="125,12 45,82 205,82"/>
+        <line class="sd" x1="125" y1="12" x2="25" y2="100"/>
+        <line class="sd" x1="125" y1="12" x2="225" y2="100"/>
+        <line class="cev" x1="45" y1="82" x2="125" y2="120"/>
+        <line class="cev" x1="205" y1="82" x2="125" y2="120"/>
+        <text x="118" y="10">A</text><text x="34" y="80">B</text><text x="209" y="80">C</text>
+        <text x="16" y="112">D</text><text x="226" y="112">E</text><text x="128" y="126">P</text>
+      </svg></div>
+      <div class="example">
+        <b>Q14:</b> ∠A = 78° → ∠P = 90 − 39 = <span class="ans">51°</span>
+        <span class="q2"><b>Q15:</b> ∠A = 72° → ∠P = 90 − 36 = <span class="ans">54°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="incentre" data-kw="AI:ID = (b+c):a incentre divides angle bisector perimeter 24 BC 9 AO OE ratio bhag anupat अन्तःकेंद्र विभाजन">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>AI : ID = (AB + AC) : BC</h3>
+      <p class="trigger">Trigger: "I is the incentre, find AI : ID" / perimeter aur ek bhuja di ho — do adjacent ka yog : opposite.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="115,12 20,110 210,110"/>
+        <line class="cev" x1="115" y1="12" x2="115" y2="110"/>
+        <circle cx="115" cy="70" r="3" fill="#C0392B"/>
+        <text x="108" y="10">A</text><text x="10" y="124">B</text><text x="208" y="124">C</text>
+        <text x="120" y="68">I</text><text x="110" y="126">D</text>
+        <text class="lbl" x="122" y="40">b+c</text><text class="lbl" x="122" y="98">a</text>
+      </svg></div>
+      <div class="example">
+        <b>Q17:</b> perimeter 24, BC = 9 → AB+AC = 15 → AI:ID = 15:9 = <span class="ans">5 : 3</span>
+        <span class="q2"><b>Q18:</b> AO:OE = 7:5 → (b+c):a = 49:35; CO:OD = 4:3 → 48:36 → BO:OF = (36+35):13 = <span class="ans">71/13</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="inradius" data-kw="r = area/semi perimeter heron formula inradius antah trijya s(s-a)(s-b)(s-c) क्षेत्रफल अर्धपरिमाप">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>r = Δ/s, aur Δ = Heron se</h3>
+      <p class="trigger">Trigger: "perimeter aur inradius diya, area nikalo" ya "teen bhujayein di hain, in-radius nikalo" — s = P/2 pehle.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="105,14 20,110 210,110"/>
+        <circle class="cir" cx="105" cy="80" r="30"/>
+        <line class="cev" x1="105" y1="80" x2="105" y2="110"/>
+        <text class="lbl" x="110" y="98">r</text>
+        <text x="98" y="12">A</text><text x="10" y="124">B</text><text x="208" y="124">C</text>
+      </svg></div>
+      <div class="example">
+        <b>Q19:</b> P=24 → s=12; 7 = Δ/12 → Δ = <span class="ans">84 cm²</span>
+        <span class="q2"><b>Q20:</b> 13,14,15 → s=21, Δ=84 → r = 84/21 = <span class="ans">4 cm</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="inradius" data-kw="right angled triangle inradius r = (p+b-h)/2 largest circle cut from triangle samkon trijya sabse bada vritt">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>Right triangle → r = (P + B − H)/2</h3>
+      <p class="trigger">Trigger: "right-angled triangle, largest circle that can be cut out" / "circle inscribed in right triangle" — Heron mat lagao.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="35,20 35,110 200,110"/>
+        <rect x="35" y="98" width="12" height="12" fill="none" stroke="#1d3f8f" stroke-width="1.2"/>
+        <circle class="cir" cx="63" cy="82" r="28"/>
+        <text class="lbl" x="16" y="66">p</text><text class="lbl" x="110" y="126">b</text><text class="lbl" x="130" y="56">h</text>
+      </svg></div>
+      <div class="example">
+        <b>Q21:</b> 8, 15, 17 → r = (8+15−17)/2 = <span class="ans">3 cm</span>
+        <span class="q2"><b>Q22:</b> hyp 20√3, 30° → sides 10√3, 30 → r = 5(3−√3); area = <span class="ans">75π(4−2√3)</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="inradius" data-kw="equilateral triangle inradius circumradius a/2root3 a/root3 R=2r centroid samabahu trijya समबाहु">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Equilateral: r = a/2√3, R = a/√3 = 2r</h3>
+      <p class="trigger">Trigger: "equilateral triangle" + inradius / circumradius / centroid se vertex ki doori — sab ek hi jagah.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="115,14 35,112 195,112"/>
+        <circle class="cir" cx="115" cy="79" r="33"/>
+        <line class="cev" x1="115" y1="79" x2="115" y2="14"/>
+        <text class="lbl" x="120" y="50">R</text><text class="lbl" x="120" y="100">r</text>
+        <text class="lbl" x="106" y="126">a</text>
+      </svg></div>
+      <div class="example">
+        <b>Q23:</b> side 12 → PA = R = 12/√3 = <span class="ans">4√3 cm</span>
+        <span class="q2"><b>Q36:</b> area 36√3 → a = 12 → R = <span class="ans">4√3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circum" data-kw="circumcentre BOC = 2A central angle QOR OPR parikendra do guna kendriya kon परिकेंद्र दुगुना">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Circumcentre → ∠BOC = 2∠A (centre pe double)</h3>
+      <p class="trigger">Trigger: "O is the circumcentre of ΔABC, ∠BOC = ..." — centre ka kon hamesha vertex ke kon ka double.</p>
+      <div class="fig"><svg viewBox="0 0 240 140" width="240" height="140">
+        <circle class="cir" cx="120" cy="72" r="58"/>
+        <polygon class="sd" points="120,14 66,112 182,104"/>
+        <line class="cev" x1="120" y1="72" x2="66" y2="112"/>
+        <line class="cev" x1="120" y1="72" x2="182" y2="104"/>
+        <circle cx="120" cy="72" r="3" fill="#C0392B"/>
+        <text x="114" y="12">A</text><text x="52" y="124">B</text><text x="186" y="114">C</text><text x="126" y="70">O</text>
+      </svg></div>
+      <div class="example">
+        <b>Q24:</b> ∠QOR = 110° → ∠P = 55°; ∠OPR = 25° → ∠OPQ = 30°… ∠PRQ = 35+25 = <span class="ans">60°</span>
+        <span class="q2"><b>Q26:</b> ∠QOR = 110° → ∠PQR = <span class="ans">55°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circum" data-kw="OA=OB=OC isosceles OAC = 90 - B circumcentre equal radii samdvibahu trijya barabar OAC">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>OA = OB = OC → har chhota triangle isosceles (∠OAC = 90 − ∠B)</h3>
+      <p class="trigger">Trigger: "O is circumcentre, ∠BAC and ∠BCA given, find ∠OAC" — radii barabar, base angles barabar.</p>
+      <div class="fig"><svg viewBox="0 0 240 140" width="240" height="140">
+        <circle class="cir" cx="120" cy="70" r="56"/>
+        <polygon class="sd" points="90,16 64,112 176,96"/>
+        <line class="cev" x1="120" y1="70" x2="90" y2="16"/>
+        <line class="cev" x1="120" y1="70" x2="64" y2="112"/>
+        <line class="cev" x1="120" y1="70" x2="176" y2="96"/>
+        <text x="82" y="14">A</text><text x="52" y="124">B</text><text x="180" y="104">C</text><text x="126" y="68">O</text>
+      </svg></div>
+      <div class="example">
+        <b>Q25:</b> ∠BAC=85°, ∠BCA=55° → ∠B=40° → ∠OAC = 90−40 = <span class="ans">50°</span>
+        <span class="q2"><b>Q27:</b> ∠RTP = 46° → α+44+β = 46 → ∠XQP+∠RQS = <span class="ans">2°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circum" data-kw="circumcentre and incentre together EOF 124 EIF 90 + A/2 mixed centre combo dono kendra ek saath">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>O + I dono ek saath → pehle ∠A nikalo, phir doosra formula</h3>
+      <p class="trigger">Trigger: "O and I are circumcentre and incentre of ΔDEF, ∠EOF = 124°, find ∠EIF" — bridge hamesha ∠A.</p>
+      <div class="fig"><svg viewBox="0 0 240 140" width="240" height="140">
+        <circle class="cir" cx="118" cy="70" r="55"/>
+        <polygon class="sd" points="118,15 64,110 174,110"/>
+        <circle cx="118" cy="70" r="3" fill="#2F7D4F"/>
+        <circle cx="118" cy="86" r="3" fill="#C0392B"/>
+        <text x="112" y="13">D</text><text x="52" y="122">E</text><text x="178" y="122">F</text>
+        <text x="124" y="68">O</text><text x="124" y="92">I</text>
+      </svg></div>
+      <div class="example">
+        <b>Q28:</b> ∠EOF = 124 = 2∠D → ∠D = 62° → ∠EIF = 90+31 = <span class="ans">121°</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circumradius" data-kw="R = abc/4 area circumradius altitude AD perpendicular parisrijya abc chaar delta परित्रिज्या सूत्र">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>R = abc / 4Δ (jab teen bhuja ya altitude diya ho)</h3>
+      <p class="trigger">Trigger: "AB, AC aur AD (perpendicular on BC) diya hai, circumradius nikalo" — area = ½ × BC × AD.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="105,16 20,110 205,110"/>
+        <line class="cev" x1="105" y1="16" x2="105" y2="110"/>
+        <rect x="105" y="98" width="10" height="12" fill="none" stroke="#C0392B" stroke-width="1"/>
+        <text x="98" y="14">A</text><text x="10" y="124">B</text><text x="204" y="124">C</text><text x="100" y="126">D</text>
+        <text class="lbl" x="112" y="70">3</text><text class="lbl" x="44" y="60">17</text><text class="lbl" x="160" y="58">9</text>
+      </svg></div>
+      <div class="example">
+        <b>Q30:</b> AB=17, AC=9, AD=3 → R = (a·b·c)/(4Δ) = <span class="ans">25.5 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circumradius" data-kw="sine rule a/sinA = 2R angle and opposite side given 45 degree 12root2 jya niyam ज्या नियम">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Ek angle + uski opposite side → Sine rule: a/sin A = 2R</h3>
+      <p class="trigger">Trigger: "∠B = 45° and AC = 12√2, find circumradius" — angle ke saamne wali bhuja mili toh seedha 2R.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="60,18 25,108 205,108"/>
+        <path d="M42,100 A16,16 0 0,1 55,92" fill="none" stroke="#C0392B" stroke-width="1.2"/>
+        <text x="52" y="16">A</text><text x="14" y="122">B</text><text x="206" y="122">C</text>
+        <text class="lbl" x="46" y="90">45°</text><text class="lbl" x="130" y="60">12√2</text>
+      </svg></div>
+      <div class="example">
+        <b>Q31:</b> 12√2 / sin45 = 2R → 24 = 2R → R = <span class="ans">12 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circumradius" data-kw="right triangle circumradius R = hypotenuse/2 midpoint of hypotenuse perimeter area 70 210 karn ka aadha कर्ण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>Right triangle → R = Hypotenuse / 2 (O = hyp ka mid-point)</h3>
+      <p class="trigger">Trigger: "right-angled triangle ka circumradius / circle circumscribing" — pehle hypotenuse nikalo, bas aadha.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <circle class="cir" cx="120" cy="66" r="52"/>
+        <polygon class="sd" points="68,66 172,66 100,114"/>
+        <rect x="92" y="102" width="12" height="12" fill="none" stroke="#1d3f8f" stroke-width="1.1"/>
+        <circle cx="120" cy="66" r="3" fill="#C0392B"/>
+        <text class="lbl" x="112" y="60">O</text><text class="lbl" x="140" y="60">R</text>
+      </svg></div>
+      <div class="example">
+        <b>Q32:</b> 20, 21 → H = 29 → R = <span class="ans">14.5 cm</span>
+        <span class="q2"><b>Q34:</b> P+B+H = 70, PB = 420 → 20,21,29 → R = <span class="ans">14.5 cm</span></span>
+        <br><b>Q33:</b> AB=AC=7√2, ∠A=90° → BC=14 → R = <span class="ans">7 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="circumradius" data-kw="distance between incentre and circumcentre root R2 - 2Rr euler distance 6 2 doori antah pari kendra दूरी">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>Incentre ↔ Circumcentre doori = √(R² − 2Rr)</h3>
+      <p class="trigger">Trigger: "distance between incentre and circumcentre" — pehle R aur r alag-alag nikalo, phir formula.</p>
+      <div class="fig"><svg viewBox="0 0 240 140" width="240" height="140">
+        <circle class="cir" cx="118" cy="68" r="54"/>
+        <polygon class="sd" points="118,14 64,110 176,110"/>
+        <circle cx="118" cy="68" r="3" fill="#2F7D4F"/>
+        <circle cx="118" cy="88" r="3" fill="#C0392B"/>
+        <line x1="118" y1="68" x2="118" y2="88" stroke="#C0392B" stroke-width="1.6"/>
+        <text x="124" y="66">O</text><text x="124" y="94">I</text><text class="lbl" x="86" y="82">D</text>
+      </svg></div>
+      <div class="example">
+        <b>Q38:</b> R=6, r=2 → √(36−24) = <span class="ans">2√3 cm</span>
+        <span class="q2"><b>Q39:</b> 6,8,10 → r=2, R=5 → √(25−20) = <span class="ans">√5</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ortho" data-kw="orthocentre BHC = 180 - A altitudes intersect FOE obtuse lamb kendra shirsh lamb लम्बकेन्द्र 180-A">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>Orthocentre → ∠BHC = 180° − ∠A</h3>
+      <p class="trigger">Trigger: "O/H is the orthocentre" ya "BE ⊥ AC, CF ⊥ AB intersect at O, find ∠FOE" — supplementary rakho.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="112,12 24,110 208,110"/>
+        <line class="cev" x1="112" y1="12" x2="112" y2="110"/>
+        <line class="cev" x1="24" y1="110" x2="166" y2="52"/>
+        <line class="cev" x1="208" y1="110" x2="66" y2="54"/>
+        <circle cx="112" cy="76" r="3" fill="#C0392B"/>
+        <text x="105" y="10">A</text><text x="14" y="124">B</text><text x="206" y="124">C</text><text x="118" y="74">H</text>
+      </svg></div>
+      <div class="example">
+        <b>Q42:</b> ∠BOC = 54° (∠A obtuse) → ∠BAC = 180−54 = <span class="ans">126°</span>
+        <span class="q2"><b>Q49:</b> ∠A = 65° → ∠FOE = 180−65 = <span class="ans">115°</span></span>
+        <br><b>Q41:</b> O orthocentre of ΔABC → A orthocentre of <span class="ans">ΔBOC</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ortho" data-kw="orthocentre plus bisector OBC OCB meet at P BPC = 90 + (90 - A/2) combo double formula EPD 110 दोहरा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>Orthocentre + uske baad bisector → do-step combo</h3>
+      <p class="trigger">Trigger: "bisectors of ∠OBC and ∠OCB meet at P, find ∠BPC" — ∠BOC = 180−A, phir ∠BPC = 90 + ∠BOC/2.</p>
+      <div class="fig"><svg viewBox="0 0 240 140" width="240" height="140">
+        <polygon class="sd" points="112,10 24,100 208,100"/>
+        <line class="cev" x1="24" y1="100" x2="160" y2="46"/>
+        <line class="cev" x1="208" y1="100" x2="64" y2="48"/>
+        <circle cx="112" cy="70" r="3" fill="#2F7D4F"/>
+        <line class="cir" x1="24" y1="100" x2="112" y2="126"/>
+        <line class="cir" x1="208" y1="100" x2="112" y2="126"/>
+        <text x="105" y="8">A</text><text x="14" y="114">B</text><text x="206" y="114">C</text>
+        <text x="118" y="68">O</text><text x="116" y="132">P</text>
+      </svg></div>
+      <div class="example">
+        <b>Q43:</b> ∠A=52° → ∠BOC=128° → ∠BPC = 90+64 = <span class="ans">154°</span>
+        <span class="q2"><b>Q44:</b> ∠BPC=148° → ∠BOC=116° → ∠A = 180−116 = <span class="ans">64°</span></span>
+        <br><b>Q45:</b> ∠EPD=110° → ∠A=70° → ∠AQB = 90+35 = <span class="ans">125°</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ortho" data-kw="AO x OD = BO x OE = CO x OF orthocentre product altitudes PO PX QO QY AH HD HE गुणनफल शीर्षलम्ब">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Orthocentre par product barabar: AO·OD = BO·OE = CO·OF</h3>
+      <p class="trigger">Trigger: "altitudes intersect at O, PO = 6, PX = 8, QO = 4 → QY?" — pehle chhota tukda nikalo, phir jodo.</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="110,12 24,110 206,110"/>
+        <line class="cev" x1="110" y1="12" x2="110" y2="110"/>
+        <line class="cev" x1="24" y1="110" x2="162" y2="52"/>
+        <circle cx="110" cy="70" r="3" fill="#C0392B"/>
+        <text x="103" y="10">P</text><text x="14" y="124">Q</text><text x="204" y="124">R</text>
+        <text x="116" y="68">O</text><text x="105" y="126">X</text><text x="166" y="50">Y</text>
+      </svg></div>
+      <div class="example">
+        <b>Q50:</b> PO=6, OX=2, QO=4 → 6×2 = 4×OY → OY=3 → QY = <span class="ans">7 cm</span>
+        <span class="q2"><b>Q51:</b> AH=12, HD=9, HE=4 → 12×9 = BH×4 → BH = <span class="ans">27 cm</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ortho" data-kw="euler line centroid orthocentre circumcentre collinear 2:1 AH = 2 OD distance yulr rekha केन्द्रक संरेख">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>Euler line: O–G–C collinear, OG : GC = 2 : 1, aur AH = 2·OD</h3>
+      <p class="trigger">Trigger: "distance between centroid and orthocentre/circumcentre" ya "BD = DC, OD = 4, find AH" — 2:1 ka khel.</p>
+      <div class="fig"><svg viewBox="0 0 240 120" width="240" height="120">
+        <line class="sd" x1="25" y1="40" x2="215" y2="40"/>
+        <circle cx="25" cy="40" r="3.5" fill="#C0392B"/>
+        <circle cx="152" cy="40" r="3.5" fill="#2F7D4F"/>
+        <circle cx="215" cy="40" r="3.5" fill="#1d3f8f"/>
+        <text x="8" y="32">H</text><text x="146" y="32">G</text><text x="206" y="32">O</text>
+        <text class="lbl" x="76" y="60">2 part</text><text class="lbl" x="166" y="60">1</text>
+      </svg></div>
+      <div class="example">
+        <b>Q54:</b> G–H = 12 → H–O = 12 × 3/2 = <span class="ans">18 cm</span>
+        <span class="q2"><b>Q55:</b> G–O = 6 → H–O = 3 × 6 = <span class="ans">18 cm</span></span>
+        <br><b>Q57:</b> OD = 4 → AH = 2×4 = <span class="ans">8 cm</span> · <b>Q58:</b> 12,35,37 → right Δ → H=A, O=mid → <span class="ans">18.5 cm</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="centroid" data-kw="apollonius theorem median length formula AB2 + AC2 = 2(AD2 + BD2) madhyika lambai अपोलोनियस माध्यिका">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Median poocha → Apollonius: AB² + AC² = 2(AD² + BD²)</h3>
+      <p class="trigger">Trigger: "C is the midpoint of BD" / "PA is median, PQ, PR, QR diye hain" — ya seedha AD = ½√(2b²+2c²−a²).</p>
+      <div class="fig"><svg viewBox="0 0 240 130" width="240" height="130">
+        <polygon class="sd" points="112,14 22,110 202,110"/>
+        <line class="cev" x1="112" y1="14" x2="112" y2="110"/>
+        <text x="105" y="12">A</text><text x="12" y="124">B</text><text x="200" y="124">C</text><text x="107" y="126">D</text>
+        <text class="lbl" x="52" y="60">c</text><text class="lbl" x="168" y="60">b</text><text class="lbl" x="118" y="70">m</text>
+      </svg></div>
+      <div class="example">
+        <b>Q59:</b> 10,12, median 9 → 244 = 2(81+x²) → x=√41 → BD = <span class="ans">2√41</span>
+        <span class="q2"><b>Q60:</b> 6, 8, QR=2√14 → PA = ½√(72+128−56) = <span class="ans">6 cm</span></span>
+        <br><b>Q61:</b> 6, 8, 10 → AD = ½√(72+128−100) = <span class="ans">5 cm</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>25 patterns (Centers of Triangle — Q1 se Q61 tak).</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Trigonometry Trainer (25 Patterns, Q1–Q32)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+
+  .unit{ margin-bottom:64px; }
+  .unit + .unit{ border-top:2px dashed rgba(29,63,143,0.25); padding-top:28px; }
+  .unit-label{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:#fff; background:var(--ink-blue);
+    display:inline-block; padding:6px 12px; border-radius:8px; margin-left:64px;
+  }
+  @media (max-width:640px){ .unit-label{margin-left:36px;} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<section class="unit">
+  <div class="unit-label">Trigonometry Sheet-02 · Q1–Q32 · 25 Patterns</div>
+
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Trigonometry Class Notes (Sheet-02)</p>
+    <h1>Angle jodo, 90° dekho, answer nikaalo.</h1>
+    <p class="sub">Sirf 25 pattern — poore sheet ke Q1 se Q32 tak sab merge. Trigger line padho, worked example se method lock karo. Question number saath diya hai.</p>
+    <div class="controls">
+      <input type="text" class="searchBox" placeholder="Search: 'tan chain', 'cos2A', 'sin²+sin²', 'sec²-tan²', 'compound', 'Q17'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="comp">Complementary (=1)</button>
+      <button data-filter="chain">Chain Product</button>
+      <button data-filter="angle">Angle Nikaalo</button>
+      <button data-filter="square">sin²+sin²=1</button>
+      <button data-filter="identity">sec²−tan²=±1</button>
+      <button data-filter="compound">Compound Angle</button>
+      <button data-filter="theory">Theory / Formula</button>
+    </div>
+  </header>
+
+  <main class="grid">
+
+    <article class="card" data-cat="theory" data-kw="theory formula complementary alpha beta 90 sin sec cos cosec tan tan cot cot basic rule buniyadi niyam">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01 · BASE RULE</p>
+      <h3>α + β = 90° ka core set — yahi 90% sawal chalata hai</h3>
+      <span class="method-pill">jodo → 90 mile toh product = 1</span>
+      <p class="trigger">Trigger: kisi bhi sawal mein do angle ka jod 90° ho jaaye — turant 1 likh do.</p>
+      <div class="example">
+        <b>Rules:</b> sinα·secβ=1, cosα·cosecβ=1, tanα·tanβ=1, cotα·cotβ=1
+        <span class="q2"><b>Aur:</b> sinα=cosβ, tanα=cotβ, secα=cosecβ &nbsp;|&nbsp; sin10=cos80, sin40=cos50</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="comp" data-kw="q1 sin1 sec89 cos11 cosec79 tan21 tan69 coefficient add gunank jodo 2 3 5 10 ssc cpo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02 · Q1</p>
+      <h3>Har bracket ka product 1 → sirf gunank (coefficient) jodo</h3>
+      <span class="method-pill">each pair = 1 → sum of numbers</span>
+      <p class="trigger">Trigger: "2(sin1°·sec89°) + 3(cos11°·cosec79°) + 5(tan21°·tan69°)" — sab pair complementary, matlab har bracket 1.</p>
+      <div class="example">
+        <b>Q1:</b> 1+89=90, 11+79=90, 21+69=90 → 2(1)+3(1)+5(1) = <span class="ans">10</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="q2 q3 tan5 tan25 tan45 tan65 tan85 chain product cot13 cot27 cot60 cot63 cot77 pair banao 45 ka 1">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03 · Q2, Q3</p>
+      <h3>Lambi tan/cot chain → dono sire se pair banao</h3>
+      <span class="method-pill">bahar se andar pair karo</span>
+      <p class="trigger">Trigger: "tan5°·tan25°·tan45°·tan65°·tan85°" jaisi chain — pehla × aakhri, doosra × doosra-aakhri; jo bacha (45°, 60°) uski value daal do.</p>
+      <div class="example">
+        <b>Q2:</b> (tan5·tan85)(tan25·tan65)·tan45 = 1×1×1 = <span class="ans">1</span>
+        <span class="q2"><b>Q3:</b> (cot13·cot77)(cot27·cot63)·cot60 = 1×1×1/√3 = <span class="ans">1/√3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="comp" data-kw="q4 q5 q6 sin58 cos32 ratio bhagfal cos37 sin53 minus 0 cos50 sin40 3cosec80 sec10 coefficient">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04 · Q4, Q5, Q6</p>
+      <h3>Fraction sin58°/cos32° → seedha 1 (ratio ko product banao)</h3>
+      <span class="method-pill">a/b = a × (1/b) = a·sec/cosec</span>
+      <p class="trigger">Trigger: "sin58/cos32", "cos37/sin53", "cosec80/sec10" — neeche wale ko upar le jaao (1/cos = sec), phir 90 check karo.</p>
+      <div class="example">
+        <b>Q4:</b> sin58·sec32 + (sin55·sec35)/(tan5·tan45·tan85) = 1 + 1/1 = <span class="ans">2</span>
+        <span class="q2"><b>Q5:</b> cos37·cosec53 − cos47·cosec43 = 1 − 1 = <span class="ans">0</span></span>
+        <b>Q6:</b> 1 + 3(cosec80·cos10) − 2(1) = 1+3−2 = <span class="ans">2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="comp" data-kw="q8 3sin58 cos32 3sin42 cos48 same angle ratio 3+3 6 cancel">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05 · Q8</p>
+      <h3>sin58° ko cos32° likh do → upar-neeche cancel</h3>
+      <span class="method-pill">sinθ = cos(90−θ) → cut</span>
+      <p class="trigger">Trigger: "3sin58/cos32 + 3sin42/cos48" — angle badalkar exactly same term bana do, cancel hoke sirf gunank bachega.</p>
+      <div class="example">
+        <b>Q8:</b> 3cos32/cos32 + 3cos48/cos48 = 3+3 = <span class="ans">6</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chain" data-kw="q7 tan13 tan36 tan45 tan54 tan77 upar 1 neeche sec60 sin60 cos60 standard value 1/10">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06 · Q7</p>
+      <h3>Numerator chain = 1, denominator mein standard angle value</h3>
+      <span class="method-pill">upar 1 → neeche 30/45/60 values</span>
+      <p class="trigger">Trigger: chain upar hai aur neeche sec²60, sin²60, cos60 jaisi standard values — upar 1 maan lo, neeche calculation karo.</p>
+      <div class="example">
+        <b>Q7:</b> upar = 1; neeche = 2×4(3/4 − 3/2 + 2) = 8 × 5/4 = 10 → <span class="ans">1/10</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q9 q10 cos2A sin75 smallest positive value 7.5 cos40+x sin30 20 add equal 90">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07 · Q9, Q10</p>
+      <h3>sin(...) = cos(...) → dono angle ka jod = 90 likho</h3>
+      <span class="method-pill">angle₁ + angle₂ = 90</span>
+      <p class="trigger">Trigger: "cos2A = sin75°" ya "cos(40+x) = sin30°" — different naam (sin vs cos) ho toh angles ka sum 90 rakhna hai.</p>
+      <div class="example">
+        <b>Q9:</b> 2A + 75 = 90 → 2A = 15 → A = <span class="ans">7.5°</span>
+        <span class="q2"><b>Q10:</b> 40 + x + 30 = 90 → x = <span class="ans">20°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q11 tan2theta cot theta-36 42 tan cot bhi sum 90 acute angle">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08 · Q11</p>
+      <h3>tan = cot (ya sec = cosec) → wahi 90 wala rule</h3>
+      <span class="method-pill">tanA = cotB ⇒ A+B = 90</span>
+      <p class="trigger">Trigger: "tan2θ = cot(θ − 36°)" — co-ratio jodi (tan-cot, sin-cos, sec-cosec) mile toh angles jod ke 90 kar do.</p>
+      <div class="example">
+        <b>Q11:</b> 2θ + θ − 36 = 90 → 3θ = 126 → θ = <span class="ans">42°</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q13 q14 sin5x-25 cos5y+25 x+y 18 tan5theta-10 cot5phi+20 16 two variable">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09 · Q13, Q14</p>
+      <h3>Do variable (x aur y) → (x+y) direct nikal aata hai</h3>
+      <span class="method-pill">5(x+y) = 90 → x+y</span>
+      <p class="trigger">Trigger: "sin(5x−25°) = cos(5y+25°), (x+y) = ?" — jod karke constants cancel karo, gunank se divide.</p>
+      <div class="example">
+        <b>Q13:</b> 5x−25+5y+25 = 90 → 5(x+y)=90 → <span class="ans">18°</span>
+        <span class="q2"><b>Q14:</b> 5θ−10+5φ+20 = 90 → 5(θ+φ)=80 → <span class="ans">16°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q12 cos2theta+54 sintheta 12 cot5theta sec 5theta/2 value put 60 30 root3/3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10 · Q12</p>
+      <h3>Pehle θ nikaalo → phir di gayi expression mein daalo</h3>
+      <span class="method-pill">θ find → substitute</span>
+      <p class="trigger">Trigger: "cos(2θ+54°) = sinθ, toh 1/(cot5θ + sec(5θ/2)) = ?" — do step ka sawal: angle nikaalo, phir standard values.</p>
+      <div class="example">
+        <b>Q12:</b> 2θ+54+θ = 90 → θ = 12° → 1/(cot60 + sec30) = 1/(1/√3 + 2/√3) = <span class="ans">√3/3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q15 sec5alpha-15 cosec15-2alpha 30 cos30 sin60 tan45 root3+1">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11 · Q15</p>
+      <h3>sec = cosec wala → α nikaal ke teen term ki value</h3>
+      <span class="method-pill">α find → cos+sin+tan</span>
+      <p class="trigger">Trigger: "sec(5α−15°) = cosec(15°−2α), toh cosα + sin2α + tan(1.5α) = ?"</p>
+      <div class="example">
+        <b>Q15:</b> 5α−15+15−2α = 90 → 3α = 90 → α = 30° → cos30+sin60+tan45 = √3/2+√3/2+1 = <span class="ans">√3+1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q16 sin20+x cos60 x=10 2sin2 3x+15 cosec2 2x+10 -3 sin45 cosec30">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12 · Q16</p>
+      <h3>x nikaalo → square wale terms (2sin², cosec²) mein daalo</h3>
+      <span class="method-pill">x find → square values</span>
+      <p class="trigger">Trigger: "sin(20+x)° = cos60°, toh 2sin²(3x+15)° − cosec²(2x+10)° = ?"</p>
+      <div class="example">
+        <b>Q16:</b> 20+x+60 = 90 → x = 10 → 2sin²45 − cosec²30 = 2(1/2) − 4 = 1 − 4 = <span class="ans">−3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q17 sin3A cos A+10 A=20 3A=60 2cosec30 6tan2 60 35/2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13 · Q17</p>
+      <h3>3A wale sawal → A nikaalo, phir 3A/2 aur 3A ki values</h3>
+      <span class="method-pill">3A + A + 10 = 90</span>
+      <p class="trigger">Trigger: "sin3A = cos(A+10°), toh 2cosec(3A/2) + 6tan²3A − (3/2)tan²3A = ?"</p>
+      <div class="example">
+        <b>Q17:</b> A=20 → 3A=60 → 2cosec30 + 6tan²60 − (3/2)tan²60 = 4 + 18 − 9/2 = <span class="ans">35/2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="angle" data-kw="q18 costheta sin2theta 30 cos4 sin4 cos3 sin3 power 18+7root3/8">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14 · Q18</p>
+      <h3>cosθ = sin2θ → θ=30°, phir powers ka lamba sum</h3>
+      <span class="method-pill">θ+2θ = 90 → θ = 30°</span>
+      <p class="trigger">Trigger: "cosθ = sin2θ ≠ 0, toh cos⁴θ+sin⁴θ+cos³θ+sin³θ+sin²θ+cos²θ+sinθ+cosθ = ?" — sin²+cos²=1 alag rakh lo, baaki 1/2 aur √3/2 daalo.</p>
+      <div class="example">
+        <b>Q18:</b> 9/16 + 1/16 + 3√3/8 + 1/8 + 1 + 1/2 + √3/2 = (36+14√3)/16 = <span class="ans">(18+7√3)/8</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="theory" data-kw="theory sin2 alpha sin2 beta 1 cos2 alpha cos2 beta 1 complementary square rule">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15 · BASE RULE</p>
+      <h3>α+β = 90° ⇒ sin²α + sin²β = 1 aur cos²α + cos²β = 1</h3>
+      <span class="method-pill">square pair = 1</span>
+      <p class="trigger">Trigger: square wale do term jinke angle 90 banate hain — seedha 1. (kyunki sinβ = cosα)</p>
+      <div class="example">
+        <b>Proof:</b> sin²α + cos²α = 1, aur cosα = sinβ ⇒ <span class="ans">sin²α + sin²β = 1</span>
+        <span class="q2"><b>Use:</b> sin²32+sin²58 = 1, cos²15+cos²75 = 1, cos²62+cos²28 = 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="q19 simplify sin2 53 sin2 37 sin2 32 sin2 58 cos2 32 cos2 58 2 ratio 1">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16 · Q19</p>
+      <h3>Simplify wala sawal → har bracket ko 1 se replace karo</h3>
+      <span class="method-pill">bracket-by-bracket = 1</span>
+      <p class="trigger">Trigger: "Simplify" likha ho aur (sin²32+sin²58)/(cos²32+cos²58) jaise bracket dikhein — 1/1 = 1.</p>
+      <div class="example">
+        <b>Q19:</b> (1/1) + (sin²53+sin²37) = 1 + 1 = <span class="ans">2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="q20 q24 q28 5cos2 62 5cos2 28 21 7sin2 35 55 1 -2 sin2 52 sin2 38 4cos2 43 47 5 3 common lelo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17 · Q20, Q24, Q28</p>
+      <h3>Gunank common lo → bracket 1 → sirf number ka calculation</h3>
+      <span class="method-pill">a(pair)+c → a(1)+c</span>
+      <p class="trigger">Trigger: "(5cos²62 + 5cos²28 − 21)/(7sin²35 + 7sin²55 + 1)" — 5 aur 7 bahar nikaalo, andar 1 aayega.</p>
+      <div class="example">
+        <b>Q20 = Q24:</b> (5×1 − 21)/(7×1 + 1) = −16/8 = <span class="ans">−2</span>
+        <span class="q2"><b>Q28:</b> (1+2)/(4×1 − 5) = 3/(−1) = <span class="ans">−3</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="square" data-kw="q21 root2 tan60-theta tan30+theta sin2 45+theta sin2 45-theta shifted angle theta cancel root2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18 · Q21</p>
+      <h3>θ shift ho toh bhi sum dekho: (60−θ)+(30+θ) = 90</h3>
+      <span class="method-pill">θ cancel → phir wahi rule</span>
+      <p class="trigger">Trigger: angle mein +θ / −θ laga ho — ghabrao mat, sirf jod karo; θ apne aap cancel hota hai.</p>
+      <div class="example">
+        <b>Q21:</b> upar = √2 × 1; neeche sin²(45+θ)+sin²(45−θ) = 1 → <span class="ans">√2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="theory" data-kw="theory 1+tan2 sec2 cot2 cosec2 -1 identity sign nishaan sec2-tan2 1 tan2-sec2 -1">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19 · BASE RULE</p>
+      <h3>sec² − tan² = 1 aur tan² − sec² = −1 (sign hi trick hai)</h3>
+      <span class="method-pill">order badla → sign badla</span>
+      <p class="trigger">Trigger: same angle ke sec²/tan² ya cosec²/cot² dikhein — order dekho aur +1 / −1 likh do.</p>
+      <div class="example">
+        <b>Set:</b> sec²θ − tan²θ = 1, cosec²θ − cot²θ = 1
+        <span class="q2"><b>Ulta:</b> tan²θ − sec²θ = −1, cot²θ − cosec²θ = −1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="compound" data-kw="q22 sin37 cos53 cos37 sin53 sin90 1 4cos2 37 53 7 tan2 47 cosec2 43 2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20 · Q22</p>
+      <h3>sinA cosB + cosA sinB = sin(A+B) → upar 1, neeche identity</h3>
+      <span class="method-pill">sin(A+B) + sec²−tan²</span>
+      <p class="trigger">Trigger: "(sin37 cos53 + cos37 sin53) − [ (4cos²37 − 7 + 4cos²53)/(tan²47 + 4 − cosec²43) ]" — pehla part sin90 = 1; neeche tan47 = cot43.</p>
+      <div class="example">
+        <b>Q22:</b> 1 − [(4×1 − 7)/(−1 + 4)] = 1 − (−3/3) = 1+1 = <span class="ans">2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="q23 4tan2 30 sin2 30 cos2 45 sec2 48 cot2 42 cos37 sin53 tan18 tan72 59/48">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21 · Q23</p>
+      <h3>Standard values + (sec²48 − cot²42) = 1 mix</h3>
+      <span class="method-pill">48+42=90 ⇒ cot42 = tan48</span>
+      <p class="trigger">Trigger: sec²48 − cot²42 jaisa jodi jisme angle 90 banate hain — pehle ek ko doosre mein badlo, phir identity lagao.</p>
+      <div class="example">
+        <b>Q23:</b> upar = 4/3 + 1/8 + 1 = 59/24; neeche = 1 + 1 = 2 → <span class="ans">59/48</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="comp" data-kw="q25 cos9 sin81 sec9 cosec81 same double 2cos9 2sec9 4 cosec2 71 tan2 19 cos2 15 cos2 75 2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22 · Q25</p>
+      <h3>cos9° aur sin81° same cheez → (2cos9)(2sec9) = 4</h3>
+      <span class="method-pill">same term → double karo</span>
+      <p class="trigger">Trigger: "(cos9 + sin81)(sec9 + cosec81)" — dono bracket mein same value do baar hai, isliye 2× aur 2×.</p>
+      <div class="example">
+        <b>Q25:</b> (2cos9 × 2sec9)/(1 + 1) = 4/2 = <span class="ans">2</span>
+        <span class="q2">neeche: cosec²71 − tan²19 = 1, cos²15 + cos²75 = 1</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="q26 x=sec57 cot2 33 sin2 57 sin2 33 cosec2 57 cos2 33 sec2 33 sin2 57 x2+2 answer in terms of x">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23 · Q26</p>
+      <h3>Answer x ki bhasha mein → sab ko ek angle par laao</h3>
+      <span class="method-pill">tan²+1 = sec² = x²</span>
+      <p class="trigger">Trigger: "x = sec57°, toh expression = ?" aur options x²+2 type — har term ko 1 ya tan²54 jaisi form mein todo.</p>
+      <div class="example">
+        <b>Q26:</b> tan²54 + 1 + 1 + 1 = sec²54 + 2 = <span class="ans">x² + 2</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="compound" data-kw="q27 sin67 cos37 sin37 cos67 cos13 cos17 sin13 sin17 sin30 cos30 tan30 1/root3 formula pehchano">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24 · Q27</p>
+      <h3>Compound formula pehchano → sin(A−B) / cos(A+B)</h3>
+      <span class="method-pill">sign dekh ke formula chuno</span>
+      <p class="trigger">Trigger: "sin67cos37 − sin37cos67" upar aur "cos13cos17 − sin13sin17" neeche — minus/plus se decide karo: sin(A−B) aur cos(A+B).</p>
+      <div class="example">
+        <b>Q27:</b> sin(67−37)/cos(13+17) = sin30/cos30 = tan30 = <span class="ans">1/√3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="identity" data-kw="q29 q30 q31 q32 2sin2 38 sec2 52 cos64 sin26 tan2 23 cot2 23 sec2 67 cosec2 67 -3/2 phi theta shifted -2 -1 3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25 · Q29, Q30, Q31, Q32</p>
+      <h3>Mixed monster: pehle angle same karo, phir ±1 identity lagao</h3>
+      <span class="method-pill">angle convert → 1 / −1 → jodo</span>
+      <p class="trigger">Trigger: numerator-denominator mein tan²23, sec²67, cosec²(62+φ), tan²(28−φ) jaise bade mix — pehle sab ko ek angle par laao (tan23 = cot67, tan(φ+68) = cot(22−φ)), phir sec²−tan² = ±1.</p>
+      <div class="example">
+        <b>Q29:</b> (2+1)/(−1−1) = <span class="ans">−3/2</span>
+        <span class="q2"><b>Q30:</b> [3(1) + (−1)]/(−1) = <span class="ans">−2</span> &nbsp;|&nbsp; <b>Q31:</b> [3(−1) − 2(−1)]/(1+0) = <span class="ans">−1</span></span>
+        <b>Q32:</b> (1+1+1)/(sec²40 − tan²70 → 1) = <span class="ans">3</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>Kaise use karein:</b> upar filter se pattern-family choose karo (Complementary, Chain, Angle Nikaalo, Square, Identity, Compound). Search box mein "Q17", "tan chain", "sec²−tan²" type karke seedha card tak pahucho.
+    <br><br><b>Sheet-02 · Aditya Ranjan Sir</b> — Q1 se Q32 tak sab questions in 25 patterns mein merge; question numbers har card par diye hain.
+  </footer>
+</section>
+</div>
+
+<script>
+  document.querySelectorAll('.unit').forEach(unit => {
+    const cards = Array.from(unit.querySelectorAll('.card'));
+    const searchBox = unit.querySelector('.searchBox');
+    const filterBtns = Array.from(unit.querySelectorAll('.controls button'));
+    let activeFilter = 'all';
+    function applyFilters(){
+      const q = searchBox ? searchBox.value.trim().toLowerCase() : '';
+      cards.forEach(card => {
+        const cat = card.dataset.cat;
+        const kw = ((card.dataset.kw || '') + ' ' + card.textContent).toLowerCase();
+        const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+        const matchesSearch = q === '' || kw.includes(q);
+        card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+      });
+    }
+    if (searchBox) searchBox.addEventListener('input', applyFilters);
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        applyFilters();
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

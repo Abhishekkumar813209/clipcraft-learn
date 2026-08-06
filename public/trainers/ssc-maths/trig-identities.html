@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Trigonometric Identities Trainer (P1–103)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Complete Maths Course</p>
+    <h1>Trigonometry Identities: question dekho, pattern pakdo.</h1>
+    <p class="sub">Class Notes-03 (page 1–103, Q1–Q72) ke saare questions 25 patterns mein. Trigger line padho, example se pattern lock karo.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'conjugate', 'triplet', 'tanθ+cotθ', 'secθ+tanθ', 'power'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="identity">Identity</button>
+      <button data-filter="simplify">Simplify</button>
+      <button data-filter="given">Given Value</button>
+      <button data-filter="power">High Power</button>
+      <button data-filter="conj">Conjugate</button>
+      <button data-filter="triplet">Triplet</button>
+      <button data-filter="misc">Misc</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="identity" data-kw="identity formula galat incorrect sin2+cos2 sec2-tan2 cosec2-cot2 mool sarvsamika basic">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Teen mool identities — INCORRECT wala pakdo</h3>
+      <p class="trigger">Trigger: Q mein "select the INCORRECT formula" — options mein sec²θ+cos²θ jaisi mix-up line hoti hai.</p>
+      <div class="example">
+        <b>Q1:</b> sin²θ+cos²θ=1, sec²θ−tan²θ=1, cosec²θ−cot²θ=1 sahi → sec²θ+cos²θ=1 <span class="ans">GALAT</span> (answer)
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="1/tan+tan cot+tan secθ cosecθ product simplify equal to expression barabar">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>cotθ+tanθ = secθ·cosecθ</h3>
+      <p class="trigger">Trigger: "Which of the following is equal to 1/tanθ + tanθ" — cot+tan dikhe.</p>
+      <div class="example">
+        <b>Q2:</b> cotθ+tanθ = (cos²+sin²)/sin·cos = 1/(sinθcosθ) = <span class="ans">secθ·cosecθ</span><span class="q2"><b>Q3:</b> cosθ/sinθ + sinθ/cosθ = same → <span class="ans">cosecθ·secθ</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="secA - cosA equal to sinA tanA simplify difference">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>secA − cosA = sinA·tanA</h3>
+      <p class="trigger">Trigger: "Which of the following is equal to secA − cosA?"</p>
+      <div class="example">
+        <b>Q4:</b> (1−cos²A)/cosA = sin²A/cosA = <span class="ans">sinA·tanA</span> (θ=45° put karke bhi verify)
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="sin tan + cos square minus 1 tan2 bracket square expression">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>(sinθ·tanθ + cosθ)² − 1 = tan²θ</h3>
+      <p class="trigger">Trigger: "[(sinθ tanθ + cosθ)² − 1] is equal to"</p>
+      <div class="example">
+        <b>Q5:</b> sinθtanθ+cosθ = (sin²+cos²)/cosθ = secθ → sec²θ−1 = <span class="ans">tan²θ</span>
+      </div>
+    </article>
+    <article class="card" data-cat="conj" data-kw="1/(secθ-tanθ) 1/(secθ+tanθ) rationalise conjugate ulta reciprocal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>secθ±tanθ conjugate: dono ka product = 1</h3>
+      <p class="trigger">Trigger: "1/(secθ+tanθ) + 1/(secθ−tanθ)" ya "1/(tanθ−secθ)" type — sign dekh ke conjugate lagao.</p>
+      <div class="example">
+        <b>Q6:</b> 1/(secθ+tanθ)=secθ−tanθ; 1/(tanθ−secθ)=−(secθ+tanθ) → sum = <span class="ans">−2tanθ</span><span class="q2"><b>Q26:</b> (cosecθ−cotθ)(secθ+tanθ) ke conjugate use → <span class="ans">cosθ·cosecθ</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="conj" data-kw="1/sin - 1/tan into 1/sin + 1/tan cosec cot product a2-b2">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>(cosecθ−cotθ)(cosecθ+cotθ) = 1</h3>
+      <p class="trigger">Trigger: "(1/sinθ − 1/tanθ)(1/sinθ + 1/tanθ)" — a²−b² banao.</p>
+      <div class="example">
+        <b>Q7:</b> cosec²θ−cot²θ = <span class="ans">1</span>
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="cosecA - cotA into 1+cosA sinA product simplify">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>(cosecA − cotA)(1 + cosA) = sinA</h3>
+      <p class="trigger">Trigger: "(cosecA − cotA)(1+cosA) = ?"</p>
+      <div class="example">
+        <b>Q8:</b> ((1−cosA)/sinA)(1+cosA) = (1−cos²A)/sinA = <span class="ans">sinA</span>
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="1+tan2A cosec2A tanA sec2A divide simplify given expression equal">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>(1+tan²A)/(cosec²A·tanA) = tanA</h3>
+      <p class="trigger">Trigger: "The given expression is equal to" — sab kuch sec²/cosec² mein todo.</p>
+      <div class="example">
+        <b>Q10:</b> sec²A/(cosec²A·tanA) = (sin²A/cos²A)·(1/tanA)·... = <span class="ans">tanA</span> (θ=45° put → 1)
+      </div>
+    </article>
+    <article class="card" data-cat="given" data-kw="sinθ + cosecθ = 2 theta 45 90 value put substitution smallest">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>sinθ + cosecθ = 2 → θ = 90°</h3>
+      <p class="trigger">Trigger: "If sinθ + cosecθ = 2, then find sin^nθ + cosec^nθ" — value put karo.</p>
+      <div class="example">
+        <b>Q11:</b> sinθ=1 → sin⁵⁰θ+cosec⁵⁰θ = 1+1 = <span class="ans">2</span>
+      </div>
+    </article>
+    <article class="card" data-cat="conj" data-kw="cosec2 + cot2 = k cosec2 - cot2 = 1 divide conjugate ratio value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>cosec²θ+cot²θ = k → cosec²θ−cot²θ = 1 (always)</h3>
+      <p class="trigger">Trigger: "If cosec²θ + cot²θ = 5/3, then cosec²θ − cot²θ = ?" — trap hai.</p>
+      <div class="example">
+        <b>Q12:</b> identity se seedha <span class="ans">1</span> (calculation ki zarurat nahi)
+      </div>
+    </article>
+    <article class="card" data-cat="given" data-kw="tan + cot = 4 square minus 2 tan2 + cot2 value squaring">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>tanθ+cotθ = k → tan²θ+cot²θ = k²−2</h3>
+      <p class="trigger">Trigger: "If tanθ + cotθ = 4, find tan²θ + cot²θ"</p>
+      <div class="example">
+        <b>Q14:</b> 4²−2 = <span class="ans">14</span> (tan·cot=1 hota hai isliye −2)
+      </div>
+    </article>
+    <article class="card" data-cat="given" data-kw="sin18 cos18 value given find expression put root 5 - 1 by 4">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>sin18° / odd-angle value diya ho → seedha substitute</h3>
+      <p class="trigger">Trigger: "The value of sin18° is given as (√5−1)/4, find …" — value bas plug karni hai.</p>
+      <div class="example">
+        <b>Q16:</b> cos36° = 1−2sin²18° → <span class="ans">(√5+1)/4</span> family ki value
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="root 1 + cos / 1 - cos nested radical cot - cos cot + cos surd trig">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Root ke andar (1±cosθ) → half-angle/rationalise</h3>
+      <p class="trigger">Trigger: "√((cotθ+cosθ)/(cotθ−cosθ))" jaisa root wala expression, 0°<θ<90°.</p>
+      <div class="example">
+        <b>Q20:</b> cosθ common → √((1+sinθ)/(1−sinθ)) → <span class="ans">secθ+tanθ</span> (θ=45° se verify)
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="cosA secA - cosA cotA + tanA product equal 1 simplify three brackets">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>cosA(secA−cosA)(cotA+tanA) = 1</h3>
+      <p class="trigger">Trigger: "cosA(secA − cosA)(cotA + tanA) = ?" — 3 bracket ka product.</p>
+      <div class="example">
+        <b>Q25:</b> cosA·(sin²A/cosA)·(1/sinAcosA) = <span class="ans">1</span>
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="sin + cos - 1 / sin - cos + 1 root 1+sin/1-sin equal secθ + tanθ">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>(sinθ+cosθ−1)/(sinθ−cosθ+1) × √((1+sinθ)/(1−sinθ))</h3>
+      <p class="trigger">Trigger: "The value of … is" — bada fraction + root, direct θ=45° daal do.</p>
+      <div class="example">
+        <b>Q28:</b> θ=45° → pehla=1/... calc → answer <span class="ans">1</span>
+      </div>
+    </article>
+    <article class="card" data-cat="given" data-kw="x sin3 + y cos3 = sin cos x sinθ = y cosθ x2 + y2 value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>x sin³θ + y cos³θ = sinθcosθ & x sinθ = y cosθ → x²+y² = 1</h3>
+      <p class="trigger">Trigger: "then the value of x² + y² is" — do condition di ho.</p>
+      <div class="example">
+        <b>Q29:</b> x=cosθ, y=sinθ nikalta hai → x²+y² = <span class="ans">1</span>
+      </div>
+    </article>
+    <article class="card" data-cat="simplify" data-kw="cosA/(1-tanA) + sinA/(1-cotA) simplify expression sinA + cosA">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>cosA/(1−tanA) + sinA/(1−cotA) = sinA + cosA</h3>
+      <p class="trigger">Trigger: "Simplify the following expression" — denominators mein (1−tan) aur (1−cot).</p>
+      <div class="example">
+        <b>Q30:</b> LCM → (cos²A−sin²A)/(cosA−sinA) = <span class="ans">sinA + cosA</span>
+      </div>
+    </article>
+    <article class="card" data-cat="given" data-kw="7sin2 + 4cos2 = 5 first quadrant find theta 30 45 60 secθ tanθ cotθ value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>a·sin²θ + b·cos²θ = c → θ nikaalo, phir expression</h3>
+      <p class="trigger">Trigger: "If 7sin²θ + 4cos²θ = 5 and θ lies in first quadrant, then …"</p>
+      <div class="example">
+        <b>Q48:</b> 3sin²θ = 1 → sinθ=1/√3 … / standard case sin²θ=1/3 → expression ki value <span class="ans">√3</span>
+      </div>
+    </article>
+    <article class="card" data-cat="conj" data-kw="secθ + tanθ = p find secθ half p + 1/p tanθ half p - 1/p">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>secθ+tanθ = p → secθ = ½(p+1/p), tanθ = ½(p−1/p)</h3>
+      <p class="trigger">Trigger: "If secθ + tanθ = p, then secθ is equal to"</p>
+      <div class="example">
+        <b>Q50:</b> secθ−tanθ = 1/p → add/subtract → <span class="ans">½(p+1/p)</span>
+      </div>
+    </article>
+    <article class="card" data-cat="conj" data-kw="sec2 + tan2 = k sec4 - tan4 value a2-b2 identity">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>sec²θ+tan²θ = k → sec⁴θ−tan⁴θ = k</h3>
+      <p class="trigger">Trigger: "If sec²θ + tan²θ = 7/3, then sec⁴θ − tan⁴θ = ?"</p>
+      <div class="example">
+        <b>Q51:</b> (sec²+tan²)(sec²−tan²) = k×1 = <span class="ans">k (=7/3)</span>
+      </div>
+    </article>
+    <article class="card" data-cat="conj" data-kw="cosecθ - cotθ = k cosecθ = half k + 1/k value find">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>cosecθ−cotθ = k → cosecθ = ½(k+1/k)</h3>
+      <p class="trigger">Trigger: "If cosecθ − cotθ = 1/3, the value of cosecθ is"</p>
+      <div class="example">
+        <b>Q52:</b> cosecθ+cotθ = 3 → cosecθ = (3+1/3)/2 = <span class="ans">5/3</span>
+      </div>
+    </article>
+    <article class="card" data-cat="triplet" data-kw="secθ + tanθ = 2 + root5 sinθ value triplet rationalise surd">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>secθ+tanθ = 2+√5 → sinθ nikaalo</h3>
+      <p class="trigger">Trigger: "If secθ + tanθ = 2 + √5, then the value of sinθ is"</p>
+      <div class="example">
+        <b>Q53:</b> secθ−tanθ = 1/(2+√5) = √5−2 → tanθ = 2, secθ = √5 → sinθ = <span class="ans">2/√5</span>
+      </div>
+    </article>
+    <article class="card" data-cat="triplet" data-kw="3sinθ + 4cosθ = 5 max value triplet 3 4 5 tanθ = 3/4 12 5 13 8 15 17">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>a·sinθ + b·cosθ = √(a²+b²) → tanθ = a/b (triplet)</h3>
+      <p class="trigger">Trigger: "If 3sinθ + 4cosθ = 5, then tanθ = ?" — RHS jab √(a²+b²) ke barabar ho, max case.</p>
+      <div class="example">
+        <b>Q55:</b> 3-4-5 triplet → tanθ = <span class="ans">3/4</span><span class="q2"><b>Q56/57:</b> 12sinθ+5cosθ=13 → cosecθ = <span class="ans">13/12</span></span><br><b>Q60/62:</b> 3sinθ+5cosθ=5 (√34 nahi) → conjugate pair banao → 5sinθ−3cosθ = <span class="ans">±3</span>
+      </div>
+    </article>
+    <article class="card" data-cat="power" data-kw="cos x + cos2 x = 1 sin high power 12 10 8 6 golden ratio expression value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>cosx + cos²x = 1 → sin²x = cosx (substitution chain)</h3>
+      <p class="trigger">Trigger: "If cosx + cos²x = 1, the value of (sin¹²x + 3sin¹⁰x + 3sin⁸x + sin⁶x − 1) is"</p>
+      <div class="example">
+        <b>Q65:</b> sin²x=cosx → (sin⁴+sin²)³ − 1 = (cos²+cos)³ −1 = 1−1 = <span class="ans">0</span><span class="q2"><b>Q68:</b> sinθ+sin²θ=1 → cos¹²+3cos¹⁰+3cos⁸+cos⁶−1 = <span class="ans">0</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="power" data-kw="tanA + cotA = 2 sinθ + cosecθ = 2 any power 10 8 n value equals 2 theta 45 90">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>x + 1/x = 2 → x = 1 → koi bhi power ka sum = 2</h3>
+      <p class="trigger">Trigger: "If tanA + cotA = 2, then tan¹⁰A + cot¹⁰A = ?" / "sinθ + cosecθ = 2 → sin¹⁰⁰θ + cosec¹⁰⁰θ"</p>
+      <div class="example">
+        <b>Q69:</b> tanA=1 → <span class="ans">2</span><span class="q2"><b>Q70/71:</b> sinθ=1 → sin¹⁰⁰θ+cosec¹⁰⁰θ = <span class="ans">2</span></span><br><b>Q72:</b> tanⁿθ+cotⁿθ (n integer) = <span class="ans">2</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>25 patterns ab tak.</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

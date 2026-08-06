@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Trigonometry Sheet-01 Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .fig{
+    background:#FCFDFF; border:1px dashed var(--paper-line); border-radius:10px;
+    padding:6px; margin:0 0 10px 0; text-align:center;
+  }
+  .fig svg{ max-width:100%; height:auto; }
+  .fig text{ font-family:'Kalam',cursive; font-size:13px; fill:var(--ink-blue-dark); }
+  .fig .lbl{ font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--margin-red); }
+  .fig .sd{ stroke:var(--ink-blue); stroke-width:1.8; fill:none; }
+  .fig .cev{ stroke:var(--margin-red); stroke-width:1.4; fill:none; stroke-dasharray:4 3; }
+  .fig .cir{ stroke:var(--check-green); stroke-width:1.4; fill:none; }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Complete Maths Course · TRIGONOMETRY SHEET-01 (Q1–Q70)</p>
+    <h1>Trigonometry: question dekho, pattern pakdo.</h1>
+    <p class="sub">Trigger line padho, figure dekho, worked example se pattern lock karo — bina click kiye, seedha nazar mein.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'triplet', 'sec tan', 'allied', '90-θ', 'quadrant', 'radian'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="ratio">Basic Ratio</button>
+      <button data-filter="sec-tan">Sec–Tan Identity</button>
+      <button data-filter="triangle">Triangle Based</button>
+      <button data-filter="table">Standard Values</button>
+      <button data-filter="allied">Allied / Quadrant</button>
+      <button data-filter="formula">Sum-Product</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="ratio" data-kw="ratio triplet sin cos tan given find other pythagorean triplet 3 4 5 5 12 13 7 24 25 9 40 41 अनुपात त्रिक">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>Ek ratio diya → triplet bana ke baaki sab nikaalo</h3>
+      <p class="trigger">Trigger: "If tanA = 4/3, 0≤A≤90°, then find sinA" — P/B ya P/H dekh ke turant triplet (3,4,5 / 5,12,13 / 7,24,25 / 9,40,41 / 8,15,17 / 11,60,61) lagao.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=3</text><text class="lbl" x="193" y="65">P=4</text><text class="lbl" x="85" y="55">H=5</text>
+      </svg></div>
+      <div class="example">
+        <b>Q1:</b> tanA=4/3 → P=4,B=3,H=5 → sinA = <span class="ans">4/5</span>
+        <span class="q2"><b>Q2:</b> sinθ=9/41 → B=40 → cotθ = <span class="ans">40/9</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="pythagoras missing side x2 = h2 - p2 difference of squares 41 9 32 50 पाइथागोरस">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>Triplet yaad na ho → Pythagoras + (a²−b²) trick</h3>
+      <p class="trigger">Trigger: "sinθ = 9/41" par triplet yaad nahi — x² = 41²−9² = (41−9)(41+9) = 32×50 = 1600 → x=40. Factor tod ke root lo.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=x</text><text class="lbl" x="193" y="65">P=9</text><text class="lbl" x="85" y="55">H=41</text>
+      </svg></div>
+      <div class="example">
+        <b>Q2:</b> x²=(41)²−(9)²=32×50=1600 → x=<span class="ans">40</span>
+        <span class="q2"><b>Q:</b> H=2, P=√3 → x²=4−3=1 → B=<span class="ans">1</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="tan A 2/5 sin square value expression P B H substitute अनुपात रखकर मान">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>Ratio se values rakh ke poori expression solve</h3>
+      <p class="trigger">Trigger: "If tanA = 2/5, then value of (…sin²A…)" — pehle triplet/values nikaalo, phir sidha rakh do; simplify baad mein.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=5</text><text class="lbl" x="193" y="65">P=2</text><text class="lbl" x="85" y="55">H=√29</text>
+      </svg></div>
+      <div class="example">
+        <b>Q3:</b> tanA=2/5 → sinA=2/√29, cosA=5/√29 → sin²A = <span class="ans">4/29</span>
+        <span class="q2"><b>Q9:</b> cotθ=3/5 → sinθ=5/√34, cosθ=3/√34 → expression fit karo</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="sec cosec ratio simplify secθ/cosecθ = tanθ cosecθ/cotθ = secθ self made formula स्वनिर्मित सूत्र">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>Self-made formulas: ratio of two functions = teesra function</h3>
+      <p class="trigger">Trigger: "secθ/cosecθ", "cosecθ/cotθ", "secθ/tanθ" — ratio dikhte hi ek hi function mein badal do: = tanθ, secθ, cosecθ.</p>
+      
+      <div class="example">
+        <b>Formula:</b> secθ/cosecθ = <span class="ans">tanθ</span>; cosecθ/cotθ = <span class="ans">secθ</span>; secθ/tanθ = <span class="ans">cosecθ</span>
+        <span class="q2"><b>Q19:</b> cosecθ/cotθ = 4/3 → secθ=4/3 → cosθ = <span class="ans">3/4</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="a sinθ = b cosθ cross multiply tanθ = b/a 5sinθ=4cosθ 12sinA+12cosA=17cosA">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>a·sinθ = b·cosθ → seedha tanθ = b/a</h3>
+      <p class="trigger">Trigger: "5sinθ = 4cosθ" ya "12sinA + 12cosA = 17cosA" — dono side ko cos se divide karo, tan mil jaata hai, phir triplet.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=5</text><text class="lbl" x="193" y="65">P=4</text><text class="lbl" x="85" y="55">H=√41</text>
+      </svg></div>
+      <div class="example">
+        <b>Q6:</b> 5sinθ=4cosθ → tanθ=4/5 → P=4,B=5,H=√41
+        <span class="q2"><b>Q17:</b> 12sinA=5cosA → tanA=5/12 → triplet (5,12,13) → answer <span class="ans">nikaal lo</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="sin2 + cos2 = 1 fundamental identity 1 - sin2 = cos2 मूल सर्वसमिका">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>sin²θ + cos²θ = 1 → ek ko dusre mein badlo</h3>
+      <p class="trigger">Trigger: Expression mein sin² aur cos² dono mixed ho — 1−sin²θ = cos²θ lagate hi expression single variable ban jaati hai.</p>
+      
+      <div class="example">
+        <b>Q19:</b> (4sin²θ−1)/(4sin²θ+5), cosθ=3/4 → sin²θ=1−9/16=7/16 → (7/4−1)/(7/4+5) = <span class="ans">1/9</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="ratio" data-kw="componendo dividendo a+b/a-b ratio 5/3 = 4 दोनों जोड़ घटाओ अनुपात निकालो">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>Componendo–Dividendo: (a+b)/(a−b) diya ho</h3>
+      <p class="trigger">Trigger: "(a+b)/(a−b) = k" ya "(sinθ+cosθ)/cosθ = 23/8" — jodo–ghatao karke a/b nikaalo, phir triplet banao.</p>
+      
+      <div class="example">
+        <b>Trick:</b> (a+b)/(a−b)=5/1 → a/b = (5+1)/(5−1) = <span class="ans">3/2</span>
+        <span class="q2"><b>Q18:</b> (sinθ+cosθ)/cosθ = 23/8 → tanθ = 15/8 → triplet (8,15,17)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sec-tan" data-kw="sec - tan pair conjugate secθ+tanθ = √5+2 reciprocal 1 sec2 - tan2 = 1 युग्म">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>sec−tan aur sec+tan ek dusre ke RECIPROCAL</h3>
+      <p class="trigger">Trigger: "secθ + tanθ = √5 + 2 then secθ − tanθ = ?" — kyunki sec²−tan²=1, dono ka product 1. Jodo → 2secθ, ghatao → 2tanθ.</p>
+      
+      <div class="example">
+        <b>Q:</b> sec+tan=√5+2 → sec−tan=√5−2 → 2sec=2√5 → secθ = <span class="ans">√5</span>
+        <span class="q2">Same rule: cosec+cot aur cosec−cot bhi reciprocal (cosec²−cot²=1)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sec-tan" data-kw="cosec + cot / cosec - cot = 7 ratio 1/7 sec tan first quadrant अनुपात दिया">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>(sec−tan)/(sec+tan) = k → cross-multiply karke sin/cos</h3>
+      <p class="trigger">Trigger: "(secθ−tanθ)/(secθ+tanθ) = 1/7" ya "(cosecθ+cotθ)/(cosecθ−cotθ) = 7" — cross multiply → 6secθ=8tanθ → sinθ = 3/4.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=√7</text><text class="lbl" x="193" y="65">P=3</text><text class="lbl" x="85" y="55">H=4</text>
+      </svg></div>
+      <div class="example">
+        <b>Q21:</b> 7(sec−tan)=sec+tan → 6sec=8tan → sinθ=3/4 → (cosec+cot²)/(cosec−cot²) = <span class="ans">19/5</span>
+        <span class="q2"><b>Q19:</b> (cosec+cot)/(cosec−cot)=7 → cosθ=3/4</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sec-tan" data-kw="sin2/(tan2 - sin2) = 5 divide by sin2 cos2 nikalo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>sin²θ/(tan²θ − sin²θ) = k → cos²θ nikaal lo</h3>
+      <p class="trigger">Trigger: "sin²θ/(tan²θ − sin²θ) = 5" — tan²=sin²/cos² rakh ke sin² cancel; seedha cos²θ mil jaata hai.</p>
+      
+      <div class="example">
+        <b>Q20:</b> 6sin²θ = 5sin²θ/cos²θ → cos²θ=5/6 → (24sin²−15sec²)/(6cosec²−7cot²) = <span class="ans">−14</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="sec-tan" data-kw="secθ - tanθ square whole square value expression (secβ - tanβ)2 वर्ग">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>(secθ − tanθ)² type: value rakho, square karo</h3>
+      <p class="trigger">Trigger: "(secβ − tanβ)²" jaise expression — pehle ek ratio se sec aur tan alag nikaalo, phir square. Shortcut: (sec−tan)² = (1−sin)/(1+sin).</p>
+      
+      <div class="example">
+        <b>Q5:</b> cosβ=√3/2 → sec=2/√3, tan=1/√3 → (2−1)²/3 = <span class="ans">1/3</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="triangle" data-kw="right angled at B A + C = 90 complementary sin(A+C) sinA cosC + cosA sinC समकोण त्रिभुज">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>ΔABC, B=90° → A + C = 90° (complementary jodi)</h3>
+      <p class="trigger">Trigger: "In ΔABC right angled at B, sinA·cosC + cosA·sinC = ?" — ye sin(A+C) = sin90° = 1. Value daalne ki zaroorat hi nahi.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=√3</text><text class="lbl" x="193" y="65">P=1</text><text class="lbl" x="85" y="55">H=2</text>
+      </svg></div>
+      <div class="example">
+        <b>Q22:</b> tanA=1/√3 → sin(A+C)=sin90° = <span class="ans">1</span>
+        <span class="q2">Rule: A+C=90° → sinA=cosC, tanA=cotC</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="triangle" data-kw="tanA = 1/2 expression sinA cosC ratio triangle AB:BC = 1:2 cosA + tanC भुजा अनुपात">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>Triangle mein side-ratio diya → dono angles ki values</h3>
+      <p class="trigger">Trigger: "ΔABC, ∠B=90° and AB : BC = 1 : 2. Value of cosA + tanC" — sides likh do, A aur C dono ke liye P/B alag-alag hoti hai.</p>
+      <div class="fig"><svg viewBox="0 0 220 120" width="220" height="120">
+        <polygon class="sd" points="30,105 190,105 190,20"/>
+        <path class="cev" d="M55,105 A25,25 0 0,0 47,88"/>
+        <text x="26" y="118">θ</text>
+        <text class="lbl" x="100" y="118">B=1</text><text class="lbl" x="193" y="65">P=2</text><text class="lbl" x="85" y="55">H=√5</text>
+      </svg></div>
+      <div class="example">
+        <b>Q23:</b> tanA=1/2 → sinA(cosC+cosA)/cosC(sinC−sinA) = <span class="ans">3</span>
+        <span class="q2"><b>Q24:</b> AB:BC=1:2 → cosA+tanC = <span class="ans">(2+√5)/2√5</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="triangle" data-kw="sinA = 5/13 and 7cotB = 24 do alag angle A B triplets multiply product दो कोण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>Do ALAG angles (A aur B) diye → do alag triangles</h3>
+      <p class="trigger">Trigger: "If sinA = 5/13 and 7cotB = 24, then (secA·cosB)(cosecB·tanA)" — A ka apna triplet (5,12,13), B ka apna (7,24,25). Mix mat karo.</p>
+      
+      <div class="example">
+        <b>Q25:</b> 13/12 × 24/25 × 25/7 × 5/12 = <span class="ans">65/42</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="table" data-kw="standard values table 0 30 45 60 90 sin cos tan मानक मान सारणी">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>Standard values (0°,30°,45°,60°,90°) — direct put</h3>
+      <p class="trigger">Trigger: Question mein sirf standard angles ho — table se values daal ke calculate. sin: 0, ½, 1/√2, √3/2, 1.</p>
+      <div class="fig"><svg viewBox="0 0 240 74" width="240" height="74"><text class="lbl" x="6" y="18">θ</text><text class="lbl" x="46" y="18">0°</text><text class="lbl" x="90" y="18">30°</text><text class="lbl" x="136" y="18">45°</text><text class="lbl" x="182" y="18">60°</text><text class="lbl" x="6" y="42">sin</text><text x="46" y="42">0</text><text x="90" y="42">½</text><text x="130" y="42">1/√2</text><text x="176" y="42">√3/2</text><text class="lbl" x="6" y="66">cos</text><text x="46" y="66">1</text><text x="86" y="66">√3/2</text><text x="130" y="66">1/√2</text><text x="182" y="66">½</text></svg></div>
+      <div class="example">
+        <b>Q:</b> 2cot²30° + 3sec²30° = 2×3 + 3×4/3 = <span class="ans">10</span>
+        <span class="q2"><b>Q58:</b> sin²120°+cos²150°−tan²135° = (3+3−4)/4 = <span class="ans">1/2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="table" data-kw="comparison sin1c sin10 radian degree bada chhota compare तुलना 1 radian = 57.27">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>Comparison (bada/chhota): 1ᶜ = 57.27°</h3>
+      <p class="trigger">Trigger: "sin 1ᶜ ___ sin 10°" ya "cos37° ___ cos40°" — radian ko degree banao (1ᶜ≈57.27°); sin badhta hai, cos ghatta hai 0–90 mein.</p>
+      
+      <div class="example">
+        <b>Q:</b> sin1ᶜ = sin57.27° > sin10° → <span class="ans">&gt;</span>
+        <span class="q2"><b>Q:</b> cos37° <span class="ans">&gt;</span> cos40° (cos decreasing)</span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="table" data-kw="radian to degree pi 180 3pi/2 2pi/3 5pi/6 conversion रेडियन डिग्री">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>π wali value → pehle degree mein convert karo</h3>
+      <p class="trigger">Trigger: "Find θ if cosθ = −√3/2" with options 3π/2, 2π/3, 5π/6 — har option ko ×180/π karke degree banao, phir match karo.</p>
+      
+      <div class="example">
+        <b>Q55:</b> 2π/3=120°, 4π/3=240° → cos240° = −√3/2? nahi; cos150° = <span class="ans">−√3/2</span> → 5π/6
+        <span class="q2"><b>Q61:</b> cosx=−½, π/2&lt;x&lt;π → x = <span class="ans">2π/3 (120°)</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="table" data-kw="quadratic equation roots x2 - 5x + 6 = 0 tanθ cotθ value nikaalo द्विघात समीकरण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>Quadratic equation diya → roots hi trig values hain</h3>
+      <p class="trigger">Trigger: "x² − 6x + 9 = 0" jaise equation se θ ki value/ratio nikalti hai — factor karo, root ko sin/tan maan lo.</p>
+      
+      <div class="example">
+        <b>Q:</b> x²−5x+6=0 → x=2,3; x²−7x+12=0 → x=3,4 → common value se ratio banao
+        <span class="q2"><b>Q:</b> 6cotθ + 8√10·cosecθ = 6×⅓ + 8 = <span class="ans">10</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="allied" data-kw="90 - theta complementary sin(90-θ)=cosθ tan(90-θ)=cotθ cot85 cos75 पूरक कोण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>(90° − θ) → function BADAL jaata hai, sign +</h3>
+      <p class="trigger">Trigger: "tan(90−θ) = 2/√3", "cot85° + cos75°" — 90−θ dikhte hi sin↔cos, tan↔cot, sec↔cosec; sign hamesha +.</p>
+      
+      <div class="example">
+        <b>Q51:</b> tan(90−θ)=2/√3 → cotθ=2/√3 → 2√3·tanθ+1 = <span class="ans">4</span>
+        <span class="q2"><b>Q54:</b> cot85°+cos75° = tan5° + <span class="ans">sin15°</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="allied" data-kw="90-θ expression simplify cos2(90-θ) sin theta cancel 0 सरलीकरण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>(90−θ) wali poori expression → sab convert karke cancel</h3>
+      <p class="trigger">Trigger: "cos²(90−θ) − [cos(90−θ)·cosθ/cotθ]" — har term ko θ mein badlo, zyadatar sab cancel hoke 0, 1 ya −1 aata hai.</p>
+      
+      <div class="example">
+        <b>Q52:</b> sin²θ − sin²θ = <span class="ans">0</span>
+        <span class="q2"><b>Q53:</b> [sin(90−θ)cos(90−θ)cot(90−θ)]/(cos²θ−1) = <span class="ans">−1</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="allied" data-kw="ASTC all silver tea cups quadrant sign 90+θ 180-θ 180+θ 270 चतुर्थांश चिह्न">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>ASTC rule: quadrant se SIGN decide</h3>
+      <p class="trigger">Trigger: Angle (90+θ), (180−θ), (180+θ), (270±θ), (360−θ) — pehle quadrant pehchano, phir ASTC se +/−.</p>
+      <div class="fig"><svg viewBox="0 0 200 130" width="200" height="130">
+        <line class="sd" x1="15" y1="65" x2="185" y2="65"/><line class="sd" x1="100" y1="8" x2="100" y2="122"/>
+        <text x="130" y="40">A(all+)</text><text x="30" y="40">S</text><text x="30" y="100">T</text><text x="130" y="100">C</text>
+        <text class="lbl" x="150" y="20">I</text><text class="lbl" x="18" y="20">II</text><text class="lbl" x="18" y="118">III</text><text class="lbl" x="150" y="118">IV</text>
+      </svg></div>
+      <div class="example">
+        <b>Rule:</b> I sab+, II sin/cosec+, III tan/cot+, IV cos/sec+
+        <span class="q2"><b>Q56:</b> tan(π+θ) = tan(180+θ) = <span class="ans">+tanθ</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="allied" data-kw="odd even multiple of 90 function change 90+θ change 180 same विषम गुणज">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>90 ka VISHAM multiple → function change; SAM multiple → same</h3>
+      <p class="trigger">Trigger: (90+θ), (270−θ) → function badlega (sin→cos). (180±θ), (360−θ) → function wahi rahega. Sign ASTC se.</p>
+      
+      <div class="example">
+        <b>Q:</b> cos120° = cos(90×1+30) → −sin30° = <span class="ans">−½</span>
+        <span class="q2"><b>Q:</b> cos240° = cos(90×2+60) → −cos60° = <span class="ans">−½</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="allied" data-kw="negative angle sin(-A) = -sinA cos(-A) = cosA sin(-405) ऋणात्मक कोण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>Negative angle: sin(−A) = −sinA, cos(−A) = +cosA</h3>
+      <p class="trigger">Trigger: "sin(−A) = ?" ya "sin(−405°)" — minus bahar nikaalo (sin, tan, cosec, cot odd hain; cos, sec even).</p>
+      
+      <div class="example">
+        <b>Q50:</b> sin(−A) = <span class="ans">−sinA</span>
+        <span class="q2"><b>Q66:</b> sin(−405°) = −sin(90×4+45) = −sin45° = <span class="ans">−1/√2</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="allied" data-kw="large angle reduction 4384 6814 1125 630 divide by 90 quotient remainder बड़ा कोण">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>Bahut BADA angle → 90 se divide (quotient + remainder)</h3>
+      <p class="trigger">Trigger: "tan4384° + cot6814°" — angle ko 90×n + r likho; n even/odd se function, ASTC se sign. Bade numbers se darna nahi.</p>
+      
+      <div class="example">
+        <b>Q68:</b> tan(90×48+64) + cot(90×75+64) = tan64° − tan64° = <span class="ans">0</span>
+        <span class="q2"><b>Q:</b> tan1125° = tan(90×12+45) = <span class="ans">tan45° = 1</span></span>
+      </div>
+    </article>
+
+    <article class="card" data-cat="formula" data-kw="sinC + sinD 2 sin cos sum to product cos137 sin73 योग गुणनफल सूत्र">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>sinC ± sinD → Sum-to-Product formula</h3>
+      <p class="trigger">Trigger: "sin73° + cos137°" ya "sin70° + sin50°" — pehle sab ko sin mein lao, phir 2sin((C+D)/2)cos((C−D)/2).</p>
+      
+      <div class="example">
+        <b>Q57:</b> sin73°+cos137° = sin73°−sin47° = 2cos60°·sin13° = <span class="ans">sin13°</span>
+        <span class="q2"><b>Q:</b> sin70°+sin50° = 2sin60°cos10° = <span class="ans">√3·cos10°</span></span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>25 patterns (Trigonometry Sheet-01 — Q1 se Q70 tak).</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

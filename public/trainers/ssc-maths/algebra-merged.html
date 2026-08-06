@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra Pattern Trainer | Full Sheet (Pg 1–170)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .qref{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-blue);
+    font-weight:600; letter-spacing:.03em; margin:0 36px 6px 0; line-height:1.5;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Algebra Full Notes (Pg 1–170 · Q1–75)</p>
+    <h1>Question dekho, pattern pakdo.</h1>
+    <p class="sub">Sheet-01 (Pg 1–85) aur Sheet-02 (Pg 86–170) — dono ek saath, serial number mein. Trigger line padho, worked example se pattern lock karo.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'x^5', 'root', 'ladder', 'quadratic', 'coefficient', 'surd'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="plus">x + 1/x</button>
+      <button data-filter="minus">x − 1/x</button>
+      <button data-filter="root">Root / Surd</button>
+      <button data-filter="bridge">Bridging</button>
+      <button data-filter="expansion">Expansion (a²−b²)</button>
+      <button data-filter="fraction">Fraction Type</button>
+      <button data-filter="quadratic">Quadratic Given</button>
+      <button data-filter="coeff">Coefficient Wala</button>
+      <button data-filter="identity">Identity (n³−3n)</button>
+      <button data-filter="ladder">Ladder √(n±2)</button>
+      <button data-filter="highpower">High Power</button>
+      <button data-filter="special">Special Value</button>
+      <button data-filter="surd">Surd / B-S</button>
+      <button data-filter="shift">Substitution</button>
+      <button data-filter="quad">Quadratic → x+1/x</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+<article class="card" data-cat="plus" data-kw="x+1/x=n square x2+1/x2 n2-2 basic sabse basic identity">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <p class="qref">PDF Q: 1(i) · Pg 5, 15</p>
+      <h3>x + 1/x = n → x² + 1/x² kya?</h3>
+      <p class="trigger">Trigger: "x + 1/x diya hai, x² + 1/x² nikalo".</p>
+      <div class="example">
+        <b>x² + 1/x² = n² − 2</b><br>
+        n = 3 → 9 − 2 = <span class="ans">7</span>
+        <span class="q2">n = 3√3 → (3√3)² − 2 = 27 − 2 = <span class="ans">25</span> (Pg 40)</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="plus" data-kw="x3+1/x3 cube n3-3n a+b whole cube proof 18">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <p class="qref">PDF Q: 1(ii) · Pg 6, 7</p>
+      <h3>x + 1/x = n → x³ + 1/x³ kya?</h3>
+      <p class="trigger">Trigger: "x + 1/x diya, cube power poocha hai (same + sign)".</p>
+      <div class="example">
+        <b>x³ + 1/x³ = n³ − 3n</b><br>
+        n = 3 → 27 − 9 = <span class="ans">18</span>
+        <span class="q2">n = √5 → 5√5 − 3√5 = <span class="ans">2√5</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="plus" data-kw="double power chain x4 x8 x16 x12 previous square minus 2 47 2207 322 103682">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <p class="qref">PDF Q: 1(iii) · Pg 8, 9, 10, 46</p>
+      <h3>Double Power Chain (x²→x⁴→x⁸→x¹⁶)</h3>
+      <p class="trigger">Trigger: "power double hoti ja rahi hai — 4, 8, 12, 16, 20".</p>
+      <div class="example">
+        Rule: <b>agla = (pichla)² − 2</b> (sign hamesha −2)<br>
+        n=3 → x²=7 → x⁴=47 → x⁸=<span class="ans">2207</span>
+        <span class="q2">x³+1/x³=18 → x⁶ = 322 → x¹² = <span class="ans">103682</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="plus" data-kw="x5+1/x5 odd power n2-2 n3-3n minus n 15127 -6726 723">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <p class="qref">PDF Q: 1(iv), 4, 5 · Pg 12, 24, 25</p>
+      <h3>x + 1/x = n → x⁵ + 1/x⁵ (odd power)</h3>
+      <p class="trigger">Trigger: "5th power poocha, x + 1/x diya hai".</p>
+      <div class="example">
+        <b>x⁵ + 1/x⁵ = (n²−2)(n³−3n) − n</b><br>
+        Q4: n=7 → 47 × 322 − 7 = <span class="ans">15127</span>
+        <span class="q2">Q5: n=−6 → 34 × (−198) + 6 = <span class="ans">−6726</span> (minus sign dhyan se)</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="plus" data-kw="x6+1/x6 322 n3-3n whole square minus 2 chhathi power">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <p class="qref">PDF Q: 1(v), 6 · Pg 26</p>
+      <h3>x + 1/x = n → x⁶ + 1/x⁶</h3>
+      <p class="trigger">Trigger: "6th power + sign, aur x + 1/x diya hai".</p>
+      <div class="example">
+        <b>x⁶ + 1/x⁶ = (n³ − 3n)² − 2</b><br>
+        Q6: n=3 → (27−9)² − 2 = 324 − 2 = <span class="ans">322</span>
+        <span class="q2">n=4 → (52)² − 2 = <span class="ans">2702</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="plus" data-kw="x7+1/x7 seventh odd power multiply x3 x4 minus x+1/x 843 10084">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <p class="qref">PDF Q: 1(vi) · Pg 13, 14, 15</p>
+      <h3>x⁷ + 1/x⁷ (odd power banane ka general trick)</h3>
+      <p class="trigger">Trigger: "odd power (5, 7) — jiska direct formula yaad nahi".</p>
+      <div class="example">
+        <b>x⁷ = (x³)(x⁴) − (x¹)</b> → chhoti power ka product minus difference wali power<br>
+        n=3 → 18 × 47 − 3 = <span class="ans">843</span>
+        <span class="q2">n=4 → 52 × 194 − 4 = <span class="ans">10084</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="minus" data-kw="x-1/x=n minus x2+1/x2 n2+2 plus two sign change">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <p class="qref">PDF Q: Pg 16, 17, 19</p>
+      <h3>x − 1/x = n → x² + 1/x² kya?</h3>
+      <p class="trigger">Trigger: "minus wala diya hai, even power (+ sign) poocha".</p>
+      <div class="example">
+        <b>x² + 1/x² = n² + 2</b> (minus diya to +2)<br>
+        n = 2 → 4 + 2 = <span class="ans">6</span>
+        <span class="q2">n = 4 → 16 + 2 = <span class="ans">18</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="minus" data-kw="x3-1/x3 n3+3n 1030 76 cube minus">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <p class="qref">PDF Q: 2(iii), 8 · Pg 20, 28</p>
+      <h3>x − 1/x = n → x³ − 1/x³</h3>
+      <p class="trigger">Trigger: "minus diya, cube bhi minus me poocha".</p>
+      <div class="example">
+        <b>x³ − 1/x³ = n³ + 3n</b><br>
+        Q8: n=10 → 1000 + 30 = <span class="ans">1030</span>
+        <span class="q2">n=4 → 64 + 12 = <span class="ans">76</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="minus" data-kw="x4+1/x4 n2+2 whole square minus 2 10402 29239 322">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <p class="qref">PDF Q: 2(iv), 7, 10 · Pg 27, 30</p>
+      <h3>x − 1/x = n → x⁴ + 1/x⁴</h3>
+      <p class="trigger">Trigger: "minus diya, 4th power poocha".</p>
+      <div class="example">
+        <b>x⁴ + 1/x⁴ = (n² + 2)² − 2</b><br>
+        Q7: n=10 → (102)² − 2 = <span class="ans">10402</span>
+        <span class="q2">Q10: n=13 → (171)² − 2 = <span class="ans">29239</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="minus" data-kw="x5-1/x5 n2+2 n3+3n minus n 3775 -8886 1364">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <p class="qref">PDF Q: 2(v), 11, 12 · Pg 31, 32</p>
+      <h3>x − 1/x = n → x⁵ − 1/x⁵</h3>
+      <p class="trigger">Trigger: "minus diya, 5th power minus me poocha".</p>
+      <div class="example">
+        <b>x⁵ − 1/x⁵ = (n²+2)(n³+3n) − n</b><br>
+        Q11: n=5 → 27 × 140 − 5 = <span class="ans">3775</span>
+        <span class="q2">Q12: n=−6 → 38 × (−234) + 6 = <span class="ans">−8886</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="minus" data-kw="x6+1/x6 n3+3n whole square plus 2 5778">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <p class="qref">PDF Q: 2(vi), 13 · Pg 18, 33</p>
+      <h3>x − 1/x = n → x⁶ + 1/x⁶</h3>
+      <p class="trigger">Trigger: "minus diya, 6th power + me poocha".</p>
+      <div class="example">
+        <b>x⁶ + 1/x⁶ = (n³ + 3n)² + 2</b> (yahan +2)<br>
+        Q13: n=4 → (76)² + 2 = <span class="ans">5778</span>
+        <span class="q2">n=2 → (14)² + 2 = <span class="ans">198</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="coeff" data-kw="3y-3/y=5 common factor divide banao pure form 43/9 fraction n">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <p class="qref">PDF Q: 9 · Pg 29</p>
+      <h3>Common coefficient hata ke pure form banao</h3>
+      <p class="trigger">Trigger: "3y − 3/y = 5 jaisa — dono terms par same number laga hai".</p>
+      <div class="example">
+        3 se divide → y − 1/y = 5/3, ab formula lagao<br>
+        y² + 1/y² = (5/3)² + 2 = 25/9 + 2 = <span class="ans">43/9</span>
+        <span class="q2">Rule: pehle <b>x ± 1/x</b> ki shakal banao, tab hi formula.</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="plus" data-kw="negative n -6 sign mistake odd power even power minus value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <p class="qref">PDF Q: 5, 12 · Pg 25, 32</p>
+      <h3>n negative ho (n = −6 type) — sign trap</h3>
+      <p class="trigger">Trigger: "x + 1/x = −6 / x − 1/x = −6 — value hi minus me di hai".</p>
+      <div class="example">
+        Formula same, bas <b>odd power me sign palat jata hai</b>: n³ aur −n dono negative.<br>
+        Q5: 34 × (−198) − (−6) = <span class="ans">−6726</span>
+        <span class="q2">Even power (n²) me sign ka koi effect nahi — n² always +.</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="root" data-kw="surd root value n=root5 5root2 3root3 power of surd cube 5root5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <p class="qref">PDF Q: Pg 7, 34, 40</p>
+      <h3>n surd (√ wala) ho → power kaise kholein</h3>
+      <p class="trigger">Trigger: "x + 1/x = √5 / 5√2 / 3√3 — answer options me bhi root hai".</p>
+      <div class="example">
+        (√5)² = 5, <b>(√5)³ = 5√5</b>, (3√3)² = 9×3 = 27<br>
+        n=√5 → x³+1/x³ = 5√5 − 3√5 = <span class="ans">2√5</span>
+        <span class="q2">n=5√2 → x³+1/x³ = 250√2 − 15√2 = <span class="ans">235√2</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="root" data-kw="root x minus 1 by root x =4 square karo x+1/x=18 322 62 root6">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <p class="qref">PDF Q: 14, 15 · Pg 35–39</p>
+      <h3>√x ± 1/√x diya hai → pehle x + 1/x banao</h3>
+      <p class="trigger">Trigger: "√x − 1/√x = 4 diya, x² + 1/x² poocha".</p>
+      <div class="example">
+        Square karo: x + 1/x = n² + 2 (minus case) → 16+2 = 18<br>
+        Q14: x²+1/x² = 18² − 2 = <span class="ans">322</span>
+        <span class="q2">Q15: √x − 1/√x = √6 → x+1/x = 8 → 64 − 2 = <span class="ans">62</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="bridge" data-kw="bridging concept a+b whole square 4ab convert plus to minus root n2-4 n2+4 2root5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <p class="qref">PDF Q: 16 · Pg 41–43</p>
+      <h3>Bridging: (+) se (−) aur (−) se (+) convert</h3>
+      <p class="trigger">Trigger: "x + 1/x diya hai par x − 1/x poocha (ya ulta)".</p>
+      <div class="example">
+        <b>x+1/x=n → x−1/x = √(n²−4)</b> | <b>x−1/x=n → x+1/x = √(n²+4)</b><br>
+        Q16: a−1/a=4 → a+1/a = √20 = <span class="ans">2√5</span>
+        <span class="q2">x+1/x=7 → x−1/x = √45 = <span class="ans">3√5</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="expansion" data-kw="x2-1/x2 a2-b2 product plus minus 3root5 0.4 4root26/25">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <p class="qref">PDF Q: 17 · Pg 44, 45</p>
+      <h3>x² − 1/x² poocha (minus even power) → a²−b²</h3>
+      <p class="trigger">Trigger: "even power par MINUS sign — jo direct formula me nahi hai".</p>
+      <div class="example">
+        <b>x² − 1/x² = (x + 1/x)(x − 1/x)</b>, missing wala bridging se lao<br>
+        a+1/a=3 → √5 × 3 = <span class="ans">3√5</span>
+        <span class="q2">Q17: x−1/x = 0.4 = 2/5 → (2/5)·√(104/25) = <span class="ans">4√26/25</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="expansion" data-kw="substitution let x2=a x4-1/x4 6 24root2 0&lt;x&lt;1 negative answer">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <p class="qref">PDF Q: 18 · Pg 46, 47</p>
+      <h3>x² ko a maan lo (substitution) + range se sign</h3>
+      <p class="trigger">Trigger: "x² + 1/x² = 6 diya, x⁴ − 1/x⁴ poocha; saath me 0 &lt; x &lt; 1".</p>
+      <div class="example">
+        x²=a → a+1/a=6 → a²−1/a² = 6·√(36−4) = 6×4√2 = 24√2<br>
+        0 &lt; x &lt; 1 hone se x⁴ &lt; 1/x⁴ → answer <span class="ans">−24√2</span>
+        <span class="q2">Range (x&gt;1 ya 0&lt;x&lt;1) hamesha sign decide karti hai.</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="expansion" data-kw="x2-1/x2=4root2 x4-1/x4 24root2 given minus even power">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <p class="qref">PDF Q: 19 · Pg 48</p>
+      <h3>x² − 1/x² diya → x⁴ − 1/x⁴</h3>
+      <p class="trigger">Trigger: "minus wali even power di hai, uska double poocha hai".</p>
+      <div class="example">
+        a = x²: a−1/a = 4√2 → a²−1/a² = (a−1/a)·√((a−1/a)²+4)<br>
+        = 4√2 × √36 = 4√2 × 6 = <span class="ans">24√2</span>
+        <span class="q2">Yaani minus-even ko bhi bridging + a²−b² se todo.</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="expansion" data-kw="x6-1/x6 x3+1/x3 x3-1/x3 144root5 23030root23 396root6 1560root3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <p class="qref">PDF Q: 20, 21 · Pg 49, 51–61</p>
+      <h3>x⁶ − 1/x⁶ = (x³+1/x³)(x³−1/x³)</h3>
+      <p class="trigger">Trigger: "6th power par MINUS sign — options me root hai".</p>
+      <div class="example">
+        Dono cube nikalo (ek direct, doosra bridging/formula se), multiply karo<br>
+        Q20: n=5√2 → 235√2 × 49√46 = <span class="ans">23030√23</span>
+        <span class="q2">Q21: x−1/x=2√2 → 22√2 × 18√3 = <span class="ans">396√6</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="expansion" data-kw="x8-1/x8 four factors chain 60605root21 816root2 46368root5">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <p class="qref">PDF Q: 22 · Pg 49, 53–55</p>
+      <h3>x⁸ − 1/x⁸ → 4 factor wala chain</h3>
+      <p class="trigger">Trigger: "8th power minus sign".</p>
+      <div class="example">
+        <b>x⁸−1/x⁸ = (x⁴+1/x⁴)(x²+1/x²)(x+1/x)(x−1/x)</b><br>
+        Q22: n=5 → 527 × 23 × 5 × √21 = <span class="ans">60605√21</span>
+        <span class="q2">x−1/x=2 → 34 × 6 × √8 × 2 = <span class="ans">816√2</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="fraction" data-kw="5x/(x2+1-6x) divide by x 2.5 7x 3.5 fraction type">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <p class="qref">PDF Q: 23, 24 · Pg 65, 66</p>
+      <h3>Fraction: 5x / (x² + 1 − 6x) type</h3>
+      <p class="trigger">Trigger: "numerator me single x, denominator me x² + 1 + kx".</p>
+      <div class="example">
+        Numerator aur denominator dono ko <b>x se divide</b> karo → 5 / (x + 1/x − 6)<br>
+        Q23: x+1/x=8 → 5/(8−6) = <span class="ans">2.5</span>
+        <span class="q2">Q24: x+1/x=10 → 7/(10−8) = <span class="ans">3.5</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="fraction" data-kw="x4+1 / x2-3x+1 55 x6+3x3-1 x6-8x3-1 140 divide by x cube">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <p class="qref">PDF Q: 25, 26 · Pg 67, 68</p>
+      <h3>Higher fraction: x³ / x⁶ wale terms</h3>
+      <p class="trigger">Trigger: "(x⁴+1)/(x²−3x+1) ya (x⁶+3x³−1)/(x⁶−8x³−1)".</p>
+      <div class="example">
+        Upar-neeche <b>x ya x³ se divide</b> karke x+1/x / x³−1/x³ banao<br>
+        Q25: (n³−3n)/(n−3), n=5 → 110/2 = <span class="ans">55</span>
+        <span class="q2">Q26: x−1/x=5 → x³−1/x³ = 140 → (140+3)/(140−8) = <span class="ans">143/132 = 13/12</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="quadratic" data-kw="x2+3x+1=0 divide by x x+1/x=-3 322 610root5 quadratic equation given 23">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <p class="qref">PDF Q: 27, 28, 29, 30, 31, 32 · Pg 69–76</p>
+      <h3>Quadratic equation di hai → x se divide karo</h3>
+      <p class="trigger">Trigger: "x² + 3x + 1 = 0 / x² − 5x + 1 = 0 jaisa equation diya hai".</p>
+      <div class="example">
+        x se divide → x + 1/x = −(middle coefficient); constant −1 ho to x − 1/x milta hai<br>
+        Q27: x²+3x+1=0 → x+1/x = −3 → x⁶+1/x⁶ = <span class="ans">322</span>
+        <span class="q2">Q30: x²−5x+1=0 → x+1/x=5 → (5+110)/5 = <span class="ans">23</span> · Q28: x²−2√5x+1=0 → x⁵+1/x⁵ = <span class="ans">610√5</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="coeff" data-kw="equal coefficient 3x+1/2x 9x2+1/4x2 scaling multiply 3/2 7.8 423 53 3/4 different coefficient">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <p class="qref">PDF Q: 33, 34, 35, 36, 37 · Pg 75–85</p>
+      <h3>Coefficient wala: ax + 1/bx type</h3>
+      <p class="trigger">Trigger: "3x + 1/2x = 4 diya, 9x² + 1/4x² ya 27x³ + 1/8x³ poocha".</p>
+      <div class="example">
+        Square: <b>(S)² − 2·(ax)(1/bx)</b> | Cube: <b>S³ − 3·(ax)(1/bx)·S</b><br>
+        Mismatch ho to <b>scale karo</b>: 5x+1/3x=5 → ×3/5 → 3x+1/5x=3 → 9 − 1.2 = <span class="ans">7.8</span> (Q33)
+        <span class="q2">Q35: x+1/16x=3 → 16x³+1/256x³ = 432 − 9 = <span class="ans">423</span> · Q37: 20x−30+1/x=0 → 5x+1/4x=15/2 → <span class="ans">53¾</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="identity" data-kw="x+1/x=n cube x3+1/x3 n cube minus 3n x3-1/x3 n cube plus 3n घन सूत्र identity basic">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 26</p>
+      <p class="qref">PDF Q73 · Pg 86–170</p>
+      <h3>Base identity: cube nikaalna (n³∓3n)</h3>
+      <p class="trigger">Trigger: "x + 1/x = n diya hai, x³ + 1/x³ ka maan?" — plus wale mein −3n, minus wale mein +3n.</p>
+      <div class="example">
+        <b>Q:</b> x+1/x=n → x³+1/x³ = n³−3n; x−1/x=n → x³−1/x³ = <span class="ans">n³+3n</span>
+        <span class="q2"><b>Q73:</b> x−1/x=5 → 125+15 = <span class="ans">140</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ladder" data-kw="x2+1/x2 root n plus 2 minus 2 seedhi ladder square root 27 29 5 सीढ़ी">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 27</p>
+      <p class="qref">PDF Q43 · Pg 86–170</p>
+      <h3>Ladder neeche: √(n+2) aur √(n−2)</h3>
+      <p class="trigger">Trigger: "x² + 1/x² = ___ diya, x + 1/x aur x − 1/x nikaalo" — plus ke liye +2, minus ke liye −2 andar.</p>
+      <div class="example">
+        <b>Q43:</b> x²+1/x²=27 → x+1/x=√29, x−1/x=√25 = <span class="ans">5</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="ladder" data-kw="x4+1/x4 double ladder 23 119 47 194 142 do baar root do step neeche utarna">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 28</p>
+      <p class="qref">PDF Q44 · Pg 86–170</p>
+      <h3>x⁴+1/x⁴ diya → do baar ladder utro</h3>
+      <p class="trigger">Trigger: "x⁴ + 1/x⁴ = ___ hai, to x + 1/x / x³+1/x³?" — pehle x²+1/x² = √(n+2), phir dobara.</p>
+      <div class="example">
+        <b>Q44:</b> x⁴+1/x⁴=23 → x²+1/x²=5 → x+1/x=√7 → x³+1/x³ = 7√7−3√7 = <span class="ans">4√7</span>
+        <span class="q2"><b>Q:</b> x⁴+1/x⁴=119 → x²+1/x²=11 → x+1/x=√13, x−1/x=<span class="ans">3</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="quad" data-kw="x8-1442x4+1=0 divide by x4 se bhaag do degree ghatao equation to x4+1/x4 1442 38 6">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 29</p>
+      <p class="qref">PDF Q45 · Pg 86–170</p>
+      <h3>x⁸ − kx⁴ + 1 = 0 → x⁴ se bhaag do</h3>
+      <p class="trigger">Trigger: constant 1 wala high-degree equation ("x⁸ − 1442x⁴ + 1 = 0") — beech wale power se divide karke seedha x⁴+1/x⁴ bana lo.</p>
+      <div class="example">
+        <b>Q45:</b> ÷x⁴ → x⁴+1/x⁴=1442 → x²+1/x²=38 → x−1/x=√36 = <span class="ans">6</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="quad" data-kw="2x2+5x+1=0 quadratic divide by x x+1/2x half coefficient adjust ax2+bx+c">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 30</p>
+      <p class="qref">PDF Q39 · Pg 86–170</p>
+      <h3>Quadratic ax²+bx+c=0 → x se bhaag → x+1/x form</h3>
+      <p class="trigger">Trigger: "2x² + 5x + 1 = 0 hai to x − 1/2x?" — equation ko x se divide karo, phir coefficient adjust karke poochi hui form banao.</p>
+      <div class="example">
+        <b>Q39:</b> ÷x → 2x+1/x=−5 → x+1/2x=−5/2 → x−1/2x = √(25/4−2) = <span class="ans">√17/2</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="identity" data-kw="5x-1/4x=6 25x2-1/16x2 a2-b2 factor difference of squares 6 root 41 gunanKhand">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 31</p>
+      <p class="qref">PDF Q40 · Pg 86–170</p>
+      <h3>a²−b² type: (5x−1/4x) diya → 25x²−1/16x²</h3>
+      <p class="trigger">Trigger: diye hue expression ka <b>square wala minus</b> poocha jaaye — a²−b² = (a−b)(a+b), aur doosra bracket √(n²+4ab) se.</p>
+      <div class="example">
+        <b>Q40:</b> 5x−1/4x=6 → 5x+1/4x=√(36+5)=√41 → 6×√41 = <span class="ans">6√41</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="identity" data-kw="4a+1/5a=4 25a2+1/16a2 coefficient mismatch adjust multiply divide alag alag guNank">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 32</p>
+      <p class="qref">PDF Q38 · Pg 86–170</p>
+      <h3>Coefficient mismatch: diye kuch aur, poocha kuch aur</h3>
+      <p class="trigger">Trigger: "4a + 1/5a = 4 hai to 25a² + 1/16a²?" — dono terms ke coefficient milte nahi; pehle expression ko multiply/divide karke poochi hui jodi (5a, 1/4a) banao.</p>
+      <div class="example">
+        <b>Q38:</b> 4a+1/5a=4 → ×(5/4) → 5a+1/4a=5 → square−2 → 25a²+1/16a² = 25−2×(5/4) = <span class="ans">45/2</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="shift" data-kw="4x2+1/4x2=2 let 2x=t substitution maan lo t rakho 8x3+1/8x3 (2x)3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 33</p>
+      <p class="qref">PDF Q41 · Pg 86–170</p>
+      <h3>Poore block ko t maan lo (2x = t)</h3>
+      <p class="trigger">Trigger: "4x² + 1/4x² = 2, to 8x³ + 1/8x³?" — (2x)² aur (2x)³ dikh raha ho to 2x=t rakh do, sawaal chhota ho jaata hai.</p>
+      <div class="example">
+        <b>Q41:</b> t²+1/t²=2 → t=1 → t³+1/t³ = <span class="ans">2</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="identity" data-kw="0.4x+1/x=5 decimal 0.064x3+1/x3 ab ka 3 gunaa a3+b3 formula dashamlav">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 34</p>
+      <p class="qref">PDF Q42 · Pg 86–170</p>
+      <h3>Decimal coefficient wala cube (a³+b³ = n³−3ab·n)</h3>
+      <p class="trigger">Trigger: "(0.4x + 1/x) = 5 to (0.064x³ + 1/x³)?" — 0.064 = (0.4)³ pehchano, phir n³ − 3(ab)n lagao.</p>
+      <div class="example">
+        <b>Q42:</b> 125 − 3×0.4×1×5 = 125−6 = <span class="ans">119</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="highpower" data-kw="x7+1/x7 x3+1/x3 x4+1/x4 product minus x+1/x 1561 root 14 142 2207 badi power">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 35</p>
+      <p class="qref">PDF Q46, Q74 · Pg 86–170</p>
+      <h3>x⁷ ± 1/x⁷ → (3rd)×(4th) ∓ (1st) todo</h3>
+      <p class="trigger">Trigger: odd badi power poochi ho (x⁷+1/x⁷) — 7 = 3+4 todo: (x³+1/x³)(x⁴+1/x⁴) − (x+1/x).</p>
+      <div class="example">
+        <b>Q46:</b> x⁴+1/x⁴=142 → x+1/x=√14 → 11√14×142 − √14 = <span class="ans">1561√14</span>
+        <span class="q2"><b>Q74:</b> x−1/x=√7 → 10√7×79 + √7 = <span class="ans">791√7</span> (minus wale mein + last term)</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="highpower" data-kw="x5-1/x5 formula (n2+2)(n3+3n)-n x4+1/x4 (n2-2)2-2 5th power 4th power fifth">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 36</p>
+      <p class="qref">PDF Q71, Q72 · Pg 86–170</p>
+      <h3>5th aur 4th power ke ready formulas</h3>
+      <p class="trigger">Trigger: seedha "x⁵ − 1/x⁵" ya "x⁴ + 1/x⁴" poocha ho jab x−1/x = n diya ho — ratta formula lagao.</p>
+      <div class="example">
+        <b>Q71:</b> t−1/t=3 → t⁵−1/t⁵ = (9+2)(27+9)−3 = <span class="ans">393</span>
+        <span class="q2"><b>Q72:</b> t+1/t=4 → t⁴+1/t⁴ = (16−2)²−2 = <span class="ans">194</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="quad" data-kw="(2x-3)2 (2x-4)2 value nikalo x2-3x=-1 substitute square expand 5 12 bracket square">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 37</p>
+      <p class="qref">PDF Q48, Q49 · Pg 86–170</p>
+      <h3>(2x − k)² poocha ho → x² − kx = −1 banao</h3>
+      <p class="trigger">Trigger: "x⁴+1/x⁴ = ___ hai, to (2x−3)² ka maan?" — ladder se x+1/x nikaalo, x²+1=nx likho, phir expand karke rakh do.</p>
+      <div class="example">
+        <b>Q48:</b> x⁴+1/x⁴=47 → x+1/x=3 → x²−3x=−1 → 4(−1)+9 = <span class="ans">5</span>
+        <span class="q2"><b>Q49:</b> x⁴+1/x⁴=194 → x+1/x=4 → 4(−1)+16 = <span class="ans">12</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="x+1/x=2 x=1 x+1/x=-2 x=-1 even odd power any power 99 100 special value visheSh">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 38</p>
+      <p class="qref">PDF Q51, Q53 · Pg 86–170</p>
+      <h3>x + 1/x = ±2 → x = ±1 (koi bhi power)</h3>
+      <p class="trigger">Trigger: value exactly 2 ya −2 ho aur bahut badi power (x⁹⁹, x¹⁸) poochi jaaye — formula nahi, seedha x=1 ya x=−1 daal do.</p>
+      <div class="example">
+        <b>Q51:</b> x+1/x=2 → x=1 → x⁹⁹+1/x¹⁰⁰ = <span class="ans">2</span>
+        <span class="q2"><b>Q53:</b> x+1/x=−2 → x=−1 → x¹⁸+1/x¹⁸ = 1+1 = <span class="ans">2</span>, x⁷−1/x⁹ = <span class="ans">0</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="x+1/x=1 x3=-1 cube root of unity minus one x99 x33 -2 ekaai ghanmool">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 39</p>
+      <p class="qref">PDF — · Pg 86–170</p>
+      <h3>x + 1/x = 1 → x³ = −1</h3>
+      <p class="trigger">Trigger: value theek 1 ho — x²−x+1=0 se (x³+1)=0, matlab har power ko 3 ke multiple mein todo.</p>
+      <div class="example">
+        <b>Q:</b> x⁹⁹+1/x³³ = (x³)³³ + 1/(x³)¹¹ = −1−1 = <span class="ans">−2</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="x+1/x=-1 x3=1 cube root unity omega 3 ke multiple power 1 इकाई">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 40</p>
+      <p class="qref">PDF — · Pg 86–170</p>
+      <h3>x + 1/x = −1 → x³ = +1</h3>
+      <p class="trigger">Trigger: value −1 ho — x²+x+1=0 se x³=1; ab 3 ke multiple wali saari powers = 1 ho jaati hain.</p>
+      <div class="example">
+        <b>Q:</b> x³=1 → x⁶⁰+x³⁰+1 = 1+1+1 = <span class="ans">3</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="x+1/x=root 3 x6=-1 minus root three x63 x92 6 ke multiple power मूल 3">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 41</p>
+      <p class="qref">PDF Q55, Q56 · Pg 86–170</p>
+      <h3>x + 1/x = ±√3 → x⁶ = −1</h3>
+      <p class="trigger">Trigger: √3 (ya −√3) dikhe — turant x⁶=−1 likho, aur poochi hui power ko 6 ke multiple + bacha hua hissa mein todo.</p>
+      <div class="example">
+        <b>Q55:</b> x⁶³+1/x⁶³ = x³(x⁶)¹⁰ … = x³+1/x³ = 3√3−3√3 = <span class="ans">0</span>
+        <span class="q2"><b>Q56:</b> (x+1/x)²=3 → x⁶+x⁻⁶ = −1−1 = <span class="ans">−2</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="special" data-kw="x18+x12+x6+1 series 0 x102+x96 power series x6=-1 zero jod ghatao shrinkhala">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 42</p>
+      <p class="qref">PDF Q55, Q57 · Pg 86–170</p>
+      <h3>Power-series ko (x⁶)ⁿ mein todo → 0 / chhoti value</h3>
+      <p class="trigger">Trigger: "x¹⁸ + x¹² + x⁶ + 1 ka maan?" jaisa lamba series jab x+1/x=√3 diya ho — har term ko x⁶=−1 se replace karo.</p>
+      <div class="example">
+        <b>Q57:</b> (−1)³+(−1)²+(−1)+1 = <span class="ans">0</span>
+        <span class="q2"><b>Q55(iv):</b> x⁶−1/x⁶+2 = −1+1+2 = <span class="ans">2</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="highpower" data-kw="x100+x103+x201+x204 common lo bracket (1+x3) zero factor nikalo group karo">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 43</p>
+      <p class="qref">PDF Q58 · Pg 86–170</p>
+      <h3>Series mein common lekar (1 + x³) / (1 + x⁶) banao</h3>
+      <p class="trigger">Trigger: "x¹⁰⁰ + x¹⁰³ + x²⁰¹ + x²⁰⁴" jaise terms — pairs banao, common nikalo; bracket (1−1) ho jaata hai → answer 0.</p>
+      <div class="example">
+        <b>Q:</b> x¹⁰⁰(1+x³) + x²⁰¹(1+x³) = 0+0 = <span class="ans">0</span>
+        <span class="q2"><b>Q58:</b> mixed series → −2(x+1/x)+4 = 2√3+4 = <span class="ans">2(2+√3)</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="surd" data-kw="x=2+root3 B S rule x+1/x=2B x-1/x=2S 7+4root3 14 8root3 2+root5 surd karani">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 44</p>
+      <p class="qref">PDF Q59, Q60 · Pg 86–170</p>
+      <h3>x = B + S surd → x+1/x = 2B, x−1/x = 2S</h3>
+      <p class="trigger">Trigger: "x = 2+√3 / 7+4√3 / 2+√5 diya hai" aur B²−S²=1 ho — rationalise mat karo, seedha double kar do.</p>
+      <div class="example">
+        <b>Q59:</b> x=2+√3 → x+1/x = 2×2 = <span class="ans">4</span>
+        <span class="q2"><b>Q60:</b> x=7+4√3 → x−1/x = 2×4√3 = <span class="ans">8√3</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="surd" data-kw="x=2+root5 x3-1/x3 76 cube surd combine B S rule ke baad identity">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 45</p>
+      <p class="qref">PDF Q61 · Pg 86–170</p>
+      <h3>Surd + cube: pehle B–S, phir n³+3n</h3>
+      <p class="trigger">Trigger: "x = 2+√5 hai to x³ − 1/x³?" — do step: B–S se x−1/x nikaalo, phir cube identity.</p>
+      <div class="example">
+        <b>Q61:</b> x−1/x = 2×2 = 4 → 64+12 = <span class="ans">76</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="surd" data-kw="root x + 1 by root x 3+2root2 perfect square surd whole square 1+root2 half power आधा">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 46</p>
+      <p class="qref">PDF Q62, Q63 · Pg 86–170</p>
+      <h3>√x ± 1/√x poocha ho → aur ek ladder neeche</h3>
+      <p class="trigger">Trigger: "x = 3+2√2 hai to √x − 1/√x?" — ya to surd ko (√2+1)² banao, ya x+1/x=6 nikaal ke √(6∓2).</p>
+      <div class="example">
+        <b>Q62:</b> x+1/x=6 → √x−1/√x = √(6−2) = <span class="ans">2</span>
+        <span class="q2"><b>Q63:</b> x=1+√2 → x+1/x=2√2 → √x+1/√x = <span class="ans">√(2√2+2) ≈ 2.1973</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="highpower" data-kw="p6+p4+p2+1 by p3 divide karo p3+p+1/p+1/p3 7+4root3 2716 fraction bhaag">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 47</p>
+      <p class="qref">PDF Q64 · Pg 86–170</p>
+      <h3>(p⁶+p⁴+p²+1)/p³ → terms ko baant do</h3>
+      <p class="trigger">Trigger: numerator symmetric ho aur neeche p³ ho — har term ko p³ se divide karke (p³+1/p³) + (p+1/p) bana lo.</p>
+      <div class="example">
+        <b>Q64:</b> p=7+4√3 → p+1/p=14 → (2744−42) + 14 = <span class="ans">2716</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="surd" data-kw="PQ=1 Q=1/P reciprocal 1/P2+1/Q2 194 x y=1/x rationalise root5 root4 321/323">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 48</p>
+      <p class="qref">PDF Q2, Q65, Q66 · Pg 86–170</p>
+      <h3>PQ = 1 (ya y = 1/x) → dono ek hi variable</h3>
+      <p class="trigger">Trigger: "PQ = 1 diya hai" ya "x = (√5−√4)/(√5+√4), y uska ulta" — Q ko 1/P likho, expression seedha P²+1/P² ban jaata hai.</p>
+      <div class="example">
+        <b>Q65:</b> P=7+4√3 → P+1/P=14 → 1/P²+1/Q² = 196−2 = <span class="ans">194</span>
+        <span class="q2"><b>Q66:</b> x²+y²=(18)²−2=322 → (322−1)/(322+1) = <span class="ans">321/323</span></span>
+      </div>
+    </article>
+
+<article class="card" data-cat="shift" data-kw="m+1/(m-3)=5 dono taraf minus 3 shift adjust (m-3)+1/(m-3)=2 x+1/(x-9)=11 bracket banao">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 49</p>
+      <p class="qref">PDF Q67, Q68, Q69 · Pg 86–170</p>
+      <h3>m + 1/(m−k) = c → dono taraf se k ghatao</h3>
+      <p class="trigger">Trigger: denominator mein bracket (m−3), upar akela m — dono side se wahi number minus karo, perfect (t + 1/t) ban jaata hai.</p>
+      <div class="example">
+        <b>Q67:</b> (m−3)+1/(m−3)=2 → t=1 → t⁸+1/t⁸ = <span class="ans">2</span>
+        <span class="q2"><b>Q68:</b> (x−11)+1/(x−11)=−2 → t=−1 → (x−11)¹²+1/(x−11)¹³ = <span class="ans">0</span></span>
+        <br><b>Q69:</b> (a−4)+1/(a−4)=2 → 2⁷ + 1/(−2)³ = <span class="ans">127⅞</span>
+      </div>
+    </article>
+
+<article class="card" data-cat="shift" data-kw="x2-22x+111=0 x-8=t shift substitution t-1/t=6 12root10 x2+13x+39 x2-12x+33 194 393">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 50</p>
+      <p class="qref">PDF Q70, Q71, Q72 · Pg 86–170</p>
+      <h3>Quadratic + (x−k) poocha → shift trick (b − 2k)</h3>
+      <p class="trigger">Trigger: "x² − 22x + 111 = 0 hai to (x−8)² − 1/(x−8)²?" — t = x−8 rakho; shortcut: t ± 1/t = |b − 2k|.</p>
+      <div class="example">
+        <b>Q70:</b> t−1/t = 22−16 = 6 → 6×√(36+4) = <span class="ans">12√10</span>
+        <span class="q2"><b>Q71:</b> x²+13x+39, t=x+8 → t−1/t=3 → t⁵−1/t⁵ = <span class="ans">393</span></span>
+        <br><b>Q72:</b> x²−12x+33, t=x−4 → t+1/t=4 → t⁴+1/t⁴ = <span class="ans">194</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>50 patterns total.</b> (Source: Algebra Class Notes — Sheet-01 Pg 1–85 · Q1–37 [Patterns 01–25] + Sheet-02 Pg 86–170 · Q38–75 [Patterns 26–50], merged serially.) Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat, data-kw aur qref update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>

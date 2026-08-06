@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern → Method | Trigonometry Sheet-04 Trainer (P1–79)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --paper-line:#D7DEEA;
+    --margin-red:#C0392B;
+    --ink-blue:#1d3f8f;
+    --ink-blue-dark:#142a63;
+    --check-green:#2F7D4F;
+    --card-bg:#ffffff;
+    --muted:#5b6472;
+    --shadow:0 1px 2px rgba(20,42,99,0.06), 0 8px 24px rgba(20,42,99,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    color:var(--ink-blue-dark);
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--paper-line) 28px),
+      var(--paper);
+    background-attachment:local;
+    min-height:100vh;
+    padding:0 0 80px 0;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:rgba(192,57,43,0.35);
+    z-index:0;
+  }
+  @media (max-width:640px){ body::before{ left:28px; } }
+
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  header{ padding:48px 0 20px 0; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--margin-red); font-weight:600; margin:0 0 10px 64px;
+  }
+  @media (max-width:640px){ .eyebrow{margin-left:36px;} }
+  h1{
+    font-family:'Kalam',cursive; font-weight:700;
+    font-size:clamp(34px,5vw,52px);
+    margin:0 0 6px 64px; color:var(--ink-blue-dark); line-height:1.05;
+  }
+  @media (max-width:640px){ h1{margin-left:36px; font-size:32px;} }
+  .sub{ margin:0 0 26px 64px; color:var(--muted); font-size:15.5px; max-width:640px; }
+  @media (max-width:640px){ .sub{margin-left:36px;} }
+
+  .controls{ margin:0 0 30px 64px; display:flex; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px){ .controls{margin-left:36px;} }
+  .controls input[type="text"]{
+    flex:1; min-width:220px;
+    font-family:'Work Sans',sans-serif; font-size:14.5px;
+    padding:11px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--ink-blue-dark); outline:none;
+  }
+  .controls input[type="text"]:focus{ border-color:var(--ink-blue); }
+  .controls button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--paper-line);
+    background:#fff; color:var(--muted); cursor:pointer; font-weight:600;
+  }
+  .controls button.active{ background:var(--ink-blue); color:#fff; border-color:var(--ink-blue); }
+
+  .grid{
+    margin-left:64px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{margin-left:36px;} }
+
+  .card{
+    background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px 18px; position:relative; border:1px solid rgba(20,42,99,0.05);
+  }
+  .card .tag{
+    position:absolute; top:14px; right:14px;
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--check-green); color:var(--check-green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam',cursive; font-weight:700; font-size:14px;
+    transform:rotate(-8deg);
+  }
+  .no{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--margin-red);
+    font-weight:700; letter-spacing:.05em; margin-bottom:4px;
+  }
+  .card h3{
+    font-family:'Kalam',cursive; font-size:20px; margin:0 36px 6px 0; color:var(--ink-blue-dark); line-height:1.15;
+  }
+  .method-pill{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#EAF2FF; color:var(--ink-blue); padding:3px 9px; border-radius:20px;
+    margin:0 0 10px 0; font-weight:600;
+  }
+  .trigger{
+    font-size:13px; color:var(--muted); font-style:italic; margin:0 0 10px 0;
+    border-left:3px solid var(--paper-line); padding-left:9px; line-height:1.5;
+  }
+  .example{
+    background:#FAFBFD; border-radius:10px; padding:10px 13px; font-size:13.5px;
+    border-left:3px solid var(--check-green); line-height:1.6;
+  }
+  .example b{ color:var(--check-green); }
+  .example .ans{ color:var(--margin-red); font-weight:700; }
+  .example .q2{ display:block; margin-top:6px; padding-top:6px; border-top:1px dashed var(--paper-line); }
+
+  footer{ margin:44px 0 0 64px; color:var(--muted); font-size:13.5px; max-width:640px; line-height:1.7; }
+  @media (max-width:640px){ footer{margin-left:36px;} }
+  footer b{ color:var(--ink-blue-dark); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aditya Ranjan Sir · Complete Maths Course</p>
+    <h1>Trigonometry Sheet-04: question dekho, pattern pakdo.</h1>
+    <p class="sub">Sheet Class Notes-04 (page 1–79, Q1–Q54) ke saare questions 25 patterns mein — compound, multiple angle, sum↔product aur product chains.</p>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search: 'triple angle', 'sum to product', 'tan chain', 'nested', '1+tan'...">
+      <button data-filter="all" class="active">Sab</button>
+      <button data-filter="simplify">Simplify</button>
+      <button data-filter="multi">Multiple Angle</button>
+      <button data-filter="sumdiff">Sum↔Product</button>
+      <button data-filter="comp">Compound Angle</button>
+      <button data-filter="product">Product Chain</button>
+      <button data-filter="surd">Surd/Nested</button>
+      <button data-filter="misc">Misc</button>
+    </div>
+  </header>
+
+  <main class="grid" id="cardGrid">
+
+    <article class="card" data-cat="simplify" data-kw="sec2θ - 1/cot2θ simplify expression evaluate value 1 identity sheet">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 01</p>
+      <h3>sec²θ − tan²θ chhupa hua (1/cot² = tan²)</h3>
+      <p class="trigger">Trigger: "The value of sec²θ − 1/cot²θ is" — cot/tan ko convert karke identity dekho.</p>
+      <div class="example">
+        <b>Q2:</b> sec²θ − tan²θ = <span class="ans">1</span><span class="q2"><b>Q3/Q4:</b> "Simplify/Evaluate the following" — sab sin-cos mein todo, θ=45° put karke check → <span class="ans">1</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="surd" data-kw="nested radical root 2 + 2 + 2 + 2cos8θ half angle cos theta double angle surd">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 02</p>
+      <h3>√(2+√(2+√(2+2cos8θ))) → 2cosθ</h3>
+      <p class="trigger">Trigger: "√(2+2cos8θ)" type nested surd — har layer 1+cos2A = 2cos²A use karo.</p>
+      <div class="example">
+        <b>Q5:</b> 2+2cos8θ = 4cos²4θ → root = 2cos4θ → next layer 2+2cos4θ = 4cos²2θ …<span class="q2"><b>Q6:</b> 3 layers → final <span class="ans">2cosθ</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="multi" data-kw="cosec15 sec15 product 4 value 2/sin30 double angle 2sinθcosθ">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 03</p>
+      <h3>cosec15°·sec15° = 2/sin30° = 4</h3>
+      <p class="trigger">Trigger: "What is the value of cosec15°·sec15°?" — 1/(sin·cos) dikhe → ×2/2.</p>
+      <div class="example">
+        <b>Q8:</b> 2/(2sin15cos15) = 2/sin30° = <span class="ans">4</span>
+      </div>
+    </article>
+    <article class="card" data-cat="comp" data-kw="sin A cos B + cos A sin B expression value sin(A+B) compound angle">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 04</p>
+      <h3>sinA cosB + cosA sinB = sin(A+B)</h3>
+      <p class="trigger">Trigger: "What is the value of the expression …" — do term, cross sin-cos.</p>
+      <div class="example">
+        <b>Q9:</b> sin(A+B) form banao → angle jod do → <span class="ans">sin(A+B)</span> ki standard value
+      </div>
+    </article>
+    <article class="card" data-cat="multi" data-kw="3 sinA - 4 sin3A = sin3A triple angle formula value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 05</p>
+      <h3>3sinA − 4sin³A = sin3A</h3>
+      <p class="trigger">Trigger: "3sinA − 4sin³A = ?" ya "4sin³x − 3sinx + sin3x"</p>
+      <div class="example">
+        <b>Q11:</b> = <span class="ans">sin3A</span><span class="q2"><b>Q13:</b> 4sin³x − 3sinx + sin3x = −sin3x + sin3x = <span class="ans">0</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="multi" data-kw="3cosθ - 4cos3θ = -cos3θ 4cos3 - 3cos triple angle sinθ = value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 06</p>
+      <h3>4cos³θ − 3cosθ = cos3θ (ulta ho to −cos3θ)</h3>
+      <p class="trigger">Trigger: "If sinθ = 1/2, then (3cosθ − 4cos³θ) is" — sign ka dhyaan.</p>
+      <div class="example">
+        <b>Q15:</b> 3cosθ−4cos³θ = −cos3θ; θ=30° → −cos90° = <span class="ans">0</span>
+      </div>
+    </article>
+    <article class="card" data-cat="multi" data-kw="sin10 - 4/3 sin3 10 value sin30 fraction one third triple angle">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 07</p>
+      <h3>sin3θ formula ko ÷ karke chhota banao</h3>
+      <p class="trigger">Trigger: "What will be the value of sin10° − (4/3)sin³10°?"</p>
+      <div class="example">
+        <b>Q16:</b> (1/3)(3sin10−4sin³10) = (1/3)sin30° = <span class="ans">1/6</span>
+      </div>
+    </article>
+    <article class="card" data-cat="comp" data-kw="sinA = 3/5 sinB = 5/13 sin(A+B) triplet 3 4 5 5 12 13 compound">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 08</p>
+      <h3>sinA, sinB diye → triplet se cos nikaal ke sin(A+B)</h3>
+      <p class="trigger">Trigger: "If sinA = 3/5 and sinB = 5/13, what is the value of sin(A+B)?"</p>
+      <div class="example">
+        <b>Q18:</b> cosA=4/5, cosB=12/13 → 36/65+20/65 = <span class="ans">56/65</span>
+      </div>
+    </article>
+    <article class="card" data-cat="sumdiff" data-kw="2 cosA sinB = sin(A+B) - sin(A-B) cos45 sin15 2cos45 sin15 value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 09</p>
+      <h3>2cosA·sinB = sin(A+B) − sin(A−B)</h3>
+      <p class="trigger">Trigger: "What is the value of cos45°·sin15°?" — product ko sum mein todo.</p>
+      <div class="example">
+        <b>Q19:</b> 2cos45sin15 = sin60−sin30 = (√3−1)/2 → cos45sin15 = <span class="ans">(√3−1)/4</span><span class="q2"><b>Q37:</b> 2cos45°·sin15° = <span class="ans">(√3−1)/2</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="sumdiff" data-kw="sin75 + sin15 value root 6 by 2 sum to product 2 sin cos">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 10</p>
+      <h3>sin75° + sin15° = √6/2</h3>
+      <p class="trigger">Trigger: "What is the value of sin75° + sin15°?"</p>
+      <div class="example">
+        <b>Q20:</b> 2sin45°cos30° = 2×(1/√2)(√3/2) = <span class="ans">√6/2</span><span class="q2"><b>Q34:</b> wahi question dobara → <span class="ans">√6/2</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="sumdiff" data-kw="sinC + sinD = x 2 sin (C+D)/2 cos (C-D)/2 formula value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 11</p>
+      <h3>sinC + sinD = 2·sin((C+D)/2)·cos((C−D)/2)</h3>
+      <p class="trigger">Trigger: "If sinC + sinD = x, then the value of x is"</p>
+      <div class="example">
+        <b>Q28:</b> formula seedha → <span class="ans">2 sin((C+D)/2) cos((C−D)/2)</span><span class="q2"><b>Q29:</b> sinα − sinβ = <span class="ans">2 cos((α+β)/2) sin((α−β)/2)</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="sumdiff" data-kw="cosC - cosD = y minus 2 sin sin formula value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 12</p>
+      <h3>cosC − cosD = −2·sin((C+D)/2)·sin((C−D)/2)</h3>
+      <p class="trigger">Trigger: "If cosC − cosD = y, then the value of y is" — yahan minus sign yaad rakho.</p>
+      <div class="example">
+        <b>Q30:</b> <span class="ans">−2 sin((C+D)/2) sin((C−D)/2)</span>
+      </div>
+    </article>
+    <article class="card" data-cat="comp" data-kw="cot(A-B) formula cotA cotB + 1 / cotB - cotA find value using">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 13</p>
+      <h3>cot(A−B) = (cotA·cotB + 1)/(cotB − cotA)</h3>
+      <p class="trigger">Trigger: "Using cot(A−B) = …, find the value of …"</p>
+      <div class="example">
+        <b>Q26:</b> given angles daal do → standard value <span class="ans">2 + √3</span> type
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="sinx sin(60+x) sin(60-x) = 1/4 sin3x product chain 60 degree">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 14</p>
+      <h3>sinx·sin(60°+x)·sin(60°−x) = ¼ sin3x</h3>
+      <p class="trigger">Trigger: "Find sinx·sin(60°−x)·sin(60°+x)" — 60° ke pair dikhe.</p>
+      <div class="example">
+        <b>Q32:</b> = <span class="ans">¼ sin3x</span> (cos version: ¼cos3x, tan version: tan3x)
+      </div>
+    </article>
+    <article class="card" data-cat="sumdiff" data-kw="2 cosA cosB = cos(A+B) + cos(A-B) evaluate value product to sum">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 15</p>
+      <h3>2cosA·cosB = cos(A+B) + cos(A−B)</h3>
+      <p class="trigger">Trigger: "Using 2cosA cosB = cos(A+B) + cos(A−B), find …"</p>
+      <div class="example">
+        <b>Q36:</b> formula lagao, angle jod-ghatao → standard value<span class="q2"><b>Q38:</b> "Evaluate the following" → <span class="ans">cos ki standard value</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="comp" data-kw="A + B = C tanA tanB tanC sum equals product identity">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 16</p>
+      <h3>A+B+C = 180° → tanA+tanB+tanC = tanA·tanB·tanC</h3>
+      <p class="trigger">Trigger: "If A + B = C, then tanA tanB tanC = ?"</p>
+      <div class="example">
+        <b>Q39:</b> <span class="ans">tanA + tanB + tanC</span>
+      </div>
+    </article>
+    <article class="card" data-cat="multi" data-kw="cos2A double angle 1 - 2sin2A 2cos2A - 1 expression value">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 17</p>
+      <h3>cos2A ke 3 roop — jo diya ho wahi pick karo</h3>
+      <p class="trigger">Trigger: "What is the value of the expression cos2A …"</p>
+      <div class="example">
+        <b>Q40:</b> cos2A = 1−2sin²A = 2cos²A−1 = (1−tan²A)/(1+tan²A) → <span class="ans">diye gaye form ki value</span>
+      </div>
+    </article>
+    <article class="card" data-cat="comp" data-kw="cot75 = 2 - root3 cot15 = 2 + root3 complementary reciprocal 15 75">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 18</p>
+      <h3>cot75° = 2−√3 → cot15° = 2+√3 (reciprocal pair)</h3>
+      <p class="trigger">Trigger: "If cot75° = 2 − √3, find the value of cot15°."</p>
+      <div class="example">
+        <b>Q41:</b> cot15° = tan75° = 1/(2−√3) = <span class="ans">2 + √3</span>
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="(1+tan10)(1+tan35) = 2 A + B = 45 degree pair product two">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 19</p>
+      <h3>A+B = 45° → (1+tanA)(1+tanB) = 2</h3>
+      <p class="trigger">Trigger: "The value of (1 + tan10°)(1 + tan35°) is"</p>
+      <div class="example">
+        <b>Q42:</b> 10+35 = 45 → <span class="ans">2</span><span class="q2"><b>Q44:</b> (1+tan11°)(1+tan21°)(1+tan24°)(1+tan34°) → 2×2 = <span class="ans">4</span></span>
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="tan20 tan40 tan80 = root3 tan3θ chain tan60 identity">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 20</p>
+      <h3>tanθ·tan(60−θ)·tan(60+θ) = tan3θ</h3>
+      <p class="trigger">Trigger: "The value of (tan20°·tan40°·tan80°) is"</p>
+      <div class="example">
+        <b>Q46:</b> θ=20 → tan60° = <span class="ans">√3</span>
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="sin6 sin42 sin66 sin78 = 1/16 chain product four angles">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 21</p>
+      <h3>sin6°·sin42°·sin66°·sin78° = 1/16</h3>
+      <p class="trigger">Trigger: "sin6° sin42° sin66° sin78° = ?" — 4 angle ka product chain.</p>
+      <div class="example">
+        <b>Q48:</b> <span class="ans">1/16</span>
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="sin12 sin48 sin54 = 1/8 three angle product">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 22</p>
+      <h3>sin12°·sin48°·sin54° = 1/8</h3>
+      <p class="trigger">Trigger: "Find sin12°·sin48°·sin54°."</p>
+      <div class="example">
+        <b>Q49:</b> <span class="ans">1/8</span>
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="cos10 cos30 cos50 cos70 = 3/16 product chain cos four">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 23</p>
+      <h3>cos10°·cos30°·cos50°·cos70° = 3/16</h3>
+      <p class="trigger">Trigger: "cos10°·cos30°·cos50°·cos70° = ?"</p>
+      <div class="example">
+        <b>Q51:</b> cos20cos40cos80 = 1/8 wali chain + cos30 → <span class="ans">3/16</span>
+      </div>
+    </article>
+    <article class="card" data-cat="product" data-kw="tan6 tan42 tan66 tan78 = 1 tan chain product answer one">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 24</p>
+      <h3>tan6°·tan42°·tan66°·tan78° = 1</h3>
+      <p class="trigger">Trigger: "tan6°·tan42°·tan66°·tan78° = ?"</p>
+      <div class="example">
+        <b>Q54:</b> sin-chain (1/16) ÷ cos-chain (1/16) → <span class="ans">1</span>
+      </div>
+    </article>
+    <article class="card" data-cat="misc" data-kw="simplify expression evaluate following mixed tan sum cot difference misc sheet questions">
+      <div class="tag">✓</div>
+      <p class="no">PATTERN 25</p>
+      <h3>Bache hue "Simplify/Evaluate" wale — θ put karke chalo</h3>
+      <p class="trigger">Trigger: "Simplify the following" / "Which of the following options gives an equivalent …" — koi formula na dikhe to allowed value (θ=45°/30°) put karke option match karo.</p>
+      <div class="example">
+        <b>Q17, Q21, Q23, Q35:</b> θ=45° ya 30° daal ke options se match → <span class="ans">seedha answer</span><span class="q2"><b>Q7, Q31, Q33:</b> pehle sin-cos mein todo, phir identity/sum-product lagao</span>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <b>25 patterns ab tak.</b> Naya pattern add karna ho: isi structure mein ek naya <code>&lt;article class="card"&gt;</code> jod dena — data-cat aur data-kw update karna mat bhoolna taaki search/filter kaam kare.
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = Array.from(document.querySelectorAll('.controls button'));
+  let activeFilter = 'all';
+
+  function applyFilters(){
+    const q = searchBox.value.trim().toLowerCase();
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const kw = (card.dataset.kw + ' ' + card.textContent).toLowerCase();
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesSearch = q === '' || kw.includes(q);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
+  searchBox.addEventListener('input', applyFilters);
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+</body>
+</html>
