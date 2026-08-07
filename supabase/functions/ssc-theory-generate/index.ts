@@ -110,6 +110,12 @@ serve(async (req) => {
       chapter?: string;
       subtopic?: string;
       force?: boolean;
+      /** chunked mode: question offset to start from */
+      offset?: number;
+      /** chunked mode: how many questions this call should cover (default all) */
+      limit?: number;
+      /** chunked mode: append output to existing theory instead of replacing */
+      append?: boolean;
     };
     const subject = body.subject;
     const chapter = body.chapter;
@@ -123,24 +129,28 @@ serve(async (req) => {
 
     const admin = createClient(url, service);
 
-    if (!body.force) {
-      const { data: existing } = await admin
-        .from("ssc_chapter_theory")
-        .select("id")
-        .eq("subject", subject)
-        .eq("chapter", chapter)
-        .eq("subtopic", subtopic)
-        .maybeSingle();
-      if (existing) {
-        return new Response(JSON.stringify({ ok: true, skipped: true }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+    const { data: existingRow } = await admin
+      .from("ssc_chapter_theory")
+      .select("id,theory_md,question_count")
+      .eq("subject", subject)
+      .eq("chapter", chapter)
+      .eq("subtopic", subtopic)
+      .maybeSingle();
+
+    if (!body.force && !body.append && existingRow) {
+      return new Response(JSON.stringify({ ok: true, skipped: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
+
+    const offset = Math.max(0, Number(body.offset) || 0);
+    const limit = body.limit && body.limit > 0 ? Math.min(Number(body.limit), 500) : 0;
 
     const rows: Row[] = [];
     const PAGE = 500;
-    for (let offset = 0; ; offset += PAGE) {
+    const hardEnd = limit ? offset + limit : Infinity;
+    for (let off = offset; off < hardEnd; off += PAGE) {
+      const take = Math.min(PAGE, hardEnd - off);
       let q = admin
         .from("ssc_chapter_questions")
         .select(
@@ -151,24 +161,24 @@ serve(async (req) => {
       if (subtopic) q = q.eq("subtopic", subtopic);
       const { data, error } = await q
         .order("serial_no", { ascending: true })
-        .range(offset, offset + PAGE - 1);
+        .range(off, off + take - 1);
       if (error) throw error;
       const page = (data as Row[]) || [];
       rows.push(...page);
-      if (page.length < PAGE) break;
+      if (page.length < take) break;
     }
 
     if (!rows.length) {
-      return new Response(JSON.stringify({ error: "No questions found" }), {
-        status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ ok: true, fetched: 0, hasMore: false, note: "no questions in this range" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const title = subtopic ? `${chapter} — ${subtopic}` : chapter;
     const blocks: string[] = [];
     for (let i = 0; i < rows.length; i += BATCH) {
-      blocks.push(rows.slice(i, i + BATCH).map((r, j) => rowToText(r, i + j + 1)).join("\n\n"));
+      blocks.push(rows.slice(i, i + BATCH).map((r, j) => rowToText(r, offset + i + j + 1)).join("\n\n"));
     }
 
     const sections: string[] = [];
@@ -178,7 +188,12 @@ serve(async (req) => {
       if (i < blocks.length - 1) await new Promise((r) => setTimeout(r, 600));
     }
 
-    const theory = `# ${title}\n\n${sections.join("\n\n---\n\n")}`;
+    const fresh = sections.join("\n\n---\n\n");
+    const prevMd = body.append && existingRow ? String(existingRow.theory_md || "") : "";
+    const theory = prevMd
+      ? `${prevMd}\n\n---\n\n${fresh}`
+      : `# ${title}\n\n${fresh}`;
+    const totalCount = (body.append && existingRow ? Number(existingRow.question_count) || 0 : 0) + rows.length;
 
     const { error: upErr } = await admin
       .from("ssc_chapter_theory")
