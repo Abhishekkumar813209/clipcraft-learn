@@ -40,7 +40,10 @@ const SYSTEM =
 RULES (strictly follow):
 - Sirf diye gaye questions, unke answers aur solutions se hi rules banao — naya unverified rule mat jodo.
 - Output ek grammar book ka chapter jaisa flowing THEORY ho — "Q1, Q2" style bilkul nahi.
-- Har rule ke saath 1-2 short example sentences (questions se hi) do, aur galat vs sahi form dikhao.
+- MAPPING ZARURI: har rule/sub-point ke heading ke turant baad ek line do:
+  \`> Covers: Q12, Q45, Q78\` — usme wahi question numbers likho jo us rule se solve hote hain (data me diye gaye Q numbers hi use karo, apne se number mat banao).
+- Har rule ke saath 1-2 short example sentences (questions se hi) do, example ke aage bracket me uska number likho jaise (Q45), aur galat vs sahi form dikhao.
+- Har question number kam se kam ek rule me zaroor aana chahiye — koi question chhoot na jaye. Jo questions kisi bade rule me fit na ho, unke liye end me "## Miscellaneous / Mixed" section bana kar cover karo (waha bhi Covers line do).
 - Markdown: "## " rule headings, "### " sub-points, bullets aur zaroorat par chhoti tables (max 3).
 - Exam-relevant keywords/structures bold karo (**...**).
 - Koi preamble mat likho — seedha content se shuru karo.`;
