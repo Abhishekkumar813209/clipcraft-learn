@@ -152,15 +152,23 @@ serve(async (req) => {
       });
     }
 
-    const blocks: string[] = [];
+    const blocks: { text: string; qNos: number[] }[] = [];
     for (let i = 0; i < rows.length; i += BATCH) {
-      blocks.push(rows.slice(i, i + BATCH).map((r, j) => rowToText(r, offset + i + j + 1)).join("\n\n"));
+      const slice = rows.slice(i, i + BATCH);
+      blocks.push({
+        text: slice.map((r, j) => rowToText(r, offset + i + j + 1)).join("\n\n"),
+        qNos: slice.map((r) => r.q_no),
+      });
     }
 
     const sections: string[] = [];
     for (let i = 0; i < blocks.length; i++) {
-      const md = await generateSection(pos, i + 1, blocks.length, blocks[i]);
-      if (md) sections.push(md);
+      const b = blocks[i];
+      const md = await generateSection(pos, i + 1, blocks.length, b.text, b.qNos);
+      if (md) {
+        const range = `_Is part me cover hue questions: Q${b.qNos[0]}–Q${b.qNos[b.qNos.length - 1]}_`;
+        sections.push(`${range}\n\n${md}`);
+      }
       if (i < blocks.length - 1) await new Promise((r) => setTimeout(r, 600));
     }
 
