@@ -3,13 +3,27 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { fetchSscChapters, allowsSubtopicTheory, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, RefreshCw, Eye } from 'lucide-react';
+import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
+import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const SUBJECTS = [{ key: 'biology', label: '🧬 Biology' }];
+const SUBJECTS = [
+  { key: 'biology', label: '🧬 Biology' },
+  { key: 'english_grammar', label: '📚 English Grammar' },
+];
+
+const GRAMMAR_LABELS: Record<string, string> = {
+  narration_mcq: 'Narration — MCQs',
+  narration_spot: 'Narration — Spot the Error',
+  passive_voice: 'Passive Voice — Spot the Error',
+  passive_voice_mcq: 'Passive Voice — MCQs',
+  tense: 'Tense',
+  verb: 'Verb',
+};
+
+const CHUNK = 100;
 
 interface TheoryRow {
   chapter: string;
@@ -32,46 +46,84 @@ export default function AdminSscTheory() {
   const [preview, setPreview] = useState<TheoryRow | null>(null);
   const [open, setOpen] = useState<string | null>(null);
 
+  const isGrammar = subject === 'english_grammar';
+
+  async function loadTheories(sub: string) {
+    const { data } = await supabase
+      .from('ssc_chapter_theory' as never)
+      .select('chapter,subtopic,question_count,generated_at,theory_md')
+      .eq('subject', sub);
+    const map: Record<string, TheoryRow> = {};
+    for (const r of ((data as unknown as TheoryRow[]) || [])) map[keyOf(r.chapter, r.subtopic)] = r;
+    setTheories(map);
+  }
+
+  async function loadGrammarChapters(): Promise<ChapterInfo[]> {
+    const rows: { pos: string }[] = [];
+    const PAGE = 1000;
+    for (let off = 0; ; off += PAGE) {
+      const { data } = await supabase
+        .from('ssc_pos_spot_error' as never)
+        .select('pos')
+        .range(off, off + PAGE - 1);
+      const page = (data as unknown as { pos: string }[]) || [];
+      rows.push(...page);
+      if (page.length < PAGE) break;
+    }
+    const counts = new Map<string, number>();
+    for (const r of rows) counts.set(r.pos, (counts.get(r.pos) || 0) + 1);
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([pos, count]) => ({ chapter: pos, count, minSerial: 1, maxSerial: count, subtopics: [] }));
+  }
+
   async function load(sub: string) {
     setLoading(true);
     setPreview(null);
-    const [ch, th] = await Promise.all([
-      fetchSscChapters(sub),
-      supabase
-        .from('ssc_chapter_theory' as never)
-        .select('chapter,subtopic,question_count,generated_at,theory_md')
-        .eq('subject', sub),
-    ]);
+    const ch = sub === 'english_grammar' ? await loadGrammarChapters() : await fetchSscChapters(sub);
     setChapters(ch);
-    const map: Record<string, TheoryRow> = {};
-    for (const r of ((th.data as unknown as TheoryRow[]) || [])) map[keyOf(r.chapter, r.subtopic)] = r;
-    setTheories(map);
+    await loadTheories(sub);
     setLoading(false);
   }
 
   useEffect(() => { load(subject); /* eslint-disable-next-line */ }, [subject]);
 
-  async function generate(chapter: string, subtopic: string, force: boolean) {
+  async function refreshRow(chapter: string, subtopic: string) {
+    const { data: row } = await supabase
+      .from('ssc_chapter_theory' as never)
+      .select('chapter,subtopic,question_count,generated_at,theory_md')
+      .eq('subject', subject).eq('chapter', chapter).eq('subtopic', subtopic)
+      .maybeSingle();
+    if (row) setTheories((t) => ({ ...t, [keyOf(chapter, subtopic)]: row as unknown as TheoryRow }));
+  }
+
+  /** 100-question chunks me serial-wise theory banata hai (bade chapters timeout nahi honge). */
+  async function generateChunked(chapter: string, subtopic: string, total: number) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
-    setStatus((s) => ({ ...s, [k]: 'generating…' }));
     try {
-      const { data, error } = await supabase.functions.invoke('ssc-theory-generate', {
-        body: { subject, chapter, subtopic, force },
-      });
-      if (error) throw error;
-      const d = data as { error?: string; skipped?: boolean; chars?: number; question_count?: number };
-      if (d?.error) throw new Error(d.error);
-      setStatus((s) => ({
-        ...s,
-        [k]: d?.skipped ? 'already generated' : `done · ${d.chars} chars from ${d.question_count} Qs`,
-      }));
-      const { data: row } = await supabase
-        .from('ssc_chapter_theory' as never)
-        .select('chapter,subtopic,question_count,generated_at,theory_md')
-        .eq('subject', subject).eq('chapter', chapter).eq('subtopic', subtopic)
-        .maybeSingle();
-      if (row) setTheories((t) => ({ ...t, [k]: row as unknown as TheoryRow }));
+      let offset = 0;
+      let part = 0;
+      const totalParts = Math.max(1, Math.ceil(total / CHUNK));
+      for (;;) {
+        part++;
+        setStatus((s) => ({ ...s, [k]: `part ${part}/${totalParts} generating…` }));
+        const fn = isGrammar ? 'ssc-grammar-theory' : 'ssc-theory-generate';
+        const payload = isGrammar
+          ? { pos: chapter, offset, limit: CHUNK, append: offset > 0, force: true }
+          : { subject, chapter, subtopic, offset, limit: CHUNK, append: offset > 0, force: true };
+        const { data, error } = await supabase.functions.invoke(fn, { body: payload });
+        if (error) throw error;
+        const d = data as { error?: string; hasMore?: boolean; nextOffset?: number; fetched?: number; chars?: number };
+        if (d?.error) throw new Error(d.error);
+        offset = d?.nextOffset ?? offset + CHUNK;
+        if (!d?.hasMore) {
+          setStatus((s) => ({ ...s, [k]: `done · ${part} parts · ${d?.chars || 0} chars` }));
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      await refreshRow(chapter, subtopic);
       return true;
     } catch (e) {
       setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
@@ -82,12 +134,51 @@ export default function AdminSscTheory() {
     }
   }
 
-  async function runQueue(jobs: { chapter: string; subtopic: string }[]) {
+  async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '') {
+    const k = keyOf(chapter, subtopic);
+    setRunning(k);
+    setStatus((s) => ({ ...s, [k]: `${mode}…` }));
+    try {
+      const { data, error } = await supabase.functions.invoke('ssc-theory-refine', {
+        body: { mode, subject, chapter, subtopic },
+      });
+      if (error) throw error;
+      const d = data as { error?: string; chars?: number; skipped?: boolean };
+      if (d?.error) throw new Error(d.error);
+      setStatus((s) => ({ ...s, [k]: d?.skipped ? `${mode}: no content` : `${mode} done · ${d?.chars} chars` }));
+      await refreshRow(chapter, subtopic);
+      return true;
+    } catch (e) {
+      setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
+      toast({ title: `${mode} failed`, description: String(e).slice(0, 200), variant: 'destructive' });
+      return false;
+    } finally {
+      setRunning(null);
+    }
+  }
+
+  const realSubs = (c: ChapterInfo) => c.subtopics.filter((s) => s.name !== '—');
+
+  /** Chapter theory ko uske sabhi subtopics me distribute karo. */
+  async function splitToSubtopics(c: ChapterInfo) {
+    setBulk(true);
+    try {
+      for (const s of realSubs(c)) {
+        await refine('split', c.chapter, s.name);
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      toast({ title: `${c.chapter} → subtopics distribute ho gaya` });
+    } finally {
+      setBulk(false);
+    }
+  }
+
+  async function runQueue(jobs: { chapter: string; subtopic: string; total: number }[]) {
     setBulk(true);
     try {
       let fails = 0;
       for (const j of jobs) {
-        const ok = await generate(j.chapter, j.subtopic, false);
+        const ok = await generateChunked(j.chapter, j.subtopic, j.total);
         if (!ok && ++fails >= 3) break;
         await new Promise((r) => setTimeout(r, 800));
       }
@@ -97,38 +188,60 @@ export default function AdminSscTheory() {
     }
   }
 
-  // Sirf real subtopics (placeholder '—' nahi) aur sirf eligible chapters
-  const eligibleSubs = (c: ChapterInfo) =>
-    allowsSubtopicTheory(subject, c.chapter)
-      ? c.subtopics.filter((s) => s.name !== '—' && c.subtopics.length >= 2)
-      : [];
-
   const generateAllPending = () =>
-    runQueue(chapters.filter((c) => !theories[keyOf(c.chapter)]).map((c) => ({ chapter: c.chapter, subtopic: '' })));
+    runQueue(
+      chapters
+        .filter((c) => !theories[keyOf(c.chapter)])
+        .map((c) => ({ chapter: c.chapter, subtopic: '', total: c.count })),
+    );
 
   const generateAllPendingSubtopics = () =>
     runQueue(
       chapters.flatMap((c) =>
-        eligibleSubs(c)
+        realSubs(c)
           .filter((s) => !theories[keyOf(c.chapter, s.name)])
-          .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
+          .map((s) => ({ chapter: c.chapter, subtopic: s.name, total: s.count })),
       ),
     );
 
   const generateChapterSubtopics = (c: ChapterInfo) =>
     runQueue(
-      eligibleSubs(c)
+      realSubs(c)
         .filter((s) => !theories[keyOf(c.chapter, s.name)])
-        .map((s) => ({ chapter: c.chapter, subtopic: s.name })),
+        .map((s) => ({ chapter: c.chapter, subtopic: s.name, total: s.count })),
     );
+
+  /** Har chapter ke liye: theory chapter me hai to subtopics me baanto, sirf subtopics me hai to merge karo. */
+  async function autoBalanceAll() {
+    setBulk(true);
+    try {
+      for (const c of chapters) {
+        const subs = realSubs(c);
+        if (subs.length < 2) continue;
+        const hasChapter = !!theories[keyOf(c.chapter)];
+        const withSub = subs.filter((s) => theories[keyOf(c.chapter, s.name)]);
+        if (hasChapter && withSub.length === 0) {
+          for (const s of subs) {
+            await refine('split', c.chapter, s.name);
+            await new Promise((r) => setTimeout(r, 600));
+          }
+        } else if (!hasChapter && withSub.length) {
+          await refine('merge', c.chapter, '');
+          await new Promise((r) => setTimeout(r, 600));
+        }
+      }
+      toast({ title: 'Auto balance complete' });
+    } finally {
+      setBulk(false);
+    }
+  }
 
   const pending = chapters.filter((c) => !theories[keyOf(c.chapter)]).length;
   const pendingSubs = chapters.reduce(
-    (n, c) => n + eligibleSubs(c).filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
+    (n, c) => n + realSubs(c).filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
     0,
   );
-
-
+  const busy = !!running || bulk;
 
   return (
     <div className="p-6 space-y-6">
@@ -137,7 +250,7 @@ export default function AdminSscTheory() {
           <BookOpenText className="w-5 h-5 text-primary" /> SSC Chapter Theory
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Chapter ya subtopic ke saare MCQs + unke Hinglish explanations se book-jaisi theory generate hoti hai.
+          MCQs + Hinglish explanations se book-jaisi theory. Bade chapters {CHUNK}-question chunks me serial-wise generate hote hain.
         </p>
       </div>
 
@@ -158,49 +271,73 @@ export default function AdminSscTheory() {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <CardTitle className="text-base">
-            {loading ? 'Loading chapters…' : `${chapters.length} chapters · ${pending} chapter pending · ${pendingSubs} subtopic pending`}
+            {loading
+              ? 'Loading…'
+              : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${pending} pending${isGrammar ? '' : ` · ${pendingSubs} subtopic pending`}`}
           </CardTitle>
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" disabled={loading || bulk || !!running || !pending} onClick={generateAllPending}>
+            <Button size="sm" disabled={loading || busy || !pending} onClick={generateAllPending}>
               {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
-              All pending chapters
+              All pending {isGrammar ? 'topics' : 'chapters'}
             </Button>
-            <Button size="sm" variant="outline" disabled={loading || bulk || !!running || !pendingSubs} onClick={generateAllPendingSubtopics}>
-              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
-              All pending subtopics
-            </Button>
+            {!isGrammar && (
+              <>
+                <Button size="sm" variant="outline" disabled={loading || busy || !pendingSubs} onClick={generateAllPendingSubtopics}>
+                  <RefreshCw className="w-4 h-4 mr-1" /> All pending subtopics
+                </Button>
+                <Button size="sm" variant="secondary" disabled={loading || busy} onClick={autoBalanceAll}>
+                  <Merge className="w-4 h-4 mr-1" /> Auto split / merge
+                </Button>
+              </>
+            )}
           </div>
         </CardHeader>
 
         <CardContent className="space-y-2">
           {chapters.map((c) => {
             const t = theories[keyOf(c.chapter)];
-            const subs = eligibleSubs(c);
+            const subs = isGrammar ? [] : realSubs(c);
             const isOpen = !!subs.length && open === c.chapter;
+            const label = isGrammar ? (GRAMMAR_LABELS[c.chapter] || c.chapter) : c.chapter;
             return (
               <div key={c.chapter} className="border rounded-md p-3 space-y-2">
                 <div className="flex items-center justify-between gap-3">
                   <button className="min-w-0 text-left flex-1" disabled={!subs.length} onClick={() => setOpen(isOpen ? null : c.chapter)}>
-                    <div className="text-sm font-medium truncate">{c.chapter}</div>
+                    <div className="text-sm font-medium truncate">{label}</div>
                     <div className="text-xs text-muted-foreground">
-                      {c.count} questions · {subs.length ? `${subs.length} subtopics` : 'chapter-level only'} · {status[keyOf(c.chapter)] || (t ? `generated ${new Date(t.generated_at).toLocaleDateString()}` : 'not generated')}
+                      {c.count} questions · {subs.length ? `${subs.length} subtopics` : 'single'} ·{' '}
+                      {status[keyOf(c.chapter)] || (t ? `generated ${new Date(t.generated_at).toLocaleDateString()}` : 'not generated')}
                     </div>
                   </button>
                   <div className="flex items-center gap-2 shrink-0">
                     {t ? <Badge variant="secondary">Ready</Badge> : <Badge variant="outline">Pending</Badge>}
                     {t && <Button size="sm" variant="ghost" onClick={() => setPreview(t)}><Eye className="w-4 h-4" /></Button>}
-                    {!!subs.length && (
+                    {t && (
+                      <Button size="sm" variant="ghost" title="Repetition hatao" disabled={busy} onClick={() => refine('dedupe', c.chapter, '')}>
+                        <Wand2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                    {!isGrammar && !!subs.length && t && (
+                      <Button size="sm" variant="ghost" title="Chapter theory ko subtopics me baanto" disabled={busy} onClick={() => splitToSubtopics(c)}>
+                        <Split className="w-4 h-4" />
+                      </Button>
+                    )}
+                    {!isGrammar && !!subs.length && (
+                      <Button size="sm" variant="ghost" title="Subtopic theories ko chapter me merge karo" disabled={busy} onClick={() => refine('merge', c.chapter, '')}>
+                        <Merge className="w-4 h-4" />
+                      </Button>
+                    )}
+                    {!isGrammar && !!subs.length && (
                       <Button
                         size="sm"
                         variant="secondary"
-                        disabled={!!running || bulk || !subs.some((s) => !theories[keyOf(c.chapter, s.name)])}
+                        disabled={busy || !subs.some((s) => !theories[keyOf(c.chapter, s.name)])}
                         onClick={() => generateChapterSubtopics(c)}
                       >
                         All subtopics
                       </Button>
                     )}
-                    <Button size="sm" variant={t ? 'outline' : 'default'} disabled={!!running || bulk} onClick={() => generate(c.chapter, '', !!t)}>
-
+                    <Button size="sm" variant={t ? 'outline' : 'default'} disabled={busy} onClick={() => generateChunked(c.chapter, '', c.count)}>
                       {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : (t ? 'Regenerate' : 'Generate')}
                     </Button>
                   </div>
@@ -221,7 +358,17 @@ export default function AdminSscTheory() {
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
                             {st && <Button size="sm" variant="ghost" onClick={() => setPreview(st)}><Eye className="w-4 h-4" /></Button>}
-                            <Button size="sm" variant={st ? 'outline' : 'default'} disabled={!!running || bulk} onClick={() => generate(c.chapter, s.name, !!st)}>
+                            {st && (
+                              <Button size="sm" variant="ghost" title="Repetition hatao" disabled={busy} onClick={() => refine('dedupe', c.chapter, s.name)}>
+                                <Wand2 className="w-4 h-4" />
+                              </Button>
+                            )}
+                            {theories[keyOf(c.chapter)] && (
+                              <Button size="sm" variant="ghost" title="Chapter theory se is subtopic ka hissa nikaalo" disabled={busy} onClick={() => refine('split', c.chapter, s.name)}>
+                                <Split className="w-4 h-4" />
+                              </Button>
+                            )}
+                            <Button size="sm" variant={st ? 'outline' : 'default'} disabled={busy} onClick={() => generateChunked(c.chapter, s.name, s.count)}>
                               {running === k ? <Loader2 className="w-4 h-4 animate-spin" /> : (st ? 'Regenerate' : 'Generate')}
                             </Button>
                           </div>
@@ -230,7 +377,6 @@ export default function AdminSscTheory() {
                     })}
                   </div>
                 )}
-
               </div>
             );
           })}
