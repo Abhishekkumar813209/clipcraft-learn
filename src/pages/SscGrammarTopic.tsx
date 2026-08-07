@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const META: Record<string, { label: string; icon: string }> = {
   verb: { label: 'Verb', icon: '🏃' },
