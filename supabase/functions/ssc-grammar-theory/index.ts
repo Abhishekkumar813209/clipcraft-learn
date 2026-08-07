@@ -53,10 +53,14 @@ async function generateSection(
   partNo: number,
   totalParts: number,
   block: string,
+  qNos: number[],
 ): Promise<string> {
   const userPrompt = `Grammar topic: ${title}
 Yeh topic ke questions ka part ${partNo}/${totalParts} hai (serial-wise).
 ${totalParts > 1 ? "Sirf is part ke rules likho, pehle wale parts ka intro repeat mat karo." : ""}
+
+Is part ke question numbers: ${qNos.join(", ")}
+In sab numbers ko rules ki "> Covers:" lines me distribute karna hai — ek bhi number chhoota nahi chahiye.
 
 --- QUESTIONS DATA ---
 ${block}
