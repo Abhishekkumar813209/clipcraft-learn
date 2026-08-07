@@ -160,6 +160,7 @@ const App = () => (
               <Route path="english/synant" element={<SscEnglishSynAnt />} />
               <Route path="english/synant/practice" element={<SscSynAntPractice />} />
               <Route path="english/grammar" element={<SscGrammar />} />
+              <Route path="english/grammar/theory" element={<SscGrammarTheory />} />
               <Route path="english/grammar/:pos" element={<SscGrammarTopic />} />
               <Route path="english/grammar/:pos/basic" element={<SscGrammarSetup />} />
               <Route path="english/rules" element={<SscGrammarRules />} />
