@@ -51,9 +51,14 @@ export default function SscGrammarTheory() {
           <p className="text-sm text-slate-600">Is topic ki theory abhi generate nahi hui hai.</p>
         )}
         {row && (
-          <article className="prose prose-slate max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h2:mt-8 prose-h3:text-base prose-p:leading-relaxed prose-li:marker:text-emerald-600 prose-table:text-sm prose-th:bg-emerald-50 prose-strong:text-emerald-900">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{row.theory_md}</ReactMarkdown>
-          </article>
+          <>
+            <p className="mb-4 text-[12px] text-slate-600 bg-emerald-50 border border-emerald-200 rounded-md px-3 py-2">
+              Har rule ke neeche <strong>Covers: Q…</strong> line hai — wo batati hai ye rule kaun se question numbers par lagta hai.
+            </p>
+            <article className="prose prose-slate max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h2:mt-8 prose-h3:text-base prose-p:leading-relaxed prose-li:marker:text-emerald-600 prose-table:text-sm prose-th:bg-emerald-50 prose-strong:text-emerald-900 prose-blockquote:border-emerald-400 prose-blockquote:bg-emerald-50/60 prose-blockquote:py-0.5 prose-blockquote:not-italic prose-blockquote:text-emerald-800">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{row.theory_md}</ReactMarkdown>
+            </article>
+          </>
         )}
       </div>
     </div>

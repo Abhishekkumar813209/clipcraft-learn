@@ -25,8 +25,8 @@ interface Row {
   solution: string | null;
 }
 
-function rowToText(r: Row, i: number): string {
-  const parts = [`### Q${i}. ${r.full_sentence}`];
+function rowToText(r: Row, _i: number): string {
+  const parts = [`### Q${r.q_no}. ${r.full_sentence}`];
   parts.push(`A) ${r.part_a} | B) ${r.part_b} | C) ${r.part_c} | D) ${r.part_d}`);
   parts.push(`Answer: ${r.error_in}${r.correct_form ? ` → ${r.correct_form}` : ""}`);
   if (r.rule_tag) parts.push(`Rule: ${r.rule_tag}`);
@@ -40,7 +40,10 @@ const SYSTEM =
 RULES (strictly follow):
 - Sirf diye gaye questions, unke answers aur solutions se hi rules banao — naya unverified rule mat jodo.
 - Output ek grammar book ka chapter jaisa flowing THEORY ho — "Q1, Q2" style bilkul nahi.
-- Har rule ke saath 1-2 short example sentences (questions se hi) do, aur galat vs sahi form dikhao.
+- MAPPING ZARURI: har rule/sub-point ke heading ke turant baad ek line do:
+  \`> Covers: Q12, Q45, Q78\` — usme wahi question numbers likho jo us rule se solve hote hain (data me diye gaye Q numbers hi use karo, apne se number mat banao).
+- Har rule ke saath 1-2 short example sentences (questions se hi) do, example ke aage bracket me uska number likho jaise (Q45), aur galat vs sahi form dikhao.
+- Har question number kam se kam ek rule me zaroor aana chahiye — koi question chhoot na jaye. Jo questions kisi bade rule me fit na ho, unke liye end me "## Miscellaneous / Mixed" section bana kar cover karo (waha bhi Covers line do).
 - Markdown: "## " rule headings, "### " sub-points, bullets aur zaroorat par chhoti tables (max 3).
 - Exam-relevant keywords/structures bold karo (**...**).
 - Koi preamble mat likho — seedha content se shuru karo.`;
@@ -50,10 +53,14 @@ async function generateSection(
   partNo: number,
   totalParts: number,
   block: string,
+  qNos: number[],
 ): Promise<string> {
   const userPrompt = `Grammar topic: ${title}
 Yeh topic ke questions ka part ${partNo}/${totalParts} hai (serial-wise).
 ${totalParts > 1 ? "Sirf is part ke rules likho, pehle wale parts ka intro repeat mat karo." : ""}
+
+Is part ke question numbers: ${qNos.join(", ")}
+In sab numbers ko rules ki "> Covers:" lines me distribute karna hai — ek bhi number chhoota nahi chahiye.
 
 --- QUESTIONS DATA ---
 ${block}
@@ -145,15 +152,23 @@ serve(async (req) => {
       });
     }
 
-    const blocks: string[] = [];
+    const blocks: { text: string; qNos: number[] }[] = [];
     for (let i = 0; i < rows.length; i += BATCH) {
-      blocks.push(rows.slice(i, i + BATCH).map((r, j) => rowToText(r, offset + i + j + 1)).join("\n\n"));
+      const slice = rows.slice(i, i + BATCH);
+      blocks.push({
+        text: slice.map((r, j) => rowToText(r, offset + i + j + 1)).join("\n\n"),
+        qNos: slice.map((r) => r.q_no),
+      });
     }
 
     const sections: string[] = [];
     for (let i = 0; i < blocks.length; i++) {
-      const md = await generateSection(pos, i + 1, blocks.length, blocks[i]);
-      if (md) sections.push(md);
+      const b = blocks[i];
+      const md = await generateSection(pos, i + 1, blocks.length, b.text, b.qNos);
+      if (md) {
+        const range = `_Is part me cover hue questions: Q${b.qNos[0]}–Q${b.qNos[b.qNos.length - 1]}_`;
+        sections.push(`${range}\n\n${md}`);
+      }
       if (i < blocks.length - 1) await new Promise((r) => setTimeout(r, 600));
     }
 
