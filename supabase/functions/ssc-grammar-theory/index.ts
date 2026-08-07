@@ -25,8 +25,8 @@ interface Row {
   solution: string | null;
 }
 
-function rowToText(r: Row, i: number): string {
-  const parts = [`### Q${i}. ${r.full_sentence}`];
+function rowToText(r: Row, _i: number): string {
+  const parts = [`### Q${r.q_no}. ${r.full_sentence}`];
   parts.push(`A) ${r.part_a} | B) ${r.part_b} | C) ${r.part_c} | D) ${r.part_d}`);
   parts.push(`Answer: ${r.error_in}${r.correct_form ? ` → ${r.correct_form}` : ""}`);
   if (r.rule_tag) parts.push(`Rule: ${r.rule_tag}`);
