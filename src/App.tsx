@@ -86,6 +86,7 @@ import SscEnglishOws from "./pages/SscEnglishOws";
 import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
 import SscGrammar from "./pages/SscGrammar";
 import SscGrammarTopic from "./pages/SscGrammarTopic";
+import SscGrammarTheory from "./pages/SscGrammarTheory";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
 import SscGrammarRules from "./pages/SscGrammarRules";
 import SscGrammarRulesPractice from "./pages/SscGrammarRulesPractice";
@@ -160,6 +161,7 @@ const App = () => (
               <Route path="english/synant" element={<SscEnglishSynAnt />} />
               <Route path="english/synant/practice" element={<SscSynAntPractice />} />
               <Route path="english/grammar" element={<SscGrammar />} />
+              <Route path="english/grammar/theory" element={<SscGrammarTheory />} />
               <Route path="english/grammar/:pos" element={<SscGrammarTopic />} />
               <Route path="english/grammar/:pos/basic" element={<SscGrammarSetup />} />
               <Route path="english/rules" element={<SscGrammarRules />} />
