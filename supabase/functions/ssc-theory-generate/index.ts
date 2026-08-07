@@ -203,7 +203,7 @@ serve(async (req) => {
           chapter,
           subtopic,
           theory_md: theory,
-          question_count: rows.length,
+          question_count: totalCount,
           generated_at: new Date().toISOString(),
         },
         { onConflict: "subject,chapter,subtopic" },
@@ -211,7 +211,15 @@ serve(async (req) => {
     if (upErr) throw upErr;
 
     return new Response(
-      JSON.stringify({ ok: true, chars: theory.length, question_count: rows.length, parts: blocks.length }),
+      JSON.stringify({
+        ok: true,
+        chars: theory.length,
+        question_count: totalCount,
+        fetched: rows.length,
+        hasMore: limit ? rows.length === limit : false,
+        nextOffset: offset + rows.length,
+        parts: blocks.length,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
