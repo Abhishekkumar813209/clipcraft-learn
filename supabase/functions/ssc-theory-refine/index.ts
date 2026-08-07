@@ -52,15 +52,24 @@ function splitChunks(md: string): string[] {
   return out;
 }
 
-async function dedupe(title: string, md: string): Promise<string> {
+const TIME_BUDGET_MS = 90_000;
+
+interface DedupeState { index: number; outline: string[]; acc: string[] }
+
+async function dedupeStep(
+  title: string,
+  md: string,
+  state: DedupeState,
+  startedAt: number,
+): Promise<{ done: boolean; state: DedupeState; md: string; total: number }> {
   const chunks = splitChunks(md);
-  const outline: string[] = [];
-  const cleaned: string[] = [];
-  for (let i = 0; i < chunks.length; i++) {
+  let i = state.index;
+  while (i < chunks.length) {
+    if (i > state.index && Date.now() - startedAt > TIME_BUDGET_MS) break;
     const user = `Topic: ${title}
 Yeh theory ka part ${i + 1}/${chunks.length} hai. Ise ek clean, non-repetitive book chapter section me rewrite karo.
 
-${outline.length ? `PEHLE SE COVER HO CHUKE POINTS (inko dobara mat likho):\n${outline.join("\n")}` : "Yeh pehla part hai."}
+${state.outline.length ? `PEHLE SE COVER HO CHUKE POINTS (inko dobara mat likho):\n${state.outline.join("\n")}` : "Yeh pehla part hai."}
 
 --- CONTENT ---
 ${chunks[i]}
@@ -76,14 +85,20 @@ ${BASE_RULES}
       user,
     );
     if (out) {
-      cleaned.push(out);
-      outline.push(
+      state.acc.push(out);
+      state.outline.push(
         ...out.split("\n").filter((l) => l.startsWith("#")).map((l) => `- ${l.replace(/^#+\s*/, "")}`),
       );
     }
-    if (i < chunks.length - 1) await new Promise((r) => setTimeout(r, 500));
+    i++;
   }
-  return `# ${title}\n\n${cleaned.join("\n\n")}`;
+  state.index = i;
+  return {
+    done: i >= chunks.length,
+    state,
+    md: `# ${title}\n\n${state.acc.join("\n\n")}`,
+    total: chunks.length,
+  };
 }
 
 serve(async (req) => {
@@ -111,6 +126,8 @@ serve(async (req) => {
       subject?: string;
       chapter?: string;
       subtopic?: string;
+      state?: DedupeState;
+      chunkIndex?: number;
     };
     const mode = body.mode || "dedupe";
     const subject = body.subject;
@@ -123,6 +140,7 @@ serve(async (req) => {
       });
     }
 
+    const startedAt = Date.now();
     const admin = createClient(url, service);
     const table = admin.from("ssc_chapter_theory");
 
@@ -153,11 +171,19 @@ serve(async (req) => {
         });
       }
       const title = subtopic ? `${chapter} — ${subtopic}` : chapter;
-      const md = await dedupe(title, String(row.theory_md));
-      await save(subtopic, md, Number(row.question_count) || 0);
-      return new Response(JSON.stringify({ ok: true, chars: md.length }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      const state: DedupeState = body.state ?? { index: 0, outline: [], acc: [] };
+      const r = await dedupeStep(title, String(row.theory_md), state, startedAt);
+      if (r.done) await save(subtopic, r.md, Number(row.question_count) || 0);
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          done: r.done,
+          chars: r.md.length,
+          progress: `${r.state.index}/${r.total}`,
+          state: r.done ? undefined : r.state,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     if (mode === "split") {
@@ -184,8 +210,11 @@ serve(async (req) => {
         .eq("subject", subject).eq("chapter", chapter).eq("subtopic", subtopic);
 
       const chunks = splitChunks(String(chRow.theory_md));
-      const picked: string[] = [];
-      for (let i = 0; i < chunks.length; i++) {
+      const picked: string[] = body.state?.acc ?? [];
+      const start = body.state?.index ?? 0;
+      let i = start;
+      for (; i < chunks.length; i++) {
+        if (i > start && Date.now() - startedAt > TIME_BUDGET_MS) break;
         const out = await ai(
           "Tum ek SSC faculty ho jo bade chapter notes ko subtopic-wise clean notes me todta hai.",
           `Chapter: ${chapter}
@@ -201,16 +230,26 @@ Rules:
 ${BASE_RULES}`,
         );
         if (out && out.trim().toUpperCase() !== "NONE") picked.push(out);
-        if (i < chunks.length - 1) await new Promise((r) => setTimeout(r, 400));
+      }
+      if (i < chunks.length) {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            done: false,
+            progress: `${i}/${chunks.length}`,
+            state: { index: i, outline: [], acc: picked },
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
       }
       if (!picked.length) {
-        return new Response(JSON.stringify({ ok: true, skipped: true, note: "no matching content" }), {
+        return new Response(JSON.stringify({ ok: true, done: true, skipped: true, note: "no matching content" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const md = `# ${chapter} — ${subtopic}\n\n${picked.join("\n\n")}`;
       await save(subtopic, md, count || 0);
-      return new Response(JSON.stringify({ ok: true, chars: md.length }), {
+      return new Response(JSON.stringify({ ok: true, done: true, chars: md.length }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -231,10 +270,20 @@ ${BASE_RULES}`,
     const combined = rows
       .map((r) => `## ${r.subtopic}\n\n${String(r.theory_md).replace(/^#\s.*\n/, "").trim()}`)
       .join("\n\n");
-    const md = await dedupe(chapter, combined);
-    await save("", md, rows.reduce((n, r) => n + (Number(r.question_count) || 0), 0));
+    const mState: DedupeState = body.state ?? { index: 0, outline: [], acc: [] };
+    const mr = await dedupeStep(chapter, combined, mState, startedAt);
+    if (mr.done) {
+      await save("", mr.md, rows.reduce((n, r) => n + (Number(r.question_count) || 0), 0));
+    }
     return new Response(
-      JSON.stringify({ ok: true, chars: md.length, merged: rows.length }),
+      JSON.stringify({
+        ok: true,
+        done: mr.done,
+        chars: mr.md.length,
+        merged: rows.length,
+        progress: `${mr.state.index}/${mr.total}`,
+        state: mr.done ? undefined : mr.state,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
