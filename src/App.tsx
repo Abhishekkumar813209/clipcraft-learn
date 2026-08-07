@@ -86,6 +86,7 @@ import SscEnglishOws from "./pages/SscEnglishOws";
 import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
 import SscGrammar from "./pages/SscGrammar";
 import SscGrammarTopic from "./pages/SscGrammarTopic";
+import SscGrammarTheory from "./pages/SscGrammarTheory";
 import SscGrammarSetup from "./pages/SscGrammarSetup";
 import SscGrammarRules from "./pages/SscGrammarRules";
 import SscGrammarRulesPractice from "./pages/SscGrammarRulesPractice";
