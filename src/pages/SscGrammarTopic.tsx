@@ -30,6 +30,18 @@ export default function SscGrammarTopic() {
   const { pos = 'verb' } = useParams();
   const m = META[pos] || { label: pos, icon: '📘' };
   const split = SPLIT_TOPICS[pos];
+  const [theoryChapters, setTheoryChapters] = useState<{ chapter: string; question_count: number }[]>([]);
+
+  useEffect(() => {
+    const keys = [pos, split?.spotKey, split?.mcqKey].filter(Boolean) as string[];
+    supabase
+      .from('ssc_chapter_theory' as never)
+      .select('chapter,question_count')
+      .eq('subject', 'english_grammar')
+      .eq('subtopic', '')
+      .in('chapter', keys)
+      .then(({ data }) => setTheoryChapters((data as unknown as { chapter: string; question_count: number }[]) || []));
+  }, [pos, split]);
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -40,6 +52,32 @@ export default function SscGrammarTopic() {
         <h1 className="text-2xl font-bold flex items-center gap-2"><span className="text-3xl">{m.icon}</span>{m.label}</h1>
         <p className="text-muted-foreground">Pick a level.</p>
       </div>
+
+      {theoryChapters.length > 0 && (
+        <div className="space-y-3">
+          <div className="text-xs font-semibold tracking-wider uppercase text-emerald-700">Theory</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {theoryChapters.map((t) => (
+              <Card
+                key={t.chapter}
+                className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-100"
+                onClick={() => nav(`/ssc/english/grammar/theory?chapter=${encodeURIComponent(t.chapter)}&title=${encodeURIComponent(m.label)}`)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-2 mb-1">
+                    <BookOpen className="w-5 h-5 text-emerald-700" />
+                    <h3 className="text-lg font-bold">{m.label} Theory</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Hinglish notes · {t.question_count} questions se bani
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
 
       {split ? (
         <div className="space-y-4">
