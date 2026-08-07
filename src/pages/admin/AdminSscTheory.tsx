@@ -139,13 +139,26 @@ export default function AdminSscTheory() {
     setRunning(k);
     setStatus((s) => ({ ...s, [k]: `${mode}…` }));
     try {
-      const { data, error } = await supabase.functions.invoke('ssc-theory-refine', {
-        body: { mode, subject, chapter, subtopic },
-      });
-      if (error) throw error;
-      const d = data as { error?: string; chars?: number; skipped?: boolean };
-      if (d?.error) throw new Error(d.error);
-      setStatus((s) => ({ ...s, [k]: d?.skipped ? `${mode}: no content` : `${mode} done · ${d?.chars} chars` }));
+      // Bade chapters ek request me 150s limit cross kar jaate the — ab chunk-wise resume hota hai.
+      let state: unknown = undefined;
+      for (let pass = 0; pass < 40; pass++) {
+        const { data, error } = await supabase.functions.invoke('ssc-theory-refine', {
+          body: { mode, subject, chapter, subtopic, state },
+        });
+        if (error) throw error;
+        const d = data as {
+          error?: string; chars?: number; skipped?: boolean; done?: boolean;
+          progress?: string; state?: unknown;
+        };
+        if (d?.error) throw new Error(d.error);
+        if (d?.done === false) {
+          state = d.state;
+          setStatus((s) => ({ ...s, [k]: `${mode}… ${d.progress ?? ''}` }));
+          continue;
+        }
+        setStatus((s) => ({ ...s, [k]: d?.skipped ? `${mode}: no content` : `${mode} done · ${d?.chars} chars` }));
+        break;
+      }
       await refreshRow(chapter, subtopic);
       return true;
     } catch (e) {
