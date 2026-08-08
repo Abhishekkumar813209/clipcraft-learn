@@ -44,6 +44,7 @@ export default function AdminSscTheory() {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState<string | null>(null);
   const [bulk, setBulk] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<string | null>(null);
   const [status, setStatus] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<TheoryRow | null>(null);
   const [open, setOpen] = useState<string | null>(null);
