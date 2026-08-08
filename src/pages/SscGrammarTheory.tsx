@@ -56,7 +56,7 @@ export default function SscGrammarTheory() {
               Har rule ke neeche <strong>Covers: Q…</strong> line hai — wo batati hai ye rule kaun se question numbers par lagta hai.
             </p>
             <article className="prose prose-slate max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h2:mt-8 prose-h3:text-base prose-p:leading-relaxed prose-li:marker:text-emerald-600 prose-table:text-sm prose-th:bg-emerald-50 prose-strong:text-emerald-900 prose-blockquote:border-emerald-400 prose-blockquote:bg-emerald-50/60 prose-blockquote:py-0.5 prose-blockquote:not-italic prose-blockquote:text-emerald-800">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{row.theory_md}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleanTheoryMd(row.theory_md)}</ReactMarkdown>
             </article>
           </>
         )}
