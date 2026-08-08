@@ -149,33 +149,42 @@ export default function AdminSscTheory() {
       let offset = 0;
       let part = 0;
       const totalParts = Math.max(1, Math.ceil(total / CHUNK));
+      let totalMapped = 0;
       for (;;) {
         part++;
         setStatus((s) => ({ ...s, [k]: `mapping chunk ${part}/${totalParts}…` }));
         setBulkProgress((p) => (p ? `${p.split(' · ')[0]} · ${chapter}: chunk ${part}/${totalParts}` : p));
-        const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
-          body: { subject, chapter, subtopic, offset, limit: CHUNK },
-        });
-        if (error) throw error;
-        const d = data as {
+        let d: {
           error?: string; needsGenerate?: boolean; basis?: string;
           hasMore?: boolean; nextOffset?: number; mapped?: number; addons?: number; chars?: number;
-        };
-        if (d?.error) throw new Error(d.error);
-        if (d?.needsGenerate) {
-          setStatus((s) => ({ ...s, [k]: 'base theory nahi mili — pehle Generate karo' }));
-          return false;
+        } | null = null;
+        // ek chunk fail ho to poora chapter mat chhodo — 2 retry
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
+              body: { subject, chapter, subtopic, offset, limit: CHUNK },
+            });
+            if (error) throw error;
+            if ((data as { error?: string })?.error) throw new Error((data as { error?: string }).error);
+            d = data as typeof d;
+            break;
+          } catch (err) {
+            if (attempt === 2) throw err;
+            await new Promise((r) => setTimeout(r, 1500));
+          }
         }
+        totalMapped += d?.mapped || 0;
         offset = d?.nextOffset ?? offset + CHUNK;
         if (!d?.hasMore) {
           setStatus((s) => ({
             ...s,
-            [k]: `mapped · ${part} chunks · base: ${d?.basis} · +${d?.addons || 0} addons`,
+            [k]: `mapped · ${part} chunks · ${totalMapped} questions · base: ${d?.basis} · +${d?.addons || 0} addons`,
           }));
           break;
         }
         await new Promise((r) => setTimeout(r, 800));
       }
+
       await refreshRow(chapter, subtopic);
       return true;
     } catch (e) {
