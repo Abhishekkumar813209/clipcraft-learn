@@ -250,7 +250,11 @@ serve(async (req) => {
           .from("upsc_chapter_theory")
           .select("chapter_name,theory_md")
           .eq("subject", upscSubject);
-        const match = bestUpscMatch(chapter, (upscRows as { chapter_name: string; theory_md: string }[]) || []);
+        const rows = (upscRows as { chapter_name: string; theory_md: string }[]) || [];
+        const explicit = SSC_TO_UPSC_MAP[subject]?.[chapter.trim().toLowerCase()];
+        const match =
+          (explicit && rows.find((r) => r.chapter_name.trim().toLowerCase() === explicit.toLowerCase())) ||
+          bestUpscMatch(chapter, rows);
         if (match) {
           md = `# ${chapter}\n\n_UPSC theory (${match.chapter_name}) par based, SSC questions ke hisaab se annotated._\n\n` +
             String(match.theory_md).replace(/^#\s.*\n/, "").trim();
@@ -259,16 +263,9 @@ serve(async (req) => {
       }
     }
 
-    if (!md) {
-      return new Response(
-        JSON.stringify({ ok: false, needsGenerate: true, basis: "none", note: "koi base theory nahi mili" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
+    if (md) md = cleanMd(md);
 
-    md = cleanMd(md);
-
-    // 2) questions chunk
+    // 2) questions chunk (hamesha SSC bank se)
     let qq = admin
       .from("ssc_chapter_questions")
       .select("serial_no,question_text,option_a,option_b,option_c,option_d,correct_option,explanation_hinglish")
@@ -286,6 +283,21 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
+    // 2b) koi UPSC base nahi mila → SSC questions se hi fresh skeleton theory bana lo (skip nahi karenge)
+    if (!md) {
+      const seedBlock = qs
+        .slice(0, 60)
+        .map((q) => `Q${q.serial_no}: ${q.question_text}${q.explanation_hinglish ? ` | ${String(q.explanation_hinglish).slice(0, 200)}` : ""}`)
+        .join("\n");
+      const fresh = await ai(
+        "Tum SSC faculty ho. Hinglish me exam-ready theory likho. Sirf markdown do.",
+        `Chapter: ${chapter} (subject: ${subject}). Neeche SSC ke actual questions hain. Inhi se 5-10 "## " headings wali Hinglish theory banao (bullets, facts, dates). Koi LaTeX/$ nahi.\n\n${seedBlock}`,
+      );
+      md = cleanMd(`# ${chapter}\n\n${fresh.replace(/```/g, "").trim()}`);
+      basis = "none";
+    }
+
 
     // 3) headings outline
     const heads = headingsOf(md.split("\n"));
