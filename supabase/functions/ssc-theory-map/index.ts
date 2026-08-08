@@ -36,6 +36,27 @@ const UPSC_SUBJECT_FOR: Record<string, string> = {
   modern_history: "history",
 };
 
+/** SSC chapter names → UPSC umbrella chapters (fuzzy match fail hota tha). */
+const SSC_TO_UPSC_MAP: Record<string, Record<string, string>> = {
+  polity: {
+    "attorney general/comptroller and auditor general": "Constitutional and Non-Constitutional Bodies",
+    "commission/committee": "Constitutional and Non-Constitutional Bodies",
+    "constituent assembly": "Making of the Indian Constitution",
+    "governor": "State Executive",
+    "legislative assembly": "State Legislature",
+    "legislative council": "State Legislature",
+    "lok sabha": "Union Legislature",
+    "rajya sabha": "Union Legislature",
+    "parliament miscellaneous": "Union Legislature",
+    "panchayat raj system": "Local Self Government",
+    "president / vice-president": "Union Executive",
+    "prime minister and council of ministers": "Union Executive",
+    "sources of indian constitution": "Making of the Indian Constitution",
+    "the preamble": "Salient Features of Indian Constitution and Preamble",
+    "union and its territory": "Union and Its Territories",
+  },
+};
+
 const norm = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 2);
 
@@ -51,7 +72,7 @@ function bestUpscMatch(
     const score = hit / Math.max(1, Math.min(a.length, b.length));
     if (!best || score > best.score) best = { ...r, score };
   }
-  return best && best.score >= 0.5 ? best : null;
+  return best && best.score >= 0.34 ? best : null;
 }
 
 /** LaTeX-ish junk (`$\text{X}$`, `\rightarrow`) ko plain text me badalta hai. */
@@ -229,7 +250,11 @@ serve(async (req) => {
           .from("upsc_chapter_theory")
           .select("chapter_name,theory_md")
           .eq("subject", upscSubject);
-        const match = bestUpscMatch(chapter, (upscRows as { chapter_name: string; theory_md: string }[]) || []);
+        const rows = (upscRows as { chapter_name: string; theory_md: string }[]) || [];
+        const explicit = SSC_TO_UPSC_MAP[subject]?.[chapter.trim().toLowerCase()];
+        const match =
+          (explicit && rows.find((r) => r.chapter_name.trim().toLowerCase() === explicit.toLowerCase())) ||
+          bestUpscMatch(chapter, rows);
         if (match) {
           md = `# ${chapter}\n\n_UPSC theory (${match.chapter_name}) par based, SSC questions ke hisaab se annotated._\n\n` +
             String(match.theory_md).replace(/^#\s.*\n/, "").trim();
@@ -238,16 +263,9 @@ serve(async (req) => {
       }
     }
 
-    if (!md) {
-      return new Response(
-        JSON.stringify({ ok: false, needsGenerate: true, basis: "none", note: "koi base theory nahi mili" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
+    if (md) md = cleanMd(md);
 
-    md = cleanMd(md);
-
-    // 2) questions chunk
+    // 2) questions chunk (hamesha SSC bank se)
     let qq = admin
       .from("ssc_chapter_questions")
       .select("serial_no,question_text,option_a,option_b,option_c,option_d,correct_option,explanation_hinglish")
@@ -265,6 +283,21 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
+    // 2b) koi UPSC base nahi mila → SSC questions se hi fresh skeleton theory bana lo (skip nahi karenge)
+    if (!md) {
+      const seedBlock = qs
+        .slice(0, 60)
+        .map((q) => `Q${q.serial_no}: ${q.question_text}${q.explanation_hinglish ? ` | ${String(q.explanation_hinglish).slice(0, 200)}` : ""}`)
+        .join("\n");
+      const fresh = await ai(
+        "Tum SSC faculty ho. Hinglish me exam-ready theory likho. Sirf markdown do.",
+        `Chapter: ${chapter} (subject: ${subject}). Neeche SSC ke actual questions hain. Inhi se 5-10 "## " headings wali Hinglish theory banao (bullets, facts, dates). Koi LaTeX/$ nahi.\n\n${seedBlock}`,
+      );
+      md = cleanMd(`# ${chapter}\n\n${fresh.replace(/```/g, "").trim()}`);
+      basis = "none";
+    }
+
 
     // 3) headings outline
     const heads = headingsOf(md.split("\n"));
@@ -314,7 +347,7 @@ Output STRICT JSON:
         chapter,
         subtopic,
         theory_md: updated,
-        question_count: Number(row?.question_count) || 0,
+        question_count: Math.max(Number(row?.question_count) || 0, offset + qs.length),
         generated_at: new Date().toISOString(),
       },
       { onConflict: "subject,chapter,subtopic" },
