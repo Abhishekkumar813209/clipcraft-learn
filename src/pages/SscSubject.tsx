@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Target } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { GK_SUBJECTS } from '@/lib/sscGkSubjects';
 
 const BLACK_BOOK_TOPICS: SscTopic[] = ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms'];
 
