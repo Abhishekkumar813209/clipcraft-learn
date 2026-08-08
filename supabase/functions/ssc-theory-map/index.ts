@@ -72,7 +72,7 @@ function bestUpscMatch(
     const score = hit / Math.max(1, Math.min(a.length, b.length));
     if (!best || score > best.score) best = { ...r, score };
   }
-  return best && best.score >= 0.5 ? best : null;
+  return best && best.score >= 0.34 ? best : null;
 }
 
 /** LaTeX-ish junk (`$\text{X}$`, `\rightarrow`) ko plain text me badalta hai. */
