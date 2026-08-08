@@ -136,6 +136,76 @@ export default function AdminSscTheory() {
     }
   }
 
+  /**
+   * Ek chapter ki theory ko uske questions se map karta hai:
+   * theory na ho to UPSC theory ki copy base banti hai (UPSC row unchanged),
+   * phir 100-question chunks me "Covers: Q…" + missing facts add hote hain.
+   */
+  async function mapChunked(chapter: string, subtopic: string, total: number) {
+    const k = keyOf(chapter, subtopic);
+    setRunning(k);
+    try {
+      let offset = 0;
+      let part = 0;
+      const totalParts = Math.max(1, Math.ceil(total / CHUNK));
+      for (;;) {
+        part++;
+        setStatus((s) => ({ ...s, [k]: `mapping chunk ${part}/${totalParts}…` }));
+        setBulkProgress((p) => (p ? `${p.split(' · ')[0]} · ${chapter}: chunk ${part}/${totalParts}` : p));
+        const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
+          body: { subject, chapter, subtopic, offset, limit: CHUNK },
+        });
+        if (error) throw error;
+        const d = data as {
+          error?: string; needsGenerate?: boolean; basis?: string;
+          hasMore?: boolean; nextOffset?: number; mapped?: number; addons?: number; chars?: number;
+        };
+        if (d?.error) throw new Error(d.error);
+        if (d?.needsGenerate) {
+          setStatus((s) => ({ ...s, [k]: 'base theory nahi mili — pehle Generate karo' }));
+          return false;
+        }
+        offset = d?.nextOffset ?? offset + CHUNK;
+        if (!d?.hasMore) {
+          setStatus((s) => ({
+            ...s,
+            [k]: `mapped · ${part} chunks · base: ${d?.basis} · +${d?.addons || 0} addons`,
+          }));
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      await refreshRow(chapter, subtopic);
+      return true;
+    } catch (e) {
+      setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
+      toast({ title: `${chapter} mapping failed`, description: String(e).slice(0, 200), variant: 'destructive' });
+      return false;
+    } finally {
+      setRunning(null);
+    }
+  }
+
+  /** Ek hi button — saare chapters ka question→theory mapping serial-wise. */
+  async function mapAllChapters() {
+    setBulk(true);
+    try {
+      let i = 0;
+      for (const c of chapters) {
+        i++;
+        setBulkProgress(`${i}/${chapters.length} chapters · ${c.chapter}`);
+        await mapChunked(c.chapter, '', c.count);
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      setBulkProgress(null);
+      toast({ title: 'Question → theory mapping complete' });
+    } finally {
+      setBulk(false);
+    }
+  }
+
+
+
   async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '') {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
