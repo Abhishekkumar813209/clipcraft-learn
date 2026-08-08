@@ -347,7 +347,7 @@ Output STRICT JSON:
         chapter,
         subtopic,
         theory_md: updated,
-        question_count: Number(row?.question_count) || 0,
+        question_count: Math.max(Number(row?.question_count) || 0, offset + qs.length),
         generated_at: new Date().toISOString(),
       },
       { onConflict: "subject,chapter,subtopic" },
