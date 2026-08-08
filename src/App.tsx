@@ -177,9 +177,9 @@ const App = () => (
               <Route path="maths/:topic/trainer/:slug" element={<SscMathsTrainer />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
-              <Route path="gk/biology" element={<SscBiology />} />
-              <Route path="gk/biology/practice" element={<SscBiologyPractice />} />
-              <Route path="gk/biology/theory" element={<SscBiologyTheory />} />
+              <Route path="gk/:subject" element={<SscGkSubject />} />
+              <Route path="gk/:subject/practice" element={<SscGkPractice />} />
+              <Route path="gk/:subject/theory" element={<SscGkTheory />} />
               <Route path="bookmarks" element={<SscBookmarks />} />
               <Route path="history" element={<SscHistory />} />
 
