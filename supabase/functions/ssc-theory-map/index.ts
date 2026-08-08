@@ -36,6 +36,27 @@ const UPSC_SUBJECT_FOR: Record<string, string> = {
   modern_history: "history",
 };
 
+/** SSC chapter names → UPSC umbrella chapters (fuzzy match fail hota tha). */
+const SSC_TO_UPSC_MAP: Record<string, Record<string, string>> = {
+  polity: {
+    "attorney general/comptroller and auditor general": "Constitutional and Non-Constitutional Bodies",
+    "commission/committee": "Constitutional and Non-Constitutional Bodies",
+    "constituent assembly": "Making of the Indian Constitution",
+    "governor": "State Executive",
+    "legislative assembly": "State Legislature",
+    "legislative council": "State Legislature",
+    "lok sabha": "Union Legislature",
+    "rajya sabha": "Union Legislature",
+    "parliament miscellaneous": "Union Legislature",
+    "panchayat raj system": "Local Self Government",
+    "president / vice-president": "Union Executive",
+    "prime minister and council of ministers": "Union Executive",
+    "sources of indian constitution": "Making of the Indian Constitution",
+    "the preamble": "Salient Features of Indian Constitution and Preamble",
+    "union and its territory": "Union and Its Territories",
+  },
+};
+
 const norm = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 2);
 
