@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { fetchSscTheory } from '@/lib/sscChapters';
+import { cleanTheoryMd } from '@/lib/cleanTheoryMd';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
 const SUBJECT = 'english_grammar';
