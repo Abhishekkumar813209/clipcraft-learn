@@ -374,10 +374,20 @@ export default function AdminSscTheory() {
                 <Button size="sm" variant="secondary" disabled={loading || busy} onClick={autoBalanceAll}>
                   <Merge className="w-4 h-4 mr-1" /> Auto split / merge
                 </Button>
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white" disabled={loading || busy} onClick={mapAllChapters}>
+                  {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Link2 className="w-4 h-4 mr-1" />}
+                  Map questions → theory (all)
+                </Button>
               </>
             )}
           </div>
         </CardHeader>
+
+        {bulkProgress && (
+          <div className="px-6 -mt-2 pb-2 text-xs text-emerald-700 flex items-center gap-2">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" /> {bulkProgress}
+          </div>
+        )}
 
         <CardContent className="space-y-2">
           {chapters.map((c) => {
