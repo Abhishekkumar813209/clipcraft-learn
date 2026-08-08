@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
+import { gkSubject } from '@/lib/sscGkSubjects';
 import { supabase } from '@/integrations/supabase/client';
 import { ChevronDown, ChevronRight, BookOpenText, Play, Loader2, Sparkles, Layers } from 'lucide-react';
 
-const SUBJECT = 'biology';
 const numeric = (v: string) => v.replace(/[^0-9]/g, '');
 
-export default function SscBiology() {
+export default function SscGkSubject() {
   const nav = useNavigate();
+  const { subject: subjectParam } = useParams();
+  const meta = gkSubject(subjectParam);
+  const SUBJECT = meta.key;
+
   const [chapters, setChapters] = useState<ChapterInfo[]>([]);
   const [theoryKeys, setTheoryKeys] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState<string | null>(null);
@@ -24,6 +28,7 @@ export default function SscBiology() {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       const [ch, th] = await Promise.all([
         fetchSscChapters(SUBJECT),
         supabase.from('ssc_chapter_theory' as never).select('chapter,subtopic').eq('subject', SUBJECT),
@@ -33,12 +38,13 @@ export default function SscBiology() {
       setTheoryKeys(new Set(rows.map((r) => `${r.chapter}||${r.subtopic || ''}`)));
       setLoading(false);
     })();
-  }, []);
+  }, [SUBJECT]);
 
+  const base = `/ssc/gk/${SUBJECT}`;
   const q = (chapter: string, subtopic?: string) =>
-    `/ssc/gk/biology/practice?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
+    `${base}/practice?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
   const t = (chapter: string, subtopic?: string) =>
-    `/ssc/gk/biology/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
+    `${base}/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
 
   const total = chapters.reduce((s, c) => s + c.count, 0);
   const minSerial = chapters.length ? Math.min(...chapters.map((c) => c.minSerial)) : 0;
@@ -49,16 +55,16 @@ export default function SscBiology() {
     if (from) p.set('from', from);
     if (to) p.set('to', to);
     if (count) p.set('n', count);
-    nav(`/ssc/gk/biology/practice?${p.toString()}`);
+    nav(`${base}/practice?${p.toString()}`);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4 sm:p-6 text-slate-900">
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
-          <span className="text-3xl">🧬</span>
+          <span className="text-3xl">{meta.emoji}</span>
           <div>
-            <h1 className="text-3xl font-bold">Biology</h1>
+            <h1 className="text-3xl font-bold">{meta.label}</h1>
             <p className="text-sm text-slate-500">
               {loading ? 'Loading…' : `${chapters.length} chapters · ${total} questions`}
               {maxSerial ? ` · serial ${minSerial}–${maxSerial}` : ''}
@@ -72,7 +78,7 @@ export default function SscBiology() {
               <div className="flex items-center gap-2">
                 <Layers className="w-5 h-5 text-emerald-700" />
                 <div>
-                  <h3 className="font-semibold">Poora Biology (serial-wise)</h3>
+                  <h3 className="font-semibold">Poora {meta.label} (serial-wise)</h3>
                   <p className="text-xs text-slate-600">
                     Ek continuous serial — {maxSerial ? `${minSerial} se ${maxSerial}` : '…'} tak, chapters mile-jule
                   </p>
@@ -205,7 +211,6 @@ export default function SscBiology() {
           })}
           {!loading && chapters.length === 0 && <p className="text-sm text-slate-500">Abhi koi chapter load nahi hua.</p>}
         </div>
-
       </div>
     </div>
   );

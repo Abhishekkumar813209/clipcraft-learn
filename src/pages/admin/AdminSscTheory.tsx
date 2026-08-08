@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge } from 'lucide-react';
+import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge, Link2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import { GK_SUBJECTS } from '@/lib/sscGkSubjects';
+
 const SUBJECTS = [
-  { key: 'biology', label: '🧬 Biology' },
+  ...GK_SUBJECTS.map((g) => ({ key: g.key, label: `${g.emoji} ${g.label}` })),
   { key: 'english_grammar', label: '📚 English Grammar' },
 ];
 
@@ -42,6 +44,7 @@ export default function AdminSscTheory() {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState<string | null>(null);
   const [bulk, setBulk] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<string | null>(null);
   const [status, setStatus] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<TheoryRow | null>(null);
   const [open, setOpen] = useState<string | null>(null);
@@ -133,6 +136,76 @@ export default function AdminSscTheory() {
       setRunning(null);
     }
   }
+
+  /**
+   * Ek chapter ki theory ko uske questions se map karta hai:
+   * theory na ho to UPSC theory ki copy base banti hai (UPSC row unchanged),
+   * phir 100-question chunks me "Covers: Q…" + missing facts add hote hain.
+   */
+  async function mapChunked(chapter: string, subtopic: string, total: number) {
+    const k = keyOf(chapter, subtopic);
+    setRunning(k);
+    try {
+      let offset = 0;
+      let part = 0;
+      const totalParts = Math.max(1, Math.ceil(total / CHUNK));
+      for (;;) {
+        part++;
+        setStatus((s) => ({ ...s, [k]: `mapping chunk ${part}/${totalParts}…` }));
+        setBulkProgress((p) => (p ? `${p.split(' · ')[0]} · ${chapter}: chunk ${part}/${totalParts}` : p));
+        const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
+          body: { subject, chapter, subtopic, offset, limit: CHUNK },
+        });
+        if (error) throw error;
+        const d = data as {
+          error?: string; needsGenerate?: boolean; basis?: string;
+          hasMore?: boolean; nextOffset?: number; mapped?: number; addons?: number; chars?: number;
+        };
+        if (d?.error) throw new Error(d.error);
+        if (d?.needsGenerate) {
+          setStatus((s) => ({ ...s, [k]: 'base theory nahi mili — pehle Generate karo' }));
+          return false;
+        }
+        offset = d?.nextOffset ?? offset + CHUNK;
+        if (!d?.hasMore) {
+          setStatus((s) => ({
+            ...s,
+            [k]: `mapped · ${part} chunks · base: ${d?.basis} · +${d?.addons || 0} addons`,
+          }));
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 800));
+      }
+      await refreshRow(chapter, subtopic);
+      return true;
+    } catch (e) {
+      setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
+      toast({ title: `${chapter} mapping failed`, description: String(e).slice(0, 200), variant: 'destructive' });
+      return false;
+    } finally {
+      setRunning(null);
+    }
+  }
+
+  /** Ek hi button — saare chapters ka question→theory mapping serial-wise. */
+  async function mapAllChapters() {
+    setBulk(true);
+    try {
+      let i = 0;
+      for (const c of chapters) {
+        i++;
+        setBulkProgress(`${i}/${chapters.length} chapters · ${c.chapter}`);
+        await mapChunked(c.chapter, '', c.count);
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      setBulkProgress(null);
+      toast({ title: 'Question → theory mapping complete' });
+    } finally {
+      setBulk(false);
+    }
+  }
+
+
 
   async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '') {
     const k = keyOf(chapter, subtopic);
@@ -301,10 +374,20 @@ export default function AdminSscTheory() {
                 <Button size="sm" variant="secondary" disabled={loading || busy} onClick={autoBalanceAll}>
                   <Merge className="w-4 h-4 mr-1" /> Auto split / merge
                 </Button>
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white" disabled={loading || busy} onClick={mapAllChapters}>
+                  {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Link2 className="w-4 h-4 mr-1" />}
+                  Map questions → theory (all)
+                </Button>
               </>
             )}
           </div>
         </CardHeader>
+
+        {bulkProgress && (
+          <div className="px-6 -mt-2 pb-2 text-xs text-emerald-700 flex items-center gap-2">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" /> {bulkProgress}
+          </div>
+        )}
 
         <CardContent className="space-y-2">
           {chapters.map((c) => {
@@ -348,6 +431,17 @@ export default function AdminSscTheory() {
                         onClick={() => generateChapterSubtopics(c)}
                       >
                         All subtopics
+                      </Button>
+                    )}
+                    {!isGrammar && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        title="Questions ko theory se map karo (UPSC base + Covers: Q…)"
+                        disabled={busy}
+                        onClick={() => mapChunked(c.chapter, '', c.count)}
+                      >
+                        <Link2 className="w-4 h-4" />
                       </Button>
                     )}
                     <Button size="sm" variant={t ? 'outline' : 'default'} disabled={busy} onClick={() => generateChunked(c.chapter, '', c.count)}>

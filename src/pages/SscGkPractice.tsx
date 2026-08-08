@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 import { fetchSscChapterQuestions, fetchSscSubjectRange, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
+import { gkSubject } from '@/lib/sscGkSubjects';
 import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } from 'lucide-react';
 
-const SUBJECT = 'biology';
-const LETTERS = ['a', 'b', 'c', 'd'] as const;
-
-export default function SscBiologyPractice() {
+export default function SscGkPractice() {
   const nav = useNavigate();
+  const { subject: subjectParam } = useParams();
+  const meta = gkSubject(subjectParam);
+  const SUBJECT = meta.key;
+  const base = `/ssc/gk/${SUBJECT}`;
+
   const [params] = useSearchParams();
   const chapter = params.get('chapter') || '';
   const subtopic = params.get('subtopic') || '';
@@ -52,7 +55,7 @@ export default function SscBiologyPractice() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter, subtopic, pFrom, pTo, pCount, pOrder]);
+  }, [SUBJECT, chapter, subtopic, pFrom, pTo, pCount, pOrder]);
 
   function start() {
     const f = Math.max(1, Number(from) || 1);
@@ -77,8 +80,7 @@ export default function SscBiologyPractice() {
   );
   const score = statuses.filter((s) => s === 'correct').length;
 
-  const theoryHref = `/ssc/gk/biology/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
-
+  const theoryHref = `${base}/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
 
   if (loading) {
     return (
@@ -91,13 +93,13 @@ export default function SscBiologyPractice() {
   if (!started) {
     return (
       <div className="p-4 sm:p-6 max-w-xl mx-auto space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => nav('/ssc/gk/biology')}>
+        <Button variant="ghost" size="sm" onClick={() => nav(base)}>
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
         <Card>
           <CardContent className="p-5 space-y-4">
             <div>
-              <h1 className="text-lg font-bold">{chapter || 'Biology — full serial'}</h1>
+              <h1 className="text-lg font-bold">{chapter || `${meta.label} — full serial`}</h1>
               {subtopic && <p className="text-sm text-muted-foreground">{subtopic}</p>}
               <p className="text-xs text-muted-foreground mt-1">{all.length} questions available</p>
             </div>
@@ -130,7 +132,6 @@ export default function SscBiologyPractice() {
                 </Button>
               )}
             </div>
-
           </CardContent>
         </Card>
       </div>
@@ -160,7 +161,7 @@ export default function SscBiologyPractice() {
             current={idx}
             statuses={statuses}
             onSelect={setIdx}
-            title="Biology Questions"
+            title={`${meta.label} Questions`}
           />
         </div>
       </div>
@@ -168,7 +169,7 @@ export default function SscBiologyPractice() {
       <Card>
         <CardContent className="p-5 space-y-4">
           <div className="text-xs text-muted-foreground">
-            Q{idx + 1} / {queue.length} · {q.subtopic}
+            Q{idx + 1} / {queue.length} · serial {q.serial_no}{q.subtopic ? ` · ${q.subtopic}` : ''}
           </div>
           <p className="font-medium leading-relaxed">{q.question_text}</p>
           <div className="space-y-2">
@@ -214,10 +215,6 @@ export default function SscBiologyPractice() {
           </div>
         </CardContent>
       </Card>
-
-      <p className="text-xs text-muted-foreground">
-        Letters: {LETTERS.join(', ').toUpperCase()}
-      </p>
     </div>
   );
 }

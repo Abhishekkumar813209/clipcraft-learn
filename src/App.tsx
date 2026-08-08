@@ -68,9 +68,9 @@ import AdminQuestions from "./pages/admin/AdminQuestions";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminUpscTheory from "./pages/admin/AdminUpscTheory";
 import AdminSscTheory from "./pages/admin/AdminSscTheory";
-import SscBiology from "./pages/SscBiology";
-import SscBiologyPractice from "./pages/SscBiologyPractice";
-import SscBiologyTheory from "./pages/SscBiologyTheory";
+import SscGkSubject from "./pages/SscGkSubject";
+import SscGkPractice from "./pages/SscGkPractice";
+import SscGkTheory from "./pages/SscGkTheory";
 import DailyQuiz from "./pages/DailyQuiz";
 import BlackBookHub from "./pages/BlackBookHub";
 import BlackBookPractice from "./pages/BlackBookPractice";
@@ -177,9 +177,9 @@ const App = () => (
               <Route path="maths/:topic/trainer/:slug" element={<SscMathsTrainer />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
-              <Route path="gk/biology" element={<SscBiology />} />
-              <Route path="gk/biology/practice" element={<SscBiologyPractice />} />
-              <Route path="gk/biology/theory" element={<SscBiologyTheory />} />
+              <Route path="gk/:subject" element={<SscGkSubject />} />
+              <Route path="gk/:subject/practice" element={<SscGkPractice />} />
+              <Route path="gk/:subject/theory" element={<SscGkTheory />} />
               <Route path="bookmarks" element={<SscBookmarks />} />
               <Route path="history" element={<SscHistory />} />
 
