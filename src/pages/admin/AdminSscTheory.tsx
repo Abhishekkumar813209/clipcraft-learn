@@ -433,6 +433,17 @@ export default function AdminSscTheory() {
                         All subtopics
                       </Button>
                     )}
+                    {!isGrammar && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        title="Questions ko theory se map karo (UPSC base + Covers: Q…)"
+                        disabled={busy}
+                        onClick={() => mapChunked(c.chapter, '', c.count)}
+                      >
+                        <Link2 className="w-4 h-4" />
+                      </Button>
+                    )}
                     <Button size="sm" variant={t ? 'outline' : 'default'} disabled={busy} onClick={() => generateChunked(c.chapter, '', c.count)}>
                       {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : (t ? 'Regenerate' : 'Generate')}
                     </Button>
