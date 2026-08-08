@@ -9,8 +9,10 @@ import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import { GK_SUBJECTS } from '@/lib/sscGkSubjects';
+
 const SUBJECTS = [
-  { key: 'biology', label: '🧬 Biology' },
+  ...GK_SUBJECTS.map((g) => ({ key: g.key, label: `${g.emoji} ${g.label}` })),
   { key: 'english_grammar', label: '📚 English Grammar' },
 ];
 
