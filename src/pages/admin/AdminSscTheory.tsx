@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge, Link2 } from 'lucide-react';
+import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge, Link2, Rocket } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -91,14 +91,15 @@ export default function AdminSscTheory() {
 
   useEffect(() => { load(subject); /* eslint-disable-next-line */ }, [subject]);
 
-  async function refreshRow(chapter: string, subtopic: string) {
+  async function refreshRow(chapter: string, subtopic: string, subj = subject) {
     const { data: row } = await supabase
       .from('ssc_chapter_theory' as never)
       .select('chapter,subtopic,question_count,generated_at,theory_md')
-      .eq('subject', subject).eq('chapter', chapter).eq('subtopic', subtopic)
+      .eq('subject', subj).eq('chapter', chapter).eq('subtopic', subtopic)
       .maybeSingle();
-    if (row) setTheories((t) => ({ ...t, [keyOf(chapter, subtopic)]: row as unknown as TheoryRow }));
+    if (row && subj === subject) setTheories((t) => ({ ...t, [keyOf(chapter, subtopic)]: row as unknown as TheoryRow }));
   }
+
 
   /** 100-question chunks me serial-wise theory banata hai (bade chapters timeout nahi honge). */
   async function generateChunked(chapter: string, subtopic: string, total: number) {
@@ -142,7 +143,7 @@ export default function AdminSscTheory() {
    * theory na ho to UPSC theory ki copy base banti hai (UPSC row unchanged),
    * phir 100-question chunks me "Covers: Q…" + missing facts add hote hain.
    */
-  async function mapChunked(chapter: string, subtopic: string, total: number) {
+  async function mapChunked(chapter: string, subtopic: string, total: number, subj = subject) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     try {
@@ -162,7 +163,7 @@ export default function AdminSscTheory() {
         for (let attempt = 0; attempt < 3; attempt++) {
           try {
             const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
-              body: { subject, chapter, subtopic, offset, limit: CHUNK },
+              body: { subject: subj, chapter, subtopic, offset, limit: CHUNK },
             });
             if (error) throw error;
             if ((data as { error?: string })?.error) throw new Error((data as { error?: string }).error);
@@ -185,7 +186,7 @@ export default function AdminSscTheory() {
         await new Promise((r) => setTimeout(r, 800));
       }
 
-      await refreshRow(chapter, subtopic);
+      await refreshRow(chapter, subtopic, subj);
       return true;
     } catch (e) {
       setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
@@ -195,6 +196,7 @@ export default function AdminSscTheory() {
       setRunning(null);
     }
   }
+
 
   /** Ek hi button — saare chapters ka question→theory mapping serial-wise. */
   async function mapAllChapters() {
@@ -214,9 +216,51 @@ export default function AdminSscTheory() {
     }
   }
 
+  /**
+   * Ek hi button — saare GK subjects (Biology → Modern History) queue me:
+   * har chapter ka question→theory mapping, phir 2+ subtopics wale chapters ki
+   * theory automatically subtopics me split (question numbers ke saath).
+   */
+  async function runAllSubjects() {
+    setBulk(true);
+    try {
+      let si = 0;
+      for (const s of GK_SUBJECTS) {
+        si++;
+        const chs = await fetchSscChapters(s.key);
+        let ci = 0;
+        for (const c of chs) {
+          ci++;
+          setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter}`);
+          await mapChunked(c.chapter, '', c.count, s.key);
+          const subs = c.subtopics.filter((x) => x.name !== '—');
+          if (subs.length >= 2) {
+            let xi = 0;
+            for (const sub of subs) {
+              xi++;
+              setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${c.chapter} · split ${xi}/${subs.length} ${sub.name}`);
+              await refine('split', c.chapter, sub.name, s.key);
+              await new Promise((r) => setTimeout(r, 500));
+            }
+          }
+          await new Promise((r) => setTimeout(r, 500));
+        }
+        if (s.key === subject) await loadTheories(s.key);
+      }
+      setBulkProgress(null);
+      toast({ title: 'Saare subjects ki theory ready 🎉' });
+    } catch (e) {
+      toast({ title: 'Queue rukk gayi', description: String(e).slice(0, 200), variant: 'destructive' });
+    } finally {
+      setBulk(false);
+    }
+  }
 
 
-  async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '') {
+
+
+
+  async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '', subj = subject) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     setStatus((s) => ({ ...s, [k]: `${mode}…` }));
@@ -225,7 +269,7 @@ export default function AdminSscTheory() {
       let state: unknown = undefined;
       for (let pass = 0; pass < 40; pass++) {
         const { data, error } = await supabase.functions.invoke('ssc-theory-refine', {
-          body: { mode, subject, chapter, subtopic, state },
+          body: { mode, subject: subj, chapter, subtopic, state },
         });
         if (error) throw error;
         const d = data as {
@@ -241,8 +285,9 @@ export default function AdminSscTheory() {
         setStatus((s) => ({ ...s, [k]: d?.skipped ? `${mode}: no content` : `${mode} done · ${d?.chars} chars` }));
         break;
       }
-      await refreshRow(chapter, subtopic);
+      await refreshRow(chapter, subtopic, subj);
       return true;
+
     } catch (e) {
       setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
       toast({ title: `${mode} failed`, description: String(e).slice(0, 200), variant: 'destructive' });
@@ -371,6 +416,17 @@ export default function AdminSscTheory() {
               : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${pending} pending${isGrammar ? '' : ` · ${pendingSubs} subtopic pending`}`}
           </CardTitle>
           <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white"
+              disabled={loading || busy}
+              onClick={runAllSubjects}
+              title="Biology → Modern History tak sab subjects, chapters + subtopic split, ek hi queue me"
+            >
+              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Rocket className="w-4 h-4 mr-1" />}
+              Run ALL subjects (queue)
+            </Button>
+
             <Button size="sm" disabled={loading || busy || !pending} onClick={generateAllPending}>
               {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
               All pending {isGrammar ? 'topics' : 'chapters'}
