@@ -361,11 +361,22 @@ Kaam:
 Output STRICT JSON:
 {"map":[{"h":0,"title":"heading ka text","qs":[12,15]}],"addons":[{"h":0,"title":"heading ka text","points":["..."]}]}`;
 
-    const raw = await ai(SYSTEM, user);
-    const { map, addons } = parseJson(raw);
+    let raw = await ai(SYSTEM, user);
+    let parsed = parseJson(raw);
+    // AI kabhi-kabhi khaali JSON deta hai → ek retry strict reminder ke saath
+    if (!parsed.map.length) {
+      raw = await ai(
+        SYSTEM,
+        `${user}\n\nZAROORI: "map" array KABHI khaali mat chodo. Har question ko kisi na kisi heading me daalo.`,
+      );
+      parsed = parseJson(raw);
+    }
+    const { map, addons } = parsed;
 
     const { md: updated, merged } = mergeIntoMd(md, map, addons);
     const mapped = merged;
+    const rawPreview = merged ? undefined : raw.slice(0, 300);
+
 
     const { error: upErr } = await admin.from("ssc_chapter_theory").upsert(
       {
