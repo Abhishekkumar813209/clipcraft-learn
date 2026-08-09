@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } fr
 
 export default function SscGkPractice() {
   const nav = useNavigate();
+  const loc = useLocation();
   const { subject: subjectParam } = useParams();
   const meta = gkSubject(subjectParam);
   const SUBJECT = meta.key;
@@ -21,6 +22,7 @@ export default function SscGkPractice() {
   const pTo = params.get('to') || '';
   const pCount = params.get('n') || '';
   const pOrder = params.get('order') === 'random' ? 'random' : 'serial';
+  const at = Number(params.get('at')) || 0;
   const globalMode = !chapter;
 
   const [all, setAll] = useState<ChapterQuestion[]>([]);
@@ -43,19 +45,20 @@ export default function SscGkPractice() {
       setAll(rows);
       setTo(String(rows.length));
       setLoading(false);
-      if (globalMode) {
+      if (globalMode || at) {
         let list = rows;
-        if (pOrder === 'random') list = shuffle(list);
+        if (!at && pOrder === 'random') list = shuffle(list);
         const n = Number(pCount);
-        if (n > 0) list = list.slice(0, n);
+        if (!at && n > 0) list = list.slice(0, n);
         setQueue(list);
         setPicked(new Array(list.length).fill(null));
-        setIdx(0);
+        const jump = at ? list.findIndex((r) => r.serial_no === at) : -1;
+        setIdx(jump >= 0 ? jump : 0);
         setStarted(true);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SUBJECT, chapter, subtopic, pFrom, pTo, pCount, pOrder]);
+  }, [SUBJECT, chapter, subtopic, pFrom, pTo, pCount, pOrder, at]);
 
   function start() {
     const f = Math.max(1, Number(from) || 1);
@@ -80,7 +83,20 @@ export default function SscGkPractice() {
   );
   const score = statuses.filter((s) => s === 'correct').length;
 
-  const theoryHref = `${base}/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
+  const setupTheoryHref = `${base}/theory?chapter=${encodeURIComponent(chapter)}${subtopic ? `&subtopic=${encodeURIComponent(subtopic)}` : ''}`;
+
+  /** current question ke liye theory link — wapas isi question par aane ka ret bhi le jata hai */
+  function theoryForCurrent(item: ChapterQuestion) {
+    const p = new URLSearchParams();
+    p.set('chapter', item.chapter);
+    if (subtopic) p.set('subtopic', subtopic);
+    p.set('q', String(item.serial_no));
+    const retParams = new URLSearchParams(loc.search);
+    retParams.set('at', String(item.serial_no));
+    if (!retParams.get('chapter') && !globalMode) retParams.set('chapter', chapter);
+    p.set('ret', `${loc.pathname}?${retParams.toString()}`);
+    return `${base}/theory?${p.toString()}`;
+  }
 
   if (loading) {
     return (
@@ -127,7 +143,7 @@ export default function SscGkPractice() {
                 Start Quiz
               </Button>
               {chapter && (
-                <Button variant="outline" onClick={() => nav(theoryHref)}>
+                <Button variant="outline" onClick={() => nav(setupTheoryHref)}>
                   <BookOpenText className="w-4 h-4 mr-1" /> Theory
                 </Button>
               )}
@@ -168,8 +184,20 @@ export default function SscGkPractice() {
 
       <Card>
         <CardContent className="p-5 space-y-4">
-          <div className="text-xs text-muted-foreground">
-            Q{idx + 1} / {queue.length} · serial {q.serial_no}{q.subtopic ? ` · ${q.subtopic}` : ''}
+          <div className="flex items-start justify-between gap-2">
+            <div className="text-xs text-muted-foreground">
+              Q{idx + 1} / {queue.length} · serial {q.serial_no}{q.subtopic ? ` · ${q.subtopic}` : ''}
+              {globalMode && q.chapter ? ` · ${q.chapter}` : ''}
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              onClick={() => nav(theoryForCurrent(q))}
+            >
+              <BookOpenText className="w-4 h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Theory padho</span>
+            </Button>
           </div>
           <p className="font-medium leading-relaxed">{q.question_text}</p>
           <div className="space-y-2">
@@ -196,12 +224,15 @@ export default function SscGkPractice() {
           </div>
 
           {answer && (
-            <div className="rounded-md bg-slate-50 border p-3 text-sm space-y-1">
+            <div className="rounded-md bg-slate-50 border p-3 text-sm space-y-2">
               <div className="font-semibold text-emerald-700">
                 Correct: {correct.toUpperCase()} · {opts.find((o) => o.key === correct)?.text}
               </div>
               {q.explanation_hinglish && <p className="text-slate-700 leading-relaxed">{q.explanation_hinglish}</p>}
               {q.exam_name && <p className="text-[11px] text-muted-foreground">{q.exam_name}</p>}
+              <Button size="sm" variant="ghost" className="text-emerald-700 px-0" onClick={() => nav(theoryForCurrent(q))}>
+                <BookOpenText className="w-4 h-4 mr-1" /> Is question ki theory dekho →
+              </Button>
             </div>
           )}
 
