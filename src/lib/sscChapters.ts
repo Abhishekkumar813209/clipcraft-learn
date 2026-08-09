@@ -14,6 +14,10 @@ export interface ChapterQuestion {
   exam_name: string | null;
   explanation_hinglish: string | null;
   source: string | null;
+  why_a?: string | null;
+  why_b?: string | null;
+  why_c?: string | null;
+  why_d?: string | null;
 }
 
 export interface ChapterInfo {
