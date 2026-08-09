@@ -164,7 +164,7 @@ async function ai(system: string, user: string): Promise<string> {
       temperature: 0.2,
       max_tokens: 4000,
     },
-    { stripToolsForHF: true },
+    { stripToolsForHF: true, preferLovable: true },
   );
   if (!res.ok) {
     const t = await res.text().catch(() => "");
