@@ -6,6 +6,7 @@ import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator'
 import { fetchSscChapterQuestions, fetchSscSubjectRange, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
 import { gkSubject } from '@/lib/sscGkSubjects';
 import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function SscGkPractice() {
   const nav = useNavigate();
@@ -35,6 +36,34 @@ export default function SscGkPractice() {
   const [queue, setQueue] = useState<ChapterQuestion[]>([]);
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<(string | null)[]>([]);
+  const [openWhy, setOpenWhy] = useState<Record<string, boolean>>({});
+  const [whyMap, setWhyMap] = useState<Record<string, Record<string, string>>>({});
+
+  /** option ka reason — pehle DB row se, warna on-demand generate kiya hua */
+  function whyFor(item: ChapterQuestion, k: string): string | null {
+    const local = whyMap[item.id]?.[k];
+    if (local) return local;
+    return ((item as unknown as Record<string, string | null>)[`why_${k}`]) ?? null;
+  }
+
+  async function toggleWhy(item: ChapterQuestion, k: string) {
+    const key = `${idx}-${k}`;
+    const willOpen = !openWhy[key];
+    setOpenWhy((m) => ({ ...m, [key]: willOpen }));
+    if (!willOpen || whyFor(item, k)) return;
+    try {
+      const { data, error } = await supabase.functions.invoke('ssc-option-why', { body: { id: item.id } });
+      if (error) throw error;
+      const why = (data as { why?: Record<string, string> })?.why;
+      if (why) setWhyMap((m) => ({ ...m, [item.id]: { ...(m[item.id] || {}), ...why } }));
+    } catch {
+      setWhyMap((m) => ({
+        ...m,
+        [item.id]: { ...(m[item.id] || {}), [k]: 'Reason abhi generate nahi ho paaya, dobara try karo.' },
+      }));
+    }
+  }
+
 
   useEffect(() => {
     (async () => {
@@ -209,19 +238,48 @@ export default function SscGkPractice() {
                 if (isCorrect) cls = 'border-emerald-400 bg-emerald-50';
                 else if (isPicked) cls = 'border-rose-400 bg-rose-50';
               }
+              const why = whyFor(q, o.key);
+              const isOpen = !!openWhy[`${idx}-${o.key}`];
               return (
-                <button
-                  key={o.key}
-                  disabled={!!answer}
-                  onClick={() => setPicked((p) => p.map((v, i) => (i === idx ? o.key : v)))}
-                  className={`w-full text-left border rounded-md px-3 py-2 text-sm transition ${cls}`}
-                >
-                  <span className="font-semibold uppercase mr-2">{o.key}.</span>
-                  {o.text}
-                </button>
+                <div key={o.key}>
+                  <button
+                    onClick={() => {
+                      if (!answer) {
+                        setPicked((p) => p.map((v, i) => (i === idx ? o.key : v)));
+                      } else {
+                        toggleWhy(q, o.key);
+                      }
+                    }}
+                    className={`w-full text-left border rounded-md px-3 py-2 text-sm transition ${cls}`}
+                  >
+                    <span className="font-semibold uppercase mr-2">{o.key}.</span>
+                    {o.text}
+                  </button>
+                  {answer && isOpen && (
+                    <div
+                      className={`mt-1 ml-4 text-xs leading-relaxed rounded-md p-2.5 border ${
+                        isCorrect
+                          ? 'bg-emerald-50/70 border-emerald-200 text-emerald-900'
+                          : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {why || (
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Loader2 className="w-3 h-3 animate-spin" /> Reason ban raha hai…
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
+
+          {answer && (
+            <p className="text-[11px] text-muted-foreground">
+              Kisi bhi option pe tap karo → us option ka reason (sahi kyu / galat kyu).
+            </p>
+          )}
 
           {answer && (
             <div className="rounded-md bg-slate-50 border p-3 text-sm space-y-2">
@@ -235,6 +293,7 @@ export default function SscGkPractice() {
               </Button>
             </div>
           )}
+
 
           <div className="flex justify-between pt-1">
             <Button variant="outline" size="sm" disabled={idx === 0} onClick={() => setIdx((i) => i - 1)}>

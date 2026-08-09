@@ -105,25 +105,52 @@ const COVERS_RE = /^>\s*Covers:\s*(.*)$/i;
 
 function mergeIntoMd(
   md: string,
-  map: { h: number; qs: number[] }[],
-  addons: { h: number; points: string[] }[],
-): string {
+  map: { h: number; title?: string; qs: (number | string | Record<string, unknown>)[] }[],
+  addons: { h: number; title?: string; points: string[] }[],
+): { md: string; merged: number } {
   const lines = md.split("\n");
   const heads = headingsOf(lines);
-  if (!heads.length) return md;
+  if (!heads.length) return { md, merged: 0 };
+
+  /** index invalid ho to heading title se resolve karo, warna pehli heading. */
+  const resolve = (h: number, title?: string): number => {
+    if (Number.isInteger(h) && heads[h]) return h;
+    if (title) {
+      const t = title.toLowerCase().trim();
+      const exact = heads.findIndex((x) => x.text.toLowerCase().trim() === t);
+      if (exact >= 0) return exact;
+      const partial = heads.findIndex(
+        (x) => x.text.toLowerCase().includes(t) || t.includes(x.text.toLowerCase()),
+      );
+      if (partial >= 0) return partial;
+    }
+    return 0;
+  };
 
   const byHead = new Map<number, { qs: Set<number>; points: string[] }>();
+  let merged = 0;
   for (const m of map) {
-    if (!heads[m.h]) continue;
-    const e = byHead.get(m.h) ?? { qs: new Set<number>(), points: [] };
-    for (const q of m.qs || []) if (Number.isFinite(q)) e.qs.add(Number(q));
-    byHead.set(m.h, e);
+    const hi = resolve(m.h, m.title);
+    const e = byHead.get(hi) ?? { qs: new Set<number>(), points: [] };
+    for (const q of m.qs || []) {
+      // AI number, "Q603" string, ya {q_id:"Q603"} object — sabhi handle karo
+      const src = q && typeof q === "object" ? Object.values(q as Record<string, unknown>).join(" ") : String(q);
+      const n = Number(src.replace(/[^0-9]/g, ""));
+      if (Number.isFinite(n) && n > 0) {
+        e.qs.add(n);
+        merged++;
+      }
+    }
+
+
+    byHead.set(hi, e);
   }
   for (const a of addons) {
-    if (!heads[a.h]) continue;
-    const e = byHead.get(a.h) ?? { qs: new Set<number>(), points: [] };
+    const hi = resolve(a.h, a.title);
+    const e = byHead.get(hi) ?? { qs: new Set<number>(), points: [] };
     for (const p of a.points || []) if (p && p.trim()) e.points.push(p.trim());
-    byHead.set(a.h, e);
+
+    byHead.set(hi, e);
   }
 
   // Peeche se edit karo taaki line numbers shift na ho
@@ -150,7 +177,7 @@ function mergeIntoMd(
     if (e.points.length) block.push("");
     lines.splice(insertAt, 0, ...block);
   }
-  return lines.join("\n");
+  return { md: lines.join("\n"), merged };
 }
 
 async function ai(system: string, user: string): Promise<string> {
@@ -174,7 +201,10 @@ async function ai(system: string, user: string): Promise<string> {
   return String(json?.choices?.[0]?.message?.content ?? "").trim();
 }
 
-function parseJson(raw: string): { map: { h: number; qs: number[] }[]; addons: { h: number; points: string[] }[] } {
+function parseJson(raw: string): {
+  map: { h: number; title?: string; qs: (number | string | Record<string, unknown>)[] }[];
+  addons: { h: number; title?: string; points: string[] }[];
+} {
   const s = raw.replace(/```json|```/g, "").trim();
   const start = s.indexOf("{");
   const end = s.lastIndexOf("}");
@@ -329,17 +359,29 @@ QUESTIONS (${qs.length}):
 ${qBlock}
 
 Kaam:
-1. Har question ko us heading index se map karo jiski theory us question ko solve karati hai. Har question exactly ek baar map hona chahiye (best fit heading).
-2. Agar kisi question ka fact theory me bilkul nahi hai, to us heading ke liye "addons" me chhota Hinglish bullet do (max 25 words, plain text, koi LaTeX/$ nahi) jisme wo fact ho.
+1. Har question ko us heading se map karo jiski theory us question ko solve karati hai. Har question exactly ek baar map hona chahiye (best fit heading).
+2. "h" me sirf upar wale outline ka index (0 se ${heads.length - 1}) do, aur "title" me usi heading ka exact text bhi do.
+3. Agar kisi question ka fact theory me bilkul nahi hai, to us heading ke liye "addons" me chhota Hinglish bullet do (max 25 words, plain text, koi LaTeX/$ nahi) jisme wo fact ho.
 
 Output STRICT JSON:
-{"map":[{"h":0,"qs":[12,15]}],"addons":[{"h":0,"points":["..."]}]}`;
+{"map":[{"h":0,"title":"heading ka text","qs":[12,15]}],"addons":[{"h":0,"title":"heading ka text","points":["..."]}]}`;
 
-    const raw = await ai(SYSTEM, user);
-    const { map, addons } = parseJson(raw);
+    let raw = await ai(SYSTEM, user);
+    let parsed = parseJson(raw);
+    // AI kabhi-kabhi khaali JSON deta hai → ek retry strict reminder ke saath
+    if (!parsed.map.length) {
+      raw = await ai(
+        SYSTEM,
+        `${user}\n\nZAROORI: "map" array KABHI khaali mat chodo. Har question ko kisi na kisi heading me daalo.`,
+      );
+      parsed = parseJson(raw);
+    }
+    const { map, addons } = parsed;
 
-    const updated = mergeIntoMd(md, map, addons);
-    const mapped = map.reduce((n, m) => n + (m.qs?.length || 0), 0);
+    const { md: updated, merged } = mergeIntoMd(md, map, addons);
+    const mapped = merged;
+    const rawPreview = merged ? undefined : raw.slice(0, 300);
+
 
     const { error: upErr } = await admin.from("ssc_chapter_theory").upsert(
       {
@@ -359,12 +401,15 @@ Output STRICT JSON:
         ok: true,
         basis,
         mapped,
+        linked: /^>\s*Covers:/im.test(updated),
         addons: addons.reduce((n, a) => n + (a.points?.length || 0), 0),
         fetched: qs.length,
         hasMore: qs.length === limit,
         nextOffset: offset + qs.length,
         chars: updated.length,
+        rawPreview,
       }),
+
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {

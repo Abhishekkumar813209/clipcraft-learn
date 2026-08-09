@@ -963,6 +963,10 @@ export type Database = {
           subject: string
           subtopic: string
           updated_at: string
+          why_a: string | null
+          why_b: string | null
+          why_c: string | null
+          why_d: string | null
         }
         Insert: {
           chapter: string
@@ -981,6 +985,10 @@ export type Database = {
           subject: string
           subtopic?: string
           updated_at?: string
+          why_a?: string | null
+          why_b?: string | null
+          why_c?: string | null
+          why_d?: string | null
         }
         Update: {
           chapter?: string
@@ -999,6 +1007,10 @@ export type Database = {
           subject?: string
           subtopic?: string
           updated_at?: string
+          why_a?: string | null
+          why_b?: string | null
+          why_c?: string | null
+          why_d?: string | null
         }
         Relationships: []
       }
