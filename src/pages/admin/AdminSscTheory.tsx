@@ -216,6 +216,48 @@ export default function AdminSscTheory() {
     }
   }
 
+  /**
+   * Ek hi button — saare GK subjects (Biology → Modern History) queue me:
+   * har chapter ka question→theory mapping, phir 2+ subtopics wale chapters ki
+   * theory automatically subtopics me split (question numbers ke saath).
+   */
+  async function runAllSubjects() {
+    setBulk(true);
+    try {
+      let si = 0;
+      for (const s of GK_SUBJECTS) {
+        si++;
+        const chs = await fetchSscChapters(s.key);
+        let ci = 0;
+        for (const c of chs) {
+          ci++;
+          setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter}`);
+          await mapChunked(c.chapter, '', c.count, s.key);
+          const subs = c.subtopics.filter((x) => x.name !== '—');
+          if (subs.length >= 2) {
+            let xi = 0;
+            for (const sub of subs) {
+              xi++;
+              setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${c.chapter} · split ${xi}/${subs.length} ${sub.name}`);
+              await refine('split', c.chapter, sub.name, s.key);
+              await new Promise((r) => setTimeout(r, 500));
+            }
+          }
+          await new Promise((r) => setTimeout(r, 500));
+        }
+        if (s.key === subject) await loadTheories(s.key);
+      }
+      setBulkProgress(null);
+      toast({ title: 'Saare subjects ki theory ready 🎉' });
+    } catch (e) {
+      toast({ title: 'Queue rukk gayi', description: String(e).slice(0, 200), variant: 'destructive' });
+    } finally {
+      setBulk(false);
+    }
+  }
+
+
+
 
 
   async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '', subj = subject) {
