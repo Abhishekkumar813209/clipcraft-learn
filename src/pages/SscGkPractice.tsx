@@ -35,6 +35,34 @@ export default function SscGkPractice() {
   const [queue, setQueue] = useState<ChapterQuestion[]>([]);
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<(string | null)[]>([]);
+  const [openWhy, setOpenWhy] = useState<Record<string, boolean>>({});
+  const [whyMap, setWhyMap] = useState<Record<string, Record<string, string>>>({});
+
+  /** option ka reason — pehle DB row se, warna on-demand generate kiya hua */
+  function whyFor(item: ChapterQuestion, k: string): string | null {
+    const local = whyMap[item.id]?.[k];
+    if (local) return local;
+    return ((item as unknown as Record<string, string | null>)[`why_${k}`]) ?? null;
+  }
+
+  async function toggleWhy(item: ChapterQuestion, k: string) {
+    const key = `${idx}-${k}`;
+    const willOpen = !openWhy[key];
+    setOpenWhy((m) => ({ ...m, [key]: willOpen }));
+    if (!willOpen || whyFor(item, k)) return;
+    try {
+      const { data, error } = await supabase.functions.invoke('ssc-option-why', { body: { id: item.id } });
+      if (error) throw error;
+      const why = (data as { why?: Record<string, string> })?.why;
+      if (why) setWhyMap((m) => ({ ...m, [item.id]: { ...(m[item.id] || {}), ...why } }));
+    } catch {
+      setWhyMap((m) => ({
+        ...m,
+        [item.id]: { ...(m[item.id] || {}), [k]: 'Reason abhi generate nahi ho paaya, dobara try karo.' },
+      }));
+    }
+  }
+
 
   useEffect(() => {
     (async () => {
