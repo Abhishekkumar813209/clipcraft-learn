@@ -209,19 +209,48 @@ export default function SscGkPractice() {
                 if (isCorrect) cls = 'border-emerald-400 bg-emerald-50';
                 else if (isPicked) cls = 'border-rose-400 bg-rose-50';
               }
+              const why = whyFor(q, o.key);
+              const isOpen = !!openWhy[`${idx}-${o.key}`];
               return (
-                <button
-                  key={o.key}
-                  disabled={!!answer}
-                  onClick={() => setPicked((p) => p.map((v, i) => (i === idx ? o.key : v)))}
-                  className={`w-full text-left border rounded-md px-3 py-2 text-sm transition ${cls}`}
-                >
-                  <span className="font-semibold uppercase mr-2">{o.key}.</span>
-                  {o.text}
-                </button>
+                <div key={o.key}>
+                  <button
+                    onClick={() => {
+                      if (!answer) {
+                        setPicked((p) => p.map((v, i) => (i === idx ? o.key : v)));
+                      } else {
+                        toggleWhy(q, o.key);
+                      }
+                    }}
+                    className={`w-full text-left border rounded-md px-3 py-2 text-sm transition ${cls}`}
+                  >
+                    <span className="font-semibold uppercase mr-2">{o.key}.</span>
+                    {o.text}
+                  </button>
+                  {answer && isOpen && (
+                    <div
+                      className={`mt-1 ml-4 text-xs leading-relaxed rounded-md p-2.5 border ${
+                        isCorrect
+                          ? 'bg-emerald-50/70 border-emerald-200 text-emerald-900'
+                          : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {why || (
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Loader2 className="w-3 h-3 animate-spin" /> Reason ban raha hai…
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
+
+          {answer && (
+            <p className="text-[11px] text-muted-foreground">
+              Kisi bhi option pe tap karo → us option ka reason (sahi kyu / galat kyu).
+            </p>
+          )}
 
           {answer && (
             <div className="rounded-md bg-slate-50 border p-3 text-sm space-y-2">
@@ -235,6 +264,7 @@ export default function SscGkPractice() {
               </Button>
             </div>
           )}
+
 
           <div className="flex justify-between pt-1">
             <Button variant="outline" size="sm" disabled={idx === 0} onClick={() => setIdx((i) => i - 1)}>
