@@ -29,6 +29,8 @@ export interface CallOptions {
   preferHuggingFace?: boolean;
   /** Strip Gemini-only fields (tools/tool_choice) before HF call. */
   stripToolsForHF?: boolean;
+  /** Try Lovable AI Gateway first (reliable, no daily quota). */
+  preferLovable?: boolean;
 }
 
 export async function callGemini(
@@ -36,6 +38,11 @@ export async function callGemini(
   optsOrRetries?: CallOptions | number,
 ): Promise<Response> {
   const opts: CallOptions = typeof optsOrRetries === "object" ? optsOrRetries : {};
+
+  if (opts.preferLovable) {
+    const lov = await callLovableAI(body);
+    if (lov) return lov;
+  }
 
   if (opts.preferHuggingFace) {
     return callHuggingFace(body, opts);
