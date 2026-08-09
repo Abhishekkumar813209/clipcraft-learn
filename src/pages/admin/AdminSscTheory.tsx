@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge, Link2, Rocket } from 'lucide-react';
+import { BookOpenText, Loader2, Eye, Link2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -36,6 +36,7 @@ interface TheoryRow {
 }
 
 const keyOf = (chapter: string, subtopic = '') => `${chapter}||${subtopic}`;
+const hasCovers = (md: string) => /(^|\n)\s*>\s*covers\s*:/i.test(md || '');
 
 export default function AdminSscTheory() {
   const [subject, setSubject] = useState(SUBJECTS[0].key);
@@ -98,311 +99,121 @@ export default function AdminSscTheory() {
       .eq('subject', subj).eq('chapter', chapter).eq('subtopic', subtopic)
       .maybeSingle();
     if (row && subj === subject) setTheories((t) => ({ ...t, [keyOf(chapter, subtopic)]: row as unknown as TheoryRow }));
+    return (row as unknown as TheoryRow) || null;
   }
-
 
   /** 100-question chunks me serial-wise theory banata hai (bade chapters timeout nahi honge). */
   async function generateChunked(chapter: string, subtopic: string, total: number) {
     const k = keyOf(chapter, subtopic);
-    setRunning(k);
-    try {
-      let offset = 0;
-      let part = 0;
-      const totalParts = Math.max(1, Math.ceil(total / CHUNK));
-      for (;;) {
-        part++;
-        setStatus((s) => ({ ...s, [k]: `part ${part}/${totalParts} generating…` }));
-        const fn = isGrammar ? 'ssc-grammar-theory' : 'ssc-theory-generate';
-        const payload = isGrammar
-          ? { pos: chapter, offset, limit: CHUNK, append: offset > 0, force: true }
-          : { subject, chapter, subtopic, offset, limit: CHUNK, append: offset > 0, force: true };
-        const { data, error } = await supabase.functions.invoke(fn, { body: payload });
-        if (error) throw error;
-        const d = data as { error?: string; hasMore?: boolean; nextOffset?: number; fetched?: number; chars?: number };
-        if (d?.error) throw new Error(d.error);
-        offset = d?.nextOffset ?? offset + CHUNK;
-        if (!d?.hasMore) {
-          setStatus((s) => ({ ...s, [k]: `done · ${part} parts · ${d?.chars || 0} chars` }));
-          break;
-        }
-        await new Promise((r) => setTimeout(r, 800));
-      }
-      await refreshRow(chapter, subtopic);
-      return true;
-    } catch (e) {
-      setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
-      toast({ title: `${chapter} ${subtopic} failed`, description: String(e).slice(0, 200), variant: 'destructive' });
-      return false;
-    } finally {
-      setRunning(null);
+    let offset = 0;
+    let part = 0;
+    const totalParts = Math.max(1, Math.ceil(total / CHUNK));
+    for (;;) {
+      part++;
+      setStatus((s) => ({ ...s, [k]: `theory part ${part}/${totalParts}…` }));
+      const fn = isGrammar ? 'ssc-grammar-theory' : 'ssc-theory-generate';
+      const payload = isGrammar
+        ? { pos: chapter, offset, limit: CHUNK, append: offset > 0, force: true }
+        : { subject, chapter, subtopic, offset, limit: CHUNK, append: offset > 0, force: true };
+      const { data, error } = await supabase.functions.invoke(fn, { body: payload });
+      if (error) throw error;
+      const d = data as { error?: string; hasMore?: boolean; nextOffset?: number };
+      if (d?.error) throw new Error(d.error);
+      offset = d?.nextOffset ?? offset + CHUNK;
+      if (!d?.hasMore) break;
+      await new Promise((r) => setTimeout(r, 800));
     }
+  }
+
+  /** Theory ke andar inline `> Covers: Q…` references daalta hai (100-question chunks me). */
+  async function mapChunked(chapter: string, subtopic: string, total: number, subj = subject) {
+    const k = keyOf(chapter, subtopic);
+    let offset = 0;
+    let part = 0;
+    const totalParts = Math.max(1, Math.ceil(total / CHUNK));
+    let totalMapped = 0;
+    for (;;) {
+      part++;
+      setStatus((s) => ({ ...s, [k]: `linking chunk ${part}/${totalParts}…` }));
+      let d: { error?: string; hasMore?: boolean; nextOffset?: number; mapped?: number } | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
+            body: { subject: subj, chapter, subtopic, offset, limit: CHUNK },
+          });
+          if (error) throw error;
+          if ((data as { error?: string })?.error) throw new Error((data as { error?: string }).error);
+          d = data as typeof d;
+          break;
+        } catch (err) {
+          if (attempt === 2) throw err;
+          await new Promise((r) => setTimeout(r, 1500));
+        }
+      }
+      totalMapped += d?.mapped || 0;
+      offset = d?.nextOffset ?? offset + CHUNK;
+      if (!d?.hasMore) break;
+      await new Promise((r) => setTimeout(r, 800));
+    }
+    return totalMapped;
   }
 
   /**
-   * Ek chapter ki theory ko uske questions se map karta hai:
-   * theory na ho to UPSC theory ki copy base banti hai (UPSC row unchanged),
-   * phir 100-question chunks me "Covers: Q…" + missing facts add hote hain.
+   * SINGLE ACTION — "Generate theory with inline question references & links".
+   * Theory nahi hai to pehle banti hai, phir har question ka `> Covers: Q…` link theory me inline add hota hai.
    */
-  async function mapChunked(chapter: string, subtopic: string, total: number, subj = subject) {
+  async function runOne(chapter: string, subtopic: string, total: number) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     try {
-      let offset = 0;
-      let part = 0;
-      const totalParts = Math.max(1, Math.ceil(total / CHUNK));
-      let totalMapped = 0;
-      for (;;) {
-        part++;
-        setStatus((s) => ({ ...s, [k]: `mapping chunk ${part}/${totalParts}…` }));
-        setBulkProgress((p) => (p ? `${p.split(' · ')[0]} · ${chapter}: chunk ${part}/${totalParts}` : p));
-        let d: {
-          error?: string; needsGenerate?: boolean; basis?: string;
-          hasMore?: boolean; nextOffset?: number; mapped?: number; addons?: number; chars?: number;
-        } | null = null;
-        // ek chunk fail ho to poora chapter mat chhodo — 2 retry
-        for (let attempt = 0; attempt < 3; attempt++) {
-          try {
-            const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
-              body: { subject: subj, chapter, subtopic, offset, limit: CHUNK },
-            });
-            if (error) throw error;
-            if ((data as { error?: string })?.error) throw new Error((data as { error?: string }).error);
-            d = data as typeof d;
-            break;
-          } catch (err) {
-            if (attempt === 2) throw err;
-            await new Promise((r) => setTimeout(r, 1500));
-          }
-        }
-        totalMapped += d?.mapped || 0;
-        offset = d?.nextOffset ?? offset + CHUNK;
-        if (!d?.hasMore) {
-          setStatus((s) => ({
-            ...s,
-            [k]: `mapped · ${part} chunks · ${totalMapped} questions · base: ${d?.basis} · +${d?.addons || 0} addons`,
-          }));
-          break;
-        }
-        await new Promise((r) => setTimeout(r, 800));
-      }
-
-      await refreshRow(chapter, subtopic, subj);
+      if (!theories[k]) await generateChunked(chapter, subtopic, total);
+      const mapped = await mapChunked(chapter, subtopic, total);
+      const row = await refreshRow(chapter, subtopic);
+      setStatus((s) => ({
+        ...s,
+        [k]: row && hasCovers(row.theory_md) ? `✅ linked · ${mapped || total} questions` : `⚠️ links nahi bane`,
+      }));
       return true;
     } catch (e) {
       setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
-      toast({ title: `${chapter} mapping failed`, description: String(e).slice(0, 200), variant: 'destructive' });
       return false;
     } finally {
       setRunning(null);
     }
   }
 
-
-  /** Ek hi button — saare chapters ka question→theory mapping serial-wise. */
-  async function mapAllChapters() {
+  /** Poore subject ke saare chapters (+ subtopics) ke liye wahi single action. */
+  async function runSubject() {
     setBulk(true);
     try {
       let i = 0;
       for (const c of chapters) {
         i++;
-        setBulkProgress(`${i}/${chapters.length} chapters · ${c.chapter}`);
-        await mapChunked(c.chapter, '', c.count);
-        await new Promise((r) => setTimeout(r, 600));
-      }
-      setBulkProgress(null);
-      toast({ title: 'Question → theory mapping complete' });
-    } finally {
-      setBulk(false);
-    }
-  }
-
-  /**
-   * Ek hi button — saare GK subjects (Biology → Modern History) queue me:
-   * har chapter ka question→theory mapping, phir 2+ subtopics wale chapters ki
-   * theory automatically subtopics me split (question numbers ke saath).
-   */
-  async function runAllSubjects() {
-    setBulk(true);
-    try {
-      let si = 0;
-      for (const s of GK_SUBJECTS) {
-        si++;
-        const chs = await fetchSscChapters(s.key);
-        // us subject ki existing theory rows — jo already mapped hain unhe dobara nahi chhedenge
-        const { data: rows } = await supabase
-          .from('ssc_chapter_theory' as never)
-          .select('chapter,subtopic,question_count,theory_md')
-          .eq('subject', s.key);
-        const existing: Record<string, { question_count: number; theory_md: string }> = {};
-        for (const r of ((rows as unknown as TheoryRow[]) || [])) {
-          existing[keyOf(r.chapter, r.subtopic)] = { question_count: r.question_count, theory_md: r.theory_md };
-        }
-        const isMapped = (chapter: string, subtopic: string, total: number) => {
-          const e = existing[keyOf(chapter, subtopic)];
-          if (!e) return false;
-          if (!/^>\s*Covers:/im.test(e.theory_md || '')) return false;
-          return (e.question_count || 0) >= total;
-        };
-
-        let ci = 0;
-        for (const c of chs) {
-          ci++;
-          if (isMapped(c.chapter, '', c.count)) {
-            setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter} — already mapped, skip`);
-          } else {
-            setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter}`);
-            await mapChunked(c.chapter, '', c.count, s.key);
-            await new Promise((r) => setTimeout(r, 500));
-          }
-          const subs = c.subtopics.filter((x) => x.name !== '—');
-          if (subs.length >= 2) {
-            let xi = 0;
-            for (const sub of subs) {
-              xi++;
-              if (existing[keyOf(c.chapter, sub.name)]) continue; // subtopic theory already hai
-              setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${c.chapter} · split ${xi}/${subs.length} ${sub.name}`);
-              await refine('split', c.chapter, sub.name, s.key);
-              await new Promise((r) => setTimeout(r, 500));
-            }
+        setBulkProgress(`${i}/${chapters.length} · ${c.chapter}`);
+        await runOne(c.chapter, '', c.count);
+        const subs = isGrammar ? [] : c.subtopics.filter((s) => s.name !== '—');
+        if (subs.length >= 2) {
+          for (const s of subs) {
+            setBulkProgress(`${i}/${chapters.length} · ${c.chapter} → ${s.name}`);
+            await runOne(c.chapter, s.name, s.count);
           }
         }
-        if (s.key === subject) await loadTheories(s.key);
+        await new Promise((r) => setTimeout(r, 500));
       }
       setBulkProgress(null);
-      toast({ title: 'Saare subjects ki theory ready 🎉' });
+      toast({ title: 'Theory + inline question links ready 🎉' });
     } catch (e) {
-      toast({ title: 'Queue rukk gayi', description: String(e).slice(0, 200), variant: 'destructive' });
+      toast({ title: 'Ruk gaya', description: String(e).slice(0, 200), variant: 'destructive' });
     } finally {
       setBulk(false);
-    }
-  }
-
-
-
-
-
-
-  async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '', subj = subject) {
-    const k = keyOf(chapter, subtopic);
-    setRunning(k);
-    setStatus((s) => ({ ...s, [k]: `${mode}…` }));
-    try {
-      // Bade chapters ek request me 150s limit cross kar jaate the — ab chunk-wise resume hota hai.
-      let state: unknown = undefined;
-      for (let pass = 0; pass < 40; pass++) {
-        const { data, error } = await supabase.functions.invoke('ssc-theory-refine', {
-          body: { mode, subject: subj, chapter, subtopic, state },
-        });
-        if (error) throw error;
-        const d = data as {
-          error?: string; chars?: number; skipped?: boolean; done?: boolean;
-          progress?: string; state?: unknown;
-        };
-        if (d?.error) throw new Error(d.error);
-        if (d?.done === false) {
-          state = d.state;
-          setStatus((s) => ({ ...s, [k]: `${mode}… ${d.progress ?? ''}` }));
-          continue;
-        }
-        setStatus((s) => ({ ...s, [k]: d?.skipped ? `${mode}: no content` : `${mode} done · ${d?.chars} chars` }));
-        break;
-      }
-      await refreshRow(chapter, subtopic, subj);
-      return true;
-
-    } catch (e) {
-      setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
-      toast({ title: `${mode} failed`, description: String(e).slice(0, 200), variant: 'destructive' });
-      return false;
-    } finally {
-      setRunning(null);
     }
   }
 
   const realSubs = (c: ChapterInfo) => c.subtopics.filter((s) => s.name !== '—');
-
-  /** Chapter theory ko uske sabhi subtopics me distribute karo. */
-  async function splitToSubtopics(c: ChapterInfo) {
-    setBulk(true);
-    try {
-      for (const s of realSubs(c)) {
-        await refine('split', c.chapter, s.name);
-        await new Promise((r) => setTimeout(r, 600));
-      }
-      toast({ title: `${c.chapter} → subtopics distribute ho gaya` });
-    } finally {
-      setBulk(false);
-    }
-  }
-
-  async function runQueue(jobs: { chapter: string; subtopic: string; total: number }[]) {
-    setBulk(true);
-    try {
-      let fails = 0;
-      for (const j of jobs) {
-        const ok = await generateChunked(j.chapter, j.subtopic, j.total);
-        if (!ok && ++fails >= 3) break;
-        await new Promise((r) => setTimeout(r, 800));
-      }
-      toast({ title: 'Bulk generation finished' });
-    } finally {
-      setBulk(false);
-    }
-  }
-
-  const generateAllPending = () =>
-    runQueue(
-      chapters
-        .filter((c) => !theories[keyOf(c.chapter)])
-        .map((c) => ({ chapter: c.chapter, subtopic: '', total: c.count })),
-    );
-
-  const generateAllPendingSubtopics = () =>
-    runQueue(
-      chapters.flatMap((c) =>
-        realSubs(c)
-          .filter((s) => !theories[keyOf(c.chapter, s.name)])
-          .map((s) => ({ chapter: c.chapter, subtopic: s.name, total: s.count })),
-      ),
-    );
-
-  const generateChapterSubtopics = (c: ChapterInfo) =>
-    runQueue(
-      realSubs(c)
-        .filter((s) => !theories[keyOf(c.chapter, s.name)])
-        .map((s) => ({ chapter: c.chapter, subtopic: s.name, total: s.count })),
-    );
-
-  /** Har chapter ke liye: theory chapter me hai to subtopics me baanto, sirf subtopics me hai to merge karo. */
-  async function autoBalanceAll() {
-    setBulk(true);
-    try {
-      for (const c of chapters) {
-        const subs = realSubs(c);
-        if (subs.length < 2) continue;
-        const hasChapter = !!theories[keyOf(c.chapter)];
-        const withSub = subs.filter((s) => theories[keyOf(c.chapter, s.name)]);
-        if (hasChapter && withSub.length === 0) {
-          for (const s of subs) {
-            await refine('split', c.chapter, s.name);
-            await new Promise((r) => setTimeout(r, 600));
-          }
-        } else if (!hasChapter && withSub.length) {
-          await refine('merge', c.chapter, '');
-          await new Promise((r) => setTimeout(r, 600));
-        }
-      }
-      toast({ title: 'Auto balance complete' });
-    } finally {
-      setBulk(false);
-    }
-  }
-
-  const pending = chapters.filter((c) => !theories[keyOf(c.chapter)]).length;
-  const pendingSubs = chapters.reduce(
-    (n, c) => n + realSubs(c).filter((s) => !theories[keyOf(c.chapter, s.name)]).length,
-    0,
-  );
+  const linked = chapters.filter((c) => {
+    const t = theories[keyOf(c.chapter)];
+    return t && hasCovers(t.theory_md);
+  }).length;
   const busy = !!running || bulk;
 
   return (
@@ -412,7 +223,7 @@ export default function AdminSscTheory() {
           <BookOpenText className="w-5 h-5 text-primary" /> SSC Chapter Theory
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          MCQs + Hinglish explanations se book-jaisi theory. Bade chapters {CHUNK}-question chunks me serial-wise generate hote hain.
+          Ek hi button: theory banti hai aur usi ke andar har question ka inline reference (<code>Covers: Q…</code>) + link lag jaata hai.
         </p>
       </div>
 
@@ -431,43 +242,20 @@ export default function AdminSscTheory() {
       </div>
 
       <Card>
-        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <CardTitle className="text-base">
             {loading
               ? 'Loading…'
-              : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${pending} pending${isGrammar ? '' : ` · ${pendingSubs} subtopic pending`}`}
+              : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${linked} linked · ${chapters.length - linked} baaki`}
           </CardTitle>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              className="bg-indigo-600 hover:bg-indigo-500 text-white"
-              disabled={loading || busy}
-              onClick={runAllSubjects}
-              title="Biology → Modern History tak sab subjects, chapters + subtopic split, ek hi queue me"
-            >
-              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Rocket className="w-4 h-4 mr-1" />}
-              Run ALL subjects (queue)
-            </Button>
-
-            <Button size="sm" disabled={loading || busy || !pending} onClick={generateAllPending}>
-              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
-              All pending {isGrammar ? 'topics' : 'chapters'}
-            </Button>
-            {!isGrammar && (
-              <>
-                <Button size="sm" variant="outline" disabled={loading || busy || !pendingSubs} onClick={generateAllPendingSubtopics}>
-                  <RefreshCw className="w-4 h-4 mr-1" /> All pending subtopics
-                </Button>
-                <Button size="sm" variant="secondary" disabled={loading || busy} onClick={autoBalanceAll}>
-                  <Merge className="w-4 h-4 mr-1" /> Auto split / merge
-                </Button>
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white" disabled={loading || busy} onClick={mapAllChapters}>
-                  {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Link2 className="w-4 h-4 mr-1" />}
-                  Map questions → theory (all)
-                </Button>
-              </>
-            )}
-          </div>
+          <Button
+            className="bg-emerald-600 hover:bg-emerald-500 text-white"
+            disabled={loading || busy}
+            onClick={runSubject}
+          >
+            {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Link2 className="w-4 h-4 mr-2" />}
+            Generate theory with inline question references & links
+          </Button>
         </CardHeader>
 
         {bulkProgress && (
@@ -482,6 +270,7 @@ export default function AdminSscTheory() {
             const subs = isGrammar ? [] : realSubs(c);
             const isOpen = !!subs.length && open === c.chapter;
             const label = isGrammar ? (GRAMMAR_LABELS[c.chapter] || c.chapter) : c.chapter;
+            const isLinked = !!t && hasCovers(t.theory_md);
             return (
               <div key={c.chapter} className="border rounded-md p-3 space-y-2">
                 <div className="flex items-center justify-between gap-3">
@@ -489,50 +278,14 @@ export default function AdminSscTheory() {
                     <div className="text-sm font-medium truncate">{label}</div>
                     <div className="text-xs text-muted-foreground">
                       {c.count} questions · {subs.length ? `${subs.length} subtopics` : 'single'} ·{' '}
-                      {status[keyOf(c.chapter)] || (t ? `generated ${new Date(t.generated_at).toLocaleDateString()}` : 'not generated')}
+                      {status[keyOf(c.chapter)] || (isLinked ? 'theory + links ready' : t ? 'theory hai, links pending' : 'not generated')}
                     </div>
                   </button>
                   <div className="flex items-center gap-2 shrink-0">
-                    {t ? <Badge variant="secondary">Ready</Badge> : <Badge variant="outline">Pending</Badge>}
+                    {isLinked ? <Badge variant="secondary">Linked</Badge> : t ? <Badge variant="outline">No links</Badge> : <Badge variant="outline">Pending</Badge>}
                     {t && <Button size="sm" variant="ghost" onClick={() => setPreview(t)}><Eye className="w-4 h-4" /></Button>}
-                    {t && (
-                      <Button size="sm" variant="ghost" title="Repetition hatao" disabled={busy} onClick={() => refine('dedupe', c.chapter, '')}>
-                        <Wand2 className="w-4 h-4" />
-                      </Button>
-                    )}
-                    {!isGrammar && !!subs.length && t && (
-                      <Button size="sm" variant="ghost" title="Chapter theory ko subtopics me baanto" disabled={busy} onClick={() => splitToSubtopics(c)}>
-                        <Split className="w-4 h-4" />
-                      </Button>
-                    )}
-                    {!isGrammar && !!subs.length && (
-                      <Button size="sm" variant="ghost" title="Subtopic theories ko chapter me merge karo" disabled={busy} onClick={() => refine('merge', c.chapter, '')}>
-                        <Merge className="w-4 h-4" />
-                      </Button>
-                    )}
-                    {!isGrammar && !!subs.length && (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={busy || !subs.some((s) => !theories[keyOf(c.chapter, s.name)])}
-                        onClick={() => generateChapterSubtopics(c)}
-                      >
-                        All subtopics
-                      </Button>
-                    )}
-                    {!isGrammar && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        title="Questions ko theory se map karo (UPSC base + Covers: Q…)"
-                        disabled={busy}
-                        onClick={() => mapChunked(c.chapter, '', c.count)}
-                      >
-                        <Link2 className="w-4 h-4" />
-                      </Button>
-                    )}
-                    <Button size="sm" variant={t ? 'outline' : 'default'} disabled={busy} onClick={() => generateChunked(c.chapter, '', c.count)}>
-                      {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : (t ? 'Regenerate' : 'Generate')}
+                    <Button size="sm" variant={isLinked ? 'outline' : 'default'} disabled={busy} onClick={() => runOne(c.chapter, '', c.count)}>
+                      {running === keyOf(c.chapter) ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Generate + link'}
                     </Button>
                   </div>
                 </div>
@@ -542,28 +295,19 @@ export default function AdminSscTheory() {
                     {subs.map((s) => {
                       const st = theories[keyOf(c.chapter, s.name)];
                       const k = keyOf(c.chapter, s.name);
+                      const subLinked = !!st && hasCovers(st.theory_md);
                       return (
                         <div key={s.name} className="flex items-center justify-between gap-2 bg-muted/40 rounded px-3 py-2">
                           <div className="min-w-0">
                             <div className="text-xs font-medium truncate">{s.name}</div>
                             <div className="text-[11px] text-muted-foreground">
-                              {s.count} Qs · {status[k] || (st ? 'generated' : 'not generated')}
+                              {s.count} Qs · {status[k] || (subLinked ? 'theory + links ready' : st ? 'theory hai, links pending' : 'not generated')}
                             </div>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
                             {st && <Button size="sm" variant="ghost" onClick={() => setPreview(st)}><Eye className="w-4 h-4" /></Button>}
-                            {st && (
-                              <Button size="sm" variant="ghost" title="Repetition hatao" disabled={busy} onClick={() => refine('dedupe', c.chapter, s.name)}>
-                                <Wand2 className="w-4 h-4" />
-                              </Button>
-                            )}
-                            {theories[keyOf(c.chapter)] && (
-                              <Button size="sm" variant="ghost" title="Chapter theory se is subtopic ka hissa nikaalo" disabled={busy} onClick={() => refine('split', c.chapter, s.name)}>
-                                <Split className="w-4 h-4" />
-                              </Button>
-                            )}
-                            <Button size="sm" variant={st ? 'outline' : 'default'} disabled={busy} onClick={() => generateChunked(c.chapter, s.name, s.count)}>
-                              {running === k ? <Loader2 className="w-4 h-4 animate-spin" /> : (st ? 'Regenerate' : 'Generate')}
+                            <Button size="sm" variant={subLinked ? 'outline' : 'default'} disabled={busy} onClick={() => runOne(c.chapter, s.name, s.count)}>
+                              {running === k ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Generate + link'}
                             </Button>
                           </div>
                         </div>
