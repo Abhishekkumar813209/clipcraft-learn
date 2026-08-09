@@ -145,7 +145,7 @@ function mergeIntoMd(
     const e = byHead.get(hi) ?? { qs: new Set<number>(), points: [] };
     for (const p of a.points || []) if (p && p.trim()) e.points.push(p.trim());
 
-    byHead.set(a.h, e);
+    byHead.set(hi, e);
   }
 
   // Peeche se edit karo taaki line numbers shift na ho
