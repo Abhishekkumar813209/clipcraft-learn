@@ -402,6 +402,7 @@ Output STRICT JSON:
         hasMore: qs.length === limit,
         nextOffset: offset + qs.length,
         chars: updated.length,
+        rawPreview,
       }),
 
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
