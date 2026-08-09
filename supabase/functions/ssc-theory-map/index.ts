@@ -105,24 +105,46 @@ const COVERS_RE = /^>\s*Covers:\s*(.*)$/i;
 
 function mergeIntoMd(
   md: string,
-  map: { h: number; qs: number[] }[],
-  addons: { h: number; points: string[] }[],
-): string {
+  map: { h: number; title?: string; qs: number[] }[],
+  addons: { h: number; title?: string; points: string[] }[],
+): { md: string; merged: number } {
   const lines = md.split("\n");
   const heads = headingsOf(lines);
-  if (!heads.length) return md;
+  if (!heads.length) return { md, merged: 0 };
+
+  /** index invalid ho to heading title se resolve karo, warna pehli heading. */
+  const resolve = (h: number, title?: string): number => {
+    if (Number.isInteger(h) && heads[h]) return h;
+    if (title) {
+      const t = title.toLowerCase().trim();
+      const exact = heads.findIndex((x) => x.text.toLowerCase().trim() === t);
+      if (exact >= 0) return exact;
+      const partial = heads.findIndex(
+        (x) => x.text.toLowerCase().includes(t) || t.includes(x.text.toLowerCase()),
+      );
+      if (partial >= 0) return partial;
+    }
+    return 0;
+  };
 
   const byHead = new Map<number, { qs: Set<number>; points: string[] }>();
+  let merged = 0;
   for (const m of map) {
-    if (!heads[m.h]) continue;
-    const e = byHead.get(m.h) ?? { qs: new Set<number>(), points: [] };
-    for (const q of m.qs || []) if (Number.isFinite(q)) e.qs.add(Number(q));
-    byHead.set(m.h, e);
+    const hi = resolve(m.h, m.title);
+    const e = byHead.get(hi) ?? { qs: new Set<number>(), points: [] };
+    for (const q of m.qs || []) {
+      if (Number.isFinite(q)) {
+        e.qs.add(Number(q));
+        merged++;
+      }
+    }
+    byHead.set(hi, e);
   }
   for (const a of addons) {
-    if (!heads[a.h]) continue;
-    const e = byHead.get(a.h) ?? { qs: new Set<number>(), points: [] };
+    const hi = resolve(a.h, a.title);
+    const e = byHead.get(hi) ?? { qs: new Set<number>(), points: [] };
     for (const p of a.points || []) if (p && p.trim()) e.points.push(p.trim());
+
     byHead.set(a.h, e);
   }
 
