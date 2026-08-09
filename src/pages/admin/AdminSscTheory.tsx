@@ -228,22 +228,43 @@ export default function AdminSscTheory() {
       for (const s of GK_SUBJECTS) {
         si++;
         const chs = await fetchSscChapters(s.key);
+        // us subject ki existing theory rows — jo already mapped hain unhe dobara nahi chhedenge
+        const { data: rows } = await supabase
+          .from('ssc_chapter_theory' as never)
+          .select('chapter,subtopic,question_count,theory_md')
+          .eq('subject', s.key);
+        const existing: Record<string, { question_count: number; theory_md: string }> = {};
+        for (const r of ((rows as unknown as TheoryRow[]) || [])) {
+          existing[keyOf(r.chapter, r.subtopic)] = { question_count: r.question_count, theory_md: r.theory_md };
+        }
+        const isMapped = (chapter: string, subtopic: string, total: number) => {
+          const e = existing[keyOf(chapter, subtopic)];
+          if (!e) return false;
+          if (!/^>\s*Covers:/im.test(e.theory_md || '')) return false;
+          return (e.question_count || 0) >= total;
+        };
+
         let ci = 0;
         for (const c of chs) {
           ci++;
-          setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter}`);
-          await mapChunked(c.chapter, '', c.count, s.key);
+          if (isMapped(c.chapter, '', c.count)) {
+            setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter} — already mapped, skip`);
+          } else {
+            setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${ci}/${chs.length} ${c.chapter}`);
+            await mapChunked(c.chapter, '', c.count, s.key);
+            await new Promise((r) => setTimeout(r, 500));
+          }
           const subs = c.subtopics.filter((x) => x.name !== '—');
           if (subs.length >= 2) {
             let xi = 0;
             for (const sub of subs) {
               xi++;
+              if (existing[keyOf(c.chapter, sub.name)]) continue; // subtopic theory already hai
               setBulkProgress(`${si}/${GK_SUBJECTS.length} ${s.label} · ${c.chapter} · split ${xi}/${subs.length} ${sub.name}`);
               await refine('split', c.chapter, sub.name, s.key);
               await new Promise((r) => setTimeout(r, 500));
             }
           }
-          await new Promise((r) => setTimeout(r, 500));
         }
         if (s.key === subject) await loadTheories(s.key);
       }
@@ -255,6 +276,7 @@ export default function AdminSscTheory() {
       setBulk(false);
     }
   }
+
 
 
 
