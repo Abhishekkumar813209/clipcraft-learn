@@ -105,7 +105,7 @@ const COVERS_RE = /^>\s*Covers:\s*(.*)$/i;
 
 function mergeIntoMd(
   md: string,
-  map: { h: number; title?: string; qs: (number | string)[] }[],
+  map: { h: number; title?: string; qs: (number | string | Record<string, unknown>)[] }[],
   addons: { h: number; title?: string; points: string[] }[],
 ): { md: string; merged: number } {
   const lines = md.split("\n");
@@ -202,7 +202,7 @@ async function ai(system: string, user: string): Promise<string> {
 }
 
 function parseJson(raw: string): {
-  map: { h: number; title?: string; qs: (number | string)[] }[];
+  map: { h: number; title?: string; qs: (number | string | Record<string, unknown>)[] }[];
   addons: { h: number; title?: string; points: string[] }[];
 } {
   const s = raw.replace(/```json|```/g, "").trim();
