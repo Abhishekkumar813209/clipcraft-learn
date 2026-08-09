@@ -196,7 +196,10 @@ async function ai(system: string, user: string): Promise<string> {
   return String(json?.choices?.[0]?.message?.content ?? "").trim();
 }
 
-function parseJson(raw: string): { map: { h: number; qs: number[] }[]; addons: { h: number; points: string[] }[] } {
+function parseJson(raw: string): {
+  map: { h: number; title?: string; qs: number[] }[];
+  addons: { h: number; title?: string; points: string[] }[];
+} {
   const s = raw.replace(/```json|```/g, "").trim();
   const start = s.indexOf("{");
   const end = s.lastIndexOf("}");
