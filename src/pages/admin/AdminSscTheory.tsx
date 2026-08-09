@@ -416,6 +416,17 @@ export default function AdminSscTheory() {
               : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${pending} pending${isGrammar ? '' : ` · ${pendingSubs} subtopic pending`}`}
           </CardTitle>
           <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white"
+              disabled={loading || busy}
+              onClick={runAllSubjects}
+              title="Biology → Modern History tak sab subjects, chapters + subtopic split, ek hi queue me"
+            >
+              {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Rocket className="w-4 h-4 mr-1" />}
+              Run ALL subjects (queue)
+            </Button>
+
             <Button size="sm" disabled={loading || busy || !pending} onClick={generateAllPending}>
               {bulk ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <RefreshCw className="w-4 h-4 mr-1" />}
               All pending {isGrammar ? 'topics' : 'chapters'}
