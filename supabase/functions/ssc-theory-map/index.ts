@@ -105,7 +105,7 @@ const COVERS_RE = /^>\s*Covers:\s*(.*)$/i;
 
 function mergeIntoMd(
   md: string,
-  map: { h: number; title?: string; qs: number[] }[],
+  map: { h: number; title?: string; qs: (number | string)[] }[],
   addons: { h: number; title?: string; points: string[] }[],
 ): { md: string; merged: number } {
   const lines = md.split("\n");
