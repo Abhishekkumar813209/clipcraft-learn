@@ -354,17 +354,18 @@ QUESTIONS (${qs.length}):
 ${qBlock}
 
 Kaam:
-1. Har question ko us heading index se map karo jiski theory us question ko solve karati hai. Har question exactly ek baar map hona chahiye (best fit heading).
-2. Agar kisi question ka fact theory me bilkul nahi hai, to us heading ke liye "addons" me chhota Hinglish bullet do (max 25 words, plain text, koi LaTeX/$ nahi) jisme wo fact ho.
+1. Har question ko us heading se map karo jiski theory us question ko solve karati hai. Har question exactly ek baar map hona chahiye (best fit heading).
+2. "h" me sirf upar wale outline ka index (0 se ${heads.length - 1}) do, aur "title" me usi heading ka exact text bhi do.
+3. Agar kisi question ka fact theory me bilkul nahi hai, to us heading ke liye "addons" me chhota Hinglish bullet do (max 25 words, plain text, koi LaTeX/$ nahi) jisme wo fact ho.
 
 Output STRICT JSON:
-{"map":[{"h":0,"qs":[12,15]}],"addons":[{"h":0,"points":["..."]}]}`;
+{"map":[{"h":0,"title":"heading ka text","qs":[12,15]}],"addons":[{"h":0,"title":"heading ka text","points":["..."]}]}`;
 
     const raw = await ai(SYSTEM, user);
     const { map, addons } = parseJson(raw);
 
-    const updated = mergeIntoMd(md, map, addons);
-    const mapped = map.reduce((n, m) => n + (m.qs?.length || 0), 0);
+    const { md: updated, merged } = mergeIntoMd(md, map, addons);
+    const mapped = merged;
 
     const { error: upErr } = await admin.from("ssc_chapter_theory").upsert(
       {
@@ -384,12 +385,14 @@ Output STRICT JSON:
         ok: true,
         basis,
         mapped,
+        linked: /^>\s*Covers:/im.test(updated),
         addons: addons.reduce((n, a) => n + (a.points?.length || 0), 0),
         fetched: qs.length,
         hasMore: qs.length === limit,
         nextOffset: offset + qs.length,
         chars: updated.length,
       }),
+
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
