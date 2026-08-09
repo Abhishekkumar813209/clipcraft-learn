@@ -133,13 +133,15 @@ function mergeIntoMd(
     const hi = resolve(m.h, m.title);
     const e = byHead.get(hi) ?? { qs: new Set<number>(), points: [] };
     for (const q of m.qs || []) {
-      // AI kabhi number deta hai, kabhi "Q603" jaisi string
-      const n = Number(String(q).replace(/[^0-9]/g, ""));
+      // AI number, "Q603" string, ya {q_id:"Q603"} object — sabhi handle karo
+      const src = q && typeof q === "object" ? Object.values(q as Record<string, unknown>).join(" ") : String(q);
+      const n = Number(src.replace(/[^0-9]/g, ""));
       if (Number.isFinite(n) && n > 0) {
         e.qs.add(n);
         merged++;
       }
     }
+
 
     byHead.set(hi, e);
   }
