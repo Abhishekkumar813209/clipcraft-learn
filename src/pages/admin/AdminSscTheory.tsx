@@ -218,7 +218,7 @@ export default function AdminSscTheory() {
 
 
 
-  async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '') {
+  async function refine(mode: 'dedupe' | 'split' | 'merge', chapter: string, subtopic = '', subj = subject) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     setStatus((s) => ({ ...s, [k]: `${mode}…` }));
@@ -227,7 +227,7 @@ export default function AdminSscTheory() {
       let state: unknown = undefined;
       for (let pass = 0; pass < 40; pass++) {
         const { data, error } = await supabase.functions.invoke('ssc-theory-refine', {
-          body: { mode, subject, chapter, subtopic, state },
+          body: { mode, subject: subj, chapter, subtopic, state },
         });
         if (error) throw error;
         const d = data as {
@@ -243,8 +243,9 @@ export default function AdminSscTheory() {
         setStatus((s) => ({ ...s, [k]: d?.skipped ? `${mode}: no content` : `${mode} done · ${d?.chars} chars` }));
         break;
       }
-      await refreshRow(chapter, subtopic);
+      await refreshRow(chapter, subtopic, subj);
       return true;
+
     } catch (e) {
       setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
       toast({ title: `${mode} failed`, description: String(e).slice(0, 200), variant: 'destructive' });
