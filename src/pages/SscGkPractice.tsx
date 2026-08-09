@@ -6,6 +6,7 @@ import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator'
 import { fetchSscChapterQuestions, fetchSscSubjectRange, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
 import { gkSubject } from '@/lib/sscGkSubjects';
 import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function SscGkPractice() {
   const nav = useNavigate();
