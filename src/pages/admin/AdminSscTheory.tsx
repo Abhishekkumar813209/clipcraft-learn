@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge, Link2 } from 'lucide-react';
+import { BookOpenText, Loader2, RefreshCw, Eye, Wand2, Split, Merge, Link2, Rocket } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
