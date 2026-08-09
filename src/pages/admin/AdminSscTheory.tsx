@@ -143,7 +143,7 @@ export default function AdminSscTheory() {
    * theory na ho to UPSC theory ki copy base banti hai (UPSC row unchanged),
    * phir 100-question chunks me "Covers: Q…" + missing facts add hote hain.
    */
-  async function mapChunked(chapter: string, subtopic: string, total: number) {
+  async function mapChunked(chapter: string, subtopic: string, total: number, subj = subject) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     try {
@@ -163,7 +163,7 @@ export default function AdminSscTheory() {
         for (let attempt = 0; attempt < 3; attempt++) {
           try {
             const { data, error } = await supabase.functions.invoke('ssc-theory-map', {
-              body: { subject, chapter, subtopic, offset, limit: CHUNK },
+              body: { subject: subj, chapter, subtopic, offset, limit: CHUNK },
             });
             if (error) throw error;
             if ((data as { error?: string })?.error) throw new Error((data as { error?: string }).error);
@@ -186,7 +186,7 @@ export default function AdminSscTheory() {
         await new Promise((r) => setTimeout(r, 800));
       }
 
-      await refreshRow(chapter, subtopic);
+      await refreshRow(chapter, subtopic, subj);
       return true;
     } catch (e) {
       setStatus((s) => ({ ...s, [k]: `error: ${String(e).slice(0, 120)}` }));
@@ -196,6 +196,7 @@ export default function AdminSscTheory() {
       setRunning(null);
     }
   }
+
 
   /** Ek hi button — saare chapters ka question→theory mapping serial-wise. */
   async function mapAllChapters() {
