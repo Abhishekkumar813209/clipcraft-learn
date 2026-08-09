@@ -172,7 +172,7 @@ function mergeIntoMd(
     if (e.points.length) block.push("");
     lines.splice(insertAt, 0, ...block);
   }
-  return lines.join("\n");
+  return { md: lines.join("\n"), merged };
 }
 
 async function ai(system: string, user: string): Promise<string> {
