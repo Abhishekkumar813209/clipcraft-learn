@@ -91,14 +91,15 @@ export default function AdminSscTheory() {
 
   useEffect(() => { load(subject); /* eslint-disable-next-line */ }, [subject]);
 
-  async function refreshRow(chapter: string, subtopic: string) {
+  async function refreshRow(chapter: string, subtopic: string, subj = subject) {
     const { data: row } = await supabase
       .from('ssc_chapter_theory' as never)
       .select('chapter,subtopic,question_count,generated_at,theory_md')
-      .eq('subject', subject).eq('chapter', chapter).eq('subtopic', subtopic)
+      .eq('subject', subj).eq('chapter', chapter).eq('subtopic', subtopic)
       .maybeSingle();
-    if (row) setTheories((t) => ({ ...t, [keyOf(chapter, subtopic)]: row as unknown as TheoryRow }));
+    if (row && subj === subject) setTheories((t) => ({ ...t, [keyOf(chapter, subtopic)]: row as unknown as TheoryRow }));
   }
+
 
   /** 100-question chunks me serial-wise theory banata hai (bade chapters timeout nahi honge). */
   async function generateChunked(chapter: string, subtopic: string, total: number) {
