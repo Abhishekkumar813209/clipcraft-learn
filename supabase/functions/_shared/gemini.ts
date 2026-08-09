@@ -106,10 +106,32 @@ export async function callGemini(
   }
 
 
-  // All Gemini keys exhausted/overloaded → HF fallback
-  console.log(`All ${keys.length} Gemini keys exhausted (last status ${lastStatus}). Falling back to HF.`);
+  // All Gemini keys exhausted/overloaded → Lovable AI, then HF
+  console.log(`All ${keys.length} Gemini keys exhausted (last status ${lastStatus}). Falling back to Lovable AI.`);
+  const lov = await callLovableAI(body);
+  if (lov) return lov;
   return callHuggingFace(body, opts);
 }
+
+async function callLovableAI(body: object): Promise<Response | null> {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) return null;
+  const src = body as Record<string, unknown>;
+  const lovBody = { ...src, model: "google/gemini-2.5-flash" };
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify(lovBody),
+  });
+  if (res.ok) {
+    console.log("Lovable AI gateway used successfully");
+    return res;
+  }
+  const txt = await res.text().catch(() => "");
+  console.error(`Lovable AI error ${res.status}: ${txt.slice(0, 300)}`);
+  return null;
+}
+
 
 async function callHuggingFace(body: object, opts: CallOptions): Promise<Response> {
   const hfToken = Deno.env.get("HUGGINGFACE_TOKEN");
