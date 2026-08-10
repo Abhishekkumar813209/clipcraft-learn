@@ -179,39 +179,51 @@ export default function SscPracticeSession() {
             {current.options.map((opt, i) => {
               const isCorrect = i === current.correct_option;
               const isSelected = selected === i;
+              const optBooked = bm.isO(current.id, opt);
               return (
-                <button
-                  key={i}
-                  onClick={() => handleAnswer(i)}
-                  disabled={showResult}
-                  className={cn(
-                    "w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm font-medium",
-                    showResult
-                      ? isCorrect
-                        ? "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400"
-                        : isSelected
-                        ? "border-destructive bg-destructive/10 text-destructive"
-                        : "border-border text-muted-foreground"
-                      : "border-border hover:border-primary/50 hover:bg-accent/50 text-foreground"
-                  )}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <span className={cn(
-                      "w-6 h-6 rounded-full flex items-center justify-center text-xs border",
-                      showResult && isCorrect ? "bg-green-500 text-white border-green-500" :
-                      showResult && isSelected ? "bg-destructive text-destructive-foreground border-destructive" :
-                      "border-border"
-                    )}>
-                      {showResult && isCorrect ? <CheckCircle className="h-3.5 w-3.5" /> :
-                       showResult && isSelected ? <XCircle className="h-3.5 w-3.5" /> :
-                       String.fromCharCode(65 + i)}
+                <div key={i} className="flex items-start gap-1">
+                  <button
+                    onClick={() => handleAnswer(i)}
+                    disabled={showResult}
+                    className={cn(
+                      "flex-1 text-left px-4 py-3 rounded-xl border-2 transition-all text-sm font-medium",
+                      showResult
+                        ? isCorrect
+                          ? "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400"
+                          : isSelected
+                          ? "border-destructive bg-destructive/10 text-destructive"
+                          : "border-border text-muted-foreground"
+                        : "border-border hover:border-primary/50 hover:bg-accent/50 text-foreground"
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <span className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center text-xs border",
+                        showResult && isCorrect ? "bg-green-500 text-white border-green-500" :
+                        showResult && isSelected ? "bg-destructive text-destructive-foreground border-destructive" :
+                        "border-border"
+                      )}>
+                        {showResult && isCorrect ? <CheckCircle className="h-3.5 w-3.5" /> :
+                         showResult && isSelected ? <XCircle className="h-3.5 w-3.5" /> :
+                         String.fromCharCode(65 + i)}
+                      </span>
+                      {opt}
                     </span>
-                    {opt}
-                  </span>
-                </button>
+                  </button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={cn('shrink-0 mt-1', optBooked ? 'text-amber-600' : 'text-muted-foreground/40 hover:text-amber-600')}
+                    title="Bookmark option"
+                    onClick={() => bookmarkOption(current, opt)}
+                  >
+                    <Bookmark className={cn('h-4 w-4', optBooked && 'fill-current')} />
+                  </Button>
+                </div>
               );
             })}
           </div>
+
 
           {/* Explanation */}
           {showResult && current.explanation && (
