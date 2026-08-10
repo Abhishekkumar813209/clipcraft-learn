@@ -38,6 +38,29 @@ export default function SscEnglishBankPractice() {
   const [showMeaning, setShowMeaning] = useState(false);
   const [openOpt, setOpenOpt] = useState<string | null>(null);
   const [showPassage, setShowPassage] = useState(true);
+  const { user } = useAuth();
+  const bm = useQuizBookmarks(user?.id, 'english', `eng_${category}`);
+
+  async function bookmarkQuestion(item: BankItem) {
+    const res = await bm.toggleQuestion({
+      item_ref: item.id,
+      subcategory: item.topic || null,
+      question_text: item.question_text,
+      correct_text: item.correct_answer || optionText(item, item.correct_option) || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(item: BankItem, text: string) {
+    const res = await bm.toggleOption({
+      item_ref: item.id,
+      subcategory: item.topic || null,
+      question_text: item.question_text,
+      option_text: text,
+      correct_text: item.correct_answer || optionText(item, item.correct_option) || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
 
   useEffect(() => {
     (async () => {
