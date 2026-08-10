@@ -224,15 +224,24 @@ export default function SscGkPractice() {
   return (
     <div className="p-4 sm:p-6 max-w-3xl mx-auto space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <Button variant="ghost" size="sm" onClick={() => setStarted(false)}>
-          <ArrowLeft className="w-4 h-4 mr-1" /> Setup
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" onClick={() => nav('/ssc/gk')}>
+            <LayoutList className="w-4 h-4 mr-1" /> GK / GS
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => nav(base)}>
+            <ArrowLeft className="w-4 h-4 mr-1" /> {meta.label}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setStarted(false)}>
+            Setup
+          </Button>
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Score {score}/{queue.length}</span>
           <QuestionNavigator
             total={queue.length}
             current={idx}
             statuses={statuses}
+            bookmarked={queue.map((item) => bm.isQ(item.id))}
             onSelect={setIdx}
             title={`${meta.label} Questions`}
           />
@@ -246,15 +255,26 @@ export default function SscGkPractice() {
               Q{idx + 1} / {queue.length} · serial {q.serial_no}{q.subtopic ? ` · ${q.subtopic}` : ''}
               {globalMode && q.chapter ? ` · ${q.chapter}` : ''}
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-              onClick={() => nav(theoryForCurrent(q))}
-            >
-              <BookOpenText className="w-4 h-4 sm:mr-1" />
-              <span className="hidden sm:inline">Theory padho</span>
-            </Button>
+            <div className="flex items-center gap-1 shrink-0">
+              <Button
+                size="icon"
+                variant="ghost"
+                className={bm.isQ(q.id) ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}
+                title="Bookmark question"
+                onClick={() => bookmarkQuestion(q)}
+              >
+                <Bookmark className={`w-4 h-4 ${bm.isQ(q.id) ? 'fill-current' : ''}`} />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                onClick={() => nav(theoryForCurrent(q))}
+              >
+                <BookOpenText className="w-4 h-4 sm:mr-1" />
+                <span className="hidden sm:inline">Theory padho</span>
+              </Button>
+            </div>
           </div>
           <p className="font-medium leading-relaxed">{q.question_text}</p>
           <div className="space-y-2">
@@ -268,21 +288,34 @@ export default function SscGkPractice() {
               }
               const why = whyFor(q, o.key);
               const isOpen = !!openWhy[`${idx}-${o.key}`];
+              const optBooked = bm.isO(q.id, o.text);
               return (
                 <div key={o.key}>
-                  <button
-                    onClick={() => {
-                      if (!answer) {
-                        setPicked((p) => p.map((v, i) => (i === idx ? o.key : v)));
-                      } else {
-                        toggleWhy(q, o.key);
-                      }
-                    }}
-                    className={`w-full text-left border rounded-md px-3 py-2 text-sm transition ${cls}`}
-                  >
-                    <span className="font-semibold uppercase mr-2">{o.key}.</span>
-                    {o.text}
-                  </button>
+                  <div className="flex items-start gap-1">
+                    <button
+                      onClick={() => {
+                        if (!answer) {
+                          setPicked((p) => p.map((v, i) => (i === idx ? o.key : v)));
+                        } else {
+                          toggleWhy(q, o.key);
+                        }
+                      }}
+                      className={`flex-1 text-left border rounded-md px-3 py-2 text-sm transition ${cls}`}
+                    >
+                      <span className="font-semibold uppercase mr-2">{o.key}.</span>
+                      {o.text}
+                    </button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className={`shrink-0 ${optBooked ? 'text-amber-600' : 'text-slate-300 hover:text-amber-600'}`}
+                      title="Bookmark option"
+                      onClick={() => bookmarkOption(q, o.text)}
+                    >
+                      <Bookmark className={`w-4 h-4 ${optBooked ? 'fill-current' : ''}`} />
+                    </Button>
+                  </div>
+
                   {answer && isOpen && (
                     <div
                       className={`mt-1 ml-4 text-xs leading-relaxed rounded-md p-2.5 border ${
