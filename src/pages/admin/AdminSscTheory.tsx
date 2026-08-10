@@ -167,11 +167,11 @@ export default function AdminSscTheory() {
    * SINGLE ACTION — "Generate theory with inline question references & links".
    * Theory nahi hai to pehle banti hai, phir har question ka `> Covers: Q…` link theory me inline add hota hai.
    */
-  async function runOne(chapter: string, subtopic: string, total: number) {
+  async function runOne(chapter: string, subtopic: string, total: number, rewrite = false) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     try {
-      if (!theories[k]) await generateChunked(chapter, subtopic, total);
+      if (rewrite || !theories[k]) await generateChunked(chapter, subtopic, total, rewrite);
       const mapped = await mapChunked(chapter, subtopic, total);
       const row = await refreshRow(chapter, subtopic);
       setStatus((s) => ({
@@ -188,25 +188,25 @@ export default function AdminSscTheory() {
   }
 
   /** Poore subject ke saare chapters (+ subtopics) ke liye wahi single action. */
-  async function runSubject() {
+  async function runSubject(rewrite = false) {
     setBulk(true);
     try {
       let i = 0;
       for (const c of chapters) {
         i++;
-        setBulkProgress(`${i}/${chapters.length} · ${c.chapter}`);
-        await runOne(c.chapter, '', c.count);
+        setBulkProgress(`${rewrite ? '♻️ rewrite ' : ''}${i}/${chapters.length} · ${c.chapter}`);
+        await runOne(c.chapter, '', c.count, rewrite);
         const subs = isGrammar ? [] : c.subtopics.filter((s) => s.name !== '—');
         if (subs.length >= 2) {
           for (const s of subs) {
             setBulkProgress(`${i}/${chapters.length} · ${c.chapter} → ${s.name}`);
-            await runOne(c.chapter, s.name, s.count);
+            await runOne(c.chapter, s.name, s.count, rewrite);
           }
         }
         await new Promise((r) => setTimeout(r, 500));
       }
       setBulkProgress(null);
-      toast({ title: 'Theory + inline question links ready 🎉' });
+      toast({ title: rewrite ? 'Theory rewrite + links ready 🎉' : 'Theory + inline question links ready 🎉' });
     } catch (e) {
       toast({ title: 'Ruk gaya', description: String(e).slice(0, 200), variant: 'destructive' });
     } finally {
