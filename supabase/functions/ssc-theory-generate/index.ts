@@ -215,16 +215,13 @@ serve(async (req) => {
     }
 
     const sections: string[] = [];
-    let coveredSoFar = coveredOutline(
-      body.append && existingRow ? String(existingRow.theory_md || "") : "",
-    );
+    const basePrevMd = body.append && existingRow ? String(existingRow.theory_md || "") : "";
+    let coveredSoFar = coveredOutline(basePrevMd);
     for (let i = 0; i < blocks.length; i++) {
       const md = await generateSection(title, subject, i + 1, blocks.length, blocks[i], coveredSoFar, preferLovable);
       if (md) {
         sections.push(md);
-        coveredSoFar = coveredOutline(
-          [coveredSoFar ? "" : "", ...sections].join("\n") + "\n" + coveredSoFar,
-        ) || coveredSoFar;
+        coveredSoFar = coveredOutline(`${basePrevMd}\n${sections.join("\n")}`);
       }
       if (i < blocks.length - 1) await new Promise((r) => setTimeout(r, 600));
     }
