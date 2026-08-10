@@ -173,7 +173,18 @@ export default function SscPracticeSession() {
       {/* Question */}
       <Card>
         <CardContent className="p-6 space-y-5">
-          <p className="text-lg font-medium text-foreground leading-relaxed">{current.question_text}</p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-lg font-medium text-foreground leading-relaxed">{current.question_text}</p>
+            <Button
+              size="icon"
+              variant="ghost"
+              className={cn('shrink-0', bm.isQ(current.id) ? 'text-amber-600' : 'text-muted-foreground/50 hover:text-amber-600')}
+              title="Bookmark question"
+              onClick={() => bookmarkQuestion(current)}
+            >
+              <Bookmark className={cn('h-4 w-4', bm.isQ(current.id) && 'fill-current')} />
+            </Button>
+          </div>
 
           <div className="space-y-3">
             {current.options.map((opt, i) => {
