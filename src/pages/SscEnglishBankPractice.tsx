@@ -229,6 +229,23 @@ export default function SscEnglishBankPractice() {
                   {cur.corrected_sentence && <p className="text-slate-600 mt-1">{cur.corrected_sentence}</p>}
                 </div>
               )}
+              {category === 'spot_error' && (cur.usage_a || cur.usage_b) && (
+                <div className="rounded-md bg-indigo-50 border border-indigo-200 p-3 text-sm space-y-1.5">
+                  <p className="font-semibold text-indigo-800 text-[12px] uppercase tracking-wide">Usage samjho</p>
+                  {cur.usage_a && (
+                    <p className="text-slate-700">
+                      <span className="font-semibold">{cur.error_word || 'Error word'}: </span>
+                      {cur.usage_a}
+                    </p>
+                  )}
+                  {cur.usage_b && (
+                    <p className="text-slate-700">
+                      <span className="font-semibold">{cur.correction || 'Correction'}: </span>
+                      {cur.usage_b}
+                    </p>
+                  )}
+                </div>
+              )}
               {cur.hint && (
                 <div className="rounded-md bg-amber-50 border border-amber-200 p-3 text-sm flex gap-2">
                   <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
