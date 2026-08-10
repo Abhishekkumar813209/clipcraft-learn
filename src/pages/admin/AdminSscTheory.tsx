@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
+import { fetchSscChapters, allowsSubtopicTheory, type ChapterInfo } from '@/lib/sscChapters';
 import { BookOpenText, Loader2, Eye, Link2, RefreshCw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
@@ -207,7 +207,7 @@ export default function AdminSscTheory() {
         i++;
         setBulkProgress(`${rewrite ? '♻️ rewrite ' : ''}${i}/${chapters.length} · ${c.chapter}`);
         await runOne(c.chapter, '', c.count, rewrite);
-        const subs = isGrammar ? [] : c.subtopics.filter((s) => s.name !== '—');
+        const subs = isGrammar || !allowsSubtopicTheory(subject, c.chapter) ? [] : c.subtopics.filter((s) => s.name !== '—');
         if (subs.length >= 2) {
           for (const s of subs) {
             setBulkProgress(`${i}/${chapters.length} · ${c.chapter} → ${s.name}`);
@@ -299,7 +299,7 @@ export default function AdminSscTheory() {
         <CardContent className="space-y-2">
           {chapters.map((c) => {
             const t = theories[keyOf(c.chapter)];
-            const subs = isGrammar ? [] : realSubs(c);
+            const subs = isGrammar || !allowsSubtopicTheory(subject, c.chapter) ? [] : realSubs(c);
             const isOpen = !!subs.length && open === c.chapter;
             const label = isGrammar ? (GRAMMAR_LABELS[c.chapter] || c.chapter) : c.chapter;
             const isLinked = !!t && hasCovers(t.theory_md);
