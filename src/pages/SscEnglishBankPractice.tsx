@@ -129,7 +129,17 @@ export default function SscEnglishBankPractice() {
             <span className="uppercase font-semibold tracking-wide text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Q{cur.serial_no}</span>
             {cur.topic && <span className="text-slate-500">{cur.topic}</span>}
             {cur.exam && <span className="text-slate-400">{cur.exam}</span>}
+            <Button
+              size="icon"
+              variant="ghost"
+              className={`ml-auto ${bm.isQ(cur.id) ? 'text-amber-600' : 'text-slate-400 hover:text-amber-600'}`}
+              title="Bookmark question"
+              onClick={() => bookmarkQuestion(cur)}
+            >
+              <Bookmark className={`w-4 h-4 ${bm.isQ(cur.id) ? 'fill-current' : ''}`} />
+            </Button>
           </div>
+
 
           <button
             className="w-full text-left"
