@@ -2,13 +2,16 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSscQuestions } from '@/hooks/useSscQuestions';
 import { useSubmitAnswer } from '@/hooks/useSscProgress';
-import { TOPIC_META, type SscTopic, type SscQuestion } from '@/types/ssc';
+import { TOPIC_META, SUBJECT_TOPICS, type SscTopic, type SscQuestion } from '@/types/ssc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Bookmark } from 'lucide-react';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuizBookmarks, type BookmarkSubject } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 const TIMER_SECONDS = 30;
 
@@ -30,6 +33,32 @@ export default function SscPracticeSession() {
   const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0, totalTime: 0 });
   const [finished, setFinished] = useState(false);
   const [picksArr, setPicksArr] = useState<(number | null)[]>([]);
+  const { user } = useAuth();
+  const bmSubject: BookmarkSubject = (Object.keys(SUBJECT_TOPICS) as (keyof typeof SUBJECT_TOPICS)[])
+    .find((s) => (SUBJECT_TOPICS[s] as string[]).includes(topic as string)) === 'quant'
+      ? 'maths'
+      : ((Object.keys(SUBJECT_TOPICS) as (keyof typeof SUBJECT_TOPICS)[])
+          .find((s) => (SUBJECT_TOPICS[s] as string[]).includes(topic as string)) as BookmarkSubject) || 'reasoning';
+  const bm = useQuizBookmarks(user?.id, bmSubject, `topic_${topic}`);
+
+  async function bookmarkQuestion(item: SscQuestion) {
+    const res = await bm.toggleQuestion({
+      item_ref: item.id,
+      question_text: item.question_text,
+      correct_text: item.options[item.correct_option] || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(item: SscQuestion, text: string) {
+    const res = await bm.toggleOption({
+      item_ref: item.id,
+      question_text: item.question_text,
+      option_text: text,
+      correct_text: item.options[item.correct_option] || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
 
   useEffect(() => {
     if (shuffled.length) setPicksArr(new Array(shuffled.length).fill(null));
@@ -149,7 +178,7 @@ export default function SscPracticeSession() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-6">
-      <QuestionNavigator total={shuffled.length} current={idx} statuses={navStatuses} onSelect={jumpTo} />
+      <QuestionNavigator total={shuffled.length} current={idx} statuses={navStatuses} bookmarked={shuffled.map((x) => bm.isQ(x.id))} onSelect={jumpTo} />
       {/* Header */}
       <div className="flex items-center justify-between">
         <button onClick={() => navigate('/ssc/practice')} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -173,45 +202,68 @@ export default function SscPracticeSession() {
       {/* Question */}
       <Card>
         <CardContent className="p-6 space-y-5">
-          <p className="text-lg font-medium text-foreground leading-relaxed">{current.question_text}</p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-lg font-medium text-foreground leading-relaxed">{current.question_text}</p>
+            <Button
+              size="icon"
+              variant="ghost"
+              className={cn('shrink-0', bm.isQ(current.id) ? 'text-amber-600' : 'text-muted-foreground/50 hover:text-amber-600')}
+              title="Bookmark question"
+              onClick={() => bookmarkQuestion(current)}
+            >
+              <Bookmark className={cn('h-4 w-4', bm.isQ(current.id) && 'fill-current')} />
+            </Button>
+          </div>
 
           <div className="space-y-3">
             {current.options.map((opt, i) => {
               const isCorrect = i === current.correct_option;
               const isSelected = selected === i;
+              const optBooked = bm.isO(current.id, opt);
               return (
-                <button
-                  key={i}
-                  onClick={() => handleAnswer(i)}
-                  disabled={showResult}
-                  className={cn(
-                    "w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm font-medium",
-                    showResult
-                      ? isCorrect
-                        ? "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400"
-                        : isSelected
-                        ? "border-destructive bg-destructive/10 text-destructive"
-                        : "border-border text-muted-foreground"
-                      : "border-border hover:border-primary/50 hover:bg-accent/50 text-foreground"
-                  )}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <span className={cn(
-                      "w-6 h-6 rounded-full flex items-center justify-center text-xs border",
-                      showResult && isCorrect ? "bg-green-500 text-white border-green-500" :
-                      showResult && isSelected ? "bg-destructive text-destructive-foreground border-destructive" :
-                      "border-border"
-                    )}>
-                      {showResult && isCorrect ? <CheckCircle className="h-3.5 w-3.5" /> :
-                       showResult && isSelected ? <XCircle className="h-3.5 w-3.5" /> :
-                       String.fromCharCode(65 + i)}
+                <div key={i} className="flex items-start gap-1">
+                  <button
+                    onClick={() => handleAnswer(i)}
+                    disabled={showResult}
+                    className={cn(
+                      "flex-1 text-left px-4 py-3 rounded-xl border-2 transition-all text-sm font-medium",
+                      showResult
+                        ? isCorrect
+                          ? "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400"
+                          : isSelected
+                          ? "border-destructive bg-destructive/10 text-destructive"
+                          : "border-border text-muted-foreground"
+                        : "border-border hover:border-primary/50 hover:bg-accent/50 text-foreground"
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <span className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center text-xs border",
+                        showResult && isCorrect ? "bg-green-500 text-white border-green-500" :
+                        showResult && isSelected ? "bg-destructive text-destructive-foreground border-destructive" :
+                        "border-border"
+                      )}>
+                        {showResult && isCorrect ? <CheckCircle className="h-3.5 w-3.5" /> :
+                         showResult && isSelected ? <XCircle className="h-3.5 w-3.5" /> :
+                         String.fromCharCode(65 + i)}
+                      </span>
+                      {opt}
                     </span>
-                    {opt}
-                  </span>
-                </button>
+                  </button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={cn('shrink-0 mt-1', optBooked ? 'text-amber-600' : 'text-muted-foreground/40 hover:text-amber-600')}
+                    title="Bookmark option"
+                    onClick={() => bookmarkOption(current, opt)}
+                  >
+                    <Bookmark className={cn('h-4 w-4', optBooked && 'fill-current')} />
+                  </Button>
+                </div>
               );
             })}
           </div>
+
 
           {/* Explanation */}
           {showResult && current.explanation && (

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
 import { gkSubject } from '@/lib/sscGkSubjects';
 import { supabase } from '@/integrations/supabase/client';
-import { ChevronDown, ChevronRight, BookOpenText, Play, Loader2, Sparkles, Layers } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpenText, Play, Loader2, Sparkles, Layers, ArrowLeft } from 'lucide-react';
 
 const numeric = (v: string) => v.replace(/[^0-9]/g, '');
 
@@ -61,6 +61,9 @@ export default function SscGkSubject() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4 sm:p-6 text-slate-900">
       <div className="max-w-5xl mx-auto space-y-6">
+        <Button variant="ghost" size="sm" className="text-emerald-700 -ml-2" onClick={() => nav('/ssc/gk')}>
+          <ArrowLeft className="w-4 h-4 mr-1" /> GK / GS
+        </Button>
         <div className="flex items-center gap-3">
           <span className="text-3xl">{meta.emoji}</span>
           <div>
@@ -71,6 +74,7 @@ export default function SscGkSubject() {
             </p>
           </div>
         </div>
+
 
         <Card className="bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200 shadow-sm">
           <CardContent className="p-5 space-y-3">

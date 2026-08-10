@@ -74,6 +74,51 @@ export async function fetchChapterBookmarks(userId: string, chapter: string): Pr
   return { qRefs, oKeys };
 }
 
+// Reusable quiz bookmark state: question + option bookmarks for one chapter.
+export function useQuizBookmarks(userId: string | undefined, subject: BookmarkSubject, chapter: string) {
+  const [qRefs, setQRefs] = useState<Set<string>>(new Set());
+  const [oKeys, setOKeys] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    let alive = true;
+    if (!userId || !chapter) { setQRefs(new Set()); setOKeys(new Set()); return; }
+    fetchChapterBookmarks(userId, chapter).then((r) => {
+      if (!alive) return;
+      setQRefs(r.qRefs); setOKeys(r.oKeys);
+    });
+    return () => { alive = false; };
+  }, [userId, chapter]);
+
+  const toggleQuestion = useCallback(async (input: Omit<BookmarkInput, 'kind' | 'subject' | 'chapter'>) => {
+    if (!userId || !input.item_ref) return null;
+    const res = await toggleBookmark(userId, { ...input, kind: 'question', subject, chapter });
+    setQRefs((s) => {
+      const n = new Set(s);
+      if (res === 'added') n.add(input.item_ref!); else n.delete(input.item_ref!);
+      return n;
+    });
+    return res;
+  }, [userId, subject, chapter]);
+
+  const toggleOption = useCallback(async (input: Omit<BookmarkInput, 'kind' | 'subject' | 'chapter'>) => {
+    if (!userId || !input.item_ref || !input.option_text) return null;
+    const res = await toggleBookmark(userId, { ...input, kind: 'option', subject, chapter });
+    const k = `${input.item_ref}||${input.option_text}`;
+    setOKeys((s) => {
+      const n = new Set(s);
+      if (res === 'added') n.add(k); else n.delete(k);
+      return n;
+    });
+    return res;
+  }, [userId, subject, chapter]);
+
+  const isQ = useCallback((ref: string) => qRefs.has(ref), [qRefs]);
+  const isO = useCallback((ref: string, opt: string) => oKeys.has(`${ref}||${opt}`), [oKeys]);
+
+  return { qRefs, oKeys, toggleQuestion, toggleOption, isQ, isO };
+}
+
+
 // Horizontal-swipe detector. Fires onSwipe on any horizontal drag > threshold px.
 export function useHorizontalSwipe(onSwipe: () => void, threshold = 60) {
   const startX = useRef<number | null>(null);
