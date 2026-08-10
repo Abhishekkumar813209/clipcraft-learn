@@ -5,8 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 import { fetchSscChapterQuestions, fetchSscSubjectRange, shuffle, type ChapterQuestion } from '@/lib/sscChapters';
 import { gkSubject } from '@/lib/sscGkSubjects';
-import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpenText, Loader2, Shuffle, ListOrdered, Bookmark, LayoutList } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuizBookmarks } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 export default function SscGkPractice() {
   const nav = useNavigate();
