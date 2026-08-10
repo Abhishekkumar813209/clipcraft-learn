@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
 import { gkSubject } from '@/lib/sscGkSubjects';
 import { supabase } from '@/integrations/supabase/client';
-import { ChevronDown, ChevronRight, BookOpenText, Play, Loader2, Sparkles, Layers } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpenText, Play, Loader2, Sparkles, Layers, ArrowLeft } from 'lucide-react';
 
 const numeric = (v: string) => v.replace(/[^0-9]/g, '');
 
