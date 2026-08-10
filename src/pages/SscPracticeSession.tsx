@@ -33,6 +33,32 @@ export default function SscPracticeSession() {
   const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0, totalTime: 0 });
   const [finished, setFinished] = useState(false);
   const [picksArr, setPicksArr] = useState<(number | null)[]>([]);
+  const { user } = useAuth();
+  const bmSubject: BookmarkSubject = (Object.keys(SUBJECT_TOPICS) as (keyof typeof SUBJECT_TOPICS)[])
+    .find((s) => (SUBJECT_TOPICS[s] as string[]).includes(topic as string)) === 'quant'
+      ? 'maths'
+      : ((Object.keys(SUBJECT_TOPICS) as (keyof typeof SUBJECT_TOPICS)[])
+          .find((s) => (SUBJECT_TOPICS[s] as string[]).includes(topic as string)) as BookmarkSubject) || 'reasoning';
+  const bm = useQuizBookmarks(user?.id, bmSubject, `topic_${topic}`);
+
+  async function bookmarkQuestion(item: SscQuestion) {
+    const res = await bm.toggleQuestion({
+      item_ref: item.id,
+      question_text: item.question_text,
+      correct_text: item.options[item.correct_option] || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(item: SscQuestion, text: string) {
+    const res = await bm.toggleOption({
+      item_ref: item.id,
+      question_text: item.question_text,
+      option_text: text,
+      correct_text: item.options[item.correct_option] || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
 
   useEffect(() => {
     if (shuffled.length) setPicksArr(new Array(shuffled.length).fill(null));
