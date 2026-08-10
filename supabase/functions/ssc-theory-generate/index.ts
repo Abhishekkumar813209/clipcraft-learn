@@ -135,6 +135,10 @@ serve(async (req) => {
       limit?: number;
       /** chunked mode: append output to existing theory instead of replacing */
       append?: boolean;
+      /** delete existing theory row before generating (full rewrite) */
+      reset?: boolean;
+      /** use Lovable AI Gateway first */
+      preferLovable?: boolean;
     };
     const subject = body.subject;
     const chapter = body.chapter;
@@ -147,6 +151,16 @@ serve(async (req) => {
     }
 
     const admin = createClient(url, service);
+    const preferLovable = body.preferLovable !== false;
+
+    if (body.reset) {
+      await admin
+        .from("ssc_chapter_theory")
+        .delete()
+        .eq("subject", subject)
+        .eq("chapter", chapter)
+        .eq("subtopic", subtopic);
+    }
 
     const { data: existingRow } = await admin
       .from("ssc_chapter_theory")
