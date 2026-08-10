@@ -18,6 +18,31 @@ export default function SscGkPractice() {
   const meta = gkSubject(subjectParam);
   const SUBJECT = meta.key;
   const base = `/ssc/gk/${SUBJECT}`;
+  const { user } = useAuth();
+  const bm = useQuizBookmarks(user?.id, 'gk', `gk_${SUBJECT}`);
+
+  async function bookmarkQuestion(item: ChapterQuestion) {
+    const res = await bm.toggleQuestion({
+      item_ref: item.id,
+      subcategory: item.chapter || null,
+      question_text: item.question_text,
+      correct_text: item[`option_${item.correct_option.toLowerCase()}` as 'option_a'] || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+  async function bookmarkOption(item: ChapterQuestion, text: string) {
+    const res = await bm.toggleOption({
+      item_ref: item.id,
+      subcategory: item.chapter || null,
+      question_text: item.question_text,
+      option_text: text,
+      correct_text: item[`option_${item.correct_option.toLowerCase()}` as 'option_a'] || null,
+    });
+    if (res) toast({ title: res === 'added' ? '🔖 Option bookmarked' : 'Bookmark removed', duration: 1200 });
+  }
+
+
 
   const [params] = useSearchParams();
   const chapter = params.get('chapter') || '';
