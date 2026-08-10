@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, Eye, Link2 } from 'lucide-react';
+import { BookOpenText, Loader2, Eye, Link2, RefreshCw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -26,6 +26,17 @@ const GRAMMAR_LABELS: Record<string, string> = {
 };
 
 const CHUNK = 100;
+
+/** Sirf arts subjects — inki theory UPSC se derive hui thi, isliye SSC questions se rewrite karni hai. */
+const ARTS_SUBJECTS = [
+  'polity',
+  'economy',
+  'indian_geography',
+  'world_geography',
+  'ancient_history',
+  'medieval_history',
+  'modern_history',
+];
 
 interface TheoryRow {
   chapter: string;
@@ -103,7 +114,7 @@ export default function AdminSscTheory() {
   }
 
   /** 100-question chunks me serial-wise theory banata hai (bade chapters timeout nahi honge). */
-  async function generateChunked(chapter: string, subtopic: string, total: number) {
+  async function generateChunked(chapter: string, subtopic: string, total: number, reset = false) {
     const k = keyOf(chapter, subtopic);
     let offset = 0;
     let part = 0;
@@ -114,7 +125,12 @@ export default function AdminSscTheory() {
       const fn = isGrammar ? 'ssc-grammar-theory' : 'ssc-theory-generate';
       const payload = isGrammar
         ? { pos: chapter, offset, limit: CHUNK, append: offset > 0, force: true }
-        : { subject, chapter, subtopic, offset, limit: CHUNK, append: offset > 0, force: true };
+        : {
+            subject, chapter, subtopic, offset, limit: CHUNK,
+            append: offset > 0, force: true,
+            reset: reset && offset === 0,
+            preferLovable: true,
+          };
       const { data, error } = await supabase.functions.invoke(fn, { body: payload });
       if (error) throw error;
       const d = data as { error?: string; hasMore?: boolean; nextOffset?: number };
@@ -162,11 +178,11 @@ export default function AdminSscTheory() {
    * SINGLE ACTION — "Generate theory with inline question references & links".
    * Theory nahi hai to pehle banti hai, phir har question ka `> Covers: Q…` link theory me inline add hota hai.
    */
-  async function runOne(chapter: string, subtopic: string, total: number) {
+  async function runOne(chapter: string, subtopic: string, total: number, rewrite = false) {
     const k = keyOf(chapter, subtopic);
     setRunning(k);
     try {
-      if (!theories[k]) await generateChunked(chapter, subtopic, total);
+      if (rewrite || !theories[k]) await generateChunked(chapter, subtopic, total, rewrite);
       const mapped = await mapChunked(chapter, subtopic, total);
       const row = await refreshRow(chapter, subtopic);
       setStatus((s) => ({
@@ -183,25 +199,25 @@ export default function AdminSscTheory() {
   }
 
   /** Poore subject ke saare chapters (+ subtopics) ke liye wahi single action. */
-  async function runSubject() {
+  async function runSubject(rewrite = false) {
     setBulk(true);
     try {
       let i = 0;
       for (const c of chapters) {
         i++;
-        setBulkProgress(`${i}/${chapters.length} · ${c.chapter}`);
-        await runOne(c.chapter, '', c.count);
+        setBulkProgress(`${rewrite ? '♻️ rewrite ' : ''}${i}/${chapters.length} · ${c.chapter}`);
+        await runOne(c.chapter, '', c.count, rewrite);
         const subs = isGrammar ? [] : c.subtopics.filter((s) => s.name !== '—');
         if (subs.length >= 2) {
           for (const s of subs) {
             setBulkProgress(`${i}/${chapters.length} · ${c.chapter} → ${s.name}`);
-            await runOne(c.chapter, s.name, s.count);
+            await runOne(c.chapter, s.name, s.count, rewrite);
           }
         }
         await new Promise((r) => setTimeout(r, 500));
       }
       setBulkProgress(null);
-      toast({ title: 'Theory + inline question links ready 🎉' });
+      toast({ title: rewrite ? 'Theory rewrite + links ready 🎉' : 'Theory + inline question links ready 🎉' });
     } catch (e) {
       toast({ title: 'Ruk gaya', description: String(e).slice(0, 200), variant: 'destructive' });
     } finally {
@@ -248,14 +264,30 @@ export default function AdminSscTheory() {
               ? 'Loading…'
               : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${linked} linked · ${chapters.length - linked} baaki`}
           </CardTitle>
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-500 text-white"
-            disabled={loading || busy}
-            onClick={runSubject}
-          >
-            {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Link2 className="w-4 h-4 mr-2" />}
-            Generate theory with inline question references & links
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-500 text-white"
+              disabled={loading || busy}
+              onClick={() => runSubject(false)}
+            >
+              {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Link2 className="w-4 h-4 mr-2" />}
+              Generate theory with inline question references & links
+            </Button>
+            {ARTS_SUBJECTS.includes(subject) && (
+              <Button
+                variant="outline"
+                className="border-rose-300 text-rose-700 hover:bg-rose-50"
+                disabled={loading || busy}
+                onClick={() => {
+                  if (!confirm('Purani theory delete hoke sirf SSC questions se nayi theory banegi. Continue?')) return;
+                  runSubject(true);
+                }}
+              >
+                {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                Rewrite theory from SSC questions (purani delete)
+              </Button>
+            )}
+          </div>
         </CardHeader>
 
         {bulkProgress && (

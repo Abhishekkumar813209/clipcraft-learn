@@ -21,6 +21,8 @@ import QuizAnalysis from "./pages/QuizAnalysis";
 import UpscMotivation from "./pages/UpscMotivation";
 import SscLayout from "./pages/SscLayout";
 import SscSubject from "./pages/SscSubject";
+import SscEnglishBank from "./pages/SscEnglishBank";
+import SscEnglishBankPractice from "./pages/SscEnglishBankPractice";
 import SscDashboard from "./pages/SscDashboard";
 import SscPractice from "./pages/SscPractice";
 import SscPracticeSession from "./pages/SscPracticeSession";
@@ -157,6 +159,8 @@ const App = () => (
               
               <Route path="english" element={<SscSubject />} />
               <Route path="english/idioms" element={<SscEnglishIdioms />} />
+              <Route path="english/bank" element={<SscEnglishBank />} />
+              <Route path="english/bank/:category/practice" element={<SscEnglishBankPractice />} />
               <Route path="english/ows" element={<SscEnglishOws />} />
               <Route path="english/synant" element={<SscEnglishSynAnt />} />
               <Route path="english/synant/practice" element={<SscSynAntPractice />} />

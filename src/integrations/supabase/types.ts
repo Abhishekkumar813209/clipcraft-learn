@@ -1047,6 +1047,111 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_english_items: {
+        Row: {
+          book_solution: string | null
+          category: string
+          correct_answer: string | null
+          correct_option: string
+          corrected_sentence: string | null
+          correction: string | null
+          created_at: string
+          error_word: string | null
+          exam: string | null
+          hint: string | null
+          id: string
+          option_a: string | null
+          option_b: string | null
+          option_c: string | null
+          option_d: string | null
+          passage: string | null
+          question_hinglish: string | null
+          question_text: string
+          serial_no: number
+          set_no: number | null
+          solution_hinglish: string | null
+          topic: string | null
+          updated_at: string
+          usage_a: string | null
+          usage_b: string | null
+          usage_c: string | null
+          usage_d: string | null
+          why_a: string | null
+          why_b: string | null
+          why_c: string | null
+          why_d: string | null
+          word_meanings: string | null
+        }
+        Insert: {
+          book_solution?: string | null
+          category: string
+          correct_answer?: string | null
+          correct_option: string
+          corrected_sentence?: string | null
+          correction?: string | null
+          created_at?: string
+          error_word?: string | null
+          exam?: string | null
+          hint?: string | null
+          id?: string
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          passage?: string | null
+          question_hinglish?: string | null
+          question_text: string
+          serial_no: number
+          set_no?: number | null
+          solution_hinglish?: string | null
+          topic?: string | null
+          updated_at?: string
+          usage_a?: string | null
+          usage_b?: string | null
+          usage_c?: string | null
+          usage_d?: string | null
+          why_a?: string | null
+          why_b?: string | null
+          why_c?: string | null
+          why_d?: string | null
+          word_meanings?: string | null
+        }
+        Update: {
+          book_solution?: string | null
+          category?: string
+          correct_answer?: string | null
+          correct_option?: string
+          corrected_sentence?: string | null
+          correction?: string | null
+          created_at?: string
+          error_word?: string | null
+          exam?: string | null
+          hint?: string | null
+          id?: string
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          passage?: string | null
+          question_hinglish?: string | null
+          question_text?: string
+          serial_no?: number
+          set_no?: number | null
+          solution_hinglish?: string | null
+          topic?: string | null
+          updated_at?: string
+          usage_a?: string | null
+          usage_b?: string | null
+          usage_c?: string | null
+          usage_d?: string | null
+          why_a?: string | null
+          why_b?: string | null
+          why_c?: string | null
+          why_d?: string | null
+          word_meanings?: string | null
+        }
+        Relationships: []
+      }
       ssc_grammar_rule_questions: {
         Row: {
           correct_answer_word: string | null
