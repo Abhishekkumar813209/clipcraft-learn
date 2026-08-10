@@ -27,6 +27,17 @@ const GRAMMAR_LABELS: Record<string, string> = {
 
 const CHUNK = 100;
 
+/** Sirf arts subjects — inki theory UPSC se derive hui thi, isliye SSC questions se rewrite karni hai. */
+const ARTS_SUBJECTS = [
+  'polity',
+  'economy',
+  'indian_geography',
+  'world_geography',
+  'ancient_history',
+  'medieval_history',
+  'modern_history',
+];
+
 interface TheoryRow {
   chapter: string;
   subtopic: string;
