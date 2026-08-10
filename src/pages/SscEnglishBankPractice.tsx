@@ -264,7 +264,7 @@ export default function SscEnglishBankPractice() {
                   {cur.word_meanings}
                 </div>
               )}
-              {cur.book_solution && (
+              {cur.book_solution && !perOption && (
                 <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm">
                   <summary className="cursor-pointer font-semibold text-slate-700">Book solution (English)</summary>
                   <p className="mt-1 text-slate-600">{cur.book_solution}</p>
