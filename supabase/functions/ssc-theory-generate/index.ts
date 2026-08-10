@@ -91,7 +91,7 @@ ${block}
         { role: "user", content: userPrompt },
       ],
       temperature: 0.4,
-      max_tokens: 8000,
+      max_tokens: 11000,
     },
     { stripToolsForHF: true, preferLovable },
   );
