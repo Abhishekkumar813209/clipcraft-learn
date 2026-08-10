@@ -3,7 +3,10 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Check, X, Lightbulb, RotateCcw, Languages, ChevronDown, BookOpen } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, X, Lightbulb, RotateCcw, Languages, ChevronDown, BookOpen, Bookmark } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuizBookmarks } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 import {
   bankMeta,
