@@ -170,18 +170,31 @@ export default function SscEnglishBankPractice() {
               const why = optionWhy(cur, l);
               const usage = optionUsage(cur, l);
               const canExpand = !!answer && perOption && (!!why || !!usage);
+              const optBooked = bm.isO(cur.id, text);
               return (
                 <div key={l}>
-                  <button
-                    onClick={() => (answer ? (canExpand ? setOpenOpt(openOpt === l ? null : l) : undefined) : pick(l))}
-                    className={`w-full text-left rounded-lg border px-3 py-2.5 flex items-start gap-3 transition ${cls}`}
-                  >
-                    <span className="shrink-0 w-6 h-6 rounded-md bg-slate-100 grid place-items-center text-xs font-bold uppercase">{l}</span>
-                    <span className="text-sm flex-1" dangerouslySetInnerHTML={{ __html: underlineHtml(text) }} />
-                    {answer && isCorrect && <Check className="w-4 h-4 text-emerald-600 mt-0.5" />}
-                    {answer && isPicked && !isCorrect && <X className="w-4 h-4 text-rose-600 mt-0.5" />}
-                    {canExpand && <ChevronDown className={`w-4 h-4 text-slate-400 mt-0.5 transition ${openOpt === l ? 'rotate-180' : ''}`} />}
-                  </button>
+                  <div className="flex items-start gap-1">
+                    <button
+                      onClick={() => (answer ? (canExpand ? setOpenOpt(openOpt === l ? null : l) : undefined) : pick(l))}
+                      className={`flex-1 text-left rounded-lg border px-3 py-2.5 flex items-start gap-3 transition ${cls}`}
+                    >
+                      <span className="shrink-0 w-6 h-6 rounded-md bg-slate-100 grid place-items-center text-xs font-bold uppercase">{l}</span>
+                      <span className="text-sm flex-1" dangerouslySetInnerHTML={{ __html: underlineHtml(text) }} />
+                      {answer && isCorrect && <Check className="w-4 h-4 text-emerald-600 mt-0.5" />}
+                      {answer && isPicked && !isCorrect && <X className="w-4 h-4 text-rose-600 mt-0.5" />}
+                      {canExpand && <ChevronDown className={`w-4 h-4 text-slate-400 mt-0.5 transition ${openOpt === l ? 'rotate-180' : ''}`} />}
+                    </button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className={`shrink-0 ${optBooked ? 'text-amber-600' : 'text-slate-300 hover:text-amber-600'}`}
+                      title="Bookmark option"
+                      onClick={() => bookmarkOption(cur, text)}
+                    >
+                      <Bookmark className={`w-4 h-4 ${optBooked ? 'fill-current' : ''}`} />
+                    </Button>
+                  </div>
+
                   {canExpand && openOpt === l && (
                     <div className={`mt-1 ml-9 rounded-md border p-3 text-sm space-y-1.5 ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50/60 border-rose-200'}`}>
                       {why && <p className="text-slate-700">{why}</p>}
