@@ -126,7 +126,7 @@ export default function SscEnglishBankPractice() {
 
   return (
     <div className="p-4 sm:p-6 max-w-3xl mx-auto space-y-4 pb-24">
-      <QuestionNavigator total={qs.length} current={idx} statuses={statuses} onSelect={setIdx} title={`${meta.emoji} ${meta.label}`} />
+      <QuestionNavigator total={qs.length} current={idx} statuses={statuses} bookmarked={qs.map((x) => bm.isQ(x.id))} onSelect={setIdx} title={`${meta.emoji} ${meta.label}`} />
 
       <div className="flex items-center justify-between gap-2">
         <Button variant="ghost" size="sm" onClick={() => nav('/ssc/english/bank')} className="text-slate-700">
