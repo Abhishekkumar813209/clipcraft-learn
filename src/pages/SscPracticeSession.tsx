@@ -2,13 +2,16 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSscQuestions } from '@/hooks/useSscQuestions';
 import { useSubmitAnswer } from '@/hooks/useSscProgress';
-import { TOPIC_META, type SscTopic, type SscQuestion } from '@/types/ssc';
+import { TOPIC_META, SUBJECT_TOPICS, type SscTopic, type SscQuestion } from '@/types/ssc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Bookmark } from 'lucide-react';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuizBookmarks, type BookmarkSubject } from '@/lib/bookmarks';
+import { toast } from '@/hooks/use-toast';
 
 const TIMER_SECONDS = 30;
 
