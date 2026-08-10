@@ -46,7 +46,7 @@ RULES (strictly follow):
 - Language: simple Hinglish (Roman). Technical terms English me.
 - Exam-relevant keywords bold karo (**...**).
 - REPETITION BAN: jo points/headings pehle se cover ho chuke hain (ALREADY COVERED list) unko dobara mat likho — sirf naya content do. Agar is part ka sab kuch pehle se covered hai to sirf naye facts (jo missing hain) likho.
-- Coverage thoda generous rakho (~10% extra depth) taaki padhne se pura concept clear ho jaye.
+- DEPTH: normal theory se lagbhag 30-40% ZYADA content do — har fact ke saath uska context (kyu, kab, kisne, related fact, exam trick, common confusion) bhi likho, taaki question ke aas-paas ka pura concept clear ho jaye. Related high-yield facts jo questions se directly juda hai unko bhi cover karo (bina galat/unverified fact banaye).
 - Koi preamble mat likho — seedha content se shuru karo.`;
 
 /** Existing theory se headings + bold keywords nikalta hai taaki AI repeat na kare. */
