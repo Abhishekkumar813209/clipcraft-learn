@@ -329,13 +329,32 @@ serve(async (req) => {
     }
 
 
-    // 3) headings outline
-    const heads = headingsOf(md.split("\n"));
+    // 3) headings outline — agar koi "## " heading nahi hai to bold/plain lines ko heading bana do,
+    // warna ek default heading laga do (400 throw karne ki jagah).
+    let heads = headingsOf(md.split("\n"));
     if (!heads.length) {
-      return new Response(JSON.stringify({ ok: false, error: "theory me koi ## heading nahi hai" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      const lines = md.split("\n");
+      let promoted = false;
+      for (let i = 0; i < lines.length; i++) {
+        const t = lines[i].trim();
+        const boldOnly = /^\*\*(.+)\*\*:?$/.exec(t);
+        if (boldOnly) {
+          lines[i] = `## ${boldOnly[1].trim()}`;
+          promoted = true;
+        }
+      }
+      if (!promoted) {
+        // title (#) ke baad ek generic section heading insert karo
+        const titleIdx = lines.findIndex((l) => /^#\s+/.test(l));
+        const at = titleIdx >= 0 ? titleIdx + 1 : 0;
+        lines.splice(at, 0, "", `## ${chapter}${subtopic ? ` — ${subtopic}` : ""} — Key Points`, "");
+      }
+      md = lines.join("\n");
+      heads = headingsOf(md.split("\n"));
+    }
+    if (!heads.length) {
+      md = `## ${chapter} — Key Points\n\n${md}`;
+      heads = headingsOf(md.split("\n"));
     }
     const outline = heads.map((h, i) => `${i}: ${h.text}`).join("\n");
 
