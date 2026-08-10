@@ -199,7 +199,7 @@ export default function SscSubjectPage() {
           </Card>
         )}
 
-        {topics.map((topic) => {
+        {subject !== 'gk' && topics.map((topic) => {
           const t = TOPIC_META[topic];
           let count = counts?.[topic] || 0;
           if (topic === 'idioms_phrases') count = bbCounts.idiom || 0;
