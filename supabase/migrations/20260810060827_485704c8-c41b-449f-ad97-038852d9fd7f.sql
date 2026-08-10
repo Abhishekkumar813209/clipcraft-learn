@@ -1,0 +1,1 @@
+DELETE FROM public.ssc_chapter_theory WHERE subject = 'polity' AND subtopic <> '';
