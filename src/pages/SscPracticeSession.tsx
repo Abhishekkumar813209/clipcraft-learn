@@ -178,7 +178,7 @@ export default function SscPracticeSession() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-6">
-      <QuestionNavigator total={shuffled.length} current={idx} statuses={navStatuses} onSelect={jumpTo} />
+      <QuestionNavigator total={shuffled.length} current={idx} statuses={navStatuses} bookmarked={shuffled.map((x) => bm.isQ(x.id))} onSelect={jumpTo} />
       {/* Header */}
       <div className="flex items-center justify-between">
         <button onClick={() => navigate('/ssc/practice')} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
