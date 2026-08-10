@@ -103,7 +103,7 @@ export default function AdminSscTheory() {
   }
 
   /** 100-question chunks me serial-wise theory banata hai (bade chapters timeout nahi honge). */
-  async function generateChunked(chapter: string, subtopic: string, total: number) {
+  async function generateChunked(chapter: string, subtopic: string, total: number, reset = false) {
     const k = keyOf(chapter, subtopic);
     let offset = 0;
     let part = 0;
@@ -114,7 +114,12 @@ export default function AdminSscTheory() {
       const fn = isGrammar ? 'ssc-grammar-theory' : 'ssc-theory-generate';
       const payload = isGrammar
         ? { pos: chapter, offset, limit: CHUNK, append: offset > 0, force: true }
-        : { subject, chapter, subtopic, offset, limit: CHUNK, append: offset > 0, force: true };
+        : {
+            subject, chapter, subtopic, offset, limit: CHUNK,
+            append: offset > 0, force: true,
+            reset: reset && offset === 0,
+            preferLovable: true,
+          };
       const { data, error } = await supabase.functions.invoke(fn, { body: payload });
       if (error) throw error;
       const d = data as { error?: string; hasMore?: boolean; nextOffset?: number };
