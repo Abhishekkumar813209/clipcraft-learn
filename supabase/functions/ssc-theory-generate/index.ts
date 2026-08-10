@@ -38,13 +38,29 @@ const SYSTEM =
   `Tum ek SSC/competitive exam faculty ho jo NCERT-style chapter theory likhta hai, poori Hinglish (Roman script) me.
 
 RULES (strictly follow):
-- Sirf diye gaye questions, unke correct answers aur explanations se hi content banao. Apni taraf se galat ya naya unverified fact mat jodo.
-- Output ek book chapter jaisa flowing THEORY hona chahiye — "Q1, Q2" style bilkul nahi. Facts ko logical order me re-arrange karo.
-- Markdown: "## " main subheadings, "### " sub-subheadings, chhote paragraphs + bullet points.
-- Maximum 2-3 markdown tables poore chapter me (classification/values type data). Baaki text + bullets.
+- Sirf diye gaye SSC questions, unke correct answers aur explanations se hi content banao. Apni taraf se galat ya naya unverified fact mat jodo.
+- Output ek book chapter jaisa THEORY hona chahiye — "Q1, Q2" style bilkul nahi. Facts ko logical order me re-arrange karo.
+- STRUCTURE: mostly POINT-WISE bullets (short, crisp, ek line ek fact). Lambe paragraph mat likho — max 2-3 lines ka paragraph.
+- TABLES: poore output ka lagbhag 15-20% hissa markdown tables me ho (comparison, classification, dates, articles, values type data). Poora content table me mat bharo.
+- Markdown: "## " main subheadings, "### " sub-subheadings.
 - Language: simple Hinglish (Roman). Technical terms English me.
 - Exam-relevant keywords bold karo (**...**).
+- REPETITION BAN: jo points/headings pehle se cover ho chuke hain (ALREADY COVERED list) unko dobara mat likho — sirf naya content do. Agar is part ka sab kuch pehle se covered hai to sirf naye facts (jo missing hain) likho.
+- Coverage thoda generous rakho (~10% extra depth) taaki padhne se pura concept clear ho jaye.
 - Koi preamble mat likho — seedha content se shuru karo.`;
+
+/** Existing theory se headings + bold keywords nikalta hai taaki AI repeat na kare. */
+function coveredOutline(md: string): string {
+  if (!md) return "";
+  const heads = [...md.matchAll(/^#{2,3}\s+(.+)$/gm)].map((m) => m[1].trim());
+  const bolds = [...md.matchAll(/\*\*([^*]{3,60})\*\*/g)].map((m) => m[1].trim());
+  const uniq = (a: string[]) => [...new Set(a)];
+  const h = uniq(heads).slice(-80);
+  const b = uniq(bolds).slice(-150);
+  return [h.length ? `Headings: ${h.join(" | ")}` : "", b.length ? `Keywords: ${b.join(", ")}` : ""]
+    .filter(Boolean)
+    .join("\n");
+}
 
 async function generateSection(
   title: string,
@@ -52,14 +68,17 @@ async function generateSection(
   partNo: number,
   totalParts: number,
   block: string,
+  covered: string,
+  preferLovable: boolean,
 ): Promise<string> {
-  const userPrompt = `Subject: ${subject}
+  const userPrompt = `Subject: SSC ${subject}
 Topic: ${title}
-Yeh topic ke questions ka part ${partNo}/${totalParts} hai.
+Yeh topic ke SSC questions ka part ${partNo}/${totalParts} hai.
 
 ${totalParts > 1 ? "Sirf is part ke content ki theory likho (intro/outro dobara mat likho agar part 1 nahi hai)." : ""}
 ${partNo === totalParts ? 'Sabse aakhir me "## Yaad Rakhne Wale Points" naam ka chhota bullet block do (max 10 bullets).' : ""}
 
+${covered ? `--- ALREADY COVERED (inko repeat mat karna) ---\n${covered}\n--- END ---\n` : ""}
 --- QUESTIONS DATA ---
 ${block}
 --- END DATA ---`;
@@ -74,7 +93,7 @@ ${block}
       temperature: 0.4,
       max_tokens: 8000,
     },
-    { stripToolsForHF: true },
+    { stripToolsForHF: true, preferLovable },
   );
 
   if (!res.ok) {
