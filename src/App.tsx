@@ -21,6 +21,8 @@ import QuizAnalysis from "./pages/QuizAnalysis";
 import UpscMotivation from "./pages/UpscMotivation";
 import SscLayout from "./pages/SscLayout";
 import SscSubject from "./pages/SscSubject";
+import SscEnglishBank from "./pages/SscEnglishBank";
+import SscEnglishBankPractice from "./pages/SscEnglishBankPractice";
 import SscDashboard from "./pages/SscDashboard";
 import SscPractice from "./pages/SscPractice";
 import SscPracticeSession from "./pages/SscPracticeSession";
