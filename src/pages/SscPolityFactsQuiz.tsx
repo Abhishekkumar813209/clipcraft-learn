@@ -4,19 +4,21 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Bookmark, Check, X, RotateCcw } from 'lucide-react';
-import { buildPolityQuiz, politySheet, polityCounts, type PolityQ } from '@/lib/polityQuiz';
+import { buildPolityQuiz, politySheet, polityCounts, polityTarget, type PolityQ } from '@/lib/polityQuiz';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuizBookmarks } from '@/lib/bookmarks';
 import { toast } from '@/hooks/use-toast';
 import { QuestionNavigator, type QStatus } from '@/components/QuestionNavigator';
 
-const SIZES = [10, 20, 30, 50];
+const BASE_SIZES = [10, 20, 30, 50, 100];
 
 export default function SscPolityFactsQuiz() {
   const nav = useNavigate();
   const { sheet } = useParams<{ sheet: string }>();
   const meta = politySheet(sheet);
   const total = polityCounts[meta.key] || 0;
+  const target = polityTarget(meta.key);
+  const SIZES = [...new Set([...BASE_SIZES.filter((s) => s < target), target])];
   const { user } = useAuth();
   const bm = useQuizBookmarks(user?.id, 'gk', `polity_${meta.key}`);
 
@@ -82,7 +84,7 @@ export default function SscPolityFactsQuiz() {
           <span className="text-3xl">{meta.emoji}</span>
           <div>
             <h1 className="text-2xl font-bold">{meta.label}</h1>
-            <p className="text-sm text-slate-500">{total} facts · fact-recall MCQs</p>
+            <p className="text-sm text-slate-500">{target} MCQs · {total} facts</p>
           </div>
         </div>
 
@@ -92,7 +94,7 @@ export default function SscPolityFactsQuiz() {
               <div>
                 <div className="text-sm font-medium mb-2">Kitne questions?</div>
                 <div className="flex gap-2 flex-wrap">
-                  {SIZES.filter((s) => s <= Math.max(total, 10)).map((s) => (
+                  {SIZES.map((s) => (
                     <Button key={s} size="sm" variant={size === s ? 'default' : 'outline'}
                       className={size === s ? 'bg-emerald-600 hover:bg-emerald-500' : 'border-emerald-200 text-emerald-700'}
                       onClick={() => setSize(s)}>{s}</Button>

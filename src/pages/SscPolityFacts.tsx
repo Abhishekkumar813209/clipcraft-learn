@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { POLITY_SHEETS, polityCounts } from '@/lib/polityQuiz';
+import { POLITY_SHEETS, polityCounts, polityTarget } from '@/lib/polityQuiz';
 
 export default function SscPolityFacts() {
   const nav = useNavigate();
@@ -32,7 +32,7 @@ export default function SscPolityFacts() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold">{s.label}</h3>
                   <p className="text-sm text-muted-foreground mt-0.5">{s.blurb}</p>
-                  <p className="text-xs text-emerald-700 mt-1.5 font-medium">{polityCounts[s.key] || 0} facts</p>
+                  <p className="text-xs text-emerald-700 mt-1.5 font-medium">{polityTarget(s.key)} MCQs · {polityCounts[s.key] || 0} facts</p>
                 </div>
               </CardContent>
             </Card>
