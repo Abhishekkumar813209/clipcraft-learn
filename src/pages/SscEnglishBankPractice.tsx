@@ -47,6 +47,7 @@ export default function SscEnglishBankPractice() {
       subcategory: item.topic || null,
       question_text: item.question_text,
       correct_text: item.correct_answer || optionText(item, item.correct_option) || null,
+      meta: { options: optionLetters.map((l) => optionText(item, l)).filter(Boolean) },
     });
     if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }

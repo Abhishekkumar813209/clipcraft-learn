@@ -46,6 +46,7 @@ export default function SscPracticeSession() {
       item_ref: item.id,
       question_text: item.question_text,
       correct_text: item.options[item.correct_option] || null,
+      meta: { options: item.options },
     });
     if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }

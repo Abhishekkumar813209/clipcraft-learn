@@ -27,6 +27,7 @@ export default function SscGkPractice() {
       subcategory: item.chapter || null,
       question_text: item.question_text,
       correct_text: item[`option_${item.correct_option.toLowerCase()}` as 'option_a'] || null,
+      meta: { options: [item.option_a, item.option_b, item.option_c, item.option_d].filter(Boolean) },
     });
     if (res) toast({ title: res === 'added' ? '🔖 Question bookmarked' : 'Bookmark removed', duration: 1200 });
   }
