@@ -45,6 +45,8 @@ export default function SscPosVerbBasicPractice() {
   const [sp] = useSearchParams();
   const nav = useNavigate();
   const { pos = 'verb' } = useParams();
+  const from = Number(sp.get('from')) || 0;
+  const to = Number(sp.get('to')) || 0;
   const n = Number(sp.get('n')) || 20;
 
   const [rows, setRows] = useState<Row[]>([]);
