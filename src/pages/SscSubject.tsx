@@ -21,12 +21,13 @@ interface EnglishCard {
 }
 
 const ENGLISH_CARDS: EnglishCard[] = [
-  { key: 'spot_error', label: 'Error Detection', icon: '🔍', blurb: 'Spot the error — hint, usage & Hinglish solution', to: '/ssc/english/bank/spot_error/practice', badge: 'PYQ', countKey: 'spot_error' },
-  { key: 'sentence_improvement', label: 'Sentence Improvement', icon: '✍️', blurb: 'Best correction chuno — hint + Hinglish solution', to: '/ssc/english/bank/sentence_improvement/practice', badge: 'PYQ', countKey: 'sentence_improvement' },
-  { key: 'fill_blanks', label: 'Fill in the Blanks', icon: '🧩', blurb: 'Har option ka kyu sahi/galat', to: '/ssc/english/bank/fill_blanks/practice', badge: 'PYQ', countKey: 'fill_blanks' },
-  { key: 'cloze', label: 'Cloze Test', icon: '📖', blurb: 'Passage-wise blanks with per-option explanation', to: '/ssc/english/bank/cloze/practice', badge: 'PYQ', countKey: 'cloze' },
-  { key: 'passive_voice', label: 'Active / Passive Voice', icon: '🔄', blurb: 'Rules + spot the error drills', to: '/ssc/english/grammar/passive_voice' },
-  { key: 'narration', label: 'Narration', icon: '💬', blurb: 'Direct & indirect speech — theory + MCQs', to: '/ssc/english/grammar/narration' },
+  { key: 'spot_error', label: 'Error Detection', icon: '🔍', blurb: 'Spot the error — hint, usage & Hinglish solution', to: '/ssc/english/bank/spot_error', badge: 'PYQ', countKey: 'spot_error' },
+  { key: 'sentence_improvement', label: 'Sentence Improvement', icon: '✍️', blurb: 'Best correction chuno — hint + Hinglish solution', to: '/ssc/english/bank/sentence_improvement', badge: 'PYQ', countKey: 'sentence_improvement' },
+  { key: 'fill_blanks', label: 'Fill in the Blanks', icon: '🧩', blurb: 'Har option ka kyu sahi/galat', to: '/ssc/english/bank/fill_blanks', badge: 'PYQ', countKey: 'fill_blanks' },
+  { key: 'cloze', label: 'Cloze Test', icon: '📖', blurb: 'Passage-wise blanks with per-option explanation', to: '/ssc/english/bank/cloze', badge: 'PYQ', countKey: 'cloze' },
+  { key: 'parajumble', label: 'Parajumble', icon: '🧵', blurb: 'Sentence rearrangement — position logic hint + solver lesson', to: '/ssc/english/bank/parajumble', badge: 'New · PYQ', countKey: 'parajumble' },
+  { key: 'passive_voice', label: 'Active / Passive Voice', icon: '🔄', blurb: 'Rules + spot the error drills · range se practice', to: '/ssc/english/grammar/passive_voice' },
+  { key: 'narration', label: 'Narration', icon: '💬', blurb: 'Direct & indirect speech — theory + range-wise MCQs', to: '/ssc/english/grammar/narration' },
 ];
 
 
