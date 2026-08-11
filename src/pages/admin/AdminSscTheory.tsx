@@ -69,6 +69,7 @@ export default function AdminSscTheory() {
   const [status, setStatus] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<TheoryRow | null>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const [doneCount, setDoneCount] = useState(0);
 
   const isGrammar = subject === 'english_grammar';
 
