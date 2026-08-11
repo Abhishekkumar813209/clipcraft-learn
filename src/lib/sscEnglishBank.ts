@@ -1,4 +1,4 @@
-export type BankCategory = 'spot_error' | 'sentence_improvement' | 'fill_blanks' | 'cloze';
+export type BankCategory = 'spot_error' | 'sentence_improvement' | 'fill_blanks' | 'cloze' | 'parajumble';
 
 export interface BankMeta {
   key: BankCategory;
