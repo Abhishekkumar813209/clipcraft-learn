@@ -267,7 +267,7 @@ export default function SscSubjectPage() {
                       </span>
                     )}
                     <h3 className="font-semibold text-foreground">{t.label}</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>
+                    {subject !== 'quant' && <p className="text-sm text-muted-foreground mt-0.5">{count} questions</p>}
                   </div>
                 </div>
               </CardContent>
