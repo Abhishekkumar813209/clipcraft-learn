@@ -40,6 +40,18 @@ export const polityCounts: Record<string, number> = POLITY_FACTS.reduce((acc, f)
   return acc;
 }, {} as Record<string, number>);
 
+/** Har sheet ka MCQ target — facts se forward/reverse variants bana ke itne questions milte hain. */
+export const POLITY_TARGETS: Record<string, number> = {
+  parts: 100,
+  schedules: 50,
+  sources: 200,
+  articles: 500,
+  amendments: 200,
+};
+
+export const polityTarget = (sheet: string) =>
+  POLITY_TARGETS[sheet] ?? (polityCounts[sheet] || 0);
+
 export interface PolityQ {
   id: string;
   question: string;
