@@ -310,9 +310,6 @@ export default function AdminSscTheory() {
               Rewrite theory from SSC questions (+ inline Q links)
             </Button>
           </div>
-
-            )}
-          </div>
         </CardHeader>
 
         {bulkProgress && (
