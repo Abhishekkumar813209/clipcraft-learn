@@ -105,6 +105,7 @@ export default function AdminSscTheory() {
   async function load(sub: string) {
     setLoading(true);
     setPreview(null);
+    setDoneCount(loadDone(sub).length);
     const ch = sub === 'english_grammar' ? await loadGrammarChapters() : await fetchSscChapters(sub);
     setChapters(ch);
     await loadTheories(sub);
