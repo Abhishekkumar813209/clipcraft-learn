@@ -122,7 +122,8 @@ export default function SscEnglishBankPractice() {
       </div>
     );
 
-  const perOption = category === 'cloze' || category === 'fill_blanks';
+  const isPara = category === 'parajumble';
+  const perOption = category === 'cloze' || category === 'fill_blanks' || isPara;
   const hasHinglish = !!cur.question_hinglish;
 
   return (
@@ -130,25 +131,26 @@ export default function SscEnglishBankPractice() {
       <QuestionNavigator total={qs.length} current={idx} statuses={statuses} bookmarked={qs.map((x) => bm.isQ(x.id))} onSelect={setIdx} title={`${meta.emoji} ${meta.label}`} />
 
       <div className="flex items-center justify-between gap-2">
-        <Button variant="ghost" size="sm" onClick={() => nav('/ssc/english/bank')} className="text-slate-700">
-          <ArrowLeft className="w-4 h-4 mr-1" />Bank
+        <Button variant="ghost" size="sm" onClick={() => nav(`/ssc/english/bank/${category}`)} className="text-slate-700">
+          <ArrowLeft className="w-4 h-4 mr-1" />Range
         </Button>
         <div className="text-sm text-slate-600 mr-12">
           Q {idx + 1}/{qs.length} · <span className="text-emerald-600 font-semibold">{score}</span>/{attempted} correct
         </div>
       </div>
 
-      {category === 'cloze' && cur.passage && (
+      {(category === 'cloze' || isPara) && cur.passage && (
         <Card className="border-sky-100 bg-sky-50/50">
           <CardContent className="p-4">
             <button className="flex items-center gap-2 text-xs font-semibold text-sky-800 uppercase tracking-wide" onClick={() => setShowPassage((v) => !v)}>
-              <BookOpen className="w-3.5 h-3.5" /> Passage · Set {cur.set_no}
+              <BookOpen className="w-3.5 h-3.5" /> {isPara ? 'Statements / Parts' : `Passage · Set ${cur.set_no}`}
               <ChevronDown className={`w-3.5 h-3.5 transition ${showPassage ? 'rotate-180' : ''}`} />
             </button>
-            {showPassage && <p className="text-sm text-slate-700 leading-relaxed mt-2">{cur.passage}</p>}
+            {showPassage && <p className="text-sm text-slate-700 leading-relaxed mt-2 whitespace-pre-line">{cur.passage}</p>}
           </CardContent>
         </Card>
       )}
+
 
       <Card className="border-emerald-100">
         <CardContent className="p-5 space-y-4">
@@ -299,27 +301,30 @@ export default function SscEnglishBankPractice() {
               {cur.hint && (
                 <div className="rounded-md bg-amber-50 border border-amber-200 p-3 text-sm flex gap-2">
                   <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                  <span>{cur.hint}</span>
+                  <span className="whitespace-pre-line">{cur.hint}</span>
                 </div>
               )}
               {cur.solution_hinglish && (
                 <div className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm">
                   <span className="font-semibold text-slate-800">Solution: </span>
-                  {cur.solution_hinglish}
+                  <span className="whitespace-pre-line">{cur.solution_hinglish}</span>
                 </div>
               )}
               {cur.word_meanings && (
                 <div className="rounded-md bg-violet-50 border border-violet-200 p-3 text-sm">
-                  <span className="font-semibold text-violet-800">Word meanings: </span>
-                  {cur.word_meanings}
+                  <span className="font-semibold text-violet-800">{isPara ? 'Key clues: ' : 'Word meanings: '}</span>
+                  <span className="whitespace-pre-line">{cur.word_meanings}</span>
                 </div>
               )}
-              {cur.book_solution && !perOption && (
-                <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm">
-                  <summary className="cursor-pointer font-semibold text-slate-700">Book solution (English)</summary>
-                  <p className="mt-1 text-slate-600">{cur.book_solution}</p>
+              {cur.book_solution && (!perOption || isPara) && (
+                <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm" open={isPara}>
+                  <summary className="cursor-pointer font-semibold text-slate-700">
+                    {isPara ? 'Solver lesson (kaise solve karein)' : 'Book solution (English)'}
+                  </summary>
+                  <p className="mt-1 text-slate-600 whitespace-pre-line">{cur.book_solution}</p>
                 </details>
               )}
+
             </div>
           )}
         </CardContent>

@@ -47,11 +47,12 @@ export default function SscMathsTopicHub() {
             <div>
               <h3 className="font-semibold text-foreground">Practice Questions</h3>
               <p className="text-sm text-muted-foreground mt-0.5">
-                {count > 0 ? `${count} questions · MCQ practice` : 'Abhi koi question nahi hai'}
+                {count > 0 ? 'MCQ practice' : 'Abhi koi question nahi hai'}
               </p>
             </div>
           </CardContent>
         </Card>
+
 
         {trainers.length === 0 ? (
           <Card className="border-dashed border-border opacity-60">

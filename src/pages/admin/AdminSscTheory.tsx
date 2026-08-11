@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, allowsSubtopicTheory, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, Eye, Link2, RefreshCw } from 'lucide-react';
+import { BookOpenText, Loader2, Eye, RefreshCw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -27,17 +27,6 @@ const GRAMMAR_LABELS: Record<string, string> = {
 
 const CHUNK = 100;
 
-/** Sirf arts subjects — inki theory UPSC se derive hui thi, isliye SSC questions se rewrite karni hai. */
-const ARTS_SUBJECTS = [
-  'polity',
-  'economy',
-  'indian_geography',
-  'world_geography',
-  'ancient_history',
-  'medieval_history',
-  'modern_history',
-];
-
 interface TheoryRow {
   chapter: string;
   subtopic: string;
@@ -48,6 +37,15 @@ interface TheoryRow {
 
 const keyOf = (chapter: string, subtopic = '') => `${chapter}||${subtopic}`;
 const hasCovers = (md: string) => /(^|\n)\s*>\s*covers\s*:/i.test(md || '');
+
+/** Resume support — kaunse chapters is subject me already ban chuke hain. */
+const doneKey = (subject: string) => `ssc-theory-done:${subject}`;
+const loadDone = (subject: string): string[] => {
+  try { return JSON.parse(localStorage.getItem(doneKey(subject)) || '[]') as string[]; } catch { return []; }
+};
+const saveDone = (subject: string, keys: string[]) => {
+  try { localStorage.setItem(doneKey(subject), JSON.stringify(keys)); } catch { /* ignore */ }
+};
 
 export default function AdminSscTheory() {
   const [subject, setSubject] = useState(SUBJECTS[0].key);
@@ -60,6 +58,7 @@ export default function AdminSscTheory() {
   const [status, setStatus] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<TheoryRow | null>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const [doneCount, setDoneCount] = useState(0);
 
   const isGrammar = subject === 'english_grammar';
 
@@ -95,6 +94,7 @@ export default function AdminSscTheory() {
   async function load(sub: string) {
     setLoading(true);
     setPreview(null);
+    setDoneCount(loadDone(sub).length);
     const ch = sub === 'english_grammar' ? await loadGrammarChapters() : await fetchSscChapters(sub);
     setChapters(ch);
     await loadTheories(sub);
@@ -198,32 +198,49 @@ export default function AdminSscTheory() {
     }
   }
 
-  /** Poore subject ke saare chapters (+ subtopics) ke liye wahi single action. */
-  async function runSubject(rewrite = false) {
+  /**
+   * Poore subject ke saare chapters (+ subtopics) ke liye wahi single action.
+   * Jo chapter pichhli baar ban chuka tha wo localStorage se skip ho jaata hai,
+   * isliye interrupt hone par process wahi se resume hota hai (scratch se nahi).
+   */
+  async function runSubject(rewrite = true) {
     setBulk(true);
+    const done = new Set(loadDone(subject));
     try {
       let i = 0;
       for (const c of chapters) {
         i++;
-        setBulkProgress(`${rewrite ? '♻️ rewrite ' : ''}${i}/${chapters.length} · ${c.chapter}`);
-        await runOne(c.chapter, '', c.count, rewrite);
+        const ck = keyOf(c.chapter);
+        if (done.has(ck)) {
+          setStatus((s) => ({ ...s, [ck]: '⏭️ pehle se ho chuka (resume)' }));
+          continue;
+        }
+        setBulkProgress(`${i}/${chapters.length} · ${c.chapter}`);
+        const ok = await runOne(c.chapter, '', c.count, rewrite);
+        if (ok) { done.add(ck); saveDone(subject, [...done]); }
         const subs = isGrammar || !allowsSubtopicTheory(subject, c.chapter) ? [] : c.subtopics.filter((s) => s.name !== '—');
         if (subs.length >= 2) {
           for (const s of subs) {
+            const sk = keyOf(c.chapter, s.name);
+            if (done.has(sk)) continue;
             setBulkProgress(`${i}/${chapters.length} · ${c.chapter} → ${s.name}`);
-            await runOne(c.chapter, s.name, s.count, rewrite);
+            const sok = await runOne(c.chapter, s.name, s.count, rewrite);
+            if (sok) { done.add(sk); saveDone(subject, [...done]); }
           }
         }
         await new Promise((r) => setTimeout(r, 500));
       }
       setBulkProgress(null);
-      toast({ title: rewrite ? 'Theory rewrite + links ready 🎉' : 'Theory + inline question links ready 🎉' });
+      setDoneCount(done.size);
+      toast({ title: 'Theory rewrite + inline question links ready 🎉' });
     } catch (e) {
-      toast({ title: 'Ruk gaya', description: String(e).slice(0, 200), variant: 'destructive' });
+      toast({ title: 'Ruk gaya — dobara button dabao, wahi se resume hoga', description: String(e).slice(0, 200), variant: 'destructive' });
     } finally {
+      setDoneCount(loadDone(subject).length);
       setBulk(false);
     }
   }
+
 
   const realSubs = (c: ChapterInfo) => c.subtopics.filter((s) => s.name !== '—');
   const linked = chapters.filter((c) => {
@@ -239,7 +256,7 @@ export default function AdminSscTheory() {
           <BookOpenText className="w-5 h-5 text-primary" /> SSC Chapter Theory
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Ek hi button: theory banti hai aur usi ke andar har question ka inline reference (<code>Covers: Q…</code>) + link lag jaata hai.
+          Ek hi button: SSC questions se theory rewrite hoti hai aur usi ke andar har question ka inline reference (<code>Covers: Q…</code>) + link lag jaata hai.
         </p>
       </div>
 
@@ -264,29 +281,24 @@ export default function AdminSscTheory() {
               ? 'Loading…'
               : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${linked} linked · ${chapters.length - linked} baaki`}
           </CardTitle>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            {doneCount > 0 && (
+              <button
+                className="text-xs text-muted-foreground underline"
+                disabled={busy}
+                onClick={() => { saveDone(subject, []); setDoneCount(0); }}
+              >
+                Resume progress reset ({doneCount} done)
+              </button>
+            )}
             <Button
               className="bg-emerald-600 hover:bg-emerald-500 text-white"
               disabled={loading || busy}
-              onClick={() => runSubject(false)}
+              onClick={() => runSubject(true)}
             >
-              {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Link2 className="w-4 h-4 mr-2" />}
-              Generate theory with inline question references & links
+              {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+              Rewrite theory from SSC questions (+ inline Q links)
             </Button>
-            {ARTS_SUBJECTS.includes(subject) && (
-              <Button
-                variant="outline"
-                className="border-rose-300 text-rose-700 hover:bg-rose-50"
-                disabled={loading || busy}
-                onClick={() => {
-                  if (!confirm('Purani theory delete hoke sirf SSC questions se nayi theory banegi. Continue?')) return;
-                  runSubject(true);
-                }}
-              >
-                {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-                Rewrite theory from SSC questions (purani delete)
-              </Button>
-            )}
           </div>
         </CardHeader>
 

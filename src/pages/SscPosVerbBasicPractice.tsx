@@ -45,6 +45,8 @@ export default function SscPosVerbBasicPractice() {
   const [sp] = useSearchParams();
   const nav = useNavigate();
   const { pos = 'verb' } = useParams();
+  const from = Number(sp.get('from')) || 0;
+  const to = Number(sp.get('to')) || 0;
   const n = Number(sp.get('n')) || 20;
 
   const [rows, setRows] = useState<Row[]>([]);
@@ -65,13 +67,16 @@ export default function SscPosVerbBasicPractice() {
       const { data } = await supabase.from('ssc_pos_spot_error' as never)
         .select('*').eq('pos', pos).eq('level', 'basic').order('q_no');
       const all = (data || []) as unknown as Row[];
-      // shuffle & slice
-      const shuffled = [...all].sort(() => Math.random() - 0.5).slice(0, Math.min(n, all.length));
-      setRows(shuffled);
-      setPicks(new Array(shuffled.length).fill(null));
+      // range mode (from–to) ya legacy random-n mode
+      const picked = from && to
+        ? all.slice(Math.max(0, from - 1), to)
+        : [...all].sort(() => Math.random() - 0.5).slice(0, Math.min(n, all.length));
+      setRows(picked);
+      setPicks(new Array(picked.length).fill(null));
       setLoading(false);
     })();
-  }, [n, pos]);
+  }, [n, from, to, pos]);
+
 
   const q = rows[i];
   const picked = picks[i];

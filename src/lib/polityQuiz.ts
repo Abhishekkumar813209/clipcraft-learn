@@ -40,6 +40,18 @@ export const polityCounts: Record<string, number> = POLITY_FACTS.reduce((acc, f)
   return acc;
 }, {} as Record<string, number>);
 
+/** Har sheet ka MCQ target — facts se forward/reverse variants bana ke itne questions milte hain. */
+export const POLITY_TARGETS: Record<string, number> = {
+  parts: 100,
+  schedules: 50,
+  sources: 200,
+  articles: 500,
+  amendments: 200,
+};
+
+export const polityTarget = (sheet: string) =>
+  POLITY_TARGETS[sheet] ?? (polityCounts[sheet] || 0);
+
 export interface PolityQ {
   id: string;
   question: string;
@@ -64,21 +76,39 @@ function pickDistractors(pool: string[], correct: string, n = 3) {
   return shuffle(uniq).slice(0, n);
 }
 
-/** Builds MCQs for one sheet — mixes forward (prompt→answer) and reverse questions. */
+/**
+ * Builds MCQs for one sheet — har fact se forward (prompt→answer) aur reverse dono variants
+ * banti hain, isliye target count facts se zyada ho sakta hai.
+ */
 export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: number): PolityQ[] {
   const meta = politySheet(sheet);
   let rows = factsOf(sheet);
   if (from || to) rows = rows.slice((from ? from - 1 : 0), to ?? rows.length);
+  if (!rows.length) return [];
   const answers = rows.map((r) => r.answer);
   const prompts = rows.map((r) => r.prompt);
 
-  const qs: PolityQ[] = shuffle(rows).slice(0, limit).map((f, i) => {
-    const reverse = i % 3 === 2 && prompts.length > 4;
+  // forward + reverse variants ka pool
+  type Variant = { f: PolityFact; reverse: boolean };
+  const pool: Variant[] = [];
+  for (const f of rows) {
+    pool.push({ f, reverse: false });
+    if (prompts.length > 4) pool.push({ f, reverse: true });
+  }
+
+  const picked: Variant[] = [];
+  while (picked.length < limit) {
+    const batch = shuffle(pool);
+    picked.push(...batch.slice(0, limit - picked.length));
+    if (!pool.length) break;
+  }
+
+  const qs: PolityQ[] = picked.map(({ f, reverse }, i) => {
     const correct = reverse ? f.prompt : f.answer;
     const distractors = pickDistractors(reverse ? prompts : answers, correct);
     const options = shuffle([correct, ...distractors]);
     return {
-      id: `${sheet}-${i}-${f.prompt.slice(0, 24)}`,
+      id: `${sheet}-${i}-${reverse ? 'r' : 'f'}-${f.prompt.slice(0, 24)}`,
       question: (reverse ? meta.askRev : meta.ask).replace('{x}', reverse ? f.answer : f.prompt),
       options,
       correctIndex: options.indexOf(correct),
@@ -89,3 +119,4 @@ export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: n
   });
   return qs.filter((q) => q.options.length >= 2);
 }
+

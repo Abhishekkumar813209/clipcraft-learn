@@ -1,4 +1,4 @@
-export type BankCategory = 'spot_error' | 'sentence_improvement' | 'fill_blanks' | 'cloze';
+export type BankCategory = 'spot_error' | 'sentence_improvement' | 'fill_blanks' | 'cloze' | 'parajumble';
 
 export interface BankMeta {
   key: BankCategory;
@@ -12,6 +12,7 @@ export const BANK_CATEGORIES: BankMeta[] = [
   { key: 'sentence_improvement', label: 'Sentence Improvement', emoji: '✍️', blurb: 'Best correction chuno — hint + Hinglish solution' },
   { key: 'fill_blanks', label: 'Fill in the Blanks', emoji: '🧩', blurb: 'Har option ka kyu sahi/galat — click karke dekho' },
   { key: 'cloze', label: 'Cloze Test', emoji: '📖', blurb: 'Passage-wise blanks with per-option explanation' },
+  { key: 'parajumble', label: 'Parajumble', emoji: '🧵', blurb: 'Sentence rearrangement — position logic hint + solver lesson' },
 ];
 
 export const bankMeta = (key?: string): BankMeta =>
