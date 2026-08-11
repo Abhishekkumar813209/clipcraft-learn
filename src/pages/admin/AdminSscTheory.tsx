@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchSscChapters, allowsSubtopicTheory, type ChapterInfo } from '@/lib/sscChapters';
-import { BookOpenText, Loader2, Eye, Link2, RefreshCw } from 'lucide-react';
+import { BookOpenText, Loader2, Eye, RefreshCw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -26,17 +26,6 @@ const GRAMMAR_LABELS: Record<string, string> = {
 };
 
 const CHUNK = 100;
-
-/** Sirf arts subjects — inki theory UPSC se derive hui thi, isliye SSC questions se rewrite karni hai. */
-const ARTS_SUBJECTS = [
-  'polity',
-  'economy',
-  'indian_geography',
-  'world_geography',
-  'ancient_history',
-  'medieval_history',
-  'modern_history',
-];
 
 interface TheoryRow {
   chapter: string;
@@ -267,7 +256,7 @@ export default function AdminSscTheory() {
           <BookOpenText className="w-5 h-5 text-primary" /> SSC Chapter Theory
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Ek hi button: theory banti hai aur usi ke andar har question ka inline reference (<code>Covers: Q…</code>) + link lag jaata hai.
+          Ek hi button: SSC questions se theory rewrite hoti hai aur usi ke andar har question ka inline reference (<code>Covers: Q…</code>) + link lag jaata hai.
         </p>
       </div>
 
