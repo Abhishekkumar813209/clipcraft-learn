@@ -10,6 +10,26 @@ import { GK_SUBJECTS } from '@/lib/sscGkSubjects';
 
 const BLACK_BOOK_TOPICS: SscTopic[] = ['idioms_phrases', 'one_word_substitution', 'synonyms_antonyms'];
 
+interface EnglishCard {
+  key: string;
+  label: string;
+  icon: string;
+  blurb: string;
+  to: string;
+  badge?: string;
+  countKey?: string;
+}
+
+const ENGLISH_CARDS: EnglishCard[] = [
+  { key: 'spot_error', label: 'Error Detection', icon: '🔍', blurb: 'Spot the error — hint, usage & Hinglish solution', to: '/ssc/english/bank/spot_error/practice', badge: 'PYQ', countKey: 'spot_error' },
+  { key: 'sentence_improvement', label: 'Sentence Improvement', icon: '✍️', blurb: 'Best correction chuno — hint + Hinglish solution', to: '/ssc/english/bank/sentence_improvement/practice', badge: 'PYQ', countKey: 'sentence_improvement' },
+  { key: 'fill_blanks', label: 'Fill in the Blanks', icon: '🧩', blurb: 'Har option ka kyu sahi/galat', to: '/ssc/english/bank/fill_blanks/practice', badge: 'PYQ', countKey: 'fill_blanks' },
+  { key: 'cloze', label: 'Cloze Test', icon: '📖', blurb: 'Passage-wise blanks with per-option explanation', to: '/ssc/english/bank/cloze/practice', badge: 'PYQ', countKey: 'cloze' },
+  { key: 'passive_voice', label: 'Active / Passive Voice', icon: '🔄', blurb: 'Rules + spot the error drills', to: '/ssc/english/grammar/passive_voice' },
+  { key: 'narration', label: 'Narration', icon: '💬', blurb: 'Direct & indirect speech — theory + MCQs', to: '/ssc/english/grammar/narration' },
+];
+
+
 const SLUG_TO_SUBJECT: Record<string, SscSubject> = {
   english: 'english',
   maths: 'quant',
@@ -30,6 +50,8 @@ export default function SscSubjectPage() {
   const { user } = useAuth();
   const [bbAttempted, setBbAttempted] = useState(0);
   const [bbCounts, setBbCounts] = useState<Record<string, number>>({});
+  const [engCounts, setEngCounts] = useState<Record<string, number>>({});
+
   const bbTarget = 300;
 
   useEffect(() => {
@@ -46,8 +68,17 @@ export default function SscSubjectPage() {
         .select('id', { count: 'exact', head: true });
       c.syn_ant_ext = synAntExt || 0;
       setBbCounts(c);
+
+      const ec: Record<string, number> = {};
+      await Promise.all(ENGLISH_CARDS.filter((x) => x.countKey).map(async (x) => {
+        const { count } = await supabase.from('ssc_english_items' as never)
+          .select('id', { count: 'exact', head: true }).eq('category', x.countKey!);
+        ec[x.countKey!] = count || 0;
+      }));
+      setEngCounts(ec);
     })();
   }, [subject]);
+
 
   useEffect(() => {
     if (!user || subject !== 'english') return;
@@ -106,23 +137,30 @@ export default function SscSubjectPage() {
           </Card>
         ))}
 
-        {subject === 'english' && (
+        {subject === 'english' && ENGLISH_CARDS.map((c) => (
           <Card
+            key={c.key}
             className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-emerald-300"
-            onClick={() => navigate('/ssc/english/bank')}
+            onClick={() => navigate(c.to)}
           >
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
-                <span className="text-3xl">📝</span>
+                <span className="text-3xl">{c.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1.5">New</span>
-                  <h3 className="font-semibold text-foreground">PYQ Question Bank</h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">Error Detection · Sentence Improvement · Fill in the Blanks · Cloze</p>
+                  {c.badge && (
+                    <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1.5">{c.badge}</span>
+                  )}
+                  <h3 className="font-semibold text-foreground">{c.label}</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">{c.blurb}</p>
+                  {c.countKey && (
+                    <p className="text-xs text-emerald-700 mt-1.5 font-medium">{engCounts[c.countKey] ?? '…'} questions</p>
+                  )}
                 </div>
               </div>
             </CardContent>
           </Card>
-        )}
+        ))}
+
 
         {subject === 'english' && (
           <Card
@@ -199,7 +237,7 @@ export default function SscSubjectPage() {
           </Card>
         )}
 
-        {subject !== 'gk' && topics.map((topic) => {
+        {subject !== 'gk' && (subject === 'english' ? topics.filter((t) => BLACK_BOOK_TOPICS.includes(t)) : topics).map((topic) => {
           const t = TOPIC_META[topic];
           let count = counts?.[topic] || 0;
           if (topic === 'idioms_phrases') count = bbCounts.idiom || 0;
