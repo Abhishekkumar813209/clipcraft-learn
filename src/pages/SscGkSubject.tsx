@@ -76,6 +76,24 @@ export default function SscGkSubject() {
         </div>
 
 
+        {SUBJECT === 'polity' && (
+          <Card
+            className="cursor-pointer bg-white/80 border-emerald-200 hover:border-emerald-400 hover:shadow-md transition-all"
+            onClick={() => nav('/ssc/gk/polity/facts')}
+          >
+            <CardContent className="p-5 flex items-start gap-3">
+              <span className="text-3xl">🗂️</span>
+              <div className="flex-1">
+                <Badge className="bg-emerald-100 text-emerald-700 border border-emerald-200 mb-1.5">New</Badge>
+                <h3 className="font-semibold">Practice — Polity Master Data</h3>
+                <p className="text-sm text-slate-600 mt-0.5">
+                  Parts & Articles · Schedules · Sources · Important Articles · Duties · Amendments · Landmark Cases · RS & LS Seats
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card className="bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200 shadow-sm">
           <CardContent className="p-5 space-y-3">
             <div className="flex items-center justify-between">

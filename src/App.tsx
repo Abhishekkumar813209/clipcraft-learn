@@ -24,8 +24,9 @@ import SscSubject from "./pages/SscSubject";
 import SscEnglishBank from "./pages/SscEnglishBank";
 import SscEnglishBankPractice from "./pages/SscEnglishBankPractice";
 import SscDashboard from "./pages/SscDashboard";
-import SscPractice from "./pages/SscPractice";
 import SscPracticeSession from "./pages/SscPracticeSession";
+import SscPolityFacts from "./pages/SscPolityFacts";
+import SscPolityFactsQuiz from "./pages/SscPolityFactsQuiz";
 import NqtLayout from "./pages/NqtLayout";
 import NqtDashboard from "./pages/NqtDashboard";
 import NqtPractice from "./pages/NqtPractice";
@@ -146,7 +147,6 @@ const App = () => (
             <Route path="/quizzes/:quizId/analysis" element={<QuizAnalysis />} />
             <Route path="/ssc" element={<ProtectedRoute><SscLayout /></ProtectedRoute>}>
               <Route index element={<SscDashboard />} />
-              <Route path="practice" element={<SscPractice />} />
               <Route path="practice/:topic" element={<SscPracticeSession />} />
               <Route path="blackbook" element={<BlackBookHub />} />
               <Route path="blackbook/browse" element={<BlackBookBrowse />} />
@@ -181,6 +181,8 @@ const App = () => (
               <Route path="maths/:topic/trainer/:slug" element={<SscMathsTrainer />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
+              <Route path="gk/polity/facts" element={<SscPolityFacts />} />
+              <Route path="gk/polity/facts/:sheet" element={<SscPolityFactsQuiz />} />
               <Route path="gk/:subject" element={<SscGkSubject />} />
               <Route path="gk/:subject/practice" element={<SscGkPractice />} />
               <Route path="gk/:subject/theory" element={<SscGkTheory />} />
