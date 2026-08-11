@@ -1,5 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Upload, ListChecks, Users, BookOpenText } from 'lucide-react';
+import { NavLink, Outlet, Link } from 'react-router-dom';
+import { LayoutDashboard, BookOpen, Upload, ListChecks, Users, BookOpenText, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
