@@ -23,6 +23,7 @@ import SscLayout from "./pages/SscLayout";
 import SscSubject from "./pages/SscSubject";
 import SscEnglishBank from "./pages/SscEnglishBank";
 import SscEnglishBankPractice from "./pages/SscEnglishBankPractice";
+import SscEnglishBankSetup from "./pages/SscEnglishBankSetup";
 import SscDashboard from "./pages/SscDashboard";
 import SscPracticeSession from "./pages/SscPracticeSession";
 import SscPolityFacts from "./pages/SscPolityFacts";
