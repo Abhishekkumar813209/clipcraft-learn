@@ -122,7 +122,8 @@ export default function SscEnglishBankPractice() {
       </div>
     );
 
-  const perOption = category === 'cloze' || category === 'fill_blanks';
+  const isPara = category === 'parajumble';
+  const perOption = category === 'cloze' || category === 'fill_blanks' || isPara;
   const hasHinglish = !!cur.question_hinglish;
 
   return (
