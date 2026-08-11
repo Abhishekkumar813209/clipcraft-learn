@@ -131,8 +131,8 @@ export default function SscEnglishBankPractice() {
       <QuestionNavigator total={qs.length} current={idx} statuses={statuses} bookmarked={qs.map((x) => bm.isQ(x.id))} onSelect={setIdx} title={`${meta.emoji} ${meta.label}`} />
 
       <div className="flex items-center justify-between gap-2">
-        <Button variant="ghost" size="sm" onClick={() => nav('/ssc/english/bank')} className="text-slate-700">
-          <ArrowLeft className="w-4 h-4 mr-1" />Bank
+        <Button variant="ghost" size="sm" onClick={() => nav(`/ssc/english/bank/${category}`)} className="text-slate-700">
+          <ArrowLeft className="w-4 h-4 mr-1" />Range
         </Button>
         <div className="text-sm text-slate-600 mr-12">
           Q {idx + 1}/{qs.length} · <span className="text-emerald-600 font-semibold">{score}</span>/{attempted} correct
