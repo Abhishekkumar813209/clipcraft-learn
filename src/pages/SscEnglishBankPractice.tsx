@@ -301,27 +301,30 @@ export default function SscEnglishBankPractice() {
               {cur.hint && (
                 <div className="rounded-md bg-amber-50 border border-amber-200 p-3 text-sm flex gap-2">
                   <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                  <span>{cur.hint}</span>
+                  <span className="whitespace-pre-line">{cur.hint}</span>
                 </div>
               )}
               {cur.solution_hinglish && (
                 <div className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm">
                   <span className="font-semibold text-slate-800">Solution: </span>
-                  {cur.solution_hinglish}
+                  <span className="whitespace-pre-line">{cur.solution_hinglish}</span>
                 </div>
               )}
               {cur.word_meanings && (
                 <div className="rounded-md bg-violet-50 border border-violet-200 p-3 text-sm">
-                  <span className="font-semibold text-violet-800">Word meanings: </span>
-                  {cur.word_meanings}
+                  <span className="font-semibold text-violet-800">{isPara ? 'Key clues: ' : 'Word meanings: '}</span>
+                  <span className="whitespace-pre-line">{cur.word_meanings}</span>
                 </div>
               )}
-              {cur.book_solution && !perOption && (
-                <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm">
-                  <summary className="cursor-pointer font-semibold text-slate-700">Book solution (English)</summary>
-                  <p className="mt-1 text-slate-600">{cur.book_solution}</p>
+              {cur.book_solution && (!perOption || isPara) && (
+                <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm" open={isPara}>
+                  <summary className="cursor-pointer font-semibold text-slate-700">
+                    {isPara ? 'Solver lesson (kaise solve karein)' : 'Book solution (English)'}
+                  </summary>
+                  <p className="mt-1 text-slate-600 whitespace-pre-line">{cur.book_solution}</p>
                 </details>
               )}
+
             </div>
           )}
         </CardContent>
