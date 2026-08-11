@@ -291,28 +291,26 @@ export default function AdminSscTheory() {
               ? 'Loading…'
               : `${chapters.length} ${isGrammar ? 'topics' : 'chapters'} · ${linked} linked · ${chapters.length - linked} baaki`}
           </CardTitle>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            {doneCount > 0 && (
+              <button
+                className="text-xs text-muted-foreground underline"
+                disabled={busy}
+                onClick={() => { saveDone(subject, []); setDoneCount(0); }}
+              >
+                Resume progress reset ({doneCount} done)
+              </button>
+            )}
             <Button
               className="bg-emerald-600 hover:bg-emerald-500 text-white"
               disabled={loading || busy}
-              onClick={() => runSubject(false)}
+              onClick={() => runSubject(true)}
             >
-              {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Link2 className="w-4 h-4 mr-2" />}
-              Generate theory with inline question references & links
+              {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+              Rewrite theory from SSC questions (+ inline Q links)
             </Button>
-            {ARTS_SUBJECTS.includes(subject) && (
-              <Button
-                variant="outline"
-                className="border-rose-300 text-rose-700 hover:bg-rose-50"
-                disabled={loading || busy}
-                onClick={() => {
-                  if (!confirm('Purani theory delete hoke sirf SSC questions se nayi theory banegi. Continue?')) return;
-                  runSubject(true);
-                }}
-              >
-                {busy ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-                Rewrite theory from SSC questions (purani delete)
-              </Button>
+          </div>
+
             )}
           </div>
         </CardHeader>
