@@ -49,6 +49,15 @@ interface TheoryRow {
 const keyOf = (chapter: string, subtopic = '') => `${chapter}||${subtopic}`;
 const hasCovers = (md: string) => /(^|\n)\s*>\s*covers\s*:/i.test(md || '');
 
+/** Resume support — kaunse chapters is subject me already ban chuke hain. */
+const doneKey = (subject: string) => `ssc-theory-done:${subject}`;
+const loadDone = (subject: string): string[] => {
+  try { return JSON.parse(localStorage.getItem(doneKey(subject)) || '[]') as string[]; } catch { return []; }
+};
+const saveDone = (subject: string, keys: string[]) => {
+  try { localStorage.setItem(doneKey(subject), JSON.stringify(keys)); } catch { /* ignore */ }
+};
+
 export default function AdminSscTheory() {
   const [subject, setSubject] = useState(SUBJECTS[0].key);
   const [chapters, setChapters] = useState<ChapterInfo[]>([]);
