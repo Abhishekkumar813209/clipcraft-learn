@@ -139,17 +139,18 @@ export default function SscEnglishBankPractice() {
         </div>
       </div>
 
-      {category === 'cloze' && cur.passage && (
+      {(category === 'cloze' || isPara) && cur.passage && (
         <Card className="border-sky-100 bg-sky-50/50">
           <CardContent className="p-4">
             <button className="flex items-center gap-2 text-xs font-semibold text-sky-800 uppercase tracking-wide" onClick={() => setShowPassage((v) => !v)}>
-              <BookOpen className="w-3.5 h-3.5" /> Passage · Set {cur.set_no}
+              <BookOpen className="w-3.5 h-3.5" /> {isPara ? 'Statements / Parts' : `Passage · Set ${cur.set_no}`}
               <ChevronDown className={`w-3.5 h-3.5 transition ${showPassage ? 'rotate-180' : ''}`} />
             </button>
-            {showPassage && <p className="text-sm text-slate-700 leading-relaxed mt-2">{cur.passage}</p>}
+            {showPassage && <p className="text-sm text-slate-700 leading-relaxed mt-2 whitespace-pre-line">{cur.passage}</p>}
           </CardContent>
         </Card>
       )}
+
 
       <Card className="border-emerald-100">
         <CardContent className="p-5 space-y-4">
