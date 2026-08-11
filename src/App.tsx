@@ -161,6 +161,7 @@ const App = () => (
               <Route path="english" element={<SscSubject />} />
               <Route path="english/idioms" element={<SscEnglishIdioms />} />
               <Route path="english/bank" element={<SscEnglishBank />} />
+              <Route path="english/bank/:category" element={<SscEnglishBankSetup />} />
               <Route path="english/bank/:category/practice" element={<SscEnglishBankPractice />} />
               <Route path="english/ows" element={<SscEnglishOws />} />
               <Route path="english/synant" element={<SscEnglishSynAnt />} />
