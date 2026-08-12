@@ -27,6 +27,7 @@ export default function SscPolityFactsQuiz() {
   const [qs, setQs] = useState<PolityQ[]>([]);
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<Record<number, number>>({});
+  const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => { setStarted(false); setQs([]); setIdx(0); setPicked({}); }, [sheet]);
 
