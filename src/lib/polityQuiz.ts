@@ -52,10 +52,18 @@ export const POLITY_TARGETS: Record<string, number> = {
 export const polityTarget = (sheet: string) =>
   POLITY_TARGETS[sheet] ?? (polityCounts[sheet] || 0);
 
+export interface PolityOptionInfo {
+  text: string;
+  title: string;   // "Article 21 — Protection of Life & Personal Liberty"
+  detail: string;  // fact detail
+  extra: string;
+}
+
 export interface PolityQ {
   id: string;
   question: string;
   options: string[];
+  optionInfo: PolityOptionInfo[];
   correctIndex: number;
   detail: string;
   extra: string;
@@ -77,8 +85,8 @@ function pickDistractors(pool: string[], correct: string, n = 3) {
 }
 
 /**
- * Builds MCQs for one sheet — har fact se forward (prompt→answer) aur reverse dono variants
- * banti hain, isliye target count facts se zyada ho sakta hai.
+ * Builds MCQs for one sheet — pehle har fact ka forward variant (coverage guarantee),
+ * phir reverse variants, phir cycle. Isse 500-question set me koi article chhoota nahi.
  */
 export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: number): PolityQ[] {
   const meta = politySheet(sheet);
@@ -88,29 +96,44 @@ export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: n
   const answers = rows.map((r) => r.answer);
   const prompts = rows.map((r) => r.prompt);
 
-  // forward + reverse variants ka pool
-  type Variant = { f: PolityFact; reverse: boolean };
-  const pool: Variant[] = [];
+  // value -> fact lookup (dono direction) taaki har option flip ho sake
+  const byValue = new Map<string, PolityFact>();
   for (const f of rows) {
-    pool.push({ f, reverse: false });
-    if (prompts.length > 4) pool.push({ f, reverse: true });
+    if (!byValue.has(f.prompt)) byValue.set(f.prompt, f);
+    if (!byValue.has(f.answer)) byValue.set(f.answer, f);
   }
+  const infoFor = (text: string): PolityOptionInfo => {
+    const f = byValue.get(text);
+    return {
+      text,
+      title: f ? `${f.prompt} — ${f.answer}` : text,
+      detail: f?.detail || '',
+      extra: f?.extra || '',
+    };
+  };
+
+  type Variant = { f: PolityFact; reverse: boolean };
+  const forward: Variant[] = rows.map((f) => ({ f, reverse: false }));
+  const reverse: Variant[] = prompts.length > 4 ? rows.map((f) => ({ f, reverse: true })) : [];
 
   const picked: Variant[] = [];
+  let round = 0;
   while (picked.length < limit) {
-    const batch = shuffle(pool);
+    const batch = round % 2 === 0 ? shuffle(forward) : shuffle(reverse.length ? reverse : forward);
     picked.push(...batch.slice(0, limit - picked.length));
-    if (!pool.length) break;
+    round++;
+    if (!forward.length) break;
   }
 
-  const qs: PolityQ[] = picked.map(({ f, reverse }, i) => {
-    const correct = reverse ? f.prompt : f.answer;
-    const distractors = pickDistractors(reverse ? prompts : answers, correct);
+  const qs: PolityQ[] = picked.map(({ f, reverse: rev }, i) => {
+    const correct = rev ? f.prompt : f.answer;
+    const distractors = pickDistractors(rev ? prompts : answers, correct);
     const options = shuffle([correct, ...distractors]);
     return {
-      id: `${sheet}-${i}-${reverse ? 'r' : 'f'}-${f.prompt.slice(0, 24)}`,
-      question: (reverse ? meta.askRev : meta.ask).replace('{x}', reverse ? f.answer : f.prompt),
+      id: `${sheet}-${i}-${rev ? 'r' : 'f'}-${f.prompt.slice(0, 24)}`,
+      question: (rev ? meta.askRev : meta.ask).replace('{x}', rev ? f.answer : f.prompt),
       options,
+      optionInfo: options.map(infoFor),
       correctIndex: options.indexOf(correct),
       detail: f.detail,
       extra: f.extra,
