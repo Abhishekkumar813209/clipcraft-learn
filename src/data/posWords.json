@@ -1,0 +1,2458 @@
+{
+"hints": {
+"Noun": "Naam batata hai — vyakti, vastu, jagah, bhaav (person/place/thing/idea).",
+"Verb": "Kriya — kaam ya hone ki avastha batata hai.",
+"Adjective": "Noun ki quality/quantity batata hai — \"kaisa? kitna?\" ka jawab.",
+"Adverb": "Verb/Adjective/Adverb ko modify karta hai — \"kaise, kab, kaha, kitna?\".",
+"Preposition": "Noun/Pronoun ka baaki sentence se relation jodta hai (position/time/direction).",
+"Conjunction": "Do words/clauses ko jodta hai.",
+"Pronoun": "Noun ki jagah aata hai.",
+"Interjection": "Achanak bhaav (khushi, dukh, aashcharya) dikhata hai — usually \"!\" ke saath."
+},
+"words": [
+{
+"w": "apple",
+"pos": "Noun"
+},
+{
+"w": "river",
+"pos": "Noun"
+},
+{
+"w": "mountain",
+"pos": "Noun"
+},
+{
+"w": "teacher",
+"pos": "Noun"
+},
+{
+"w": "village",
+"pos": "Noun"
+},
+{
+"w": "courage",
+"pos": "Noun"
+},
+{
+"w": "honesty",
+"pos": "Noun"
+},
+{
+"w": "freedom",
+"pos": "Noun"
+},
+{
+"w": "army",
+"pos": "Noun"
+},
+{
+"w": "crowd",
+"pos": "Noun"
+},
+{
+"w": "bottle",
+"pos": "Noun"
+},
+{
+"w": "window",
+"pos": "Noun"
+},
+{
+"w": "garden",
+"pos": "Noun"
+},
+{
+"w": "soldier",
+"pos": "Noun"
+},
+{
+"w": "doctor",
+"pos": "Noun"
+},
+{
+"w": "market",
+"pos": "Noun"
+},
+{
+"w": "letter",
+"pos": "Noun"
+},
+{
+"w": "festival",
+"pos": "Noun"
+},
+{
+"w": "kingdom",
+"pos": "Noun"
+},
+{
+"w": "horse",
+"pos": "Noun"
+},
+{
+"w": "temple",
+"pos": "Noun"
+},
+{
+"w": "forest",
+"pos": "Noun"
+},
+{
+"w": "bridge",
+"pos": "Noun"
+},
+{
+"w": "journey",
+"pos": "Noun"
+},
+{
+"w": "pencil",
+"pos": "Noun"
+},
+{
+"w": "island",
+"pos": "Noun"
+},
+{
+"w": "station",
+"pos": "Noun"
+},
+{
+"w": "harvest",
+"pos": "Noun"
+},
+{
+"w": "lawyer",
+"pos": "Noun"
+},
+{
+"w": "engineer",
+"pos": "Noun"
+},
+{
+"w": "poetry",
+"pos": "Noun"
+},
+{
+"w": "silence",
+"pos": "Noun"
+},
+{
+"w": "wisdom",
+"pos": "Noun"
+},
+{
+"w": "childhood",
+"pos": "Noun"
+},
+{
+"w": "friendship",
+"pos": "Noun"
+},
+{
+"w": "traffic",
+"pos": "Noun"
+},
+{
+"w": "machine",
+"pos": "Noun"
+},
+{
+"w": "mirror",
+"pos": "Noun"
+},
+{
+"w": "pillow",
+"pos": "Noun"
+},
+{
+"w": "blanket",
+"pos": "Noun"
+},
+{
+"w": "kitchen",
+"pos": "Noun"
+},
+{
+"w": "elephant",
+"pos": "Noun"
+},
+{
+"w": "butterfly",
+"pos": "Noun"
+},
+{
+"w": "hospital",
+"pos": "Noun"
+},
+{
+"w": "library",
+"pos": "Noun"
+},
+{
+"w": "museum",
+"pos": "Noun"
+},
+{
+"w": "passenger",
+"pos": "Noun"
+},
+{
+"w": "merchant",
+"pos": "Noun"
+},
+{
+"w": "fortune",
+"pos": "Noun"
+},
+{
+"w": "weather",
+"pos": "Noun"
+},
+{
+"w": "thunder",
+"pos": "Noun"
+},
+{
+"w": "shadow",
+"pos": "Noun"
+},
+{
+"w": "ladder",
+"pos": "Noun"
+},
+{
+"w": "basket",
+"pos": "Noun"
+},
+{
+"w": "cricket",
+"pos": "Noun"
+},
+{
+"w": "referee",
+"pos": "Noun"
+},
+{
+"w": "holiday",
+"pos": "Noun"
+},
+{
+"w": "luggage",
+"pos": "Noun"
+},
+{
+"w": "neighbour",
+"pos": "Noun"
+},
+{
+"w": "palace",
+"pos": "Noun"
+},
+{
+"w": "prison",
+"pos": "Noun"
+},
+{
+"w": "rainbow",
+"pos": "Noun"
+},
+{
+"w": "sculpture",
+"pos": "Noun"
+},
+{
+"w": "treasure",
+"pos": "Noun"
+},
+{
+"w": "umbrella",
+"pos": "Noun"
+},
+{
+"w": "volcano",
+"pos": "Noun"
+},
+{
+"w": "warrior",
+"pos": "Noun"
+},
+{
+"w": "youth",
+"pos": "Noun"
+},
+{
+"w": "ceiling",
+"pos": "Noun"
+},
+{
+"w": "chimney",
+"pos": "Noun"
+},
+{
+"w": "compass",
+"pos": "Noun"
+},
+{
+"w": "diamond",
+"pos": "Noun"
+},
+{
+"w": "eagle",
+"pos": "Noun"
+},
+{
+"w": "factory",
+"pos": "Noun"
+},
+{
+"w": "glacier",
+"pos": "Noun"
+},
+{
+"w": "hammer",
+"pos": "Noun"
+},
+{
+"w": "iceberg",
+"pos": "Noun"
+},
+{
+"w": "jungle",
+"pos": "Noun"
+},
+{
+"w": "kettle",
+"pos": "Noun"
+},
+{
+"w": "lantern",
+"pos": "Noun"
+},
+{
+"w": "monsoon",
+"pos": "Noun"
+},
+{
+"w": "needle",
+"pos": "Noun"
+},
+{
+"w": "orchard",
+"pos": "Noun"
+},
+{
+"w": "parcel",
+"pos": "Noun"
+},
+{
+"w": "quarrel",
+"pos": "Noun"
+},
+{
+"w": "rocket",
+"pos": "Noun"
+},
+{
+"w": "saddle",
+"pos": "Noun"
+},
+{
+"w": "telescope",
+"pos": "Noun"
+},
+{
+"w": "uniform",
+"pos": "Noun"
+},
+{
+"w": "valley",
+"pos": "Noun"
+},
+{
+"w": "wallet",
+"pos": "Noun"
+},
+{
+"w": "yacht",
+"pos": "Noun"
+},
+{
+"w": "zebra",
+"pos": "Noun"
+},
+{
+"w": "bakery",
+"pos": "Noun"
+},
+{
+"w": "canyon",
+"pos": "Noun"
+},
+{
+"w": "dentist",
+"pos": "Noun"
+},
+{
+"w": "earthquake",
+"pos": "Noun"
+},
+{
+"w": "feather",
+"pos": "Noun"
+},
+{
+"w": "gallery",
+"pos": "Noun"
+},
+{
+"w": "harbour",
+"pos": "Noun"
+},
+{
+"w": "insect",
+"pos": "Noun"
+},
+{
+"w": "jewel",
+"pos": "Noun"
+},
+{
+"w": "knight",
+"pos": "Noun"
+},
+{
+"w": "lizard",
+"pos": "Noun"
+},
+{
+"w": "magnet",
+"pos": "Noun"
+},
+{
+"w": "nectar",
+"pos": "Noun"
+},
+{
+"w": "orbit",
+"pos": "Noun"
+},
+{
+"w": "puzzle",
+"pos": "Noun"
+},
+{
+"w": "quilt",
+"pos": "Noun"
+},
+{
+"w": "ribbon",
+"pos": "Noun"
+},
+{
+"w": "sponge",
+"pos": "Noun"
+},
+{
+"w": "tunnel",
+"pos": "Noun"
+},
+{
+"w": "vacuum",
+"pos": "Noun"
+},
+{
+"w": "whistle",
+"pos": "Noun"
+},
+{
+"w": "anchor",
+"pos": "Noun"
+},
+{
+"w": "breeze",
+"pos": "Noun"
+},
+{
+"w": "cactus",
+"pos": "Noun"
+},
+{
+"w": "drought",
+"pos": "Noun"
+},
+{
+"w": "ember",
+"pos": "Noun"
+},
+{
+"w": "fabric",
+"pos": "Noun"
+},
+{
+"w": "granite",
+"pos": "Noun"
+},
+{
+"w": "hurdle",
+"pos": "Noun"
+},
+{
+"w": "ivory",
+"pos": "Noun"
+},
+{
+"w": "jacket",
+"pos": "Noun"
+},
+{
+"w": "kernel",
+"pos": "Noun"
+},
+{
+"w": "lemon",
+"pos": "Noun"
+},
+{
+"w": "marble",
+"pos": "Noun"
+},
+{
+"w": "noodle",
+"pos": "Noun"
+},
+{
+"w": "oyster",
+"pos": "Noun"
+},
+{
+"w": "pigeon",
+"pos": "Noun"
+},
+{
+"w": "quiver",
+"pos": "Noun"
+},
+{
+"w": "rubber",
+"pos": "Noun"
+},
+{
+"w": "summit",
+"pos": "Noun"
+},
+{
+"w": "trumpet",
+"pos": "Noun"
+},
+{
+"w": "utensil",
+"pos": "Noun"
+},
+{
+"w": "velvet",
+"pos": "Noun"
+},
+{
+"w": "walnut",
+"pos": "Noun"
+},
+{
+"w": "run",
+"pos": "Verb"
+},
+{
+"w": "jump",
+"pos": "Verb"
+},
+{
+"w": "write",
+"pos": "Verb"
+},
+{
+"w": "speak",
+"pos": "Verb"
+},
+{
+"w": "build",
+"pos": "Verb"
+},
+{
+"w": "catch",
+"pos": "Verb"
+},
+{
+"w": "teach",
+"pos": "Verb"
+},
+{
+"w": "bring",
+"pos": "Verb"
+},
+{
+"w": "choose",
+"pos": "Verb"
+},
+{
+"w": "drink",
+"pos": "Verb"
+},
+{
+"w": "forget",
+"pos": "Verb"
+},
+{
+"w": "grow",
+"pos": "Verb"
+},
+{
+"w": "hide",
+"pos": "Verb"
+},
+{
+"w": "keep",
+"pos": "Verb"
+},
+{
+"w": "lend",
+"pos": "Verb"
+},
+{
+"w": "meet",
+"pos": "Verb"
+},
+{
+"w": "ride",
+"pos": "Verb"
+},
+{
+"w": "shake",
+"pos": "Verb"
+},
+{
+"w": "sing",
+"pos": "Verb"
+},
+{
+"w": "swim",
+"pos": "Verb"
+},
+{
+"w": "throw",
+"pos": "Verb"
+},
+{
+"w": "understand",
+"pos": "Verb"
+},
+{
+"w": "wear",
+"pos": "Verb"
+},
+{
+"w": "begin",
+"pos": "Verb"
+},
+{
+"w": "blow",
+"pos": "Verb"
+},
+{
+"w": "break",
+"pos": "Verb"
+},
+{
+"w": "burn",
+"pos": "Verb"
+},
+{
+"w": "buy",
+"pos": "Verb"
+},
+{
+"w": "climb",
+"pos": "Verb"
+},
+{
+"w": "cook",
+"pos": "Verb"
+},
+{
+"w": "dance",
+"pos": "Verb"
+},
+{
+"w": "decide",
+"pos": "Verb"
+},
+{
+"w": "draw",
+"pos": "Verb"
+},
+{
+"w": "drive",
+"pos": "Verb"
+},
+{
+"w": "eat",
+"pos": "Verb"
+},
+{
+"w": "fall",
+"pos": "Verb"
+},
+{
+"w": "fight",
+"pos": "Verb"
+},
+{
+"w": "find",
+"pos": "Verb"
+},
+{
+"w": "fly",
+"pos": "Verb"
+},
+{
+"w": "forgive",
+"pos": "Verb"
+},
+{
+"w": "freeze",
+"pos": "Verb"
+},
+{
+"w": "give",
+"pos": "Verb"
+},
+{
+"w": "hang",
+"pos": "Verb"
+},
+{
+"w": "hear",
+"pos": "Verb"
+},
+{
+"w": "hold",
+"pos": "Verb"
+},
+{
+"w": "hurt",
+"pos": "Verb"
+},
+{
+"w": "know",
+"pos": "Verb"
+},
+{
+"w": "lay",
+"pos": "Verb"
+},
+{
+"w": "lead",
+"pos": "Verb"
+},
+{
+"w": "leave",
+"pos": "Verb"
+},
+{
+"w": "lose",
+"pos": "Verb"
+},
+{
+"w": "make",
+"pos": "Verb"
+},
+{
+"w": "pay",
+"pos": "Verb"
+},
+{
+"w": "put",
+"pos": "Verb"
+},
+{
+"w": "read",
+"pos": "Verb"
+},
+{
+"w": "ring",
+"pos": "Verb"
+},
+{
+"w": "rise",
+"pos": "Verb"
+},
+{
+"w": "say",
+"pos": "Verb"
+},
+{
+"w": "seek",
+"pos": "Verb"
+},
+{
+"w": "sell",
+"pos": "Verb"
+},
+{
+"w": "send",
+"pos": "Verb"
+},
+{
+"w": "shine",
+"pos": "Verb"
+},
+{
+"w": "shoot",
+"pos": "Verb"
+},
+{
+"w": "show",
+"pos": "Verb"
+},
+{
+"w": "shut",
+"pos": "Verb"
+},
+{
+"w": "sleep",
+"pos": "Verb"
+},
+{
+"w": "smell",
+"pos": "Verb"
+},
+{
+"w": "speed",
+"pos": "Verb"
+},
+{
+"w": "spend",
+"pos": "Verb"
+},
+{
+"w": "stand",
+"pos": "Verb"
+},
+{
+"w": "steal",
+"pos": "Verb"
+},
+{
+"w": "stick",
+"pos": "Verb"
+},
+{
+"w": "sting",
+"pos": "Verb"
+},
+{
+"w": "strike",
+"pos": "Verb"
+},
+{
+"w": "swear",
+"pos": "Verb"
+},
+{
+"w": "sweep",
+"pos": "Verb"
+},
+{
+"w": "swing",
+"pos": "Verb"
+},
+{
+"w": "take",
+"pos": "Verb"
+},
+{
+"w": "tear",
+"pos": "Verb"
+},
+{
+"w": "tell",
+"pos": "Verb"
+},
+{
+"w": "think",
+"pos": "Verb"
+},
+{
+"w": "wake",
+"pos": "Verb"
+},
+{
+"w": "win",
+"pos": "Verb"
+},
+{
+"w": "wind",
+"pos": "Verb"
+},
+{
+"w": "arrange",
+"pos": "Verb"
+},
+{
+"w": "behave",
+"pos": "Verb"
+},
+{
+"w": "celebrate",
+"pos": "Verb"
+},
+{
+"w": "compare",
+"pos": "Verb"
+},
+{
+"w": "complete",
+"pos": "Verb"
+},
+{
+"w": "confess",
+"pos": "Verb"
+},
+{
+"w": "consider",
+"pos": "Verb"
+},
+{
+"w": "convince",
+"pos": "Verb"
+},
+{
+"w": "deliver",
+"pos": "Verb"
+},
+{
+"w": "describe",
+"pos": "Verb"
+},
+{
+"w": "destroy",
+"pos": "Verb"
+},
+{
+"w": "develop",
+"pos": "Verb"
+},
+{
+"w": "discover",
+"pos": "Verb"
+},
+{
+"w": "encourage",
+"pos": "Verb"
+},
+{
+"w": "examine",
+"pos": "Verb"
+},
+{
+"w": "explain",
+"pos": "Verb"
+},
+{
+"w": "explore",
+"pos": "Verb"
+},
+{
+"w": "imagine",
+"pos": "Verb"
+},
+{
+"w": "improve",
+"pos": "Verb"
+},
+{
+"w": "include",
+"pos": "Verb"
+},
+{
+"w": "increase",
+"pos": "Verb"
+},
+{
+"w": "inform",
+"pos": "Verb"
+},
+{
+"w": "inspire",
+"pos": "Verb"
+},
+{
+"w": "install",
+"pos": "Verb"
+},
+{
+"w": "invite",
+"pos": "Verb"
+},
+{
+"w": "manage",
+"pos": "Verb"
+},
+{
+"w": "measure",
+"pos": "Verb"
+},
+{
+"w": "mention",
+"pos": "Verb"
+},
+{
+"w": "observe",
+"pos": "Verb"
+},
+{
+"w": "organise",
+"pos": "Verb"
+},
+{
+"w": "persuade",
+"pos": "Verb"
+},
+{
+"w": "prepare",
+"pos": "Verb"
+},
+{
+"w": "prevent",
+"pos": "Verb"
+},
+{
+"w": "produce",
+"pos": "Verb"
+},
+{
+"w": "promise",
+"pos": "Verb"
+},
+{
+"w": "protect",
+"pos": "Verb"
+},
+{
+"w": "provide",
+"pos": "Verb"
+},
+{
+"w": "receive",
+"pos": "Verb"
+},
+{
+"w": "recognise",
+"pos": "Verb"
+},
+{
+"w": "reduce",
+"pos": "Verb"
+},
+{
+"w": "refuse",
+"pos": "Verb"
+},
+{
+"w": "remember",
+"pos": "Verb"
+},
+{
+"w": "remove",
+"pos": "Verb"
+},
+{
+"w": "repeat",
+"pos": "Verb"
+},
+{
+"w": "replace",
+"pos": "Verb"
+},
+{
+"w": "require",
+"pos": "Verb"
+},
+{
+"w": "rescue",
+"pos": "Verb"
+},
+{
+"w": "respect",
+"pos": "Verb"
+},
+{
+"w": "suggest",
+"pos": "Verb"
+},
+{
+"w": "supply",
+"pos": "Verb"
+},
+{
+"w": "support",
+"pos": "Verb"
+},
+{
+"w": "suppose",
+"pos": "Verb"
+},
+{
+"w": "surround",
+"pos": "Verb"
+},
+{
+"w": "survive",
+"pos": "Verb"
+},
+{
+"w": "beautiful",
+"pos": "Adjective"
+},
+{
+"w": "brave",
+"pos": "Adjective"
+},
+{
+"w": "bright",
+"pos": "Adjective"
+},
+{
+"w": "busy",
+"pos": "Adjective"
+},
+{
+"w": "calm",
+"pos": "Adjective"
+},
+{
+"w": "careful",
+"pos": "Adjective"
+},
+{
+"w": "clever",
+"pos": "Adjective"
+},
+{
+"w": "cold",
+"pos": "Adjective"
+},
+{
+"w": "cruel",
+"pos": "Adjective"
+},
+{
+"w": "curious",
+"pos": "Adjective"
+},
+{
+"w": "dark",
+"pos": "Adjective"
+},
+{
+"w": "deep",
+"pos": "Adjective"
+},
+{
+"w": "delicious",
+"pos": "Adjective"
+},
+{
+"w": "different",
+"pos": "Adjective"
+},
+{
+"w": "difficult",
+"pos": "Adjective"
+},
+{
+"w": "dirty",
+"pos": "Adjective"
+},
+{
+"w": "dry",
+"pos": "Adjective"
+},
+{
+"w": "eager",
+"pos": "Adjective"
+},
+{
+"w": "early",
+"pos": "Adjective"
+},
+{
+"w": "easy",
+"pos": "Adjective"
+},
+{
+"w": "empty",
+"pos": "Adjective"
+},
+{
+"w": "expensive",
+"pos": "Adjective"
+},
+{
+"w": "fair",
+"pos": "Adjective"
+},
+{
+"w": "famous",
+"pos": "Adjective"
+},
+{
+"w": "fast",
+"pos": "Adjective"
+},
+{
+"w": "fierce",
+"pos": "Adjective"
+},
+{
+"w": "foolish",
+"pos": "Adjective"
+},
+{
+"w": "fresh",
+"pos": "Adjective"
+},
+{
+"w": "friendly",
+"pos": "Adjective"
+},
+{
+"w": "gentle",
+"pos": "Adjective"
+},
+{
+"w": "generous",
+"pos": "Adjective"
+},
+{
+"w": "gigantic",
+"pos": "Adjective"
+},
+{
+"w": "gloomy",
+"pos": "Adjective"
+},
+{
+"w": "graceful",
+"pos": "Adjective"
+},
+{
+"w": "greedy",
+"pos": "Adjective"
+},
+{
+"w": "happy",
+"pos": "Adjective"
+},
+{
+"w": "hard",
+"pos": "Adjective"
+},
+{
+"w": "healthy",
+"pos": "Adjective"
+},
+{
+"w": "heavy",
+"pos": "Adjective"
+},
+{
+"w": "honest",
+"pos": "Adjective"
+},
+{
+"w": "huge",
+"pos": "Adjective"
+},
+{
+"w": "hungry",
+"pos": "Adjective"
+},
+{
+"w": "important",
+"pos": "Adjective"
+},
+{
+"w": "intelligent",
+"pos": "Adjective"
+},
+{
+"w": "jealous",
+"pos": "Adjective"
+},
+{
+"w": "kind",
+"pos": "Adjective"
+},
+{
+"w": "lazy",
+"pos": "Adjective"
+},
+{
+"w": "light",
+"pos": "Adjective"
+},
+{
+"w": "lonely",
+"pos": "Adjective"
+},
+{
+"w": "loud",
+"pos": "Adjective"
+},
+{
+"w": "lovely",
+"pos": "Adjective"
+},
+{
+"w": "lucky",
+"pos": "Adjective"
+},
+{
+"w": "modern",
+"pos": "Adjective"
+},
+{
+"w": "narrow",
+"pos": "Adjective"
+},
+{
+"w": "nervous",
+"pos": "Adjective"
+},
+{
+"w": "noisy",
+"pos": "Adjective"
+},
+{
+"w": "old",
+"pos": "Adjective"
+},
+{
+"w": "patient",
+"pos": "Adjective"
+},
+{
+"w": "perfect",
+"pos": "Adjective"
+},
+{
+"w": "polite",
+"pos": "Adjective"
+},
+{
+"w": "poor",
+"pos": "Adjective"
+},
+{
+"w": "powerful",
+"pos": "Adjective"
+},
+{
+"w": "precious",
+"pos": "Adjective"
+},
+{
+"w": "proud",
+"pos": "Adjective"
+},
+{
+"w": "quick",
+"pos": "Adjective"
+},
+{
+"w": "quiet",
+"pos": "Adjective"
+},
+{
+"w": "rare",
+"pos": "Adjective"
+},
+{
+"w": "rich",
+"pos": "Adjective"
+},
+{
+"w": "rough",
+"pos": "Adjective"
+},
+{
+"w": "sad",
+"pos": "Adjective"
+},
+{
+"w": "safe",
+"pos": "Adjective"
+},
+{
+"w": "sharp",
+"pos": "Adjective"
+},
+{
+"w": "shiny",
+"pos": "Adjective"
+},
+{
+"w": "short",
+"pos": "Adjective"
+},
+{
+"w": "shy",
+"pos": "Adjective"
+},
+{
+"w": "silent",
+"pos": "Adjective"
+},
+{
+"w": "simple",
+"pos": "Adjective"
+},
+{
+"w": "slow",
+"pos": "Adjective"
+},
+{
+"w": "small",
+"pos": "Adjective"
+},
+{
+"w": "smooth",
+"pos": "Adjective"
+},
+{
+"w": "soft",
+"pos": "Adjective"
+},
+{
+"w": "sour",
+"pos": "Adjective"
+},
+{
+"w": "spicy",
+"pos": "Adjective"
+},
+{
+"w": "steep",
+"pos": "Adjective"
+},
+{
+"w": "strange",
+"pos": "Adjective"
+},
+{
+"w": "strong",
+"pos": "Adjective"
+},
+{
+"w": "stupid",
+"pos": "Adjective"
+},
+{
+"w": "sweet",
+"pos": "Adjective"
+},
+{
+"w": "tall",
+"pos": "Adjective"
+},
+{
+"w": "thick",
+"pos": "Adjective"
+},
+{
+"w": "thin",
+"pos": "Adjective"
+},
+{
+"w": "tidy",
+"pos": "Adjective"
+},
+{
+"w": "tiny",
+"pos": "Adjective"
+},
+{
+"w": "tired",
+"pos": "Adjective"
+},
+{
+"w": "ugly",
+"pos": "Adjective"
+},
+{
+"w": "useful",
+"pos": "Adjective"
+},
+{
+"w": "valuable",
+"pos": "Adjective"
+},
+{
+"w": "warm",
+"pos": "Adjective"
+},
+{
+"w": "weak",
+"pos": "Adjective"
+},
+{
+"w": "wealthy",
+"pos": "Adjective"
+},
+{
+"w": "wide",
+"pos": "Adjective"
+},
+{
+"w": "wild",
+"pos": "Adjective"
+},
+{
+"w": "wise",
+"pos": "Adjective"
+},
+{
+"w": "wonderful",
+"pos": "Adjective"
+},
+{
+"w": "young",
+"pos": "Adjective"
+},
+{
+"w": "zealous",
+"pos": "Adjective"
+},
+{
+"w": "ancient",
+"pos": "Adjective"
+},
+{
+"w": "anxious",
+"pos": "Adjective"
+},
+{
+"w": "bitter",
+"pos": "Adjective"
+},
+{
+"w": "bold",
+"pos": "Adjective"
+},
+{
+"w": "bumpy",
+"pos": "Adjective"
+},
+{
+"w": "cheerful",
+"pos": "Adjective"
+},
+{
+"w": "crowded",
+"pos": "Adjective"
+},
+{
+"w": "dull",
+"pos": "Adjective"
+},
+{
+"w": "elegant",
+"pos": "Adjective"
+},
+{
+"w": "fragile",
+"pos": "Adjective"
+},
+{
+"w": "grateful",
+"pos": "Adjective"
+},
+{
+"w": "humble",
+"pos": "Adjective"
+},
+{
+"w": "innocent",
+"pos": "Adjective"
+},
+{
+"w": "joyful",
+"pos": "Adjective"
+},
+{
+"w": "keen",
+"pos": "Adjective"
+},
+{
+"w": "loyal",
+"pos": "Adjective"
+},
+{
+"w": "quickly",
+"pos": "Adverb"
+},
+{
+"w": "slowly",
+"pos": "Adverb"
+},
+{
+"w": "carefully",
+"pos": "Adverb"
+},
+{
+"w": "carelessly",
+"pos": "Adverb"
+},
+{
+"w": "happily",
+"pos": "Adverb"
+},
+{
+"w": "sadly",
+"pos": "Adverb"
+},
+{
+"w": "bravely",
+"pos": "Adverb"
+},
+{
+"w": "politely",
+"pos": "Adverb"
+},
+{
+"w": "rudely",
+"pos": "Adverb"
+},
+{
+"w": "loudly",
+"pos": "Adverb"
+},
+{
+"w": "softly",
+"pos": "Adverb"
+},
+{
+"w": "quietly",
+"pos": "Adverb"
+},
+{
+"w": "badly",
+"pos": "Adverb"
+},
+{
+"w": "well",
+"pos": "Adverb"
+},
+{
+"w": "fast",
+"pos": "Adverb"
+},
+{
+"w": "hard",
+"pos": "Adverb"
+},
+{
+"w": "late",
+"pos": "Adverb"
+},
+{
+"w": "early",
+"pos": "Adverb"
+},
+{
+"w": "soon",
+"pos": "Adverb"
+},
+{
+"w": "now",
+"pos": "Adverb"
+},
+{
+"w": "then",
+"pos": "Adverb"
+},
+{
+"w": "today",
+"pos": "Adverb"
+},
+{
+"w": "yesterday",
+"pos": "Adverb"
+},
+{
+"w": "tomorrow",
+"pos": "Adverb"
+},
+{
+"w": "always",
+"pos": "Adverb"
+},
+{
+"w": "never",
+"pos": "Adverb"
+},
+{
+"w": "often",
+"pos": "Adverb"
+},
+{
+"w": "rarely",
+"pos": "Adverb"
+},
+{
+"w": "seldom",
+"pos": "Adverb"
+},
+{
+"w": "sometimes",
+"pos": "Adverb"
+},
+{
+"w": "usually",
+"pos": "Adverb"
+},
+{
+"w": "frequently",
+"pos": "Adverb"
+},
+{
+"w": "daily",
+"pos": "Adverb"
+},
+{
+"w": "weekly",
+"pos": "Adverb"
+},
+{
+"w": "monthly",
+"pos": "Adverb"
+},
+{
+"w": "annually",
+"pos": "Adverb"
+},
+{
+"w": "here",
+"pos": "Adverb"
+},
+{
+"w": "there",
+"pos": "Adverb"
+},
+{
+"w": "everywhere",
+"pos": "Adverb"
+},
+{
+"w": "anywhere",
+"pos": "Adverb"
+},
+{
+"w": "nowhere",
+"pos": "Adverb"
+},
+{
+"w": "upstairs",
+"pos": "Adverb"
+},
+{
+"w": "downstairs",
+"pos": "Adverb"
+},
+{
+"w": "abroad",
+"pos": "Adverb"
+},
+{
+"w": "inside",
+"pos": "Adverb"
+},
+{
+"w": "outside",
+"pos": "Adverb"
+},
+{
+"w": "almost",
+"pos": "Adverb"
+},
+{
+"w": "quite",
+"pos": "Adverb"
+},
+{
+"w": "very",
+"pos": "Adverb"
+},
+{
+"w": "too",
+"pos": "Adverb"
+},
+{
+"w": "enough",
+"pos": "Adverb"
+},
+{
+"w": "rather",
+"pos": "Adverb"
+},
+{
+"w": "extremely",
+"pos": "Adverb"
+},
+{
+"w": "completely",
+"pos": "Adverb"
+},
+{
+"w": "absolutely",
+"pos": "Adverb"
+},
+{
+"w": "hardly",
+"pos": "Adverb"
+},
+{
+"w": "scarcely",
+"pos": "Adverb"
+},
+{
+"w": "barely",
+"pos": "Adverb"
+},
+{
+"w": "merely",
+"pos": "Adverb"
+},
+{
+"w": "nearly",
+"pos": "Adverb"
+},
+{
+"w": "certainly",
+"pos": "Adverb"
+},
+{
+"w": "probably",
+"pos": "Adverb"
+},
+{
+"w": "possibly",
+"pos": "Adverb"
+},
+{
+"w": "definitely",
+"pos": "Adverb"
+},
+{
+"w": "surely",
+"pos": "Adverb"
+},
+{
+"w": "perhaps",
+"pos": "Adverb"
+},
+{
+"w": "indeed",
+"pos": "Adverb"
+},
+{
+"w": "therefore",
+"pos": "Adverb"
+},
+{
+"w": "however",
+"pos": "Adverb"
+},
+{
+"w": "moreover",
+"pos": "Adverb"
+},
+{
+"w": "otherwise",
+"pos": "Adverb"
+},
+{
+"w": "anyway",
+"pos": "Adverb"
+},
+{
+"w": "besides",
+"pos": "Adverb"
+},
+{
+"w": "gradually",
+"pos": "Adverb"
+},
+{
+"w": "suddenly",
+"pos": "Adverb"
+},
+{
+"w": "immediately",
+"pos": "Adverb"
+},
+{
+"w": "eventually",
+"pos": "Adverb"
+},
+{
+"w": "finally",
+"pos": "Adverb"
+},
+{
+"w": "recently",
+"pos": "Adverb"
+},
+{
+"w": "formerly",
+"pos": "Adverb"
+},
+{
+"w": "presently",
+"pos": "Adverb"
+},
+{
+"w": "twice",
+"pos": "Adverb"
+},
+{
+"w": "once",
+"pos": "Adverb"
+},
+{
+"w": "again",
+"pos": "Adverb"
+},
+{
+"w": "in",
+"pos": "Preposition"
+},
+{
+"w": "on",
+"pos": "Preposition"
+},
+{
+"w": "at",
+"pos": "Preposition"
+},
+{
+"w": "by",
+"pos": "Preposition"
+},
+{
+"w": "with",
+"pos": "Preposition"
+},
+{
+"w": "about",
+"pos": "Preposition"
+},
+{
+"w": "above",
+"pos": "Preposition"
+},
+{
+"w": "across",
+"pos": "Preposition"
+},
+{
+"w": "after",
+"pos": "Preposition"
+},
+{
+"w": "against",
+"pos": "Preposition"
+},
+{
+"w": "along",
+"pos": "Preposition"
+},
+{
+"w": "among",
+"pos": "Preposition"
+},
+{
+"w": "around",
+"pos": "Preposition"
+},
+{
+"w": "before",
+"pos": "Preposition"
+},
+{
+"w": "behind",
+"pos": "Preposition"
+},
+{
+"w": "below",
+"pos": "Preposition"
+},
+{
+"w": "beneath",
+"pos": "Preposition"
+},
+{
+"w": "beside",
+"pos": "Preposition"
+},
+{
+"w": "between",
+"pos": "Preposition"
+},
+{
+"w": "beyond",
+"pos": "Preposition"
+},
+{
+"w": "during",
+"pos": "Preposition"
+},
+{
+"w": "except",
+"pos": "Preposition"
+},
+{
+"w": "for",
+"pos": "Preposition"
+},
+{
+"w": "from",
+"pos": "Preposition"
+},
+{
+"w": "inside",
+"pos": "Preposition"
+},
+{
+"w": "into",
+"pos": "Preposition"
+},
+{
+"w": "near",
+"pos": "Preposition"
+},
+{
+"w": "of",
+"pos": "Preposition"
+},
+{
+"w": "off",
+"pos": "Preposition"
+},
+{
+"w": "onto",
+"pos": "Preposition"
+},
+{
+"w": "over",
+"pos": "Preposition"
+},
+{
+"w": "since",
+"pos": "Preposition"
+},
+{
+"w": "through",
+"pos": "Preposition"
+},
+{
+"w": "throughout",
+"pos": "Preposition"
+},
+{
+"w": "till",
+"pos": "Preposition"
+},
+{
+"w": "to",
+"pos": "Preposition"
+},
+{
+"w": "toward",
+"pos": "Preposition"
+},
+{
+"w": "under",
+"pos": "Preposition"
+},
+{
+"w": "underneath",
+"pos": "Preposition"
+},
+{
+"w": "until",
+"pos": "Preposition"
+},
+{
+"w": "up",
+"pos": "Preposition"
+},
+{
+"w": "upon",
+"pos": "Preposition"
+},
+{
+"w": "within",
+"pos": "Preposition"
+},
+{
+"w": "without",
+"pos": "Preposition"
+},
+{
+"w": "and",
+"pos": "Conjunction"
+},
+{
+"w": "but",
+"pos": "Conjunction"
+},
+{
+"w": "or",
+"pos": "Conjunction"
+},
+{
+"w": "nor",
+"pos": "Conjunction"
+},
+{
+"w": "for",
+"pos": "Conjunction"
+},
+{
+"w": "yet",
+"pos": "Conjunction"
+},
+{
+"w": "so",
+"pos": "Conjunction"
+},
+{
+"w": "because",
+"pos": "Conjunction"
+},
+{
+"w": "although",
+"pos": "Conjunction"
+},
+{
+"w": "though",
+"pos": "Conjunction"
+},
+{
+"w": "while",
+"pos": "Conjunction"
+},
+{
+"w": "unless",
+"pos": "Conjunction"
+},
+{
+"w": "until",
+"pos": "Conjunction"
+},
+{
+"w": "since",
+"pos": "Conjunction"
+},
+{
+"w": "whereas",
+"pos": "Conjunction"
+},
+{
+"w": "therefore",
+"pos": "Conjunction"
+},
+{
+"w": "however",
+"pos": "Conjunction"
+},
+{
+"w": "moreover",
+"pos": "Conjunction"
+},
+{
+"w": "besides",
+"pos": "Conjunction"
+},
+{
+"w": "otherwise",
+"pos": "Conjunction"
+},
+{
+"w": "either",
+"pos": "Conjunction"
+},
+{
+"w": "neither",
+"pos": "Conjunction"
+},
+{
+"w": "whether",
+"pos": "Conjunction"
+},
+{
+"w": "provided",
+"pos": "Conjunction"
+},
+{
+"w": "lest",
+"pos": "Conjunction"
+},
+{
+"w": "I",
+"pos": "Pronoun"
+},
+{
+"w": "you",
+"pos": "Pronoun"
+},
+{
+"w": "he",
+"pos": "Pronoun"
+},
+{
+"w": "she",
+"pos": "Pronoun"
+},
+{
+"w": "it",
+"pos": "Pronoun"
+},
+{
+"w": "we",
+"pos": "Pronoun"
+},
+{
+"w": "they",
+"pos": "Pronoun"
+},
+{
+"w": "me",
+"pos": "Pronoun"
+},
+{
+"w": "him",
+"pos": "Pronoun"
+},
+{
+"w": "her",
+"pos": "Pronoun"
+},
+{
+"w": "us",
+"pos": "Pronoun"
+},
+{
+"w": "them",
+"pos": "Pronoun"
+},
+{
+"w": "mine",
+"pos": "Pronoun"
+},
+{
+"w": "yours",
+"pos": "Pronoun"
+},
+{
+"w": "his",
+"pos": "Pronoun"
+},
+{
+"w": "hers",
+"pos": "Pronoun"
+},
+{
+"w": "ours",
+"pos": "Pronoun"
+},
+{
+"w": "theirs",
+"pos": "Pronoun"
+},
+{
+"w": "myself",
+"pos": "Pronoun"
+},
+{
+"w": "yourself",
+"pos": "Pronoun"
+},
+{
+"w": "himself",
+"pos": "Pronoun"
+},
+{
+"w": "herself",
+"pos": "Pronoun"
+},
+{
+"w": "itself",
+"pos": "Pronoun"
+},
+{
+"w": "ourselves",
+"pos": "Pronoun"
+},
+{
+"w": "themselves",
+"pos": "Pronoun"
+},
+{
+"w": "who",
+"pos": "Pronoun"
+},
+{
+"w": "whom",
+"pos": "Pronoun"
+},
+{
+"w": "whose",
+"pos": "Pronoun"
+},
+{
+"w": "which",
+"pos": "Pronoun"
+},
+{
+"w": "that",
+"pos": "Pronoun"
+},
+{
+"w": "this",
+"pos": "Pronoun"
+},
+{
+"w": "these",
+"pos": "Pronoun"
+},
+{
+"w": "those",
+"pos": "Pronoun"
+},
+{
+"w": "someone",
+"pos": "Pronoun"
+},
+{
+"w": "anyone",
+"pos": "Pronoun"
+},
+{
+"w": "everyone",
+"pos": "Pronoun"
+},
+{
+"w": "nobody",
+"pos": "Pronoun"
+},
+{
+"w": "something",
+"pos": "Pronoun"
+},
+{
+"w": "anything",
+"pos": "Pronoun"
+},
+{
+"w": "everything",
+"pos": "Pronoun"
+},
+{
+"w": "nothing",
+"pos": "Pronoun"
+},
+{
+"w": "each",
+"pos": "Pronoun"
+},
+{
+"w": "both",
+"pos": "Pronoun"
+},
+{
+"w": "few",
+"pos": "Pronoun"
+},
+{
+"w": "many",
+"pos": "Pronoun"
+},
+{
+"w": "several",
+"pos": "Pronoun"
+},
+{
+"w": "wow",
+"pos": "Interjection"
+},
+{
+"w": "alas",
+"pos": "Interjection"
+},
+{
+"w": "hurrah",
+"pos": "Interjection"
+},
+{
+"w": "oh",
+"pos": "Interjection"
+},
+{
+"w": "ouch",
+"pos": "Interjection"
+},
+{
+"w": "bravo",
+"pos": "Interjection"
+},
+{
+"w": "hush",
+"pos": "Interjection"
+},
+{
+"w": "oops",
+"pos": "Interjection"
+},
+{
+"w": "aha",
+"pos": "Interjection"
+},
+{
+"w": "phew",
+"pos": "Interjection"
+},
+{
+"w": "hey",
+"pos": "Interjection"
+},
+{
+"w": "ah",
+"pos": "Interjection"
+},
+{
+"w": "eh",
+"pos": "Interjection"
+},
+{
+"w": "yippee",
+"pos": "Interjection"
+},
+{
+"w": "ugh",
+"pos": "Interjection"
+}
+]
+}
