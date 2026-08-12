@@ -176,6 +176,7 @@ const App = () => (
               <Route path="english/rules/drill" element={<SscGrammarRuleDrill />} />
               <Route path="english/practice/alphabet" element={<SscAlphabetHub />} />
               <Route path="english/practice/alphabet/:mode" element={<SscAlphabetQuiz />} />
+              <Route path="english/drill/:drill" element={<SscEnglishDrill />} />
               <Route path="english/grammar/:pos/basic/practice" element={<SscPosVerbBasicPractice />} />
               <Route path="maths" element={<SscSubject />} />
               <Route path="maths/calculation" element={<SscMathsCalculation />} />
