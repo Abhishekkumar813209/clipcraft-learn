@@ -187,6 +187,8 @@ const App = () => (
               <Route path="gk" element={<SscSubject />} />
               <Route path="gk/polity/facts" element={<SscPolityFacts />} />
               <Route path="gk/polity/facts/:sheet" element={<SscPolityFactsQuiz />} />
+              <Route path="gk/polity/theory/:sheet" element={<SscPolityTheory />} />
+
               <Route path="gk/:subject" element={<SscGkSubject />} />
               <Route path="gk/:subject/practice" element={<SscGkPractice />} />
               <Route path="gk/:subject/theory" element={<SscGkTheory />} />
