@@ -145,28 +145,71 @@ const TOTAL = 100;
 
 function buildOne(i: number): DrillQ {
   const t = VOICE_TENSES[i % VOICE_TENSES.length];
-  const s = SUBJECTS[i % SUBJECTS.length];
-  const v = VERBS[(i * 3) % VERBS.length];
-  const o = OBJECTS[(i * 7) % OBJECTS.length];
-
-  const correct = t.passive(s, v, o);
+  const mode = Math.floor(i / VOICE_TENSES.length) % 3;
   const others = shuffle(VOICE_TENSES.filter((x) => x.key !== t.key)).slice(0, 3);
-  const raw = [{ t, text: correct }, ...others.map((x) => ({ t: x, text: x.passive(s, v, o) }))];
-  const uniq = raw.filter((r, idx) => raw.findIndex((z) => z.text === r.text) === idx);
-  const opts = shuffle(uniq);
 
+  if (mode === 0) {
+    // Active structure diya hai -> Passive structure batao
+    const raw = [
+      { t, text: t.passiveFormula },
+      ...others.map((x) => ({ t: x, text: x.passiveFormula })),
+    ];
+    const uniq = raw.filter((r, k) => raw.findIndex((z) => z.text === r.text) === k);
+    const opts = shuffle(uniq);
+    return {
+      id: `voice-${i}`,
+      context: `${t.name} — Active structure: ${t.activeFormula}`,
+      question: 'Iska Passive structure kaun sa hai?',
+      options: opts.map((x) => x.text),
+      correctIndex: opts.findIndex((x) => x.t.key === t.key),
+      why: opts.map((x) =>
+        x.t.key === t.key
+          ? `✅ Sahi — ${t.name} ka passive = ${t.passiveFormula}.`
+          : `❌ Ye ${x.t.name} ka passive structure hai (active: ${x.t.activeFormula}). Voice badalne par tense nahi badalta.`,
+      ),
+      solution: `${t.name}: Active = ${t.activeFormula} → Passive = ${t.passiveFormula}. Helping verb tense se aata hai, main verb hamesha V3.`,
+      tag: t.name,
+    };
+  }
+
+  if (mode === 1) {
+    // Passive structure diya hai -> Active structure batao
+    const raw = [
+      { t, text: t.activeFormula },
+      ...others.map((x) => ({ t: x, text: x.activeFormula })),
+    ];
+    const uniq = raw.filter((r, k) => raw.findIndex((z) => z.text === r.text) === k);
+    const opts = shuffle(uniq);
+    return {
+      id: `voice-${i}`,
+      context: `Passive structure: ${t.passiveFormula}`,
+      question: 'Ye kis Active structure ka passive hai?',
+      options: opts.map((x) => x.text),
+      correctIndex: opts.findIndex((x) => x.t.key === t.key),
+      why: opts.map((x) =>
+        x.t.key === t.key
+          ? `✅ Sahi — ${t.name} (${t.activeFormula}) ka passive ${t.passiveFormula} banta hai.`
+          : `❌ ${x.t.name} ka active ${x.t.activeFormula} hai, jiska passive ${x.t.passiveFormula} hota — diya gaya structure alag hai.`,
+      ),
+      solution: `Passive ${t.passiveFormula} ⇒ tense ${t.name} ⇒ Active structure ${t.activeFormula}.`,
+      tag: t.name,
+    };
+  }
+
+  // mode 2: structure diya hai -> tense ka naam batao
+  const opts = shuffle([t, ...others]);
   return {
     id: `voice-${i}`,
-    context: `Active: ${t.active(s, v, o)}   (${t.name})`,
-    question: 'Iska sahi Passive Voice kaun sa hai?',
-    options: opts.map((x) => x.text),
-    correctIndex: opts.findIndex((x) => x.text === correct),
+    context: `Active: ${t.activeFormula}   |   Passive: ${t.passiveFormula}`,
+    question: 'Ye conversion kis tense ka hai?',
+    options: opts.map((x) => x.name),
+    correctIndex: opts.findIndex((x) => x.key === t.key),
     why: opts.map((x) =>
-      x.t.key === t.key
-        ? `✅ Sahi — ye ${x.t.name} ka passive hai: ${x.t.passiveFormula}. Active ${x.t.activeFormula} tha, isliye same tense ka passive banega.`
-        : `❌ Ye ${x.t.name} ka passive hai (${x.t.passiveFormula}). Yaha active sentence ${t.name} me tha (${t.activeFormula}), tense badal nahi sakta — sirf voice badalti hai.`,
+      x.key === t.key
+        ? `✅ Sahi — ${t.name} me active ${t.activeFormula} aur passive ${t.passiveFormula} hota hai.`
+        : `❌ ${x.name} hota to structure ${x.activeFormula} → ${x.passiveFormula} dikhta.`,
     ),
-    solution: `${t.name}: Active = ${t.activeFormula}, Passive = ${t.passiveFormula}. Object "${o.text}" subject ban gaya, verb ${v.v3} (V3) hua aur karta "by ${s.obj}" ke saath aaya.`,
+    solution: `Pehchan: helping verb "${t.passiveFormula}" sirf ${t.name} me aata hai.`,
     tag: t.name,
   };
 }
@@ -175,9 +218,9 @@ const ALL: DrillQ[] = Array.from({ length: TOTAL }, (_, i) => buildOne(i));
 
 export const voiceDrill: DrillMeta = {
   key: 'voice-conversion',
-  label: 'Active → Passive Conversion',
+  label: 'Active → Passive Structure',
   emoji: '🔄',
-  blurb: 'Tense-wise conversion table + 100 MCQs · option flip se pata chalega kaun se tense ka conversion hai',
+  blurb: 'Sirf structure-to-structure conversion · 100 MCQs (sentences nahi)',
   total: TOTAL,
   notes: [
     'Passive me hamesha V3 lagta hai; helping verb tense se decide hota hai.',
@@ -186,8 +229,5 @@ export const voiceDrill: DrillMeta = {
     'Perfect Continuous aur Future Continuous ka passive normally nahi banta (N.A.).',
   ],
   tables: [VOICE_TABLE],
-  build: (limit, from, to) => {
-    const rows = ALL.slice(from ? from - 1 : 0, to ?? ALL.length);
-    return shuffle(rows).slice(0, limit);
-  },
+  build: (limit, from, to) => shuffle(ALL.slice(from ? from - 1 : 0, to ?? ALL.length)).slice(0, limit),
 };
