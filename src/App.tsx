@@ -28,6 +28,8 @@ import SscDashboard from "./pages/SscDashboard";
 import SscPracticeSession from "./pages/SscPracticeSession";
 import SscPolityFacts from "./pages/SscPolityFacts";
 import SscPolityFactsQuiz from "./pages/SscPolityFactsQuiz";
+import SscPolityTheory from "./pages/SscPolityTheory";
+
 import NqtLayout from "./pages/NqtLayout";
 import NqtDashboard from "./pages/NqtDashboard";
 import NqtPractice from "./pages/NqtPractice";
@@ -187,6 +189,8 @@ const App = () => (
               <Route path="gk" element={<SscSubject />} />
               <Route path="gk/polity/facts" element={<SscPolityFacts />} />
               <Route path="gk/polity/facts/:sheet" element={<SscPolityFactsQuiz />} />
+              <Route path="gk/polity/theory/:sheet" element={<SscPolityTheory />} />
+
               <Route path="gk/:subject" element={<SscGkSubject />} />
               <Route path="gk/:subject/practice" element={<SscGkPractice />} />
               <Route path="gk/:subject/theory" element={<SscGkTheory />} />
