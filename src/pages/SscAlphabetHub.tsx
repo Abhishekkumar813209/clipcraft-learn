@@ -19,6 +19,13 @@ export default function SscAlphabetHub() {
       title: 'Reverse Order (A = 26)',
       desc: 'A-26, B-25, Z-1 — ulta order ka number practice karo.',
     },
+    {
+      key: 'complementary-letters',
+      icon: '🔁',
+      title: 'Complementary Letter Pairs',
+      desc: 'A↔Z, B↔Y … position sum = 27 · 100 MCQs.',
+      to: '/ssc/english/drill/complementary-letters',
+    },
   ];
 
   return (
@@ -35,7 +42,7 @@ export default function SscAlphabetHub() {
           <Card
             key={c.key}
             className="cursor-pointer hover:shadow-md hover:border-emerald-400 transition-shadow"
-            onClick={() => nav(`/ssc/english/practice/alphabet/${c.key}`)}
+            onClick={() => nav((c as { to?: string }).to ?? `/ssc/english/practice/alphabet/${c.key}`)}
           >
             <CardContent className="p-6">
               <div className="text-3xl mb-2">{c.icon}</div>

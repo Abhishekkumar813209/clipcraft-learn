@@ -28,10 +28,9 @@ const ENGLISH_CARDS: EnglishCard[] = [
   { key: 'parajumble', label: 'Parajumble', icon: '🧵', blurb: 'Sentence rearrangement — position logic hint + solver lesson', to: '/ssc/english/bank/parajumble', badge: 'New · PYQ', countKey: 'parajumble' },
   { key: 'passive_voice', label: 'Active / Passive Voice', icon: '🔄', blurb: 'Rules + spot the error drills · range se practice', to: '/ssc/english/grammar/passive_voice' },
   { key: 'narration', label: 'Narration', icon: '💬', blurb: 'Direct & indirect speech — theory + range-wise MCQs', to: '/ssc/english/grammar/narration' },
-  { key: 'voice-conversion', label: 'Active → Passive Conversion', icon: '🧮', blurb: 'Tense table theory + 100 MCQs · option flip = kis tense ka conversion', to: '/ssc/english/drill/voice-conversion', badge: 'New' },
+  { key: 'voice-conversion', label: 'Active → Passive Structure', icon: '🧮', blurb: 'Structure-to-structure conversion · 100 MCQs (sentences nahi)', to: '/ssc/english/drill/voice-conversion', badge: 'New' },
   { key: 'subject-object', label: 'Identify Subject & Object', icon: '🎯', blurb: 'Sentence me kaun subject, kya object — har option ka Hinglish reason', to: '/ssc/english/drill/subject-object', badge: 'New' },
   { key: 'parts-of-speech', label: 'Identify Parts of Speech', icon: '🏷️', blurb: '600+ words · Noun/Verb/Adjective… flippable solutions', to: '/ssc/english/drill/parts-of-speech', badge: 'New' },
-  { key: 'complementary-letters', label: 'Complementary Letter Pairs', icon: '🔁', blurb: 'A↔Z, B↔Y … sum 27 · 100 MCQs', to: '/ssc/english/drill/complementary-letters', badge: 'New' },
 ];
 
 
@@ -178,7 +177,7 @@ export default function SscSubjectPage() {
                 <div className="flex-1 min-w-0">
                   <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-amber-700 bg-amber-100 px-2 py-0.5 rounded mb-1.5">New</span>
                   <h3 className="font-semibold text-foreground">Practice</h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">Alphabet position · Reverse order</p>
+                  <p className="text-sm text-muted-foreground mt-0.5">Alphabet position · Reverse order · Complementary pairs</p>
                 </div>
               </div>
             </CardContent>
