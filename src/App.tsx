@@ -28,6 +28,8 @@ import SscDashboard from "./pages/SscDashboard";
 import SscPracticeSession from "./pages/SscPracticeSession";
 import SscPolityFacts from "./pages/SscPolityFacts";
 import SscPolityFactsQuiz from "./pages/SscPolityFactsQuiz";
+import SscPolityTheory from "./pages/SscPolityTheory";
+
 import NqtLayout from "./pages/NqtLayout";
 import NqtDashboard from "./pages/NqtDashboard";
 import NqtPractice from "./pages/NqtPractice";
