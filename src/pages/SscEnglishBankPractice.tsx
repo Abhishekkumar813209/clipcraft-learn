@@ -316,10 +316,10 @@ export default function SscEnglishBankPractice() {
                   <span className="whitespace-pre-line">{cur.word_meanings}</span>
                 </div>
               )}
-              {cur.book_solution && (!perOption || isPara) && (
-                <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm" open={isPara}>
+              {cur.book_solution && !perOption && !isPara && (
+                <details className="rounded-md bg-slate-50 border border-slate-200 p-3 text-sm">
                   <summary className="cursor-pointer font-semibold text-slate-700">
-                    {isPara ? 'Solver lesson (kaise solve karein)' : 'Book solution (English)'}
+                    Book solution (English)
                   </summary>
                   <p className="mt-1 text-slate-600 whitespace-pre-line">{cur.book_solution}</p>
                 </details>
