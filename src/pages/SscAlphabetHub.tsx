@@ -26,6 +26,13 @@ export default function SscAlphabetHub() {
       desc: 'A↔Z, B↔Y … position sum = 27 · 100 MCQs.',
       to: '/ssc/english/drill/complementary-letters',
     },
+    {
+      key: 'voice-conversion',
+      icon: '🔄',
+      title: 'Active → Passive Structure',
+      desc: 'Sirf structure-to-structure conversion · 100 MCQs (sentences nahi).',
+      to: '/ssc/english/drill/voice-conversion',
+    },
   ];
 
   return (
