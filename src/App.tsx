@@ -97,6 +97,7 @@ import SscGrammarRulesPractice from "./pages/SscGrammarRulesPractice";
 import SscGrammarRuleDrill from "./pages/SscGrammarRuleDrill";
 import SscAlphabetHub from "./pages/SscAlphabetHub";
 import SscAlphabetQuiz from "./pages/SscAlphabetQuiz";
+import SscEnglishDrill from "./pages/SscEnglishDrill";
 import SscPosVerbBasicPractice from "./pages/SscPosVerbBasicPractice";
 import SscSynAntPractice from "./pages/SscSynAntPractice";
 import SscMathsCalculation from "./pages/SscMathsCalculation";
