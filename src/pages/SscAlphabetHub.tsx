@@ -33,6 +33,20 @@ export default function SscAlphabetHub() {
       desc: 'Sirf structure-to-structure conversion · 100 MCQs (sentences nahi).',
       to: '/ssc/english/drill/voice-conversion',
     },
+    {
+      key: 'subject-object',
+      icon: '🎯',
+      title: 'Identify Subject & Object',
+      desc: 'Sentence me kaun subject, kya object — har option ka Hinglish reason.',
+      to: '/ssc/english/drill/subject-object',
+    },
+    {
+      key: 'parts-of-speech',
+      icon: '🏷️',
+      title: 'Identify Parts of Speech',
+      desc: '600+ words · Noun/Verb/Adjective… flippable solutions.',
+      to: '/ssc/english/drill/parts-of-speech',
+    },
   ];
 
   return (
