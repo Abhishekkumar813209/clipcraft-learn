@@ -127,21 +127,36 @@ export default function SscPolityFactsQuiz() {
                     {q.options.map((o, i) => {
                       const isCorrect = i === q.correctIndex;
                       const isPicked = chosen === i;
+                      const info = q.optionInfo?.[i];
+                      const isOpen = open === i;
                       const cls = !answered
                         ? 'border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50'
                         : isCorrect
                           ? 'border-emerald-400 bg-emerald-50'
-                          : isPicked ? 'border-rose-300 bg-rose-50' : 'border-slate-200 opacity-70';
+                          : isPicked ? 'border-rose-300 bg-rose-50' : 'border-slate-200';
                       return (
-                        <div key={i} className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 transition-colors ${cls}`}>
-                          <button className="flex-1 text-left text-sm" onClick={() => !answered && setPicked((p) => ({ ...p, [idx]: i }))}>
-                            <span className="font-semibold mr-2">{String.fromCharCode(65 + i)}.</span>{o}
-                          </button>
-                          {answered && isCorrect && <Check className="w-4 h-4 text-emerald-600" />}
-                          {answered && isPicked && !isCorrect && <X className="w-4 h-4 text-rose-500" />}
-                          <button className={bm.isO(q.id, o) ? 'text-amber-500' : 'text-slate-300 hover:text-amber-500'} onClick={() => bookmarkOption(o)}>
-                            <Bookmark className="w-3.5 h-3.5" fill={bm.isO(q.id, o) ? 'currentColor' : 'none'} />
-                          </button>
+                        <div key={i} className={`rounded-lg border transition-colors ${cls}`}>
+                          <div className="flex items-center gap-2 px-3 py-2.5">
+                            <button
+                              className="flex-1 text-left text-sm"
+                              onClick={() => (answered ? setOpen(isOpen ? null : i) : setPicked((p) => ({ ...p, [idx]: i })))}
+                            >
+                              <span className="font-semibold mr-2">{String.fromCharCode(65 + i)}.</span>{o}
+                              {answered && <span className="ml-2 text-[11px] text-slate-500">{isOpen ? '▲ chhupao' : '▼ ye kya hai?'}</span>}
+                            </button>
+                            {answered && isCorrect && <Check className="w-4 h-4 text-emerald-600" />}
+                            {answered && isPicked && !isCorrect && <X className="w-4 h-4 text-rose-500" />}
+                            <button className={bm.isO(q.id, o) ? 'text-amber-500' : 'text-slate-300 hover:text-amber-500'} onClick={() => bookmarkOption(o)}>
+                              <Bookmark className="w-3.5 h-3.5" fill={bm.isO(q.id, o) ? 'currentColor' : 'none'} />
+                            </button>
+                          </div>
+                          {answered && isOpen && info && (
+                            <div className="px-3 pb-3 -mt-1 space-y-1.5 border-t border-slate-100 pt-2">
+                              <div className="text-sm font-semibold text-slate-800">{info.title}</div>
+                              {info.detail && <p className="text-sm text-slate-600 leading-relaxed">{info.detail}</p>}
+                              {info.extra && <Badge className="bg-amber-100 text-amber-800 border border-amber-200">{info.extra}</Badge>}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
