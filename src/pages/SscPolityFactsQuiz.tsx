@@ -30,6 +30,7 @@ export default function SscPolityFactsQuiz() {
   const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => { setStarted(false); setQs([]); setIdx(0); setPicked({}); }, [sheet]);
+  useEffect(() => { setOpen(null); }, [idx]);
 
   const start = () => {
     setQs(buildPolityQuiz(meta.key, size));
