@@ -24,8 +24,7 @@ export default function SscPolityFacts() {
           {POLITY_SHEETS.map((s) => (
             <Card
               key={s.key}
-              className="cursor-pointer border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all bg-white/80"
-              onClick={() => nav(`/ssc/gk/polity/facts/${s.key}`)}
+              className="border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all bg-white/80"
             >
               <CardContent className="p-5 flex items-start gap-3">
                 <span className="text-3xl">{s.emoji}</span>
@@ -33,11 +32,18 @@ export default function SscPolityFacts() {
                   <h3 className="font-semibold">{s.label}</h3>
                   <p className="text-sm text-muted-foreground mt-0.5">{s.blurb}</p>
                   <p className="text-xs text-emerald-700 mt-1.5 font-medium">{polityTarget(s.key)} MCQs · {polityCounts[s.key] || 0} facts</p>
+                  <div className="flex gap-2 mt-3">
+                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500" onClick={() => nav(`/ssc/gk/polity/facts/${s.key}`)}>Practice</Button>
+                    <Button size="sm" variant="outline" className="border-emerald-200 text-emerald-700" onClick={() => nav(`/ssc/gk/polity/theory/${s.key}`)}>
+                      <BookOpen className="w-3.5 h-3.5 mr-1" /> Theory
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
       </div>
     </div>
   );
