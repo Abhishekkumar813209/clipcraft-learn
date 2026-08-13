@@ -32,7 +32,9 @@ export default function SscPolityFacts() {
             </CardContent>
           </Card>
 
+          {POLITY_SHEETS.map((s) => (
             <Card
+
               key={s.key}
               className="border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all bg-white/80"
             >
