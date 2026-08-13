@@ -1,0 +1,3806 @@
+{
+"random": [
+{
+"no": 1,
+"q": "Part XXI — “Temporary, Transitional and Special Provisions” — covers which range of articles?",
+"options": [
+"Articles 369 to 392",
+"Articles 343 to 351",
+"Articles 324 to 329A",
+"Articles 243-P to 243-ZG"
+],
+"correct": 0,
+"answer": "Articles 369 to 392",
+"solution": "Part XXI (Temporary, Transitional and Special Provisions) → Articles 369 to 392.",
+"why": [
+"CORRECT — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities"
+]
+},
+{
+"no": 2,
+"q": "Articles 239 to 242 of the Constitution deal with which Part?",
+"options": [
+"Part XVII — Official Language",
+"Part VIII — The Union Territories",
+"Part III — Fundamental Rights",
+"Part XII — Finance, Property, Contracts and Suits"
+],
+"correct": 1,
+"answer": "Part VIII — The Union Territories",
+"solution": "Articles 239 to 242 → Part VIII: The Union Territories.",
+"why": [
+"Wrong — Part XVII covers: Articles 343 to 351",
+"CORRECT — Part VIII covers: Articles 239 to 242",
+"Wrong — Part III covers: Articles 12 to 35",
+"Wrong — Part XII covers: Articles 264 to 300A"
+]
+},
+{
+"no": 3,
+"q": "Articles 393 to 395 of the Constitution deal with which Part?",
+"options": [
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part XVIII — Emergency Provisions",
+"Part IXB — The Co-operative Societies",
+"Part V — The Union"
+],
+"correct": 0,
+"answer": "Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"solution": "Articles 393 to 395 → Part XXII: Short Title, Commencement, Authoritative Text in Hindi and Repeals.",
+"why": [
+"CORRECT — Part XXII covers: Articles 393 to 395",
+"Wrong — Part XVIII covers: Articles 352 to 360",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"Wrong — Part V covers: Articles 52 to 151"
+]
+},
+{
+"no": 4,
+"q": "Articles 323A to 323B of the Constitution deal with which Part?",
+"options": [
+"Part II — Citizenship",
+"Part I — The Union and its Territory",
+"Part XV — Elections",
+"Part XIVA — Tribunals"
+],
+"correct": 3,
+"answer": "Part XIVA — Tribunals",
+"solution": "Articles 323A to 323B → Part XIVA: Tribunals.",
+"why": [
+"Wrong — Part II covers: Articles 5 to 11",
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part XV covers: Articles 324 to 329A",
+"CORRECT — Part XIVA covers: Articles 323A to 323B"
+]
+},
+{
+"no": 5,
+"q": "“Citizenship” is dealt with under which Part?",
+"options": [
+"Part VI",
+"Part II",
+"Part XXII",
+"Part VIII"
+],
+"correct": 1,
+"answer": "Part II",
+"solution": "Part II — Citizenship (Articles 5 to 11).",
+"why": [
+"Wrong — Part VI = The States: Articles 152 to 237",
+"CORRECT — Part II = Citizenship: Articles 5 to 11",
+"Wrong — Part XXII = Short Title, Commencement, Authoritative Text in Hindi and Repeals: Articles 393 to 395",
+"Wrong — Part VIII = The Union Territories: Articles 239 to 242"
+]
+},
+{
+"no": 6,
+"q": "Part IV — “Directive Principles of State Policy” — covers which range of articles?",
+"options": [
+"Articles 243-P to 243-ZG",
+"Articles 52 to 151",
+"Articles 301 to 307",
+"Articles 36 to 51"
+],
+"correct": 3,
+"answer": "Articles 36 to 51",
+"solution": "Part IV (Directive Principles of State Policy) → Articles 36 to 51.",
+"why": [
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union",
+"Wrong — Articles 301 to 307 belongs to: Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"CORRECT — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy"
+]
+},
+{
+"no": 7,
+"q": "Which articles deal with Right to Equality?",
+"options": [
+"Article 300A",
+"Articles 256 to 263",
+"Articles 14 to 18",
+"Article 123"
+],
+"correct": 2,
+"answer": "Articles 14 to 18",
+"solution": "Right to Equality → Articles 14 to 18 (Part III).",
+"why": [
+"Wrong — Article 300A →: Right to Property (now a legal right) [Part XII]",
+"Wrong — Articles 256 to 263 →: Administrative relations between Union and States [Part XI]",
+"CORRECT — Articles 14 to 18 →: Right to Equality [Part III]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]"
+]
+},
+{
+"no": 8,
+"q": "Article 368 of the Constitution deal with which Part?",
+"options": [
+"Part IXA — The Municipalities",
+"Part IX — The Panchayats",
+"Part XX — Amendment of the Constitution",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 2,
+"answer": "Part XX — Amendment of the Constitution",
+"solution": "Article 368 → Part XX: Amendment of the Constitution.",
+"why": [
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"CORRECT — Part XX covers: Article 368",
+"Wrong — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 9,
+"q": "Which articles deal with National Commission for Backward Classes?",
+"options": [
+"Article 32",
+"Article 123",
+"Article 338B",
+"Articles 256 to 263"
+],
+"correct": 2,
+"answer": "Article 338B",
+"solution": "National Commission for Backward Classes → Article 338B (Part XVI).",
+"why": [
+"Wrong — Article 32 →: Right to Constitutional Remedies [Part III]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]",
+"CORRECT — Article 338B →: National Commission for Backward Classes [Part XVI]",
+"Wrong — Articles 256 to 263 →: Administrative relations between Union and States [Part XI]"
+]
+},
+{
+"no": 10,
+"q": "Part XIII — “Trade, Commerce and Intercourse within the Territory of India” — covers which range of articles?",
+"options": [
+"Articles 243-P to 243-ZG",
+"Articles 1 to 4",
+"Articles 369 to 392",
+"Articles 301 to 307"
+],
+"correct": 3,
+"answer": "Articles 301 to 307",
+"solution": "Part XIII (Trade, Commerce and Intercourse within the Territory of India) → Articles 301 to 307.",
+"why": [
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"CORRECT — Articles 301 to 307 belongs to: Part XIII — Trade, Commerce and Intercourse within the Territory of India"
+]
+},
+{
+"no": 11,
+"q": "“Temporary, Transitional and Special Provisions” is dealt with under which Part?",
+"options": [
+"Part XV",
+"Part IXA",
+"Part XXI",
+"Part XIV"
+],
+"correct": 2,
+"answer": "Part XXI",
+"solution": "Part XXI — Temporary, Transitional and Special Provisions (Articles 369 to 392).",
+"why": [
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"Wrong — Part IXA = The Municipalities: Articles 243-P to 243-ZG",
+"CORRECT — Part XXI = Temporary, Transitional and Special Provisions: Articles 369 to 392",
+"Wrong — Part XIV = Services under the Union and the States: Articles 308 to 323"
+]
+},
+{
+"no": 12,
+"q": "Which articles deal with Financial Emergency?",
+"options": [
+"Article 360",
+"Articles 233 to 237",
+"Article 32",
+"Article 76"
+],
+"correct": 0,
+"answer": "Article 360",
+"solution": "Financial Emergency → Article 360 (Part XVIII).",
+"why": [
+"CORRECT — Article 360 →: Financial Emergency [Part XVIII]",
+"Wrong — Articles 233 to 237 →: Subordinate Courts (Part VI, Ch. VI) [Part VI]",
+"Wrong — Article 32 →: Right to Constitutional Remedies [Part III]",
+"Wrong — Article 76 →: The Attorney-General for India [Part V]"
+]
+},
+{
+"no": 13,
+"q": "Which articles deal with Public Service Commissions (UPSC/SPSC)?",
+"options": [
+"Articles 315 to 323",
+"Articles 79 to 122",
+"Article 32",
+"Article 338B"
+],
+"correct": 0,
+"answer": "Articles 315 to 323",
+"solution": "Public Service Commissions (UPSC/SPSC) → Articles 315 to 323 (Part XIV).",
+"why": [
+"CORRECT — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]",
+"Wrong — Articles 79 to 122 →: Parliament — composition & procedure (Part V, Ch. II) [Part V]",
+"Wrong — Article 32 →: Right to Constitutional Remedies [Part III]",
+"Wrong — Article 338B →: National Commission for Backward Classes [Part XVI]"
+]
+},
+{
+"no": 14,
+"q": "Articles 23 to 24 of the Constitution relate to:",
+"options": [
+"The Governor and State Executive (Part VI, Ch. II)",
+"The Union Judiciary / Supreme Court (Part V, Ch. IV)",
+"Cultural and Educational Rights",
+"Right against Exploitation"
+],
+"correct": 3,
+"answer": "Right against Exploitation",
+"solution": "Articles 23 to 24 → Right against Exploitation (Part III).",
+"why": [
+"Wrong — The Governor and State Executive (Part VI, Ch. II): Articles 153 to 167 [Part VI]",
+"Wrong — The Union Judiciary / Supreme Court (Part V, Ch. IV): Articles 124 to 147 [Part V]",
+"Wrong — Cultural and Educational Rights: Articles 29 to 30 [Part III]",
+"CORRECT — Right against Exploitation: Articles 23 to 24 [Part III]"
+]
+},
+{
+"no": 15,
+"q": "Which articles deal with Reservation of seats for SC/ST in Lok Sabha?",
+"options": [
+"Article 330",
+"Articles 256 to 263",
+"Articles 14 to 18",
+"Articles 19 to 22"
+],
+"correct": 0,
+"answer": "Article 330",
+"solution": "Reservation of seats for SC/ST in Lok Sabha → Article 330 (Part XVI).",
+"why": [
+"CORRECT — Article 330 →: Reservation of seats for SC/ST in Lok Sabha [Part XVI]",
+"Wrong — Articles 256 to 263 →: Administrative relations between Union and States [Part XI]",
+"Wrong — Articles 14 to 18 →: Right to Equality [Part III]",
+"Wrong — Articles 19 to 22 →: Right to Freedom [Part III]"
+]
+},
+{
+"no": 16,
+"q": "Articles 243-ZH to 243-ZT of the Constitution deal with which Part?",
+"options": [
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part XX — Amendment of the Constitution",
+"Part XII — Finance, Property, Contracts and Suits",
+"Part IXB — The Co-operative Societies"
+],
+"correct": 3,
+"answer": "Part IXB — The Co-operative Societies",
+"solution": "Articles 243-ZH to 243-ZT → Part IXB: The Co-operative Societies.",
+"why": [
+"Wrong — Part XXI covers: Articles 369 to 392",
+"Wrong — Part XX covers: Article 368",
+"Wrong — Part XII covers: Articles 264 to 300A",
+"CORRECT — Part IXB covers: Articles 243-ZH to 243-ZT"
+]
+},
+{
+"no": 17,
+"q": "Article 300A of the Constitution relate to:",
+"options": [
+"Right to Property (now a legal right)",
+"Right to Freedom",
+"The High Courts in the States (Part VI, Ch. V)",
+"Parliament — composition & procedure (Part V, Ch. II)"
+],
+"correct": 0,
+"answer": "Right to Property (now a legal right)",
+"solution": "Article 300A → Right to Property (now a legal right) (Part XII).",
+"why": [
+"CORRECT — Right to Property (now a legal right): Article 300A [Part XII]",
+"Wrong — Right to Freedom: Articles 19 to 22 [Part III]",
+"Wrong — The High Courts in the States (Part VI, Ch. V): Articles 214 to 232 [Part VI]",
+"Wrong — Parliament — composition & procedure (Part V, Ch. II): Articles 79 to 122 [Part V]"
+]
+},
+{
+"no": 18,
+"q": "Which articles deal with Election Commission of India?",
+"options": [
+"Articles 233 to 237",
+"Article 324",
+"Article 76",
+"Articles 214 to 232"
+],
+"correct": 1,
+"answer": "Article 324",
+"solution": "Election Commission of India → Article 324 (Part XV).",
+"why": [
+"Wrong — Articles 233 to 237 →: Subordinate Courts (Part VI, Ch. VI) [Part VI]",
+"CORRECT — Article 324 →: Election Commission of India [Part XV]",
+"Wrong — Article 76 →: The Attorney-General for India [Part V]",
+"Wrong — Articles 214 to 232 →: The High Courts in the States (Part VI, Ch. V) [Part VI]"
+]
+},
+{
+"no": 19,
+"q": "Part XX — “Amendment of the Constitution” — covers which range of articles?",
+"options": [
+"Articles 361 to 367",
+"Articles 243-ZH to 243-ZT",
+"Articles 239 to 242",
+"Article 368"
+],
+"correct": 3,
+"answer": "Article 368",
+"solution": "Part XX (Amendment of the Constitution) → Article 368.",
+"why": [
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"CORRECT — Article 368 belongs to: Part XX — Amendment of the Constitution"
+]
+},
+{
+"no": 20,
+"q": "Which articles deal with The Attorney-General for India?",
+"options": [
+"Articles 29 to 30",
+"Article 76",
+"Articles 315 to 323",
+"Articles 214 to 232"
+],
+"correct": 1,
+"answer": "Article 76",
+"solution": "The Attorney-General for India → Article 76 (Part V).",
+"why": [
+"Wrong — Articles 29 to 30 →: Cultural and Educational Rights [Part III]",
+"CORRECT — Article 76 →: The Attorney-General for India [Part V]",
+"Wrong — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]",
+"Wrong — Articles 214 to 232 →: The High Courts in the States (Part VI, Ch. V) [Part VI]"
+]
+},
+{
+"no": 21,
+"q": "Which articles deal with The Union Council of Ministers (Part V)?",
+"options": [
+"Article 338B",
+"Articles 25 to 28",
+"Articles 233 to 237",
+"Articles 74 to 75"
+],
+"correct": 3,
+"answer": "Articles 74 to 75",
+"solution": "The Union Council of Ministers (Part V) → Articles 74 to 75 (Part V).",
+"why": [
+"Wrong — Article 338B →: National Commission for Backward Classes [Part XVI]",
+"Wrong — Articles 25 to 28 →: Right to Freedom of Religion [Part III]",
+"Wrong — Articles 233 to 237 →: Subordinate Courts (Part VI, Ch. VI) [Part VI]",
+"CORRECT — Articles 74 to 75 →: The Union Council of Ministers (Part V) [Part V]"
+]
+},
+{
+"no": 22,
+"q": "Which articles deal with The High Courts in the States (Part VI, Ch. V)?",
+"options": [
+"Article 213",
+"Articles 29 to 30",
+"Articles 214 to 232",
+"Articles 315 to 323"
+],
+"correct": 2,
+"answer": "Articles 214 to 232",
+"solution": "The High Courts in the States (Part VI, Ch. V) → Articles 214 to 232 (Part VI).",
+"why": [
+"Wrong — Article 213 →: Ordinance-making power of the Governor [Part VI]",
+"Wrong — Articles 29 to 30 →: Cultural and Educational Rights [Part III]",
+"CORRECT — Articles 214 to 232 →: The High Courts in the States (Part VI, Ch. V) [Part VI]",
+"Wrong — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]"
+]
+},
+{
+"no": 23,
+"q": "Which articles deal with Comptroller and Auditor-General of India (Part V, Ch. V)?",
+"options": [
+"Article 360",
+"Articles 315 to 323",
+"Articles 148 to 151",
+"Articles 124 to 147"
+],
+"correct": 2,
+"answer": "Articles 148 to 151",
+"solution": "Comptroller and Auditor-General of India (Part V, Ch. V) → Articles 148 to 151 (Part V).",
+"why": [
+"Wrong — Article 360 →: Financial Emergency [Part XVIII]",
+"Wrong — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]",
+"CORRECT — Articles 148 to 151 →: Comptroller and Auditor-General of India (Part V, Ch. V) [Part V]",
+"Wrong — Articles 124 to 147 →: The Union Judiciary / Supreme Court (Part V, Ch. IV) [Part V]"
+]
+},
+{
+"no": 24,
+"q": "Which articles deal with President's Rule (State Emergency)?",
+"options": [
+"Articles 256 to 263",
+"Article 356",
+"Articles 23 to 24",
+"Articles 79 to 122"
+],
+"correct": 1,
+"answer": "Article 356",
+"solution": "President's Rule (State Emergency) → Article 356 (Part XVIII).",
+"why": [
+"Wrong — Articles 256 to 263 →: Administrative relations between Union and States [Part XI]",
+"CORRECT — Article 356 →: President's Rule (State Emergency) [Part XVIII]",
+"Wrong — Articles 23 to 24 →: Right against Exploitation [Part III]",
+"Wrong — Articles 79 to 122 →: Parliament — composition & procedure (Part V, Ch. II) [Part V]"
+]
+},
+{
+"no": 25,
+"q": "“Special Provisions relating to Certain Classes” is dealt with under which Part?",
+"options": [
+"Part II",
+"Part III",
+"Part XXII",
+"Part XVI"
+],
+"correct": 3,
+"answer": "Part XVI",
+"solution": "Part XVI — Special Provisions relating to Certain Classes (Articles 330 to 342A).",
+"why": [
+"Wrong — Part II = Citizenship: Articles 5 to 11",
+"Wrong — Part III = Fundamental Rights: Articles 12 to 35",
+"Wrong — Part XXII = Short Title, Commencement, Authoritative Text in Hindi and Repeals: Articles 393 to 395",
+"CORRECT — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A"
+]
+},
+{
+"no": 26,
+"q": "Articles 233 to 237 of the Constitution relate to:",
+"options": [
+"Subordinate Courts (Part VI, Ch. VI)",
+"The Union Council of Ministers (Part V)",
+"Administrative relations between Union and States",
+"The High Courts in the States (Part VI, Ch. V)"
+],
+"correct": 0,
+"answer": "Subordinate Courts (Part VI, Ch. VI)",
+"solution": "Articles 233 to 237 → Subordinate Courts (Part VI, Ch. VI) (Part VI).",
+"why": [
+"CORRECT — Subordinate Courts (Part VI, Ch. VI): Articles 233 to 237 [Part VI]",
+"Wrong — The Union Council of Ministers (Part V): Articles 74 to 75 [Part V]",
+"Wrong — Administrative relations between Union and States: Articles 256 to 263 [Part XI]",
+"Wrong — The High Courts in the States (Part VI, Ch. V): Articles 214 to 232 [Part VI]"
+]
+},
+{
+"no": 27,
+"q": "Which articles deal with The President and Vice-President (Part V, Ch. I)?",
+"options": [
+"Articles 52 to 73",
+"Articles 148 to 151",
+"Articles 245 to 255",
+"Article 356"
+],
+"correct": 0,
+"answer": "Articles 52 to 73",
+"solution": "The President and Vice-President (Part V, Ch. I) → Articles 52 to 73 (Part V).",
+"why": [
+"CORRECT — Articles 52 to 73 →: The President and Vice-President (Part V, Ch. I) [Part V]",
+"Wrong — Articles 148 to 151 →: Comptroller and Auditor-General of India (Part V, Ch. V) [Part V]",
+"Wrong — Articles 245 to 255 →: Legislative relations between Union and States [Part XI]",
+"Wrong — Article 356 →: President's Rule (State Emergency) [Part XVIII]"
+]
+},
+{
+"no": 28,
+"q": "Which articles deal with Administrative relations between Union and States?",
+"options": [
+"Articles 256 to 263",
+"Articles 214 to 232",
+"Article 352",
+"Article 280"
+],
+"correct": 0,
+"answer": "Articles 256 to 263",
+"solution": "Administrative relations between Union and States → Articles 256 to 263 (Part XI).",
+"why": [
+"CORRECT — Articles 256 to 263 →: Administrative relations between Union and States [Part XI]",
+"Wrong — Articles 214 to 232 →: The High Courts in the States (Part VI, Ch. V) [Part VI]",
+"Wrong — Article 352 →: National Emergency [Part XVIII]",
+"Wrong — Article 280 →: Finance Commission [Part XII]"
+]
+},
+{
+"no": 29,
+"q": "Articles 36 to 51 of the Constitution deal with which Part?",
+"options": [
+"Part I — The Union and its Territory",
+"Part IXA — The Municipalities",
+"Part VIII — The Union Territories",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 3,
+"answer": "Part IV — Directive Principles of State Policy",
+"solution": "Articles 36 to 51 → Part IV: Directive Principles of State Policy.",
+"why": [
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"CORRECT — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 30,
+"q": "Articles 152 to 237 of the Constitution deal with which Part?",
+"options": [
+"Part XIVA — Tribunals",
+"Part VI — The States",
+"Part VIII — The Union Territories",
+"Part IX — The Panchayats"
+],
+"correct": 1,
+"answer": "Part VI — The States",
+"solution": "Articles 152 to 237 → Part VI: The States.",
+"why": [
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"CORRECT — Part VI covers: Articles 152 to 237",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"Wrong — Part IX covers: Articles 243 to 243-O"
+]
+},
+{
+"no": 31,
+"q": "“The Union” is dealt with under which Part?",
+"options": [
+"Part VII",
+"Part XV",
+"Part XIX",
+"Part V"
+],
+"correct": 3,
+"answer": "Part V",
+"solution": "Part V — The Union (Articles 52 to 151).",
+"why": [
+"Wrong — Part VII = The States in Part B of the First Schedule (repealed, 7th Amendment 1956): Article 238",
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"Wrong — Part XIX = Miscellaneous: Articles 361 to 367",
+"CORRECT — Part V = The Union: Articles 52 to 151"
+]
+},
+{
+"no": 32,
+"q": "Which articles deal with State Legislature (Part VI, Ch. III)?",
+"options": [
+"Articles 23 to 24",
+"Articles 19 to 22",
+"Articles 148 to 151",
+"Articles 168 to 212"
+],
+"correct": 3,
+"answer": "Articles 168 to 212",
+"solution": "State Legislature (Part VI, Ch. III) → Articles 168 to 212 (Part VI).",
+"why": [
+"Wrong — Articles 23 to 24 →: Right against Exploitation [Part III]",
+"Wrong — Articles 19 to 22 →: Right to Freedom [Part III]",
+"Wrong — Articles 148 to 151 →: Comptroller and Auditor-General of India (Part V, Ch. V) [Part V]",
+"CORRECT — Articles 168 to 212 →: State Legislature (Part VI, Ch. III) [Part VI]"
+]
+},
+{
+"no": 33,
+"q": "Which articles deal with Legislative relations between Union and States?",
+"options": [
+"Articles 245 to 255",
+"Article 324",
+"Article 360",
+"Article 123"
+],
+"correct": 0,
+"answer": "Articles 245 to 255",
+"solution": "Legislative relations between Union and States → Articles 245 to 255 (Part XI).",
+"why": [
+"CORRECT — Articles 245 to 255 →: Legislative relations between Union and States [Part XI]",
+"Wrong — Article 324 →: Election Commission of India [Part XV]",
+"Wrong — Article 360 →: Financial Emergency [Part XVIII]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]"
+]
+},
+{
+"no": 34,
+"q": "Article 51A of the Constitution deal with which Part?",
+"options": [
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Part IVA — Fundamental Duties",
+"Part XIX — Miscellaneous",
+"Part X — The Scheduled and Tribal Areas"
+],
+"correct": 1,
+"answer": "Part IVA — Fundamental Duties",
+"solution": "Article 51A → Part IVA: Fundamental Duties.",
+"why": [
+"Wrong — Part VII covers: Article 238",
+"CORRECT — Part IVA covers: Article 51A",
+"Wrong — Part XIX covers: Articles 361 to 367",
+"Wrong — Part X covers: Articles 244 to 244A"
+]
+},
+{
+"no": 35,
+"q": "Articles 243 to 243-O of the Constitution deal with which Part?",
+"options": [
+"Part XIX — Miscellaneous",
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part XV — Elections",
+"Part IX — The Panchayats"
+],
+"correct": 3,
+"answer": "Part IX — The Panchayats",
+"solution": "Articles 243 to 243-O → Part IX: The Panchayats.",
+"why": [
+"Wrong — Part XIX covers: Articles 361 to 367",
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part XV covers: Articles 324 to 329A",
+"CORRECT — Part IX covers: Articles 243 to 243-O"
+]
+},
+{
+"no": 36,
+"q": "Part XV — “Elections” — covers which range of articles?",
+"options": [
+"Articles 324 to 329A",
+"Articles 264 to 300A",
+"Articles 243 to 243-O",
+"Articles 330 to 342A"
+],
+"correct": 0,
+"answer": "Articles 324 to 329A",
+"solution": "Part XV (Elections) → Articles 324 to 329A.",
+"why": [
+"CORRECT — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes"
+]
+},
+{
+"no": 37,
+"q": "Part VIII — “The Union Territories” — covers which range of articles?",
+"options": [
+"Article 238",
+"Articles 239 to 242",
+"Articles 243 to 243-O",
+"Articles 244 to 244A"
+],
+"correct": 1,
+"answer": "Articles 239 to 242",
+"solution": "Part VIII (The Union Territories) → Articles 239 to 242.",
+"why": [
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"CORRECT — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas"
+]
+},
+{
+"no": 38,
+"q": "Part IXA — “The Municipalities” — covers which range of articles?",
+"options": [
+"Articles 52 to 151",
+"Articles 324 to 329A",
+"Articles 5 to 11",
+"Articles 243-P to 243-ZG"
+],
+"correct": 3,
+"answer": "Articles 243-P to 243-ZG",
+"solution": "Part IXA (The Municipalities) → Articles 243-P to 243-ZG.",
+"why": [
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union",
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Articles 5 to 11 belongs to: Part II — Citizenship",
+"CORRECT — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities"
+]
+},
+{
+"no": 39,
+"q": "Articles 243-P to 243-ZG of the Constitution deal with which Part?",
+"options": [
+"Part XVIII — Emergency Provisions",
+"Part IXA — The Municipalities",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 1,
+"answer": "Part IXA — The Municipalities",
+"solution": "Articles 243-P to 243-ZG → Part IXA: The Municipalities.",
+"why": [
+"Wrong — Part XVIII covers: Articles 352 to 360",
+"CORRECT — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part XIII covers: Articles 301 to 307",
+"Wrong — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 40,
+"q": "Article 238 of the Constitution deal with which Part?",
+"options": [
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part IVA — Fundamental Duties",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 2,
+"answer": "Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"solution": "Article 238 → Part VII: The States in Part B of the First Schedule (repealed, 7th Amendment 1956).",
+"why": [
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part IVA covers: Article 51A",
+"CORRECT — Part VII covers: Article 238",
+"Wrong — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 41,
+"q": "Articles 308 to 323 of the Constitution deal with which Part?",
+"options": [
+"Part IXB — The Co-operative Societies",
+"Part XI — Relations between the Union and the States",
+"Part XVIII — Emergency Provisions",
+"Part XIV — Services under the Union and the States"
+],
+"correct": 3,
+"answer": "Part XIV — Services under the Union and the States",
+"solution": "Articles 308 to 323 → Part XIV: Services under the Union and the States.",
+"why": [
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"Wrong — Part XI covers: Articles 245 to 263",
+"Wrong — Part XVIII covers: Articles 352 to 360",
+"CORRECT — Part XIV covers: Articles 308 to 323"
+]
+},
+{
+"no": 42,
+"q": "Which articles deal with National Emergency?",
+"options": [
+"Article 352",
+"Article 32",
+"Article 300A",
+"Articles 19 to 22"
+],
+"correct": 0,
+"answer": "Article 352",
+"solution": "National Emergency → Article 352 (Part XVIII).",
+"why": [
+"CORRECT — Article 352 →: National Emergency [Part XVIII]",
+"Wrong — Article 32 →: Right to Constitutional Remedies [Part III]",
+"Wrong — Article 300A →: Right to Property (now a legal right) [Part XII]",
+"Wrong — Articles 19 to 22 →: Right to Freedom [Part III]"
+]
+},
+{
+"no": 43,
+"q": "Articles 245 to 255 of the Constitution relate to:",
+"options": [
+"Ordinance-making power of the President",
+"The President and Vice-President (Part V, Ch. I)",
+"Legislative relations between Union and States",
+"Right against Exploitation"
+],
+"correct": 2,
+"answer": "Legislative relations between Union and States",
+"solution": "Articles 245 to 255 → Legislative relations between Union and States (Part XI).",
+"why": [
+"Wrong — Ordinance-making power of the President: Article 123 [Part V]",
+"Wrong — The President and Vice-President (Part V, Ch. I): Articles 52 to 73 [Part V]",
+"CORRECT — Legislative relations between Union and States: Articles 245 to 255 [Part XI]",
+"Wrong — Right against Exploitation: Articles 23 to 24 [Part III]"
+]
+},
+{
+"no": 44,
+"q": "Part IVA — “Fundamental Duties” — covers which range of articles?",
+"options": [
+"Articles 301 to 307",
+"Articles 245 to 263",
+"Article 51A",
+"Articles 152 to 237"
+],
+"correct": 2,
+"answer": "Article 51A",
+"solution": "Part IVA (Fundamental Duties) → Article 51A.",
+"why": [
+"Wrong — Articles 301 to 307 belongs to: Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"CORRECT — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 152 to 237 belongs to: Part VI — The States"
+]
+},
+{
+"no": 45,
+"q": "Articles 25 to 28 of the Constitution relate to:",
+"options": [
+"Right to Freedom of Religion",
+"Financial Emergency",
+"Cultural and Educational Rights",
+"Right to Constitutional Remedies"
+],
+"correct": 0,
+"answer": "Right to Freedom of Religion",
+"solution": "Articles 25 to 28 → Right to Freedom of Religion (Part III).",
+"why": [
+"CORRECT — Right to Freedom of Religion: Articles 25 to 28 [Part III]",
+"Wrong — Financial Emergency: Article 360 [Part XVIII]",
+"Wrong — Cultural and Educational Rights: Articles 29 to 30 [Part III]",
+"Wrong — Right to Constitutional Remedies: Article 32 [Part III]"
+]
+},
+{
+"no": 46,
+"q": "“The Union Territories” is dealt with under which Part?",
+"options": [
+"Part VI",
+"Part VIII",
+"Part VII",
+"Part IXA"
+],
+"correct": 1,
+"answer": "Part VIII",
+"solution": "Part VIII — The Union Territories (Articles 239 to 242).",
+"why": [
+"Wrong — Part VI = The States: Articles 152 to 237",
+"CORRECT — Part VIII = The Union Territories: Articles 239 to 242",
+"Wrong — Part VII = The States in Part B of the First Schedule (repealed, 7th Amendment 1956): Article 238",
+"Wrong — Part IXA = The Municipalities: Articles 243-P to 243-ZG"
+]
+},
+{
+"no": 47,
+"q": "Part XII — “Finance, Property, Contracts and Suits” — covers which range of articles?",
+"options": [
+"Articles 324 to 329A",
+"Articles 264 to 300A",
+"Articles 330 to 342A",
+"Articles 243-P to 243-ZG"
+],
+"correct": 1,
+"answer": "Articles 264 to 300A",
+"solution": "Part XII (Finance, Property, Contracts and Suits) → Articles 264 to 300A.",
+"why": [
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"CORRECT — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"Wrong — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes",
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities"
+]
+},
+{
+"no": 48,
+"q": "Articles 52 to 73 of the Constitution relate to:",
+"options": [
+"The President and Vice-President (Part V, Ch. I)",
+"Right to Equality",
+"The Governor and State Executive (Part VI, Ch. II)",
+"Financial Emergency"
+],
+"correct": 0,
+"answer": "The President and Vice-President (Part V, Ch. I)",
+"solution": "Articles 52 to 73 → The President and Vice-President (Part V, Ch. I) (Part V).",
+"why": [
+"CORRECT — The President and Vice-President (Part V, Ch. I): Articles 52 to 73 [Part V]",
+"Wrong — Right to Equality: Articles 14 to 18 [Part III]",
+"Wrong — The Governor and State Executive (Part VI, Ch. II): Articles 153 to 167 [Part VI]",
+"Wrong — Financial Emergency: Article 360 [Part XVIII]"
+]
+},
+{
+"no": 49,
+"q": "“Emergency Provisions” is dealt with under which Part?",
+"options": [
+"Part XVIII",
+"Part XI",
+"Part XV",
+"Part III"
+],
+"correct": 0,
+"answer": "Part XVIII",
+"solution": "Part XVIII — Emergency Provisions (Articles 352 to 360).",
+"why": [
+"CORRECT — Part XVIII = Emergency Provisions: Articles 352 to 360",
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263",
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"Wrong — Part III = Fundamental Rights: Articles 12 to 35"
+]
+},
+{
+"no": 50,
+"q": "Which articles deal with Cultural and Educational Rights?",
+"options": [
+"Article 352",
+"Articles 214 to 232",
+"Articles 29 to 30",
+"Articles 14 to 18"
+],
+"correct": 2,
+"answer": "Articles 29 to 30",
+"solution": "Cultural and Educational Rights → Articles 29 to 30 (Part III).",
+"why": [
+"Wrong — Article 352 →: National Emergency [Part XVIII]",
+"Wrong — Articles 214 to 232 →: The High Courts in the States (Part VI, Ch. V) [Part VI]",
+"CORRECT — Articles 29 to 30 →: Cultural and Educational Rights [Part III]",
+"Wrong — Articles 14 to 18 →: Right to Equality [Part III]"
+]
+},
+{
+"no": 51,
+"q": "Part V — “The Union” — covers which range of articles?",
+"options": [
+"Articles 243 to 243-O",
+"Articles 369 to 392",
+"Articles 330 to 342A",
+"Articles 52 to 151"
+],
+"correct": 3,
+"answer": "Articles 52 to 151",
+"solution": "Part V (The Union) → Articles 52 to 151.",
+"why": [
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes",
+"CORRECT — Articles 52 to 151 belongs to: Part V — The Union"
+]
+},
+{
+"no": 52,
+"q": "Which articles deal with Parliament — composition & procedure (Part V, Ch. II)?",
+"options": [
+"Articles 25 to 28",
+"Article 123",
+"Articles 124 to 147",
+"Articles 79 to 122"
+],
+"correct": 3,
+"answer": "Articles 79 to 122",
+"solution": "Parliament — composition & procedure (Part V, Ch. II) → Articles 79 to 122 (Part V).",
+"why": [
+"Wrong — Articles 25 to 28 →: Right to Freedom of Religion [Part III]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]",
+"Wrong — Articles 124 to 147 →: The Union Judiciary / Supreme Court (Part V, Ch. IV) [Part V]",
+"CORRECT — Articles 79 to 122 →: Parliament — composition & procedure (Part V, Ch. II) [Part V]"
+]
+},
+{
+"no": 53,
+"q": "Articles 245 to 263 of the Constitution deal with which Part?",
+"options": [
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part IX — The Panchayats",
+"Part IXA — The Municipalities",
+"Part XI — Relations between the Union and the States"
+],
+"correct": 3,
+"answer": "Part XI — Relations between the Union and the States",
+"solution": "Articles 245 to 263 → Part XI: Relations between the Union and the States.",
+"why": [
+"Wrong — Part XXII covers: Articles 393 to 395",
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"CORRECT — Part XI covers: Articles 245 to 263"
+]
+},
+{
+"no": 54,
+"q": "“The States” is dealt with under which Part?",
+"options": [
+"Part IXB",
+"Part XIVA",
+"Part IX",
+"Part VI"
+],
+"correct": 3,
+"answer": "Part VI",
+"solution": "Part VI — The States (Articles 152 to 237).",
+"why": [
+"Wrong — Part IXB = The Co-operative Societies: Articles 243-ZH to 243-ZT",
+"Wrong — Part XIVA = Tribunals: Articles 323A to 323B",
+"Wrong — Part IX = The Panchayats: Articles 243 to 243-O",
+"CORRECT — Part VI = The States: Articles 152 to 237"
+]
+},
+{
+"no": 55,
+"q": "Part I — “The Union and its Territory” — covers which range of articles?",
+"options": [
+"Articles 243 to 243-O",
+"Articles 264 to 300A",
+"Articles 1 to 4",
+"Articles 36 to 51"
+],
+"correct": 2,
+"answer": "Articles 1 to 4",
+"solution": "Part I (The Union and its Territory) → Articles 1 to 4.",
+"why": [
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"CORRECT — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy"
+]
+},
+{
+"no": 56,
+"q": "Which articles deal with Right to Freedom?",
+"options": [
+"Articles 29 to 30",
+"Articles 315 to 323",
+"Article 324",
+"Articles 19 to 22"
+],
+"correct": 3,
+"answer": "Articles 19 to 22",
+"solution": "Right to Freedom → Articles 19 to 22 (Part III).",
+"why": [
+"Wrong — Articles 29 to 30 →: Cultural and Educational Rights [Part III]",
+"Wrong — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]",
+"Wrong — Article 324 →: Election Commission of India [Part XV]",
+"CORRECT — Articles 19 to 22 →: Right to Freedom [Part III]"
+]
+},
+{
+"no": 57,
+"q": "Articles 264 to 300A of the Constitution deal with which Part?",
+"options": [
+"Part IV — Directive Principles of State Policy",
+"Part XII — Finance, Property, Contracts and Suits",
+"Part IXA — The Municipalities",
+"Part V — The Union"
+],
+"correct": 1,
+"answer": "Part XII — Finance, Property, Contracts and Suits",
+"solution": "Articles 264 to 300A → Part XII: Finance, Property, Contracts and Suits.",
+"why": [
+"Wrong — Part IV covers: Articles 36 to 51",
+"CORRECT — Part XII covers: Articles 264 to 300A",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part V covers: Articles 52 to 151"
+]
+},
+{
+"no": 58,
+"q": "Articles 330 to 342A of the Constitution deal with which Part?",
+"options": [
+"Part IXA — The Municipalities",
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 1,
+"answer": "Part XVI — Special Provisions relating to Certain Classes",
+"solution": "Articles 330 to 342A → Part XVI: Special Provisions relating to Certain Classes.",
+"why": [
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"CORRECT — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part XXII covers: Articles 393 to 395",
+"Wrong — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 59,
+"q": "Part XIX — “Miscellaneous” — covers which range of articles?",
+"options": [
+"Articles 361 to 367",
+"Articles 36 to 51",
+"Article 51A",
+"Articles 369 to 392"
+],
+"correct": 0,
+"answer": "Articles 361 to 367",
+"solution": "Part XIX (Miscellaneous) → Articles 361 to 367.",
+"why": [
+"CORRECT — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions"
+]
+},
+{
+"no": 60,
+"q": "Which articles deal with Right against Exploitation?",
+"options": [
+"Articles 23 to 24",
+"Articles 29 to 30",
+"Articles 245 to 255",
+"Articles 14 to 18"
+],
+"correct": 0,
+"answer": "Articles 23 to 24",
+"solution": "Right against Exploitation → Articles 23 to 24 (Part III).",
+"why": [
+"CORRECT — Articles 23 to 24 →: Right against Exploitation [Part III]",
+"Wrong — Articles 29 to 30 →: Cultural and Educational Rights [Part III]",
+"Wrong — Articles 245 to 255 →: Legislative relations between Union and States [Part XI]",
+"Wrong — Articles 14 to 18 →: Right to Equality [Part III]"
+]
+},
+{
+"no": 61,
+"q": "Part XIVA — “Tribunals” — covers which range of articles?",
+"options": [
+"Articles 152 to 237",
+"Articles 323A to 323B",
+"Articles 12 to 35",
+"Articles 393 to 395"
+],
+"correct": 1,
+"answer": "Articles 323A to 323B",
+"solution": "Part XIVA (Tribunals) → Articles 323A to 323B.",
+"why": [
+"Wrong — Articles 152 to 237 belongs to: Part VI — The States",
+"CORRECT — Articles 323A to 323B belongs to: Part XIVA — Tribunals",
+"Wrong — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals"
+]
+},
+{
+"no": 62,
+"q": "Part IXB — “The Co-operative Societies” — covers which range of articles?",
+"options": [
+"Article 368",
+"Articles 369 to 392",
+"Articles 324 to 329A",
+"Articles 243-ZH to 243-ZT"
+],
+"correct": 3,
+"answer": "Articles 243-ZH to 243-ZT",
+"solution": "Part IXB (The Co-operative Societies) → Articles 243-ZH to 243-ZT.",
+"why": [
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"CORRECT — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies"
+]
+},
+{
+"no": 63,
+"q": "Which articles deal with Ordinance-making power of the Governor?",
+"options": [
+"Articles 245 to 255",
+"Article 213",
+"Articles 14 to 18",
+"Articles 315 to 323"
+],
+"correct": 1,
+"answer": "Article 213",
+"solution": "Ordinance-making power of the Governor → Article 213 (Part VI).",
+"why": [
+"Wrong — Articles 245 to 255 →: Legislative relations between Union and States [Part XI]",
+"CORRECT — Article 213 →: Ordinance-making power of the Governor [Part VI]",
+"Wrong — Articles 14 to 18 →: Right to Equality [Part III]",
+"Wrong — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]"
+]
+},
+{
+"no": 64,
+"q": "Article 32 of the Constitution relate to:",
+"options": [
+"Right to Constitutional Remedies",
+"Parliament — composition & procedure (Part V, Ch. II)",
+"Legislative relations between Union and States",
+"The Union Judiciary / Supreme Court (Part V, Ch. IV)"
+],
+"correct": 0,
+"answer": "Right to Constitutional Remedies",
+"solution": "Article 32 → Right to Constitutional Remedies (Part III).",
+"why": [
+"CORRECT — Right to Constitutional Remedies: Article 32 [Part III]",
+"Wrong — Parliament — composition & procedure (Part V, Ch. II): Articles 79 to 122 [Part V]",
+"Wrong — Legislative relations between Union and States: Articles 245 to 255 [Part XI]",
+"Wrong — The Union Judiciary / Supreme Court (Part V, Ch. IV): Articles 124 to 147 [Part V]"
+]
+},
+{
+"no": 65,
+"q": "“Tribunals” is dealt with under which Part?",
+"options": [
+"Part XVI",
+"Part XIVA",
+"Part XXI",
+"Part IXA"
+],
+"correct": 1,
+"answer": "Part XIVA",
+"solution": "Part XIVA — Tribunals (Articles 323A to 323B).",
+"why": [
+"Wrong — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A",
+"CORRECT — Part XIVA = Tribunals: Articles 323A to 323B",
+"Wrong — Part XXI = Temporary, Transitional and Special Provisions: Articles 369 to 392",
+"Wrong — Part IXA = The Municipalities: Articles 243-P to 243-ZG"
+]
+},
+{
+"no": 66,
+"q": "Part XXII — “Short Title, Commencement, Authoritative Text in Hindi and Repeals” — covers which range of articles?",
+"options": [
+"Articles 393 to 395",
+"Articles 243 to 243-O",
+"Articles 301 to 307",
+"Article 238"
+],
+"correct": 0,
+"answer": "Articles 393 to 395",
+"solution": "Part XXII (Short Title, Commencement, Authoritative Text in Hindi and Repeals) → Articles 393 to 395.",
+"why": [
+"CORRECT — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 301 to 307 belongs to: Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+]
+},
+{
+"no": 67,
+"q": "Which articles deal with Right to Freedom of Religion?",
+"options": [
+"Articles 25 to 28",
+"Article 123",
+"Articles 148 to 151",
+"Articles 315 to 323"
+],
+"correct": 0,
+"answer": "Articles 25 to 28",
+"solution": "Right to Freedom of Religion → Articles 25 to 28 (Part III).",
+"why": [
+"CORRECT — Articles 25 to 28 →: Right to Freedom of Religion [Part III]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]",
+"Wrong — Articles 148 to 151 →: Comptroller and Auditor-General of India (Part V, Ch. V) [Part V]",
+"Wrong — Articles 315 to 323 →: Public Service Commissions (UPSC/SPSC) [Part XIV]"
+]
+},
+{
+"no": 68,
+"q": "“Elections” is dealt with under which Part?",
+"options": [
+"Part XI",
+"Part XVIII",
+"Part XV",
+"Part XVI"
+],
+"correct": 2,
+"answer": "Part XV",
+"solution": "Part XV — Elections (Articles 324 to 329A).",
+"why": [
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263",
+"Wrong — Part XVIII = Emergency Provisions: Articles 352 to 360",
+"CORRECT — Part XV = Elections: Articles 324 to 329A",
+"Wrong — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A"
+]
+},
+{
+"no": 69,
+"q": "Articles 369 to 392 of the Constitution deal with which Part?",
+"options": [
+"Part I — The Union and its Territory",
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part V — The Union",
+"Part VIII — The Union Territories"
+],
+"correct": 1,
+"answer": "Part XXI — Temporary, Transitional and Special Provisions",
+"solution": "Articles 369 to 392 → Part XXI: Temporary, Transitional and Special Provisions.",
+"why": [
+"Wrong — Part I covers: Articles 1 to 4",
+"CORRECT — Part XXI covers: Articles 369 to 392",
+"Wrong — Part V covers: Articles 52 to 151",
+"Wrong — Part VIII covers: Articles 239 to 242"
+]
+},
+{
+"no": 70,
+"q": "Articles 214 to 232 of the Constitution relate to:",
+"options": [
+"The Union Judiciary / Supreme Court (Part V, Ch. IV)",
+"The High Courts in the States (Part VI, Ch. V)",
+"State Legislature (Part VI, Ch. III)",
+"Right to Freedom of Religion"
+],
+"correct": 1,
+"answer": "The High Courts in the States (Part VI, Ch. V)",
+"solution": "Articles 214 to 232 → The High Courts in the States (Part VI, Ch. V) (Part VI).",
+"why": [
+"Wrong — The Union Judiciary / Supreme Court (Part V, Ch. IV): Articles 124 to 147 [Part V]",
+"CORRECT — The High Courts in the States (Part VI, Ch. V): Articles 214 to 232 [Part VI]",
+"Wrong — State Legislature (Part VI, Ch. III): Articles 168 to 212 [Part VI]",
+"Wrong — Right to Freedom of Religion: Articles 25 to 28 [Part III]"
+]
+},
+{
+"no": 71,
+"q": "Which articles deal with Subordinate Courts (Part VI, Ch. VI)?",
+"options": [
+"Articles 25 to 28",
+"Article 32",
+"Article 123",
+"Articles 233 to 237"
+],
+"correct": 3,
+"answer": "Articles 233 to 237",
+"solution": "Subordinate Courts (Part VI, Ch. VI) → Articles 233 to 237 (Part VI).",
+"why": [
+"Wrong — Articles 25 to 28 →: Right to Freedom of Religion [Part III]",
+"Wrong — Article 32 →: Right to Constitutional Remedies [Part III]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]",
+"CORRECT — Articles 233 to 237 →: Subordinate Courts (Part VI, Ch. VI) [Part VI]"
+]
+},
+{
+"no": 72,
+"q": "Part XI — “Relations between the Union and the States” — covers which range of articles?",
+"options": [
+"Articles 343 to 351",
+"Articles 245 to 263",
+"Article 51A",
+"Articles 369 to 392"
+],
+"correct": 1,
+"answer": "Articles 245 to 263",
+"solution": "Part XI (Relations between the Union and the States) → Articles 245 to 263.",
+"why": [
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"CORRECT — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions"
+]
+},
+{
+"no": 73,
+"q": "Articles 343 to 351 of the Constitution deal with which Part?",
+"options": [
+"Part XII — Finance, Property, Contracts and Suits",
+"Part XX — Amendment of the Constitution",
+"Part VIII — The Union Territories",
+"Part XVII — Official Language"
+],
+"correct": 3,
+"answer": "Part XVII — Official Language",
+"solution": "Articles 343 to 351 → Part XVII: Official Language.",
+"why": [
+"Wrong — Part XII covers: Articles 264 to 300A",
+"Wrong — Part XX covers: Article 368",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"CORRECT — Part XVII covers: Articles 343 to 351"
+]
+},
+{
+"no": 74,
+"q": "Articles 352 to 360 of the Constitution deal with which Part?",
+"options": [
+"Part XVII — Official Language",
+"Part IXA — The Municipalities",
+"Part XI — Relations between the Union and the States",
+"Part XVIII — Emergency Provisions"
+],
+"correct": 3,
+"answer": "Part XVIII — Emergency Provisions",
+"solution": "Articles 352 to 360 → Part XVIII: Emergency Provisions.",
+"why": [
+"Wrong — Part XVII covers: Articles 343 to 351",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part XI covers: Articles 245 to 263",
+"CORRECT — Part XVIII covers: Articles 352 to 360"
+]
+},
+{
+"no": 75,
+"q": "“The Union and its Territory” is dealt with under which Part?",
+"options": [
+"Part I",
+"Part VIII",
+"Part XVII",
+"Part VI"
+],
+"correct": 0,
+"answer": "Part I",
+"solution": "Part I — The Union and its Territory (Articles 1 to 4).",
+"why": [
+"CORRECT — Part I = The Union and its Territory: Articles 1 to 4",
+"Wrong — Part VIII = The Union Territories: Articles 239 to 242",
+"Wrong — Part XVII = Official Language: Articles 343 to 351",
+"Wrong — Part VI = The States: Articles 152 to 237"
+]
+},
+{
+"no": 76,
+"q": "Articles 324 to 329A of the Constitution deal with which Part?",
+"options": [
+"Part VI — The States",
+"Part XV — Elections",
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part XVII — Official Language"
+],
+"correct": 1,
+"answer": "Part XV — Elections",
+"solution": "Articles 324 to 329A → Part XV: Elections.",
+"why": [
+"Wrong — Part VI covers: Articles 152 to 237",
+"CORRECT — Part XV covers: Articles 324 to 329A",
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part XVII covers: Articles 343 to 351"
+]
+},
+{
+"no": 77,
+"q": "Which articles deal with The Union Judiciary / Supreme Court (Part V, Ch. IV)?",
+"options": [
+"Article 338B",
+"Articles 233 to 237",
+"Articles 124 to 147",
+"Articles 23 to 24"
+],
+"correct": 2,
+"answer": "Articles 124 to 147",
+"solution": "The Union Judiciary / Supreme Court (Part V, Ch. IV) → Articles 124 to 147 (Part V).",
+"why": [
+"Wrong — Article 338B →: National Commission for Backward Classes [Part XVI]",
+"Wrong — Articles 233 to 237 →: Subordinate Courts (Part VI, Ch. VI) [Part VI]",
+"CORRECT — Articles 124 to 147 →: The Union Judiciary / Supreme Court (Part V, Ch. IV) [Part V]",
+"Wrong — Articles 23 to 24 →: Right against Exploitation [Part III]"
+]
+},
+{
+"no": 78,
+"q": "Which articles deal with Right to Property (now a legal right)?",
+"options": [
+"Articles 52 to 73",
+"Articles 214 to 232",
+"Article 300A",
+"Articles 23 to 24"
+],
+"correct": 2,
+"answer": "Article 300A",
+"solution": "Right to Property (now a legal right) → Article 300A (Part XII).",
+"why": [
+"Wrong — Articles 52 to 73 →: The President and Vice-President (Part V, Ch. I) [Part V]",
+"Wrong — Articles 214 to 232 →: The High Courts in the States (Part VI, Ch. V) [Part VI]",
+"CORRECT — Article 300A →: Right to Property (now a legal right) [Part XII]",
+"Wrong — Articles 23 to 24 →: Right against Exploitation [Part III]"
+]
+},
+{
+"no": 79,
+"q": "Articles 168 to 212 of the Constitution relate to:",
+"options": [
+"Ordinance-making power of the Governor",
+"State Legislature (Part VI, Ch. III)",
+"Subordinate Courts (Part VI, Ch. VI)",
+"The Attorney-General for India"
+],
+"correct": 1,
+"answer": "State Legislature (Part VI, Ch. III)",
+"solution": "Articles 168 to 212 → State Legislature (Part VI, Ch. III) (Part VI).",
+"why": [
+"Wrong — Ordinance-making power of the Governor: Article 213 [Part VI]",
+"CORRECT — State Legislature (Part VI, Ch. III): Articles 168 to 212 [Part VI]",
+"Wrong — Subordinate Courts (Part VI, Ch. VI): Articles 233 to 237 [Part VI]",
+"Wrong — The Attorney-General for India: Article 76 [Part V]"
+]
+},
+{
+"no": 80,
+"q": "Part XVII — “Official Language” — covers which range of articles?",
+"options": [
+"Articles 5 to 11",
+"Articles 330 to 342A",
+"Article 368",
+"Articles 343 to 351"
+],
+"correct": 3,
+"answer": "Articles 343 to 351",
+"solution": "Part XVII (Official Language) → Articles 343 to 351.",
+"why": [
+"Wrong — Articles 5 to 11 belongs to: Part II — Citizenship",
+"Wrong — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"CORRECT — Articles 343 to 351 belongs to: Part XVII — Official Language"
+]
+},
+{
+"no": 81,
+"q": "Which articles deal with Finance Commission?",
+"options": [
+"Article 280",
+"Articles 245 to 255",
+"Article 123",
+"Article 360"
+],
+"correct": 0,
+"answer": "Article 280",
+"solution": "Finance Commission → Article 280 (Part XII).",
+"why": [
+"CORRECT — Article 280 →: Finance Commission [Part XII]",
+"Wrong — Articles 245 to 255 →: Legislative relations between Union and States [Part XI]",
+"Wrong — Article 123 →: Ordinance-making power of the President [Part V]",
+"Wrong — Article 360 →: Financial Emergency [Part XVIII]"
+]
+},
+{
+"no": 82,
+"q": "Part XIV — “Services under the Union and the States” — covers which range of articles?",
+"options": [
+"Article 238",
+"Articles 393 to 395",
+"Articles 308 to 323",
+"Articles 52 to 151"
+],
+"correct": 2,
+"answer": "Articles 308 to 323",
+"solution": "Part XIV (Services under the Union and the States) → Articles 308 to 323.",
+"why": [
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Wrong — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"CORRECT — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union"
+]
+},
+{
+"no": 83,
+"q": "Articles 361 to 367 of the Constitution deal with which Part?",
+"options": [
+"Part XIVA — Tribunals",
+"Part X — The Scheduled and Tribal Areas",
+"Part XIX — Miscellaneous",
+"Part III — Fundamental Rights"
+],
+"correct": 2,
+"answer": "Part XIX — Miscellaneous",
+"solution": "Articles 361 to 367 → Part XIX: Miscellaneous.",
+"why": [
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part X covers: Articles 244 to 244A",
+"CORRECT — Part XIX covers: Articles 361 to 367",
+"Wrong — Part III covers: Articles 12 to 35"
+]
+},
+{
+"no": 84,
+"q": "Articles 301 to 307 of the Constitution deal with which Part?",
+"options": [
+"Part XVII — Official Language",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Part XIV — Services under the Union and the States",
+"Part IX — The Panchayats"
+],
+"correct": 1,
+"answer": "Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"solution": "Articles 301 to 307 → Part XIII: Trade, Commerce and Intercourse within the Territory of India.",
+"why": [
+"Wrong — Part XVII covers: Articles 343 to 351",
+"CORRECT — Part XIII covers: Articles 301 to 307",
+"Wrong — Part XIV covers: Articles 308 to 323",
+"Wrong — Part IX covers: Articles 243 to 243-O"
+]
+},
+{
+"no": 85,
+"q": "Which articles deal with Right to Constitutional Remedies?",
+"options": [
+"Articles 23 to 24",
+"Articles 256 to 263",
+"Article 324",
+"Article 32"
+],
+"correct": 3,
+"answer": "Article 32",
+"solution": "Right to Constitutional Remedies → Article 32 (Part III).",
+"why": [
+"Wrong — Articles 23 to 24 →: Right against Exploitation [Part III]",
+"Wrong — Articles 256 to 263 →: Administrative relations between Union and States [Part XI]",
+"Wrong — Article 324 →: Election Commission of India [Part XV]",
+"CORRECT — Article 32 →: Right to Constitutional Remedies [Part III]"
+]
+},
+{
+"no": 86,
+"q": "Articles 5 to 11 of the Constitution deal with which Part?",
+"options": [
+"Part XII — Finance, Property, Contracts and Suits",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part II — Citizenship",
+"Part XIV — Services under the Union and the States"
+],
+"correct": 2,
+"answer": "Part II — Citizenship",
+"solution": "Articles 5 to 11 → Part II: Citizenship.",
+"why": [
+"Wrong — Part XII covers: Articles 264 to 300A",
+"Wrong — Part XXII covers: Articles 393 to 395",
+"CORRECT — Part II covers: Articles 5 to 11",
+"Wrong — Part XIV covers: Articles 308 to 323"
+]
+},
+{
+"no": 87,
+"q": "Part X — “The Scheduled and Tribal Areas” — covers which range of articles?",
+"options": [
+"Articles 244 to 244A",
+"Articles 264 to 300A",
+"Articles 361 to 367",
+"Articles 152 to 237"
+],
+"correct": 0,
+"answer": "Articles 244 to 244A",
+"solution": "Part X (The Scheduled and Tribal Areas) → Articles 244 to 244A.",
+"why": [
+"CORRECT — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Articles 152 to 237 belongs to: Part VI — The States"
+]
+},
+{
+"no": 88,
+"q": "Part XVIII — “Emergency Provisions” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Articles 343 to 351",
+"Articles 244 to 244A",
+"Articles 5 to 11"
+],
+"correct": 0,
+"answer": "Articles 352 to 360",
+"solution": "Part XVIII (Emergency Provisions) → Articles 352 to 360.",
+"why": [
+"CORRECT — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 5 to 11 belongs to: Part II — Citizenship"
+]
+},
+{
+"no": 89,
+"q": "Articles 244 to 244A of the Constitution deal with which Part?",
+"options": [
+"Part X — The Scheduled and Tribal Areas",
+"Part IVA — Fundamental Duties",
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part II — Citizenship"
+],
+"correct": 0,
+"answer": "Part X — The Scheduled and Tribal Areas",
+"solution": "Articles 244 to 244A → Part X: The Scheduled and Tribal Areas.",
+"why": [
+"CORRECT — Part X covers: Articles 244 to 244A",
+"Wrong — Part IVA covers: Article 51A",
+"Wrong — Part XXI covers: Articles 369 to 392",
+"Wrong — Part II covers: Articles 5 to 11"
+]
+},
+{
+"no": 90,
+"q": "Articles 12 to 35 of the Constitution deal with which Part?",
+"options": [
+"Part IX — The Panchayats",
+"Part III — Fundamental Rights",
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part XI — Relations between the Union and the States"
+],
+"correct": 1,
+"answer": "Part III — Fundamental Rights",
+"solution": "Articles 12 to 35 → Part III: Fundamental Rights.",
+"why": [
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"CORRECT — Part III covers: Articles 12 to 35",
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part XI covers: Articles 245 to 263"
+]
+},
+{
+"no": 91,
+"q": "Part IX — “The Panchayats” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Articles 264 to 300A",
+"Articles 243 to 243-O",
+"Articles 243-P to 243-ZG"
+],
+"correct": 2,
+"answer": "Articles 243 to 243-O",
+"solution": "Part IX (The Panchayats) → Articles 243 to 243-O.",
+"why": [
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"CORRECT — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities"
+]
+},
+{
+"no": 92,
+"q": "Articles 52 to 151 of the Constitution deal with which Part?",
+"options": [
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Part V — The Union",
+"Part III — Fundamental Rights"
+],
+"correct": 2,
+"answer": "Part V — The Union",
+"solution": "Articles 52 to 151 → Part V: The Union.",
+"why": [
+"Wrong — Part XXII covers: Articles 393 to 395",
+"Wrong — Part VII covers: Article 238",
+"CORRECT — Part V covers: Articles 52 to 151",
+"Wrong — Part III covers: Articles 12 to 35"
+]
+},
+{
+"no": 93,
+"q": "Part VII — “The States in Part B of the First Schedule (repealed, 7th Amendment 1956)” — covers which range of articles?",
+"options": [
+"Articles 324 to 329A",
+"Articles 52 to 151",
+"Article 238",
+"Articles 369 to 392"
+],
+"correct": 2,
+"answer": "Article 238",
+"solution": "Part VII (The States in Part B of the First Schedule (repealed, 7th Amendment 1956)) → Article 238.",
+"why": [
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union",
+"CORRECT — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions"
+]
+},
+{
+"no": 94,
+"q": "Part II — “Citizenship” — covers which range of articles?",
+"options": [
+"Articles 323A to 323B",
+"Article 368",
+"Articles 5 to 11",
+"Article 238"
+],
+"correct": 2,
+"answer": "Articles 5 to 11",
+"solution": "Part II (Citizenship) → Articles 5 to 11.",
+"why": [
+"Wrong — Articles 323A to 323B belongs to: Part XIVA — Tribunals",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"CORRECT — Articles 5 to 11 belongs to: Part II — Citizenship",
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+]
+},
+{
+"no": 95,
+"q": "Part XVI — “Special Provisions relating to Certain Classes” — covers which range of articles?",
+"options": [
+"Articles 330 to 342A",
+"Articles 239 to 242",
+"Articles 245 to 263",
+"Article 51A"
+],
+"correct": 0,
+"answer": "Articles 330 to 342A",
+"solution": "Part XVI (Special Provisions relating to Certain Classes) → Articles 330 to 342A.",
+"why": [
+"CORRECT — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties"
+]
+},
+{
+"no": 96,
+"q": "Part VI — “The States” — covers which range of articles?",
+"options": [
+"Articles 152 to 237",
+"Articles 369 to 392",
+"Article 368",
+"Articles 1 to 4"
+],
+"correct": 0,
+"answer": "Articles 152 to 237",
+"solution": "Part VI (The States) → Articles 152 to 237.",
+"why": [
+"CORRECT — Articles 152 to 237 belongs to: Part VI — The States",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory"
+]
+},
+{
+"no": 97,
+"q": "Which articles deal with Ordinance-making power of the President?",
+"options": [
+"Articles 124 to 147",
+"Articles 29 to 30",
+"Article 76",
+"Article 123"
+],
+"correct": 3,
+"answer": "Article 123",
+"solution": "Ordinance-making power of the President → Article 123 (Part V).",
+"why": [
+"Wrong — Articles 124 to 147 →: The Union Judiciary / Supreme Court (Part V, Ch. IV) [Part V]",
+"Wrong — Articles 29 to 30 →: Cultural and Educational Rights [Part III]",
+"Wrong — Article 76 →: The Attorney-General for India [Part V]",
+"CORRECT — Article 123 →: Ordinance-making power of the President [Part V]"
+]
+},
+{
+"no": 98,
+"q": "Articles 1 to 4 of the Constitution deal with which Part?",
+"options": [
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Part I — The Union and its Territory",
+"Part XI — Relations between the Union and the States",
+"Part X — The Scheduled and Tribal Areas"
+],
+"correct": 1,
+"answer": "Part I — The Union and its Territory",
+"solution": "Articles 1 to 4 → Part I: The Union and its Territory.",
+"why": [
+"Wrong — Part VII covers: Article 238",
+"CORRECT — Part I covers: Articles 1 to 4",
+"Wrong — Part XI covers: Articles 245 to 263",
+"Wrong — Part X covers: Articles 244 to 244A"
+]
+},
+{
+"no": 99,
+"q": "Part III — “Fundamental Rights” — covers which range of articles?",
+"options": [
+"Articles 245 to 263",
+"Articles 239 to 242",
+"Articles 12 to 35",
+"Article 238"
+],
+"correct": 2,
+"answer": "Articles 12 to 35",
+"solution": "Part III (Fundamental Rights) → Articles 12 to 35.",
+"why": [
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"CORRECT — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+]
+},
+{
+"no": 100,
+"q": "Which articles deal with The Governor and State Executive (Part VI, Ch. II)?",
+"options": [
+"Article 360",
+"Article 324",
+"Articles 25 to 28",
+"Articles 153 to 167"
+],
+"correct": 3,
+"answer": "Articles 153 to 167",
+"solution": "The Governor and State Executive (Part VI, Ch. II) → Articles 153 to 167 (Part VI).",
+"why": [
+"Wrong — Article 360 →: Financial Emergency [Part XVIII]",
+"Wrong — Article 324 →: Election Commission of India [Part XV]",
+"Wrong — Articles 25 to 28 →: Right to Freedom of Religion [Part III]",
+"CORRECT — Articles 153 to 167 →: The Governor and State Executive (Part VI, Ch. II) [Part VI]"
+]
+}
+],
+"serial": [
+{
+"no": 1,
+"q": "Part I — “The Union and its Territory” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Articles 1 to 4",
+"Articles 369 to 392",
+"Articles 52 to 151"
+],
+"correct": 1,
+"answer": "Articles 1 to 4",
+"solution": "Part I (The Union and its Territory) → Articles 1 to 4.Chain — after it: Part II (Articles 5 to 11)",
+"why": [
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"CORRECT — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union"
+]
+},
+{
+"no": 2,
+"q": "Articles 5 to 11 of the Constitution deal with which Part?",
+"options": [
+"Part XVII — Official Language",
+"Part II — Citizenship",
+"Part VI — The States",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India"
+],
+"correct": 1,
+"answer": "Part II — Citizenship",
+"solution": "Articles 5 to 11 → Part II: Citizenship.Chain — before it: Part I (Articles 1 to 4) • after it: Part III (Articles 12 to 35)",
+"why": [
+"Wrong — Part XVII covers: Articles 343 to 351",
+"CORRECT — Part II covers: Articles 5 to 11",
+"Wrong — Part VI covers: Articles 152 to 237",
+"Wrong — Part XIII covers: Articles 301 to 307"
+]
+},
+{
+"no": 3,
+"q": "Part III — “Fundamental Rights” — covers which range of articles?",
+"options": [
+"Articles 52 to 151",
+"Articles 12 to 35",
+"Articles 239 to 242",
+"Articles 369 to 392"
+],
+"correct": 1,
+"answer": "Articles 12 to 35",
+"solution": "Part III (Fundamental Rights) → Articles 12 to 35.Chain — before it: Part II (Articles 5 to 11) • after it: Part IV (Articles 36 to 51)",
+"why": [
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union",
+"CORRECT — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions"
+]
+},
+{
+"no": 4,
+"q": "Articles 343 to 351 of the Constitution deal with which Part?",
+"options": [
+"Part XI — Relations between the Union and the States",
+"Part XIVA — Tribunals",
+"Part XIV — Services under the Union and the States",
+"Part XVII — Official Language"
+],
+"correct": 3,
+"answer": "Part XVII — Official Language",
+"solution": "Articles 343 to 351 → Part XVII: Official Language.Chain — before it: Part XVI (Articles 330 to 342A) • after it: Part XVIII (Articles 352 to 360)",
+"why": [
+"Wrong — Part XI covers: Articles 245 to 263",
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part XIV covers: Articles 308 to 323",
+"CORRECT — Part XVII covers: Articles 343 to 351"
+]
+},
+{
+"no": 5,
+"q": "“Directive Principles of State Policy” is dealt with under which Part?",
+"options": [
+"Part IV",
+"Part VIII",
+"Part XVII",
+"Part IX"
+],
+"correct": 0,
+"answer": "Part IV",
+"solution": "Part IV — Directive Principles of State Policy (Articles 36 to 51).Chain — before it: Part III (Articles 12 to 35) • after it: Part IVA (Article 51A)",
+"why": [
+"CORRECT — Part IV = Directive Principles of State Policy: Articles 36 to 51",
+"Wrong — Part VIII = The Union Territories: Articles 239 to 242",
+"Wrong — Part XVII = Official Language: Articles 343 to 351",
+"Wrong — Part IX = The Panchayats: Articles 243 to 243-O"
+]
+},
+{
+"no": 6,
+"q": "Part IVA — “Fundamental Duties” — covers which range of articles?",
+"options": [
+"Articles 36 to 51",
+"Articles 369 to 392",
+"Article 51A",
+"Articles 12 to 35"
+],
+"correct": 2,
+"answer": "Article 51A",
+"solution": "Part IVA (Fundamental Duties) → Article 51A.Chain — before it: Part IV (Articles 36 to 51) • after it: Part V (Articles 52 to 151)",
+"why": [
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"CORRECT — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 12 to 35 belongs to: Part III — Fundamental Rights"
+]
+},
+{
+"no": 7,
+"q": "Articles 52 to 151 of the Constitution deal with which Part?",
+"options": [
+"Part V — The Union",
+"Part XX — Amendment of the Constitution",
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 0,
+"answer": "Part V — The Union",
+"solution": "Articles 52 to 151 → Part V: The Union.Chain — before it: Part IVA (Article 51A) • after it: Part VI (Articles 152 to 237)",
+"why": [
+"CORRECT — Part V covers: Articles 52 to 151",
+"Wrong — Part XX covers: Article 368",
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 8,
+"q": "Part VI — “The States” — covers which range of articles?",
+"options": [
+"Articles 244 to 244A",
+"Articles 243-P to 243-ZG",
+"Articles 152 to 237",
+"Articles 12 to 35"
+],
+"correct": 2,
+"answer": "Articles 152 to 237",
+"solution": "Part VI (The States) → Articles 152 to 237.Chain — before it: Part V (Articles 52 to 151) • after it: Part VII (Article 238)",
+"why": [
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"CORRECT — Articles 152 to 237 belongs to: Part VI — The States",
+"Wrong — Articles 12 to 35 belongs to: Part III — Fundamental Rights"
+]
+},
+{
+"no": 9,
+"q": "“The States in Part B of the First Schedule (repealed, 7th Amendment 1956)” is dealt with under which Part?",
+"options": [
+"Part XV",
+"Part XVII",
+"Part VII",
+"Part IV"
+],
+"correct": 2,
+"answer": "Part VII",
+"solution": "Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956) (Article 238).Chain — before it: Part VI (Articles 152 to 237) • after it: Part VIII (Articles 239 to 242)",
+"why": [
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"Wrong — Part XVII = Official Language: Articles 343 to 351",
+"CORRECT — Part VII = The States in Part B of the First Schedule (repealed, 7th Amendment 1956): Article 238",
+"Wrong — Part IV = Directive Principles of State Policy: Articles 36 to 51"
+]
+},
+{
+"no": 10,
+"q": "Articles 369 to 392 of the Constitution deal with which Part?",
+"options": [
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part XVIII — Emergency Provisions",
+"Part I — The Union and its Territory",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India"
+],
+"correct": 0,
+"answer": "Part XXI — Temporary, Transitional and Special Provisions",
+"solution": "Articles 369 to 392 → Part XXI: Temporary, Transitional and Special Provisions.Chain — before it: Part XX (Article 368) • after it: Part XXII (Articles 393 to 395)",
+"why": [
+"CORRECT — Part XXI covers: Articles 369 to 392",
+"Wrong — Part XVIII covers: Articles 352 to 360",
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part XIII covers: Articles 301 to 307"
+]
+},
+{
+"no": 11,
+"q": "Part VIII — “The Union Territories” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Articles 152 to 237",
+"Articles 323A to 323B",
+"Articles 239 to 242"
+],
+"correct": 3,
+"answer": "Articles 239 to 242",
+"solution": "Part VIII (The Union Territories) → Articles 239 to 242.Chain — before it: Part VII (Article 238) • after it: Part IX (Articles 243 to 243-O)",
+"why": [
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"Wrong — Articles 152 to 237 belongs to: Part VI — The States",
+"Wrong — Articles 323A to 323B belongs to: Part XIVA — Tribunals",
+"CORRECT — Articles 239 to 242 belongs to: Part VIII — The Union Territories"
+]
+},
+{
+"no": 12,
+"q": "Articles 243 to 243-O of the Constitution deal with which Part?",
+"options": [
+"Part IX — The Panchayats",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part IXA — The Municipalities"
+],
+"correct": 0,
+"answer": "Part IX — The Panchayats",
+"solution": "Articles 243 to 243-O → Part IX: The Panchayats.Chain — before it: Part VIII (Articles 239 to 242) • after it: Part IXA (Articles 243-P to 243-ZG)",
+"why": [
+"CORRECT — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part XXII covers: Articles 393 to 395",
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG"
+]
+},
+{
+"no": 13,
+"q": "Part IXA — “The Municipalities” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Articles 343 to 351",
+"Articles 393 to 395",
+"Articles 243-P to 243-ZG"
+],
+"correct": 3,
+"answer": "Articles 243-P to 243-ZG",
+"solution": "Part IXA (The Municipalities) → Articles 243-P to 243-ZG.Chain — before it: Part IX (Articles 243 to 243-O) • after it: Part IXB (Articles 243-ZH to 243-ZT)",
+"why": [
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"Wrong — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"CORRECT — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities"
+]
+},
+{
+"no": 14,
+"q": "“The Co-operative Societies” is dealt with under which Part?",
+"options": [
+"Part IVA",
+"Part XIV",
+"Part XXII",
+"Part IXB"
+],
+"correct": 3,
+"answer": "Part IXB",
+"solution": "Part IXB — The Co-operative Societies (Articles 243-ZH to 243-ZT).Chain — before it: Part IXA (Articles 243-P to 243-ZG) • after it: Part X (Articles 244 to 244A)",
+"why": [
+"Wrong — Part IVA = Fundamental Duties: Article 51A",
+"Wrong — Part XIV = Services under the Union and the States: Articles 308 to 323",
+"Wrong — Part XXII = Short Title, Commencement, Authoritative Text in Hindi and Repeals: Articles 393 to 395",
+"CORRECT — Part IXB = The Co-operative Societies: Articles 243-ZH to 243-ZT"
+]
+},
+{
+"no": 15,
+"q": "Part X — “The Scheduled and Tribal Areas” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Article 238",
+"Articles 244 to 244A",
+"Articles 264 to 300A"
+],
+"correct": 2,
+"answer": "Articles 244 to 244A",
+"solution": "Part X (The Scheduled and Tribal Areas) → Articles 244 to 244A.Chain — before it: Part IXB (Articles 243-ZH to 243-ZT) • after it: Part XI (Articles 245 to 263)",
+"why": [
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"CORRECT — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits"
+]
+},
+{
+"no": 16,
+"q": "Articles 323A to 323B of the Constitution deal with which Part?",
+"options": [
+"Part XIX — Miscellaneous",
+"Part XIVA — Tribunals",
+"Part II — Citizenship",
+"Part XXI — Temporary, Transitional and Special Provisions"
+],
+"correct": 1,
+"answer": "Part XIVA — Tribunals",
+"solution": "Articles 323A to 323B → Part XIVA: Tribunals.Chain — before it: Part XIV (Articles 308 to 323) • after it: Part XV (Articles 324 to 329A)",
+"why": [
+"Wrong — Part XIX covers: Articles 361 to 367",
+"CORRECT — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part II covers: Articles 5 to 11",
+"Wrong — Part XXI covers: Articles 369 to 392"
+]
+},
+{
+"no": 17,
+"q": "Articles 245 to 263 of the Constitution deal with which Part?",
+"options": [
+"Part XI — Relations between the Union and the States",
+"Part XIV — Services under the Union and the States",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Part IXB — The Co-operative Societies"
+],
+"correct": 0,
+"answer": "Part XI — Relations between the Union and the States",
+"solution": "Articles 245 to 263 → Part XI: Relations between the Union and the States.Chain — before it: Part X (Articles 244 to 244A) • after it: Part XII (Articles 264 to 300A)",
+"why": [
+"CORRECT — Part XI covers: Articles 245 to 263",
+"Wrong — Part XIV covers: Articles 308 to 323",
+"Wrong — Part VII covers: Article 238",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT"
+]
+},
+{
+"no": 18,
+"q": "Part XII — “Finance, Property, Contracts and Suits” — covers which range of articles?",
+"options": [
+"Article 51A",
+"Article 368",
+"Articles 264 to 300A",
+"Articles 52 to 151"
+],
+"correct": 2,
+"answer": "Articles 264 to 300A",
+"solution": "Part XII (Finance, Property, Contracts and Suits) → Articles 264 to 300A.Chain — before it: Part XI (Articles 245 to 263) • after it: Part XIII (Articles 301 to 307)",
+"why": [
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"CORRECT — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union"
+]
+},
+{
+"no": 19,
+"q": "“Trade, Commerce and Intercourse within the Territory of India” is dealt with under which Part?",
+"options": [
+"Part XIII",
+"Part I",
+"Part XI",
+"Part X"
+],
+"correct": 0,
+"answer": "Part XIII",
+"solution": "Part XIII — Trade, Commerce and Intercourse within the Territory of India (Articles 301 to 307).Chain — before it: Part XII (Articles 264 to 300A) • after it: Part XIV (Articles 308 to 323)",
+"why": [
+"CORRECT — Part XIII = Trade, Commerce and Intercourse within the Territory of India: Articles 301 to 307",
+"Wrong — Part I = The Union and its Territory: Articles 1 to 4",
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263",
+"Wrong — Part X = The Scheduled and Tribal Areas: Articles 244 to 244A"
+]
+},
+{
+"no": 20,
+"q": "Articles 52 to 151 of the Constitution deal with which Part?",
+"options": [
+"Part V — The Union",
+"Part III — Fundamental Rights",
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+],
+"correct": 0,
+"answer": "Part V — The Union",
+"solution": "Articles 52 to 151 → Part V: The Union.Chain — before it: Part IVA (Article 51A) • after it: Part VI (Articles 152 to 237)",
+"why": [
+"CORRECT — Part V covers: Articles 52 to 151",
+"Wrong — Part III covers: Articles 12 to 35",
+"Wrong — Part XXI covers: Articles 369 to 392",
+"Wrong — Part VII covers: Article 238"
+]
+},
+{
+"no": 21,
+"q": "Part XIV — “Services under the Union and the States” — covers which range of articles?",
+"options": [
+"Articles 343 to 351",
+"Articles 324 to 329A",
+"Articles 308 to 323",
+"Articles 1 to 4"
+],
+"correct": 2,
+"answer": "Articles 308 to 323",
+"solution": "Part XIV (Services under the Union and the States) → Articles 308 to 323.Chain — before it: Part XIII (Articles 301 to 307) • after it: Part XIVA (Articles 323A to 323B)",
+"why": [
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"CORRECT — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory"
+]
+},
+{
+"no": 22,
+"q": "Articles 323A to 323B of the Constitution deal with which Part?",
+"options": [
+"Part XIVA — Tribunals",
+"Part XV — Elections",
+"Part XII — Finance, Property, Contracts and Suits",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India"
+],
+"correct": 0,
+"answer": "Part XIVA — Tribunals",
+"solution": "Articles 323A to 323B → Part XIVA: Tribunals.Chain — before it: Part XIV (Articles 308 to 323) • after it: Part XV (Articles 324 to 329A)",
+"why": [
+"CORRECT — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part XV covers: Articles 324 to 329A",
+"Wrong — Part XII covers: Articles 264 to 300A",
+"Wrong — Part XIII covers: Articles 301 to 307"
+]
+},
+{
+"no": 23,
+"q": "Part XV — “Elections” — covers which range of articles?",
+"options": [
+"Articles 152 to 237",
+"Articles 324 to 329A",
+"Article 51A",
+"Articles 36 to 51"
+],
+"correct": 1,
+"answer": "Articles 324 to 329A",
+"solution": "Part XV (Elections) → Articles 324 to 329A.Chain — before it: Part XIVA (Articles 323A to 323B) • after it: Part XVI (Articles 330 to 342A)",
+"why": [
+"Wrong — Articles 152 to 237 belongs to: Part VI — The States",
+"CORRECT — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy"
+]
+},
+{
+"no": 24,
+"q": "“Special Provisions relating to Certain Classes” is dealt with under which Part?",
+"options": [
+"Part X",
+"Part XVI",
+"Part VIII",
+"Part II"
+],
+"correct": 1,
+"answer": "Part XVI",
+"solution": "Part XVI — Special Provisions relating to Certain Classes (Articles 330 to 342A).Chain — before it: Part XV (Articles 324 to 329A) • after it: Part XVII (Articles 343 to 351)",
+"why": [
+"Wrong — Part X = The Scheduled and Tribal Areas: Articles 244 to 244A",
+"CORRECT — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A",
+"Wrong — Part VIII = The Union Territories: Articles 239 to 242",
+"Wrong — Part II = Citizenship: Articles 5 to 11"
+]
+},
+{
+"no": 25,
+"q": "Part XVII — “Official Language” — covers which range of articles?",
+"options": [
+"Articles 1 to 4",
+"Articles 308 to 323",
+"Articles 243-ZH to 243-ZT",
+"Articles 343 to 351"
+],
+"correct": 3,
+"answer": "Articles 343 to 351",
+"solution": "Part XVII (Official Language) → Articles 343 to 351.Chain — before it: Part XVI (Articles 330 to 342A) • after it: Part XVIII (Articles 352 to 360)",
+"why": [
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies",
+"CORRECT — Articles 343 to 351 belongs to: Part XVII — Official Language"
+]
+},
+{
+"no": 26,
+"q": "Articles 243 to 243-O of the Constitution deal with which Part?",
+"options": [
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part XIV — Services under the Union and the States",
+"Part V — The Union",
+"Part IX — The Panchayats"
+],
+"correct": 3,
+"answer": "Part IX — The Panchayats",
+"solution": "Articles 243 to 243-O → Part IX: The Panchayats.Chain — before it: Part VIII (Articles 239 to 242) • after it: Part IXA (Articles 243-P to 243-ZG)",
+"why": [
+"Wrong — Part XXI covers: Articles 369 to 392",
+"Wrong — Part XIV covers: Articles 308 to 323",
+"Wrong — Part V covers: Articles 52 to 151",
+"CORRECT — Part IX covers: Articles 243 to 243-O"
+]
+},
+{
+"no": 27,
+"q": "Articles 352 to 360 of the Constitution deal with which Part?",
+"options": [
+"Part I — The Union and its Territory",
+"Part IX — The Panchayats",
+"Part II — Citizenship",
+"Part XVIII — Emergency Provisions"
+],
+"correct": 3,
+"answer": "Part XVIII — Emergency Provisions",
+"solution": "Articles 352 to 360 → Part XVIII: Emergency Provisions.Chain — before it: Part XVII (Articles 343 to 351) • after it: Part XIX (Articles 361 to 367)",
+"why": [
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part II covers: Articles 5 to 11",
+"CORRECT — Part XVIII covers: Articles 352 to 360"
+]
+},
+{
+"no": 28,
+"q": "Part XIX — “Miscellaneous” — covers which range of articles?",
+"options": [
+"Article 51A",
+"Articles 361 to 367",
+"Article 368",
+"Articles 1 to 4"
+],
+"correct": 1,
+"answer": "Articles 361 to 367",
+"solution": "Part XIX (Miscellaneous) → Articles 361 to 367.Chain — before it: Part XVIII (Articles 352 to 360) • after it: Part XX (Article 368)",
+"why": [
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"CORRECT — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory"
+]
+},
+{
+"no": 29,
+"q": "“Amendment of the Constitution” is dealt with under which Part?",
+"options": [
+"Part XI",
+"Part XX",
+"Part XII",
+"Part XVI"
+],
+"correct": 1,
+"answer": "Part XX",
+"solution": "Part XX — Amendment of the Constitution (Article 368).Chain — before it: Part XIX (Articles 361 to 367) • after it: Part XXI (Articles 369 to 392)",
+"why": [
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263",
+"CORRECT — Part XX = Amendment of the Constitution: Article 368",
+"Wrong — Part XII = Finance, Property, Contracts and Suits: Articles 264 to 300A",
+"Wrong — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A"
+]
+},
+{
+"no": 30,
+"q": "Articles 5 to 11 of the Constitution deal with which Part?",
+"options": [
+"Part IVA — Fundamental Duties",
+"Part II — Citizenship",
+"Part XIVA — Tribunals",
+"Part XIV — Services under the Union and the States"
+],
+"correct": 1,
+"answer": "Part II — Citizenship",
+"solution": "Articles 5 to 11 → Part II: Citizenship.Chain — before it: Part I (Articles 1 to 4) • after it: Part III (Articles 12 to 35)",
+"why": [
+"Wrong — Part IVA covers: Article 51A",
+"CORRECT — Part II covers: Articles 5 to 11",
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part XIV covers: Articles 308 to 323"
+]
+},
+{
+"no": 31,
+"q": "Part XXI — “Temporary, Transitional and Special Provisions” — covers which range of articles?",
+"options": [
+"Articles 369 to 392",
+"Articles 393 to 395",
+"Article 368",
+"Articles 343 to 351"
+],
+"correct": 0,
+"answer": "Articles 369 to 392",
+"solution": "Part XXI (Temporary, Transitional and Special Provisions) → Articles 369 to 392.Chain — before it: Part XX (Article 368) • after it: Part XXII (Articles 393 to 395)",
+"why": [
+"CORRECT — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language"
+]
+},
+{
+"no": 32,
+"q": "Articles 393 to 395 of the Constitution deal with which Part?",
+"options": [
+"Part IXB — The Co-operative Societies",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part IXA — The Municipalities",
+"Part XVI — Special Provisions relating to Certain Classes"
+],
+"correct": 1,
+"answer": "Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"solution": "Articles 393 to 395 → Part XXII: Short Title, Commencement, Authoritative Text in Hindi and Repeals.Chain — before it: Part XXI (Articles 369 to 392)",
+"why": [
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"CORRECT — Part XXII covers: Articles 393 to 395",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part XVI covers: Articles 330 to 342A"
+]
+},
+{
+"no": 33,
+"q": "Part I — “The Union and its Territory” — covers which range of articles?",
+"options": [
+"Articles 1 to 4",
+"Articles 243-ZH to 243-ZT",
+"Articles 36 to 51",
+"Articles 361 to 367"
+],
+"correct": 0,
+"answer": "Articles 1 to 4",
+"solution": "Part I (The Union and its Territory) → Articles 1 to 4.Chain — after it: Part II (Articles 5 to 11)",
+"why": [
+"CORRECT — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies",
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy",
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous"
+]
+},
+{
+"no": 34,
+"q": "“Citizenship” is dealt with under which Part?",
+"options": [
+"Part XVIII",
+"Part II",
+"Part VII",
+"Part X"
+],
+"correct": 1,
+"answer": "Part II",
+"solution": "Part II — Citizenship (Articles 5 to 11).Chain — before it: Part I (Articles 1 to 4) • after it: Part III (Articles 12 to 35)",
+"why": [
+"Wrong — Part XVIII = Emergency Provisions: Articles 352 to 360",
+"CORRECT — Part II = Citizenship: Articles 5 to 11",
+"Wrong — Part VII = The States in Part B of the First Schedule (repealed, 7th Amendment 1956): Article 238",
+"Wrong — Part X = The Scheduled and Tribal Areas: Articles 244 to 244A"
+]
+},
+{
+"no": 35,
+"q": "Part III — “Fundamental Rights” — covers which range of articles?",
+"options": [
+"Articles 369 to 392",
+"Articles 245 to 263",
+"Articles 12 to 35",
+"Articles 308 to 323"
+],
+"correct": 2,
+"answer": "Articles 12 to 35",
+"solution": "Part III (Fundamental Rights) → Articles 12 to 35.Chain — before it: Part II (Articles 5 to 11) • after it: Part IV (Articles 36 to 51)",
+"why": [
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"CORRECT — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States"
+]
+},
+{
+"no": 36,
+"q": "Articles 301 to 307 of the Constitution deal with which Part?",
+"options": [
+"Part V — The Union",
+"Part IXA — The Municipalities",
+"Part VIII — The Union Territories",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India"
+],
+"correct": 3,
+"answer": "Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"solution": "Articles 301 to 307 → Part XIII: Trade, Commerce and Intercourse within the Territory of India.Chain — before it: Part XII (Articles 264 to 300A) • after it: Part XIV (Articles 308 to 323)",
+"why": [
+"Wrong — Part V covers: Articles 52 to 151",
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"CORRECT — Part XIII covers: Articles 301 to 307"
+]
+},
+{
+"no": 37,
+"q": "Articles 36 to 51 of the Constitution deal with which Part?",
+"options": [
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"Part IV — Directive Principles of State Policy",
+"Part XVII — Official Language",
+"Part XXI — Temporary, Transitional and Special Provisions"
+],
+"correct": 1,
+"answer": "Part IV — Directive Principles of State Policy",
+"solution": "Articles 36 to 51 → Part IV: Directive Principles of State Policy.Chain — before it: Part III (Articles 12 to 35) • after it: Part IVA (Article 51A)",
+"why": [
+"Wrong — Part VII covers: Article 238",
+"CORRECT — Part IV covers: Articles 36 to 51",
+"Wrong — Part XVII covers: Articles 343 to 351",
+"Wrong — Part XXI covers: Articles 369 to 392"
+]
+},
+{
+"no": 38,
+"q": "Part IVA — “Fundamental Duties” — covers which range of articles?",
+"options": [
+"Articles 36 to 51",
+"Articles 352 to 360",
+"Article 51A",
+"Articles 361 to 367"
+],
+"correct": 2,
+"answer": "Article 51A",
+"solution": "Part IVA (Fundamental Duties) → Article 51A.Chain — before it: Part IV (Articles 36 to 51) • after it: Part V (Articles 52 to 151)",
+"why": [
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy",
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"CORRECT — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous"
+]
+},
+{
+"no": 39,
+"q": "“The Union” is dealt with under which Part?",
+"options": [
+"Part XIVA",
+"Part XV",
+"Part V",
+"Part XI"
+],
+"correct": 2,
+"answer": "Part V",
+"solution": "Part V — The Union (Articles 52 to 151).Chain — before it: Part IVA (Article 51A) • after it: Part VI (Articles 152 to 237)",
+"why": [
+"Wrong — Part XIVA = Tribunals: Articles 323A to 323B",
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"CORRECT — Part V = The Union: Articles 52 to 151",
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263"
+]
+},
+{
+"no": 40,
+"q": "Part VI — “The States” — covers which range of articles?",
+"options": [
+"Articles 243-ZH to 243-ZT",
+"Articles 324 to 329A",
+"Articles 152 to 237",
+"Articles 369 to 392"
+],
+"correct": 2,
+"answer": "Articles 152 to 237",
+"solution": "Part VI (The States) → Articles 152 to 237.Chain — before it: Part V (Articles 52 to 151) • after it: Part VII (Article 238)",
+"why": [
+"Wrong — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies",
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections",
+"CORRECT — Articles 152 to 237 belongs to: Part VI — The States",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions"
+]
+},
+{
+"no": 41,
+"q": "Articles 308 to 323 of the Constitution deal with which Part?",
+"options": [
+"Part XI — Relations between the Union and the States",
+"Part XIV — Services under the Union and the States",
+"Part XIVA — Tribunals",
+"Part XII — Finance, Property, Contracts and Suits"
+],
+"correct": 1,
+"answer": "Part XIV — Services under the Union and the States",
+"solution": "Articles 308 to 323 → Part XIV: Services under the Union and the States.Chain — before it: Part XIII (Articles 301 to 307) • after it: Part XIVA (Articles 323A to 323B)",
+"why": [
+"Wrong — Part XI covers: Articles 245 to 263",
+"CORRECT — Part XIV covers: Articles 308 to 323",
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part XII covers: Articles 264 to 300A"
+]
+},
+{
+"no": 42,
+"q": "Article 238 of the Constitution deal with which Part?",
+"options": [
+"Part II — Citizenship",
+"Part XIVA — Tribunals",
+"Part IXB — The Co-operative Societies",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+],
+"correct": 3,
+"answer": "Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)",
+"solution": "Article 238 → Part VII: The States in Part B of the First Schedule (repealed, 7th Amendment 1956).Chain — before it: Part VI (Articles 152 to 237) • after it: Part VIII (Articles 239 to 242)",
+"why": [
+"Wrong — Part II covers: Articles 5 to 11",
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"CORRECT — Part VII covers: Article 238"
+]
+},
+{
+"no": 43,
+"q": "Part VIII — “The Union Territories” — covers which range of articles?",
+"options": [
+"Articles 330 to 342A",
+"Articles 239 to 242",
+"Articles 393 to 395",
+"Articles 352 to 360"
+],
+"correct": 1,
+"answer": "Articles 239 to 242",
+"solution": "Part VIII (The Union Territories) → Articles 239 to 242.Chain — before it: Part VII (Article 238) • after it: Part IX (Articles 243 to 243-O)",
+"why": [
+"Wrong — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes",
+"CORRECT — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"Wrong — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions"
+]
+},
+{
+"no": 44,
+"q": "“The Panchayats” is dealt with under which Part?",
+"options": [
+"Part XX",
+"Part VIII",
+"Part IX",
+"Part I"
+],
+"correct": 2,
+"answer": "Part IX",
+"solution": "Part IX — The Panchayats (Articles 243 to 243-O).Chain — before it: Part VIII (Articles 239 to 242) • after it: Part IXA (Articles 243-P to 243-ZG)",
+"why": [
+"Wrong — Part XX = Amendment of the Constitution: Article 368",
+"Wrong — Part VIII = The Union Territories: Articles 239 to 242",
+"CORRECT — Part IX = The Panchayats: Articles 243 to 243-O",
+"Wrong — Part I = The Union and its Territory: Articles 1 to 4"
+]
+},
+{
+"no": 45,
+"q": "Part IXA — “The Municipalities” — covers which range of articles?",
+"options": [
+"Articles 352 to 360",
+"Articles 243-P to 243-ZG",
+"Articles 245 to 263",
+"Article 238"
+],
+"correct": 1,
+"answer": "Articles 243-P to 243-ZG",
+"solution": "Part IXA (The Municipalities) → Articles 243-P to 243-ZG.Chain — before it: Part IX (Articles 243 to 243-O) • after it: Part IXB (Articles 243-ZH to 243-ZT)",
+"why": [
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"CORRECT — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+]
+},
+{
+"no": 46,
+"q": "Articles 5 to 11 of the Constitution deal with which Part?",
+"options": [
+"Part XII — Finance, Property, Contracts and Suits",
+"Part II — Citizenship",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part VI — The States"
+],
+"correct": 1,
+"answer": "Part II — Citizenship",
+"solution": "Articles 5 to 11 → Part II: Citizenship.Chain — before it: Part I (Articles 1 to 4) • after it: Part III (Articles 12 to 35)",
+"why": [
+"Wrong — Part XII covers: Articles 264 to 300A",
+"CORRECT — Part II covers: Articles 5 to 11",
+"Wrong — Part XXII covers: Articles 393 to 395",
+"Wrong — Part VI covers: Articles 152 to 237"
+]
+},
+{
+"no": 47,
+"q": "Articles 243-ZH to 243-ZT of the Constitution deal with which Part?",
+"options": [
+"Part IXB — The Co-operative Societies",
+"Part XX — Amendment of the Constitution",
+"Part I — The Union and its Territory",
+"Part XIVA — Tribunals"
+],
+"correct": 0,
+"answer": "Part IXB — The Co-operative Societies",
+"solution": "Articles 243-ZH to 243-ZT → Part IXB: The Co-operative Societies.Chain — before it: Part IXA (Articles 243-P to 243-ZG) • after it: Part X (Articles 244 to 244A)",
+"why": [
+"CORRECT — Part IXB covers: Articles 243-ZH to 243-ZT",
+"Wrong — Part XX covers: Article 368",
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part XIVA covers: Articles 323A to 323B"
+]
+},
+{
+"no": 48,
+"q": "Part X — “The Scheduled and Tribal Areas” — covers which range of articles?",
+"options": [
+"Articles 244 to 244A",
+"Article 51A",
+"Articles 369 to 392",
+"Articles 1 to 4"
+],
+"correct": 0,
+"answer": "Articles 244 to 244A",
+"solution": "Part X (The Scheduled and Tribal Areas) → Articles 244 to 244A.Chain — before it: Part IXB (Articles 243-ZH to 243-ZT) • after it: Part XI (Articles 245 to 263)",
+"why": [
+"CORRECT — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory"
+]
+},
+{
+"no": 49,
+"q": "“Relations between the Union and the States” is dealt with under which Part?",
+"options": [
+"Part XXII",
+"Part XIVA",
+"Part XXI",
+"Part XI"
+],
+"correct": 3,
+"answer": "Part XI",
+"solution": "Part XI — Relations between the Union and the States (Articles 245 to 263).Chain — before it: Part X (Articles 244 to 244A) • after it: Part XII (Articles 264 to 300A)",
+"why": [
+"Wrong — Part XXII = Short Title, Commencement, Authoritative Text in Hindi and Repeals: Articles 393 to 395",
+"Wrong — Part XIVA = Tribunals: Articles 323A to 323B",
+"Wrong — Part XXI = Temporary, Transitional and Special Provisions: Articles 369 to 392",
+"CORRECT — Part XI = Relations between the Union and the States: Articles 245 to 263"
+]
+},
+{
+"no": 50,
+"q": "Part XII — “Finance, Property, Contracts and Suits” — covers which range of articles?",
+"options": [
+"Articles 308 to 323",
+"Articles 244 to 244A",
+"Articles 245 to 263",
+"Articles 264 to 300A"
+],
+"correct": 3,
+"answer": "Articles 264 to 300A",
+"solution": "Part XII (Finance, Property, Contracts and Suits) → Articles 264 to 300A.Chain — before it: Part XI (Articles 245 to 263) • after it: Part XIII (Articles 301 to 307)",
+"why": [
+"Wrong — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"CORRECT — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits"
+]
+},
+{
+"no": 51,
+"q": "Articles 301 to 307 of the Constitution deal with which Part?",
+"options": [
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Part II — Citizenship",
+"Part XX — Amendment of the Constitution",
+"Part X — The Scheduled and Tribal Areas"
+],
+"correct": 0,
+"answer": "Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"solution": "Articles 301 to 307 → Part XIII: Trade, Commerce and Intercourse within the Territory of India.Chain — before it: Part XII (Articles 264 to 300A) • after it: Part XIV (Articles 308 to 323)",
+"why": [
+"CORRECT — Part XIII covers: Articles 301 to 307",
+"Wrong — Part II covers: Articles 5 to 11",
+"Wrong — Part XX covers: Article 368",
+"Wrong — Part X covers: Articles 244 to 244A"
+]
+},
+{
+"no": 52,
+"q": "Articles 361 to 367 of the Constitution deal with which Part?",
+"options": [
+"Part IX — The Panchayats",
+"Part XX — Amendment of the Constitution",
+"Part XIX — Miscellaneous",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+],
+"correct": 2,
+"answer": "Part XIX — Miscellaneous",
+"solution": "Articles 361 to 367 → Part XIX: Miscellaneous.Chain — before it: Part XVIII (Articles 352 to 360) • after it: Part XX (Article 368)",
+"why": [
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part XX covers: Article 368",
+"CORRECT — Part XIX covers: Articles 361 to 367",
+"Wrong — Part VII covers: Article 238"
+]
+},
+{
+"no": 53,
+"q": "Part XIV — “Services under the Union and the States” — covers which range of articles?",
+"options": [
+"Articles 243-ZH to 243-ZT",
+"Articles 245 to 263",
+"Articles 308 to 323",
+"Articles 352 to 360"
+],
+"correct": 2,
+"answer": "Articles 308 to 323",
+"solution": "Part XIV (Services under the Union and the States) → Articles 308 to 323.Chain — before it: Part XIII (Articles 301 to 307) • after it: Part XIVA (Articles 323A to 323B)",
+"why": [
+"Wrong — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"CORRECT — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions"
+]
+},
+{
+"no": 54,
+"q": "“Tribunals” is dealt with under which Part?",
+"options": [
+"Part X",
+"Part IXA",
+"Part XIVA",
+"Part VI"
+],
+"correct": 2,
+"answer": "Part XIVA",
+"solution": "Part XIVA — Tribunals (Articles 323A to 323B).Chain — before it: Part XIV (Articles 308 to 323) • after it: Part XV (Articles 324 to 329A)",
+"why": [
+"Wrong — Part X = The Scheduled and Tribal Areas: Articles 244 to 244A",
+"Wrong — Part IXA = The Municipalities: Articles 243-P to 243-ZG",
+"CORRECT — Part XIVA = Tribunals: Articles 323A to 323B",
+"Wrong — Part VI = The States: Articles 152 to 237"
+]
+},
+{
+"no": 55,
+"q": "Part XV — “Elections” — covers which range of articles?",
+"options": [
+"Articles 361 to 367",
+"Articles 264 to 300A",
+"Articles 324 to 329A",
+"Articles 239 to 242"
+],
+"correct": 2,
+"answer": "Articles 324 to 329A",
+"solution": "Part XV (Elections) → Articles 324 to 329A.Chain — before it: Part XIVA (Articles 323A to 323B) • after it: Part XVI (Articles 330 to 342A)",
+"why": [
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"CORRECT — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories"
+]
+},
+{
+"no": 56,
+"q": "Articles 369 to 392 of the Constitution deal with which Part?",
+"options": [
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Part VIII — The Union Territories",
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part IVA — Fundamental Duties"
+],
+"correct": 2,
+"answer": "Part XXI — Temporary, Transitional and Special Provisions",
+"solution": "Articles 369 to 392 → Part XXI: Temporary, Transitional and Special Provisions.Chain — before it: Part XX (Article 368) • after it: Part XXII (Articles 393 to 395)",
+"why": [
+"Wrong — Part XIII covers: Articles 301 to 307",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"CORRECT — Part XXI covers: Articles 369 to 392",
+"Wrong — Part IVA covers: Article 51A"
+]
+},
+{
+"no": 57,
+"q": "Articles 330 to 342A of the Constitution deal with which Part?",
+"options": [
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part IX — The Panchayats",
+"Part VIII — The Union Territories",
+"Part I — The Union and its Territory"
+],
+"correct": 0,
+"answer": "Part XVI — Special Provisions relating to Certain Classes",
+"solution": "Articles 330 to 342A → Part XVI: Special Provisions relating to Certain Classes.Chain — before it: Part XV (Articles 324 to 329A) • after it: Part XVII (Articles 343 to 351)",
+"why": [
+"CORRECT — Part XVI covers: Articles 330 to 342A",
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"Wrong — Part I covers: Articles 1 to 4"
+]
+},
+{
+"no": 58,
+"q": "Part XVII — “Official Language” — covers which range of articles?",
+"options": [
+"Article 51A",
+"Articles 352 to 360",
+"Articles 343 to 351",
+"Articles 323A to 323B"
+],
+"correct": 2,
+"answer": "Articles 343 to 351",
+"solution": "Part XVII (Official Language) → Articles 343 to 351.Chain — before it: Part XVI (Articles 330 to 342A) • after it: Part XVIII (Articles 352 to 360)",
+"why": [
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"CORRECT — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"Wrong — Articles 323A to 323B belongs to: Part XIVA — Tribunals"
+]
+},
+{
+"no": 59,
+"q": "“Emergency Provisions” is dealt with under which Part?",
+"options": [
+"Part XIV",
+"Part XIX",
+"Part XXI",
+"Part XVIII"
+],
+"correct": 3,
+"answer": "Part XVIII",
+"solution": "Part XVIII — Emergency Provisions (Articles 352 to 360).Chain — before it: Part XVII (Articles 343 to 351) • after it: Part XIX (Articles 361 to 367)",
+"why": [
+"Wrong — Part XIV = Services under the Union and the States: Articles 308 to 323",
+"Wrong — Part XIX = Miscellaneous: Articles 361 to 367",
+"Wrong — Part XXI = Temporary, Transitional and Special Provisions: Articles 369 to 392",
+"CORRECT — Part XVIII = Emergency Provisions: Articles 352 to 360"
+]
+},
+{
+"no": 60,
+"q": "Articles 343 to 351 of the Constitution deal with which Part?",
+"options": [
+"Part XVII — Official Language",
+"Part XI — Relations between the Union and the States",
+"Part I — The Union and its Territory",
+"Part II — Citizenship"
+],
+"correct": 0,
+"answer": "Part XVII — Official Language",
+"solution": "Articles 343 to 351 → Part XVII: Official Language.Chain — before it: Part XVI (Articles 330 to 342A) • after it: Part XVIII (Articles 352 to 360)",
+"why": [
+"CORRECT — Part XVII covers: Articles 343 to 351",
+"Wrong — Part XI covers: Articles 245 to 263",
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part II covers: Articles 5 to 11"
+]
+},
+{
+"no": 61,
+"q": "Part XIX — “Miscellaneous” — covers which range of articles?",
+"options": [
+"Articles 361 to 367",
+"Articles 244 to 244A",
+"Articles 12 to 35",
+"Articles 52 to 151"
+],
+"correct": 0,
+"answer": "Articles 361 to 367",
+"solution": "Part XIX (Miscellaneous) → Articles 361 to 367.Chain — before it: Part XVIII (Articles 352 to 360) • after it: Part XX (Article 368)",
+"why": [
+"CORRECT — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Articles 52 to 151 belongs to: Part V — The Union"
+]
+},
+{
+"no": 62,
+"q": "Article 368 of the Constitution deal with which Part?",
+"options": [
+"Part XX — Amendment of the Constitution",
+"Part XV — Elections",
+"Part V — The Union",
+"Part IV — Directive Principles of State Policy"
+],
+"correct": 0,
+"answer": "Part XX — Amendment of the Constitution",
+"solution": "Article 368 → Part XX: Amendment of the Constitution.Chain — before it: Part XIX (Articles 361 to 367) • after it: Part XXI (Articles 369 to 392)",
+"why": [
+"CORRECT — Part XX covers: Article 368",
+"Wrong — Part XV covers: Articles 324 to 329A",
+"Wrong — Part V covers: Articles 52 to 151",
+"Wrong — Part IV covers: Articles 36 to 51"
+]
+},
+{
+"no": 63,
+"q": "Part XXI — “Temporary, Transitional and Special Provisions” — covers which range of articles?",
+"options": [
+"Articles 369 to 392",
+"Articles 243 to 243-O",
+"Articles 1 to 4",
+"Article 368"
+],
+"correct": 0,
+"answer": "Articles 369 to 392",
+"solution": "Part XXI (Temporary, Transitional and Special Provisions) → Articles 369 to 392.Chain — before it: Part XX (Article 368) • after it: Part XXII (Articles 393 to 395)",
+"why": [
+"CORRECT — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution"
+]
+},
+{
+"no": 64,
+"q": "Articles 36 to 51 of the Constitution deal with which Part?",
+"options": [
+"Part IXB — The Co-operative Societies",
+"Part IVA — Fundamental Duties",
+"Part IV — Directive Principles of State Policy",
+"Part XVI — Special Provisions relating to Certain Classes"
+],
+"correct": 2,
+"answer": "Part IV — Directive Principles of State Policy",
+"solution": "Articles 36 to 51 → Part IV: Directive Principles of State Policy.Chain — before it: Part III (Articles 12 to 35) • after it: Part IVA (Article 51A)",
+"why": [
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"Wrong — Part IVA covers: Article 51A",
+"CORRECT — Part IV covers: Articles 36 to 51",
+"Wrong — Part XVI covers: Articles 330 to 342A"
+]
+},
+{
+"no": 65,
+"q": "“Short Title, Commencement, Authoritative Text in Hindi and Repeals” is dealt with under which Part?",
+"options": [
+"Part XXII",
+"Part XX",
+"Part II",
+"Part XII"
+],
+"correct": 0,
+"answer": "Part XXII",
+"solution": "Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals (Articles 393 to 395).Chain — before it: Part XXI (Articles 369 to 392)",
+"why": [
+"CORRECT — Part XXII = Short Title, Commencement, Authoritative Text in Hindi and Repeals: Articles 393 to 395",
+"Wrong — Part XX = Amendment of the Constitution: Article 368",
+"Wrong — Part II = Citizenship: Articles 5 to 11",
+"Wrong — Part XII = Finance, Property, Contracts and Suits: Articles 264 to 300A"
+]
+},
+{
+"no": 66,
+"q": "Part I — “The Union and its Territory” — covers which range of articles?",
+"options": [
+"Articles 1 to 4",
+"Articles 245 to 263",
+"Articles 264 to 300A",
+"Articles 324 to 329A"
+],
+"correct": 0,
+"answer": "Articles 1 to 4",
+"solution": "Part I (The Union and its Territory) → Articles 1 to 4.Chain — after it: Part II (Articles 5 to 11)",
+"why": [
+"CORRECT — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"Wrong — Articles 324 to 329A belongs to: Part XV — Elections"
+]
+},
+{
+"no": 67,
+"q": "Articles 5 to 11 of the Constitution deal with which Part?",
+"options": [
+"Part XIX — Miscellaneous",
+"Part II — Citizenship",
+"Part IXB — The Co-operative Societies",
+"Part IX — The Panchayats"
+],
+"correct": 1,
+"answer": "Part II — Citizenship",
+"solution": "Articles 5 to 11 → Part II: Citizenship.Chain — before it: Part I (Articles 1 to 4) • after it: Part III (Articles 12 to 35)",
+"why": [
+"Wrong — Part XIX covers: Articles 361 to 367",
+"CORRECT — Part II covers: Articles 5 to 11",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"Wrong — Part IX covers: Articles 243 to 243-O"
+]
+},
+{
+"no": 68,
+"q": "Part III — “Fundamental Rights” — covers which range of articles?",
+"options": [
+"Articles 12 to 35",
+"Articles 243 to 243-O",
+"Articles 243-P to 243-ZG",
+"Articles 244 to 244A"
+],
+"correct": 0,
+"answer": "Articles 12 to 35",
+"solution": "Part III (Fundamental Rights) → Articles 12 to 35.Chain — before it: Part II (Articles 5 to 11) • after it: Part IV (Articles 36 to 51)",
+"why": [
+"CORRECT — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats",
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas"
+]
+},
+{
+"no": 69,
+"q": "Articles 52 to 151 of the Constitution deal with which Part?",
+"options": [
+"Part XIV — Services under the Union and the States",
+"Part IXB — The Co-operative Societies",
+"Part XVII — Official Language",
+"Part V — The Union"
+],
+"correct": 3,
+"answer": "Part V — The Union",
+"solution": "Articles 52 to 151 → Part V: The Union.Chain — before it: Part IVA (Article 51A) • after it: Part VI (Articles 152 to 237)",
+"why": [
+"Wrong — Part XIV covers: Articles 308 to 323",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT",
+"Wrong — Part XVII covers: Articles 343 to 351",
+"CORRECT — Part V covers: Articles 52 to 151"
+]
+},
+{
+"no": 70,
+"q": "“Directive Principles of State Policy” is dealt with under which Part?",
+"options": [
+"Part XIII",
+"Part V",
+"Part IXA",
+"Part IV"
+],
+"correct": 3,
+"answer": "Part IV",
+"solution": "Part IV — Directive Principles of State Policy (Articles 36 to 51).Chain — before it: Part III (Articles 12 to 35) • after it: Part IVA (Article 51A)",
+"why": [
+"Wrong — Part XIII = Trade, Commerce and Intercourse within the Territory of India: Articles 301 to 307",
+"Wrong — Part V = The Union: Articles 52 to 151",
+"Wrong — Part IXA = The Municipalities: Articles 243-P to 243-ZG",
+"CORRECT — Part IV = Directive Principles of State Policy: Articles 36 to 51"
+]
+},
+{
+"no": 71,
+"q": "Part IVA — “Fundamental Duties” — covers which range of articles?",
+"options": [
+"Article 51A",
+"Articles 1 to 4",
+"Articles 239 to 242",
+"Articles 243-ZH to 243-ZT"
+],
+"correct": 0,
+"answer": "Article 51A",
+"solution": "Part IVA (Fundamental Duties) → Article 51A.Chain — before it: Part IV (Articles 36 to 51) • after it: Part V (Articles 52 to 151)",
+"why": [
+"CORRECT — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"Wrong — Articles 243-ZH to 243-ZT belongs to: Part IXB — The Co-operative Societies"
+]
+},
+{
+"no": 72,
+"q": "Articles 52 to 151 of the Constitution deal with which Part?",
+"options": [
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part V — The Union",
+"Part XX — Amendment of the Constitution",
+"Part IVA — Fundamental Duties"
+],
+"correct": 1,
+"answer": "Part V — The Union",
+"solution": "Articles 52 to 151 → Part V: The Union.Chain — before it: Part IVA (Article 51A) • after it: Part VI (Articles 152 to 237)",
+"why": [
+"Wrong — Part XXI covers: Articles 369 to 392",
+"CORRECT — Part V covers: Articles 52 to 151",
+"Wrong — Part XX covers: Article 368",
+"Wrong — Part IVA covers: Article 51A"
+]
+},
+{
+"no": 73,
+"q": "Articles 243-P to 243-ZG of the Constitution deal with which Part?",
+"options": [
+"Part III — Fundamental Rights",
+"Part XV — Elections",
+"Part IXA — The Municipalities",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals"
+],
+"correct": 2,
+"answer": "Part IXA — The Municipalities",
+"solution": "Articles 243-P to 243-ZG → Part IXA: The Municipalities.Chain — before it: Part IX (Articles 243 to 243-O) • after it: Part IXB (Articles 243-ZH to 243-ZT)",
+"why": [
+"Wrong — Part III covers: Articles 12 to 35",
+"Wrong — Part XV covers: Articles 324 to 329A",
+"CORRECT — Part IXA covers: Articles 243-P to 243-ZG",
+"Wrong — Part XXII covers: Articles 393 to 395"
+]
+},
+{
+"no": 74,
+"q": "Part VI — “The States” — covers which range of articles?",
+"options": [
+"Articles 243-P to 243-ZG",
+"Articles 152 to 237",
+"Articles 393 to 395",
+"Articles 361 to 367"
+],
+"correct": 1,
+"answer": "Articles 152 to 237",
+"solution": "Part VI (The States) → Articles 152 to 237.Chain — before it: Part V (Articles 52 to 151) • after it: Part VII (Article 238)",
+"why": [
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"CORRECT — Articles 152 to 237 belongs to: Part VI — The States",
+"Wrong — Articles 393 to 395 belongs to: Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous"
+]
+},
+{
+"no": 75,
+"q": "“The States in Part B of the First Schedule (repealed, 7th Amendment 1956)” is dealt with under which Part?",
+"options": [
+"Part V",
+"Part VII",
+"Part XX",
+"Part XI"
+],
+"correct": 1,
+"answer": "Part VII",
+"solution": "Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956) (Article 238).Chain — before it: Part VI (Articles 152 to 237) • after it: Part VIII (Articles 239 to 242)",
+"why": [
+"Wrong — Part V = The Union: Articles 52 to 151",
+"CORRECT — Part VII = The States in Part B of the First Schedule (repealed, 7th Amendment 1956): Article 238",
+"Wrong — Part XX = Amendment of the Constitution: Article 368",
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263"
+]
+},
+{
+"no": 76,
+"q": "Part VIII — “The Union Territories” — covers which range of articles?",
+"options": [
+"Articles 244 to 244A",
+"Article 51A",
+"Articles 239 to 242",
+"Articles 343 to 351"
+],
+"correct": 2,
+"answer": "Articles 239 to 242",
+"solution": "Part VIII (The Union Territories) → Articles 239 to 242.Chain — before it: Part VII (Article 238) • after it: Part IX (Articles 243 to 243-O)",
+"why": [
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"CORRECT — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"Wrong — Articles 343 to 351 belongs to: Part XVII — Official Language"
+]
+},
+{
+"no": 77,
+"q": "Articles 243 to 243-O of the Constitution deal with which Part?",
+"options": [
+"Part XVI — Special Provisions relating to Certain Classes",
+"Part IX — The Panchayats",
+"Part I — The Union and its Territory",
+"Part XVIII — Emergency Provisions"
+],
+"correct": 1,
+"answer": "Part IX — The Panchayats",
+"solution": "Articles 243 to 243-O → Part IX: The Panchayats.Chain — before it: Part VIII (Articles 239 to 242) • after it: Part IXA (Articles 243-P to 243-ZG)",
+"why": [
+"Wrong — Part XVI covers: Articles 330 to 342A",
+"CORRECT — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part I covers: Articles 1 to 4",
+"Wrong — Part XVIII covers: Articles 352 to 360"
+]
+},
+{
+"no": 78,
+"q": "Part IXA — “The Municipalities” — covers which range of articles?",
+"options": [
+"Article 51A",
+"Articles 264 to 300A",
+"Articles 243-P to 243-ZG",
+"Articles 239 to 242"
+],
+"correct": 2,
+"answer": "Articles 243-P to 243-ZG",
+"solution": "Part IXA (The Municipalities) → Articles 243-P to 243-ZG.Chain — before it: Part IX (Articles 243 to 243-O) • after it: Part IXB (Articles 243-ZH to 243-ZT)",
+"why": [
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"CORRECT — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories"
+]
+},
+{
+"no": 79,
+"q": "Articles 12 to 35 of the Constitution deal with which Part?",
+"options": [
+"Part III — Fundamental Rights",
+"Part VIII — The Union Territories",
+"Part X — The Scheduled and Tribal Areas",
+"Part XVI — Special Provisions relating to Certain Classes"
+],
+"correct": 0,
+"answer": "Part III — Fundamental Rights",
+"solution": "Articles 12 to 35 → Part III: Fundamental Rights.Chain — before it: Part II (Articles 5 to 11) • after it: Part IV (Articles 36 to 51)",
+"why": [
+"CORRECT — Part III covers: Articles 12 to 35",
+"Wrong — Part VIII covers: Articles 239 to 242",
+"Wrong — Part X covers: Articles 244 to 244A",
+"Wrong — Part XVI covers: Articles 330 to 342A"
+]
+},
+{
+"no": 80,
+"q": "“The Co-operative Societies” is dealt with under which Part?",
+"options": [
+"Part XXII",
+"Part XVII",
+"Part XV",
+"Part IXB"
+],
+"correct": 3,
+"answer": "Part IXB",
+"solution": "Part IXB — The Co-operative Societies (Articles 243-ZH to 243-ZT).Chain — before it: Part IXA (Articles 243-P to 243-ZG) • after it: Part X (Articles 244 to 244A)",
+"why": [
+"Wrong — Part XXII = Short Title, Commencement, Authoritative Text in Hindi and Repeals: Articles 393 to 395",
+"Wrong — Part XVII = Official Language: Articles 343 to 351",
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"CORRECT — Part IXB = The Co-operative Societies: Articles 243-ZH to 243-ZT"
+]
+},
+{
+"no": 81,
+"q": "Part X — “The Scheduled and Tribal Areas” — covers which range of articles?",
+"options": [
+"Articles 5 to 11",
+"Articles 244 to 244A",
+"Articles 243-P to 243-ZG",
+"Articles 264 to 300A"
+],
+"correct": 1,
+"answer": "Articles 244 to 244A",
+"solution": "Part X (The Scheduled and Tribal Areas) → Articles 244 to 244A.Chain — before it: Part IXB (Articles 243-ZH to 243-ZT) • after it: Part XI (Articles 245 to 263)",
+"why": [
+"Wrong — Articles 5 to 11 belongs to: Part II — Citizenship",
+"CORRECT — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas",
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits"
+]
+},
+{
+"no": 82,
+"q": "Articles 245 to 263 of the Constitution deal with which Part?",
+"options": [
+"Part XVII — Official Language",
+"Part XI — Relations between the Union and the States",
+"Part XIX — Miscellaneous",
+"Part IXB — The Co-operative Societies"
+],
+"correct": 1,
+"answer": "Part XI — Relations between the Union and the States",
+"solution": "Articles 245 to 263 → Part XI: Relations between the Union and the States.Chain — before it: Part X (Articles 244 to 244A) • after it: Part XII (Articles 264 to 300A)",
+"why": [
+"Wrong — Part XVII covers: Articles 343 to 351",
+"CORRECT — Part XI covers: Articles 245 to 263",
+"Wrong — Part XIX covers: Articles 361 to 367",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT"
+]
+},
+{
+"no": 83,
+"q": "Part XII — “Finance, Property, Contracts and Suits” — covers which range of articles?",
+"options": [
+"Articles 264 to 300A",
+"Articles 152 to 237",
+"Articles 245 to 263",
+"Article 238"
+],
+"correct": 0,
+"answer": "Articles 264 to 300A",
+"solution": "Part XII (Finance, Property, Contracts and Suits) → Articles 264 to 300A.Chain — before it: Part XI (Articles 245 to 263) • after it: Part XIII (Articles 301 to 307)",
+"why": [
+"CORRECT — Articles 264 to 300A belongs to: Part XII — Finance, Property, Contracts and Suits",
+"Wrong — Articles 152 to 237 belongs to: Part VI — The States",
+"Wrong — Articles 245 to 263 belongs to: Part XI — Relations between the Union and the States",
+"Wrong — Article 238 belongs to: Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+]
+},
+{
+"no": 84,
+"q": "“Trade, Commerce and Intercourse within the Territory of India” is dealt with under which Part?",
+"options": [
+"Part XIII",
+"Part IV",
+"Part XIV",
+"Part XIX"
+],
+"correct": 0,
+"answer": "Part XIII",
+"solution": "Part XIII — Trade, Commerce and Intercourse within the Territory of India (Articles 301 to 307).Chain — before it: Part XII (Articles 264 to 300A) • after it: Part XIV (Articles 308 to 323)",
+"why": [
+"CORRECT — Part XIII = Trade, Commerce and Intercourse within the Territory of India: Articles 301 to 307",
+"Wrong — Part IV = Directive Principles of State Policy: Articles 36 to 51",
+"Wrong — Part XIV = Services under the Union and the States: Articles 308 to 323",
+"Wrong — Part XIX = Miscellaneous: Articles 361 to 367"
+]
+},
+{
+"no": 85,
+"q": "Articles 52 to 151 of the Constitution deal with which Part?",
+"options": [
+"Part XV — Elections",
+"Part V — The Union",
+"Part IX — The Panchayats",
+"Part IVA — Fundamental Duties"
+],
+"correct": 1,
+"answer": "Part V — The Union",
+"solution": "Articles 52 to 151 → Part V: The Union.Chain — before it: Part IVA (Article 51A) • after it: Part VI (Articles 152 to 237)",
+"why": [
+"Wrong — Part XV covers: Articles 324 to 329A",
+"CORRECT — Part V covers: Articles 52 to 151",
+"Wrong — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part IVA covers: Article 51A"
+]
+},
+{
+"no": 86,
+"q": "Part XIV — “Services under the Union and the States” — covers which range of articles?",
+"options": [
+"Article 51A",
+"Articles 369 to 392",
+"Articles 308 to 323",
+"Articles 301 to 307"
+],
+"correct": 2,
+"answer": "Articles 308 to 323",
+"solution": "Part XIV (Services under the Union and the States) → Articles 308 to 323.Chain — before it: Part XIII (Articles 301 to 307) • after it: Part XIVA (Articles 323A to 323B)",
+"why": [
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"CORRECT — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 301 to 307 belongs to: Part XIII — Trade, Commerce and Intercourse within the Territory of India"
+]
+},
+{
+"no": 87,
+"q": "Articles 323A to 323B of the Constitution deal with which Part?",
+"options": [
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part XIVA — Tribunals",
+"Part XXI — Temporary, Transitional and Special Provisions",
+"Part V — The Union"
+],
+"correct": 1,
+"answer": "Part XIVA — Tribunals",
+"solution": "Articles 323A to 323B → Part XIVA: Tribunals.Chain — before it: Part XIV (Articles 308 to 323) • after it: Part XV (Articles 324 to 329A)",
+"why": [
+"Wrong — Part XXII covers: Articles 393 to 395",
+"CORRECT — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part XXI covers: Articles 369 to 392",
+"Wrong — Part V covers: Articles 52 to 151"
+]
+},
+{
+"no": 88,
+"q": "Part XV — “Elections” — covers which range of articles?",
+"options": [
+"Articles 239 to 242",
+"Articles 324 to 329A",
+"Article 51A",
+"Articles 352 to 360"
+],
+"correct": 1,
+"answer": "Articles 324 to 329A",
+"solution": "Part XV (Elections) → Articles 324 to 329A.Chain — before it: Part XIVA (Articles 323A to 323B) • after it: Part XVI (Articles 330 to 342A)",
+"why": [
+"Wrong — Articles 239 to 242 belongs to: Part VIII — The Union Territories",
+"CORRECT — Articles 324 to 329A belongs to: Part XV — Elections",
+"Wrong — Article 51A belongs to: Part IVA — Fundamental Duties",
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions"
+]
+},
+{
+"no": 89,
+"q": "“Special Provisions relating to Certain Classes” is dealt with under which Part?",
+"options": [
+"Part VII",
+"Part VIII",
+"Part XV",
+"Part XVI"
+],
+"correct": 3,
+"answer": "Part XVI",
+"solution": "Part XVI — Special Provisions relating to Certain Classes (Articles 330 to 342A).Chain — before it: Part XV (Articles 324 to 329A) • after it: Part XVII (Articles 343 to 351)",
+"why": [
+"Wrong — Part VII = The States in Part B of the First Schedule (repealed, 7th Amendment 1956): Article 238",
+"Wrong — Part VIII = The Union Territories: Articles 239 to 242",
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"CORRECT — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A"
+]
+},
+{
+"no": 90,
+"q": "Part XVII — “Official Language” — covers which range of articles?",
+"options": [
+"Article 368",
+"Articles 343 to 351",
+"Articles 36 to 51",
+"Articles 330 to 342A"
+],
+"correct": 1,
+"answer": "Articles 343 to 351",
+"solution": "Part XVII (Official Language) → Articles 343 to 351.Chain — before it: Part XVI (Articles 330 to 342A) • after it: Part XVIII (Articles 352 to 360)",
+"why": [
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"CORRECT — Articles 343 to 351 belongs to: Part XVII — Official Language",
+"Wrong — Articles 36 to 51 belongs to: Part IV — Directive Principles of State Policy",
+"Wrong — Articles 330 to 342A belongs to: Part XVI — Special Provisions relating to Certain Classes"
+]
+},
+{
+"no": 91,
+"q": "Articles 243 to 243-O of the Constitution deal with which Part?",
+"options": [
+"Part V — The Union",
+"Part IX — The Panchayats",
+"Part XIII — Trade, Commerce and Intercourse within the Territory of India",
+"Part VII — The States in Part B of the First Schedule (repealed, 7th Amendment 1956)"
+],
+"correct": 1,
+"answer": "Part IX — The Panchayats",
+"solution": "Articles 243 to 243-O → Part IX: The Panchayats.Chain — before it: Part VIII (Articles 239 to 242) • after it: Part IXA (Articles 243-P to 243-ZG)",
+"why": [
+"Wrong — Part V covers: Articles 52 to 151",
+"CORRECT — Part IX covers: Articles 243 to 243-O",
+"Wrong — Part XIII covers: Articles 301 to 307",
+"Wrong — Part VII covers: Article 238"
+]
+},
+{
+"no": 92,
+"q": "Articles 352 to 360 of the Constitution deal with which Part?",
+"options": [
+"Part IXA — The Municipalities",
+"Part XVIII — Emergency Provisions",
+"Part XIVA — Tribunals",
+"Part X — The Scheduled and Tribal Areas"
+],
+"correct": 1,
+"answer": "Part XVIII — Emergency Provisions",
+"solution": "Articles 352 to 360 → Part XVIII: Emergency Provisions.Chain — before it: Part XVII (Articles 343 to 351) • after it: Part XIX (Articles 361 to 367)",
+"why": [
+"Wrong — Part IXA covers: Articles 243-P to 243-ZG",
+"CORRECT — Part XVIII covers: Articles 352 to 360",
+"Wrong — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part X covers: Articles 244 to 244A"
+]
+},
+{
+"no": 93,
+"q": "Part XIX — “Miscellaneous” — covers which range of articles?",
+"options": [
+"Articles 243-P to 243-ZG",
+"Articles 308 to 323",
+"Articles 361 to 367",
+"Articles 243 to 243-O"
+],
+"correct": 2,
+"answer": "Articles 361 to 367",
+"solution": "Part XIX (Miscellaneous) → Articles 361 to 367.Chain — before it: Part XVIII (Articles 352 to 360) • after it: Part XX (Article 368)",
+"why": [
+"Wrong — Articles 243-P to 243-ZG belongs to: Part IXA — The Municipalities",
+"Wrong — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"CORRECT — Articles 361 to 367 belongs to: Part XIX — Miscellaneous",
+"Wrong — Articles 243 to 243-O belongs to: Part IX — The Panchayats"
+]
+},
+{
+"no": 94,
+"q": "“Amendment of the Constitution” is dealt with under which Part?",
+"options": [
+"Part VI",
+"Part XVIII",
+"Part XX",
+"Part XVI"
+],
+"correct": 2,
+"answer": "Part XX",
+"solution": "Part XX — Amendment of the Constitution (Article 368).Chain — before it: Part XIX (Articles 361 to 367) • after it: Part XXI (Articles 369 to 392)",
+"why": [
+"Wrong — Part VI = The States: Articles 152 to 237",
+"Wrong — Part XVIII = Emergency Provisions: Articles 352 to 360",
+"CORRECT — Part XX = Amendment of the Constitution: Article 368",
+"Wrong — Part XVI = Special Provisions relating to Certain Classes: Articles 330 to 342A"
+]
+},
+{
+"no": 95,
+"q": "Article 368 of the Constitution deal with which Part?",
+"options": [
+"Part XI — Relations between the Union and the States",
+"Part XX — Amendment of the Constitution",
+"Part II — Citizenship",
+"Part IXB — The Co-operative Societies"
+],
+"correct": 1,
+"answer": "Part XX — Amendment of the Constitution",
+"solution": "Article 368 → Part XX: Amendment of the Constitution.Chain — before it: Part XIX (Articles 361 to 367) • after it: Part XXI (Articles 369 to 392)",
+"why": [
+"Wrong — Part XI covers: Articles 245 to 263",
+"CORRECT — Part XX covers: Article 368",
+"Wrong — Part II covers: Articles 5 to 11",
+"Wrong — Part IXB covers: Articles 243-ZH to 243-ZT"
+]
+},
+{
+"no": 96,
+"q": "Part XXI — “Temporary, Transitional and Special Provisions” — covers which range of articles?",
+"options": [
+"Articles 369 to 392",
+"Article 368",
+"Articles 352 to 360",
+"Articles 244 to 244A"
+],
+"correct": 0,
+"answer": "Articles 369 to 392",
+"solution": "Part XXI (Temporary, Transitional and Special Provisions) → Articles 369 to 392.Chain — before it: Part XX (Article 368) • after it: Part XXII (Articles 393 to 395)",
+"why": [
+"CORRECT — Articles 369 to 392 belongs to: Part XXI — Temporary, Transitional and Special Provisions",
+"Wrong — Article 368 belongs to: Part XX — Amendment of the Constitution",
+"Wrong — Articles 352 to 360 belongs to: Part XVIII — Emergency Provisions",
+"Wrong — Articles 244 to 244A belongs to: Part X — The Scheduled and Tribal Areas"
+]
+},
+{
+"no": 97,
+"q": "Articles 393 to 395 of the Constitution deal with which Part?",
+"options": [
+"Part V — The Union",
+"Part XVIII — Emergency Provisions",
+"Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"Part XIVA — Tribunals"
+],
+"correct": 2,
+"answer": "Part XXII — Short Title, Commencement, Authoritative Text in Hindi and Repeals",
+"solution": "Articles 393 to 395 → Part XXII: Short Title, Commencement, Authoritative Text in Hindi and Repeals.Chain — before it: Part XXI (Articles 369 to 392)",
+"why": [
+"Wrong — Part V covers: Articles 52 to 151",
+"Wrong — Part XVIII covers: Articles 352 to 360",
+"CORRECT — Part XXII covers: Articles 393 to 395",
+"Wrong — Part XIVA covers: Articles 323A to 323B"
+]
+},
+{
+"no": 98,
+"q": "Part I — “The Union and its Territory” — covers which range of articles?",
+"options": [
+"Articles 1 to 4",
+"Articles 308 to 323",
+"Articles 12 to 35",
+"Articles 361 to 367"
+],
+"correct": 0,
+"answer": "Articles 1 to 4",
+"solution": "Part I (The Union and its Territory) → Articles 1 to 4.Chain — after it: Part II (Articles 5 to 11)",
+"why": [
+"CORRECT — Articles 1 to 4 belongs to: Part I — The Union and its Territory",
+"Wrong — Articles 308 to 323 belongs to: Part XIV — Services under the Union and the States",
+"Wrong — Articles 12 to 35 belongs to: Part III — Fundamental Rights",
+"Wrong — Articles 361 to 367 belongs to: Part XIX — Miscellaneous"
+]
+},
+{
+"no": 99,
+"q": "Articles 323A to 323B of the Constitution deal with which Part?",
+"options": [
+"Part II — Citizenship",
+"Part XIVA — Tribunals",
+"Part VI — The States",
+"Part IX — The Panchayats"
+],
+"correct": 1,
+"answer": "Part XIVA — Tribunals",
+"solution": "Articles 323A to 323B → Part XIVA: Tribunals.Chain — before it: Part XIV (Articles 308 to 323) • after it: Part XV (Articles 324 to 329A)",
+"why": [
+"Wrong — Part II covers: Articles 5 to 11",
+"CORRECT — Part XIVA covers: Articles 323A to 323B",
+"Wrong — Part VI covers: Articles 152 to 237",
+"Wrong — Part IX covers: Articles 243 to 243-O"
+]
+},
+{
+"no": 100,
+"q": "“Citizenship” is dealt with under which Part?",
+"options": [
+"Part XV",
+"Part XX",
+"Part II",
+"Part XI"
+],
+"correct": 2,
+"answer": "Part II",
+"solution": "Part II — Citizenship (Articles 5 to 11).Chain — before it: Part I (Articles 1 to 4) • after it: Part III (Articles 12 to 35)",
+"why": [
+"Wrong — Part XV = Elections: Articles 324 to 329A",
+"Wrong — Part XX = Amendment of the Constitution: Article 368",
+"CORRECT — Part II = Citizenship: Articles 5 to 11",
+"Wrong — Part XI = Relations between the Union and the States: Articles 245 to 263"
+]
+}
+]
+}

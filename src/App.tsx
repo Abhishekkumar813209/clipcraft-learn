@@ -28,6 +28,9 @@ import SscDashboard from "./pages/SscDashboard";
 import SscPracticeSession from "./pages/SscPracticeSession";
 import SscPolityFacts from "./pages/SscPolityFacts";
 import SscPolityFactsQuiz from "./pages/SscPolityFactsQuiz";
+import SscPolityRangeQuiz, { SscPolityRangeHub } from "./pages/SscPolityRange";
+import SscReasoningPractice from "./pages/SscReasoningPractice";
+import SscReasoningAlphabet from "./pages/SscReasoningAlphabet";
 import SscPolityTheory from "./pages/SscPolityTheory";
 
 import NqtLayout from "./pages/NqtLayout";
@@ -187,6 +190,10 @@ const App = () => (
               <Route path="maths/:topic/trainer/:slug" element={<SscMathsTrainer />} />
               <Route path="reasoning" element={<SscSubject />} />
               <Route path="gk" element={<SscSubject />} />
+              <Route path="reasoning/practice" element={<SscReasoningPractice />} />
+              <Route path="reasoning/practice/alphabet" element={<SscReasoningAlphabet />} />
+              <Route path="gk/polity/range" element={<SscPolityRangeHub />} />
+              <Route path="gk/polity/range/:mode" element={<SscPolityRangeQuiz />} />
               <Route path="gk/polity/facts" element={<SscPolityFacts />} />
               <Route path="gk/polity/facts/:sheet" element={<SscPolityFactsQuiz />} />
               <Route path="gk/polity/theory/:sheet" element={<SscPolityTheory />} />

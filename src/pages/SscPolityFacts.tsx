@@ -21,8 +21,20 @@ export default function SscPolityFacts() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card className="cursor-pointer border-emerald-200 bg-emerald-50/60 hover:border-emerald-400 hover:shadow-md transition-all" onClick={() => nav('/ssc/gk/polity/range')}>
+            <CardContent className="p-5 flex items-start gap-3">
+              <span className="text-3xl">📐</span>
+              <div className="flex-1 min-w-0">
+                <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1.5">New</span>
+                <h3 className="font-semibold">Article Range → Part Mapping</h3>
+                <p className="text-sm text-muted-foreground mt-0.5">Random + partially random (serial) sets · 200 MCQs, har option ka reason.</p>
+              </div>
+            </CardContent>
+          </Card>
+
           {POLITY_SHEETS.map((s) => (
             <Card
+
               key={s.key}
               className="border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all bg-white/80"
             >
