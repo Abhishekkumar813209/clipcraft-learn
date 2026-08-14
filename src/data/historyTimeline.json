@@ -1,0 +1,213 @@
+{
+  "medieval_history": {
+    "label": "Medieval History",
+    "emoji": "🕌",
+    "chapters": [
+      {
+        "key": "early_invasions",
+        "title": "Early Turkish Invasions (Arab se Ghori tak)",
+        "blurb": "Sindh par Arab attack se lekar Ghori ke India campaigns tak ki chain.",
+        "events": [
+          { "y": "712", "title": "Muhammad bin Qasim ne Sindh jeeta", "who": "Muhammad bin Qasim", "kind": "war", "detail": "Umayyad Khalifa ke governor Hajjaj ne bheja; Raja Dahir ko Rewar ki ladai me haraya. Yahi India me pehla successful Arab attack tha.", "reason": "Debal ke pass Arab merchant ships ko lootne aur Dahir dwara harjana dene se inkaar ki wajah se." },
+          { "y": "1000", "title": "Mahmud Ghaznavi ka pehla India attack", "who": "Mahmud Ghaznavi", "kind": "war", "detail": "Mahmud ne 1000 se 1027 ke beech kul 17 baar India par attack kiya, par yaha raajya banane ki koshish nahi ki.", "reason": "Mandiron aur shehron ki daulat loot kar Ghazni empire ko funding dena." },
+          { "y": "1025", "title": "Somnath Temple par attack", "who": "Mahmud Ghaznavi", "kind": "war", "detail": "Gujarat ke Somnath mandir ko loota — Mahmud ka sabse mashhoor aur sabse dhanwaan raid.", "reason": "Mandir me jama sona-chandi aur prestige." },
+          { "y": "1191", "title": "Tarain ka pehla yuddh", "who": "Prithviraj Chauhan", "kind": "war", "detail": "Prithviraj Chauhan III ne Muhammad Ghori ko haraya — Ghori zakhmi hokar bhaga.", "reason": "Ghori Punjab-Delhi route par kabza chahta tha; Bhatinda fort par jhagda hua." },
+          { "y": "1192", "title": "Tarain ka doosra yuddh", "who": "Muhammad Ghori", "kind": "war", "detail": "Ghori ne Prithviraj ko haraya — North India me Turkish rule ki neev pad gayi.", "reason": "Ghori ne badla lene aur Ganga valley kholne ke liye dobara badi cavalry se attack kiya." },
+          { "y": "1194", "title": "Chandawar ka yuddh", "who": "Muhammad Ghori", "kind": "war", "detail": "Kannauj ke Gahadavala raja Jaichand ko haraya — Ganga doab Turks ke haath aaya.", "reason": "Ganga valley ke sabse taakatwar Rajput power ko khatam karna." },
+          { "y": "1206", "title": "Ghori ki hatya, Qutubuddin Aibak sultan bana", "who": "Qutubuddin Aibak", "kind": "accession", "detail": "Ghori ki maut ke baad uska ghulam-general Aibak Lahore me gaddi par baitha — Delhi Sultanate shuru.", "reason": "Ghori ka koi beta nahi tha, isliye uske ghulam generals ne satta baanti." }
+        ]
+      },
+      {
+        "key": "slave_dynasty",
+        "title": "Slave / Mamluk Dynasty (1206–1290)",
+        "blurb": "Aibak se Balban tak — kaun aaya, kisko hata ke aaya.",
+        "events": [
+          { "y": "1206", "title": "Qutubuddin Aibak gaddi par", "who": "Qutubuddin Aibak", "span": "1206–1210", "kind": "accession", "detail": "Lakh Baksh kehlaye; Qutub Minar ki neev aur Quwwat-ul-Islam masjid banwayi. Lahore me chaugan (polo) khelte hue ghode se girkar maut.", "reason": "Ghori ka viceroy hone ke naate satta uske haath aayi." },
+          { "y": "1210", "title": "Aram Shah ka chhota shasan", "who": "Aram Shah", "span": "1210–1211", "kind": "accession", "detail": "Aibak ke baad aaya par nakaabil tha; Delhi ke amiron ne Iltutmish ko bula liya aur Aram Shah maara gaya." },
+          { "y": "1211", "title": "Iltutmish sultan bana", "who": "Iltutmish", "span": "1211–1236", "kind": "accession", "detail": "Aram Shah ko hara kar aaya. Sultanate ka asli sansthapak — Delhi ko capital banaya, Iqta system aur Chalisa (Turkan-i-Chahalgani) banaya, Silver Tanka & Copper Jital chalaya.", "reason": "Aibak ka damad aur sabse taakatwar governor hone ki wajah se amiron ne use chuna." },
+          { "y": "1221", "title": "Chengiz Khan Indus tak aaya", "who": "Iltutmish", "kind": "war", "detail": "Iltutmish ne Khwarizm ke shahzade Jalaluddin Mangbarni ko sharan dene se mana kiya — isi diplomacy se Mongol invasion tal gaya.", "reason": "Mongols Mangbarni ka peecha karte hue Indus tak pahunche the." },
+          { "y": "1236", "title": "Razia Sultan gaddi par", "who": "Razia Sultan", "span": "1236–1240", "kind": "accession", "detail": "Delhi ki pehli aur akeli mahila shasak. Bhai Ruknuddin Firoz ko hata kar aayi; Yakut ko amir-i-akhur banane par Turkish amiron ne bagawat ki aur 1240 me maar diya.", "reason": "Iltutmish ne khud use uttaradhikari chuna tha." },
+          { "y": "1246", "title": "Nasiruddin Mahmud aur Balban ki shakti", "who": "Nasiruddin Mahmud", "span": "1246–1266", "kind": "accession", "detail": "Naam ka sultan; asli taakat uske naib Balban ke paas thi jo Quran ki nakal likh kar guzara karne ki kahani se mashhoor hai." },
+          { "y": "1266", "title": "Balban sultan bana", "who": "Balban", "span": "1266–1287", "kind": "accession", "detail": "Chalisa ko khatam kiya, Sijda & Paibos, Nauroz festival, 'Zil-i-Ilahi' (God's shadow) theory, alag Diwan-i-Arz (military dept) banaya — Blood & Iron policy.", "reason": "Nasiruddin ki maut ke baad naib se seedha sultan ban gaya." },
+          { "y": "1290", "title": "Jalaluddin Khilji — Slave dynasty ka ant", "who": "Jalaluddin Khilji", "kind": "accession", "detail": "Balban ke poti-pote nakaabil nikle; Kaiqubad/Kayumars ko hata kar Jalaluddin Khilji ne Khilji vansh shuru kiya." }
+        ]
+      },
+      {
+        "key": "khilji",
+        "title": "Khilji Dynasty (1290–1320)",
+        "blurb": "Alauddin ke market control, Deccan campaigns aur Mongol defence.",
+        "events": [
+          { "y": "1290", "title": "Jalaluddin Firoz Khilji", "who": "Jalaluddin Khilji", "span": "1290–1296", "kind": "accession", "detail": "Narm dil shasak; apne bhatije-damad Alauddin dwara dhokhe se maara gaya." },
+          { "y": "1296", "title": "Devagiri raid aur Alauddin ka takht", "who": "Alauddin Khilji", "span": "1296–1316", "kind": "accession", "detail": "Devagiri (Ramachandra Yadava) se lootI daulat se sena khadi ki, Kara me Jalaluddin ki hatya karke sultan bana.", "reason": "Deccan ki daulat aur takht ki lalach." },
+          { "y": "1301", "title": "Ranthambore vijay", "who": "Alauddin Khilji", "kind": "war", "detail": "Hammiradeva ko hara kar Ranthambore jeeta — pehla bada Rajput fort.", "reason": "Ranthambore ne Alauddin ke Mongol vidrohiyon ko sharan di thi." },
+          { "y": "1303", "title": "Chittor vijay", "who": "Alauddin Khilji", "kind": "war", "detail": "Rana Ratan Singh ko hara kar Chittor jeeta; Padmavat (Jayasi, 1540) me isi ki kahani hai.", "reason": "Mewar ki strategic taakat todna." },
+          { "y": "1303", "title": "Market / Price Control policy", "who": "Alauddin Khilji", "kind": "policy", "detail": "Diwan-i-Riyasat, Shahna-i-Mandi, Barid & Munhiyan spies; anaj, kapda, ghode sab ke rate fix. Dagh (ghode par nishan) aur Chehra (soldier ka huliya) system laaya.", "reason": "Kam salary me badi sthaayi sena rakhni thi taaki Mongol attack roka ja sake." },
+          { "y": "1305", "title": "Malik Kafur ka Deccan abhiyan shuru", "who": "Malik Kafur", "kind": "war", "detail": "Devagiri, Warangal (Kakatiya), Dwarasamudra (Hoysala) aur Madurai (Pandya) — sabse tribute vasoola.", "reason": "Deccan ko jeetne ki jagah paisa aur wafadari lena." },
+          { "y": "1316", "title": "Alauddin ki maut, ashanti", "who": "Malik Kafur", "kind": "accession", "detail": "Kafur ne satta hathiyai par jaldi maara gaya; Mubarak Shah Khilji aaya." },
+          { "y": "1320", "title": "Khusrau Khan aur Khilji vansh ka ant", "who": "Ghiyasuddin Tughlaq", "kind": "accession", "detail": "Mubarak Shah ko Khusrau Khan ne maara; phir Ghazi Malik (Ghiyasuddin Tughlaq) ne Khusrau ko hara kar Tughlaq vansh shuru kiya." }
+        ]
+      },
+      {
+        "key": "tughlaq",
+        "title": "Tughlaq Dynasty (1320–1414)",
+        "blurb": "Muhammad bin Tughlaq ke experiments aur Firoz ki welfare policies.",
+        "events": [
+          { "y": "1320", "title": "Ghiyasuddin Tughlaq", "who": "Ghiyasuddin Tughlaq", "span": "1320–1325", "kind": "accession", "detail": "Tughlaqabad basaya; Afghanpur me lakdi ke pandal girne se maut (Ibn Battuta ke anusaar shak beta Juna Khan par)." },
+          { "y": "1325", "title": "Muhammad bin Tughlaq gaddi par", "who": "Muhammad bin Tughlaq", "span": "1325–1351", "kind": "accession", "detail": "Sabse padha-likha par 'ill-starred idealist'. Ibn Battuta ko Qazi banaya." },
+          { "y": "1327", "title": "Capital transfer: Delhi → Daulatabad", "who": "Muhammad bin Tughlaq", "kind": "policy", "detail": "Poori aabadi ko Devagiri (Daulatabad) le gaya, 2 saal baad wapas laaya — bada failure.", "reason": "Deccan par control aur Mongol attacks se capital ko surakshit rakhna." },
+          { "y": "1330", "title": "Token currency", "who": "Muhammad bin Tughlaq", "kind": "policy", "detail": "Bronze/copper token coins ko silver value par chalaya; nakli sikkon ki baadh aa gayi aur wapas lena pada.", "reason": "Silver ki kami aur khaali khazana." },
+          { "y": "1334", "title": "Doab me tax badhotri aur akaal", "who": "Muhammad bin Tughlaq", "kind": "policy", "detail": "Ganga-Yamuna doab me kar badhaya jab akaal pada — kisan bhaag gaye; baad me Diwan-i-Kohi (agriculture dept) banaya.", "reason": "Khazane ki bharpai." },
+          { "y": "1336", "title": "Vijayanagara ki sthapna", "who": "Harihara & Bukka", "kind": "accession", "detail": "Sangama vansh — Hampi (Tungabhadra) rajdhani; Tughlaq kamzori ka faayda." },
+          { "y": "1347", "title": "Bahmani Kingdom ki sthapna", "who": "Alauddin Bahman Shah", "kind": "accession", "detail": "Hasan Gangu ne Gulbarga me Bahmani rajya banaya (baad me Bidar)." },
+          { "y": "1351", "title": "Firoz Shah Tughlaq", "who": "Firoz Shah Tughlaq", "span": "1351–1388", "kind": "accession", "detail": "Sirf 4 kar (Kharaj, Zakat, Jizya, Khams), Diwan-i-Khairat, Diwan-i-Bandagan, nahron ka nirman, Hisar-Firozabad-Jaunpur-Fatehabad shehar basaye; Sultanate me pehli baar Brahmins par bhi Jizya.", "reason": "Ulema aur nobility ko khush rakh kar sthirta laana." },
+          { "y": "1398", "title": "Timur ka Delhi par attack", "who": "Timur", "kind": "war", "detail": "Nasiruddin Mahmud Tughlaq ke samay Timur ne Delhi ko loota aur qatl-e-aam kiya; Khizr Khan ko Multan ka governor chhod gaya.", "reason": "Delhi ki kamzori aur daulat." },
+          { "y": "1414", "title": "Sayyid vansh shuru", "who": "Khizr Khan", "kind": "accession", "detail": "Khizr Khan ne Daulat Khan Lodi ko hata kar Sayyid vansh chalaya (1414–1451)." }
+        ]
+      },
+      {
+        "key": "lodi_sur",
+        "title": "Lodi Dynasty & Sur Empire",
+        "blurb": "Bahlol se Ibrahim Lodi, phir Sher Shah ke reforms.",
+        "events": [
+          { "y": "1451", "title": "Bahlol Lodi", "who": "Bahlol Lodi", "span": "1451–1489", "kind": "accession", "detail": "Pehla Afghan shasak; Jaunpur ke Sharqi rajya ko mila liya." },
+          { "y": "1489", "title": "Sikandar Lodi", "who": "Sikandar Lodi", "span": "1489–1517", "kind": "accession", "detail": "Agra shehar basaya (1504) aur capital banaya; Gaz-i-Sikandari (measurement scale); 'Gulrukhi' naam se shayari." },
+          { "y": "1517", "title": "Ibrahim Lodi", "who": "Ibrahim Lodi", "span": "1517–1526", "kind": "accession", "detail": "Afghan sardaron se takraav; chacha Daulat Khan Lodi aur Rana Sanga ne Babur ko bulaya." },
+          { "y": "1526", "title": "Panipat ka pehla yuddh", "who": "Babur", "kind": "war", "detail": "Babur ne Ibrahim Lodi ko haraya — Tulughma & Araba (cannon) tactics; Mughal rule shuru.", "reason": "Daulat Khan Lodi aur Alam Khan ne Babur ko invite kiya; Babur Timur ki virasat par daava karta tha." },
+          { "y": "1539", "title": "Chausa ka yuddh", "who": "Sher Shah Suri", "kind": "war", "detail": "Sher Shah ne Humayun ko haraya; 'Sher Shah' title liya.", "reason": "Bengal-Bihar par control ke liye Humayun se takraav." },
+          { "y": "1540", "title": "Kannauj (Bilgram) ka yuddh — Sur empire", "who": "Sher Shah Suri", "span": "1540–1545", "kind": "war", "detail": "Humayun bhaga (15 saal nirvasan); Sher Shah Delhi ka shasak bana." },
+          { "y": "1541", "title": "Sher Shah ke reforms", "who": "Sher Shah Suri", "kind": "policy", "detail": "Rupiya (silver) aur Dam (copper), Zabti/Ryotwari revenue with Patta-Qabuliyat, Grand Trunk Road (Sadak-e-Azam), sarai + dak chowki, Purana Qila aur Sasaram ka maqbara.", "reason": "Kisan se seedha, naapa hua lagaan lekar prashasan majboot karna." },
+          { "y": "1545", "title": "Kalinjar me Sher Shah ki maut", "who": "Islam Shah Suri", "kind": "accession", "detail": "Kalinjar fort par barood phatne se maut; beta Islam Shah aaya." },
+          { "y": "1555", "title": "Humayun ki wapsi", "who": "Humayun", "kind": "war", "detail": "Machhiwara aur Sirhind jeet kar Delhi wapas liya; 1556 me Sher Mandal seedhiyon se girkar maut." }
+        ]
+      },
+      {
+        "key": "mughals",
+        "title": "Mughal Empire (1526–1707)",
+        "blurb": "Babur se Aurangzeb — wars, policies aur unke naam.",
+        "events": [
+          { "y": "1527", "title": "Khanwa ka yuddh", "who": "Babur", "kind": "war", "detail": "Rana Sanga (Mewar) ko haraya; Babur ne 'Ghazi' title liya aur Tamgha tax hataya.", "reason": "Rana Sanga North India par khud kabza chahta tha aur Babur ke rukne se naraz tha." },
+          { "y": "1529", "title": "Ghaghra ka yuddh", "who": "Babur", "kind": "war", "detail": "Bihar-Bengal ke Afghans ko haraya — Babur ki aakhri badi jeet.", "reason": "Mahmud Lodi ke netritva me Afghan sangathan ko khatam karna." },
+          { "y": "1556", "title": "Panipat ka doosra yuddh, Akbar gaddi par", "who": "Akbar", "span": "1556–1605", "kind": "war", "detail": "Bairam Khan ke netritva me Hemu ko haraya; Akbar 13 saal ki umar me sultan.", "reason": "Hemu ne Delhi-Agra par kabza kar liya tha aur 'Vikramaditya' title liya tha." },
+          { "y": "1562", "title": "Akbar ki udaar policies shuru", "who": "Akbar", "kind": "policy", "detail": "1562 me daas pratha aur teerth yatra kar khatam, 1564 me Jizya khatam, Rajput vivah-sandhi.", "reason": "Rajputon aur bahusankhyak praja ka sahyog lekar samrajya sthir karna." },
+          { "y": "1571", "title": "Fatehpur Sikri aur Ibadat Khana", "who": "Akbar", "kind": "policy", "detail": "1575 me Ibadat Khana me dharmik bahas; 1582 me Din-i-Ilahi (Tauhid-i-Ilahi); Sulh-i-Kul ka siddhant." },
+          { "y": "1576", "title": "Haldighati ka yuddh", "who": "Maharana Pratap", "kind": "war", "detail": "Man Singh ke netritva me Mughal sena vs Maharana Pratap — Pratap ne haar ke baad bhi guerrilla ladai jaari rakhi.", "reason": "Pratap ne Akbar ki adhinta maanne se inkaar kiya." },
+          { "y": "1580", "title": "Mansabdari & Dahsala system", "who": "Akbar", "kind": "policy", "detail": "Zat (rank) aur Sawar (cavalry) ka Mansabdari; Raja Todarmal ka Dahsala/Zabti — 10 saal ke ausat daam par lagaan.", "reason": "Sena aur revenue ko ek standard, kendrit dhanche me laana." },
+          { "y": "1605", "title": "Jahangir", "who": "Jahangir", "span": "1605–1627", "kind": "accession", "detail": "Zanjir-i-Adl (chain of justice), 12 ordinances; Nur Jahan junta; Captain Hawkins (1608) aur Sir Thomas Roe (1615) aaye." },
+          { "y": "1628", "title": "Shah Jahan", "who": "Shah Jahan", "span": "1628–1658", "kind": "accession", "detail": "Golden age of architecture — Taj Mahal (1632–53), Red Fort, Jama Masjid, Peacock Throne; 1658 me Aurangzeb ne band kar diya." },
+          { "y": "1658", "title": "Samugarh ka yuddh, Aurangzeb ka takht", "who": "Aurangzeb", "span": "1658–1707", "kind": "war", "detail": "Dara Shikoh ko hara kar Aurangzeb 'Alamgir' bana.", "reason": "Shah Jahan ki bimari ke baad uttaradhikar ka yuddh." },
+          { "y": "1679", "title": "Jizya dobara lagaya", "who": "Aurangzeb", "kind": "policy", "detail": "Jizya wapas, sangeet-darbar par rok, mandir todne ki policy — Rajput, Jat, Sikh aur Maratha vidroh bhadke.", "reason": "Orthodox Islamic shasan ka model apnana." },
+          { "y": "1674", "title": "Shivaji ka rajyabhishek", "who": "Shivaji", "kind": "accession", "detail": "Raigad me Chhatrapati; Ashta Pradhan mandal, Chauth & Sardeshmukhi vasooli.", "reason": "Swaraj ko vaidhta dena." },
+          { "y": "1707", "title": "Aurangzeb ki maut — patan shuru", "who": "Bahadur Shah I", "kind": "accession", "detail": "Deccan ke lambe yuddh (1681–1707) ne khazana khaali kar diya; Mughal empire bikharne laga." }
+        ]
+      }
+    ]
+  },
+  "modern_history": {
+    "label": "Modern History",
+    "emoji": "⚔️",
+    "chapters": [
+      {
+        "key": "europeans",
+        "title": "Arrival of Europeans & Company Rule",
+        "blurb": "Portuguese se lekar Plassey-Buxar tak ka chain.",
+        "events": [
+          { "y": "1498", "title": "Vasco da Gama Calicut pahuncha", "who": "Vasco da Gama", "kind": "accession", "detail": "Zamorin ke darbar me; Cape of Good Hope route se sea-route khula.", "reason": "Masalon (spices) ka seedha vyapar marg dhoondhna." },
+          { "y": "1600", "title": "English East India Company ka charter", "who": "Queen Elizabeth I", "kind": "policy", "detail": "31 Dec 1600 ko 15 saal ke monopoly charter ke saath company bani." },
+          { "y": "1602", "title": "Dutch East India Company (VOC)", "who": "Dutch", "kind": "accession", "detail": "Pulicat, Nagapattinam; 1759 Bedara ki ladai me Dutch haar gaye." },
+          { "y": "1664", "title": "French East India Company", "who": "Colbert", "kind": "accession", "detail": "Louis XIV ke mantri Colbert ne banayi; Pondicherry aur Chandernagore centres." },
+          { "y": "1757", "title": "Plassey ka yuddh", "who": "Robert Clive", "kind": "war", "detail": "Siraj-ud-Daulah ko haraya; Mir Jafar ki gaddari; Bengal me Company ka political rule shuru.", "reason": "Dastak ka durupyog, Company ki fort-building aur Nawab ki naraazgi." },
+          { "y": "1764", "title": "Buxar ka yuddh", "who": "Hector Munro", "kind": "war", "detail": "Mir Qasim + Shuja-ud-Daulah + Shah Alam II ki sanyukt sena haari — Company ki military supremacy pakki.", "reason": "Mir Qasim ne duty-free trade khatam kar diya tha." },
+          { "y": "1765", "title": "Diwani aur Dual Government", "who": "Robert Clive", "kind": "policy", "detail": "Allahabad sandhi se Bengal-Bihar-Odisha ki Diwani mili; revenue Company ke paas, prashasan Nawab ke paas — 1770 ka Bengal akaal isi ka nateeja.", "reason": "Bina zimmedari ke revenue par kabza." },
+          { "y": "1773", "title": "Regulating Act", "who": "Warren Hastings", "kind": "policy", "detail": "Bengal ka Governor-General banaya, Calcutta Supreme Court; Company par British sansad ka pehla control." },
+          { "y": "1784", "title": "Pitt's India Act", "who": "William Pitt", "kind": "policy", "detail": "Board of Control — dohra niyantran (Company + Crown)." }
+        ]
+      },
+      {
+        "key": "gg_policies",
+        "title": "Governor-Generals & Unke Policies",
+        "blurb": "Har GG/Viceroy ki signature policy aur uska naam.",
+        "events": [
+          { "y": "1793", "title": "Permanent Settlement", "who": "Lord Cornwallis", "span": "1786–1793", "kind": "policy", "detail": "Zamindar ko maalik maana, lagaan hamesha ke liye fix; police & civil services ka europeanisation ('Father of Civil Services').", "reason": "Sthir revenue aur wafadar zamindar class banana." },
+          { "y": "1798", "title": "Subsidiary Alliance", "who": "Lord Wellesley", "span": "1798–1805", "kind": "policy", "detail": "Hyderabad (1798) sabse pehle; desi raja British sena rakhe, uska kharcha de, videshi sambandh chhod de.", "reason": "Bina yuddh ke desi rajyon ko control me lena aur French prabhav khatam karna." },
+          { "y": "1820", "title": "Ryotwari & Mahalwari", "who": "Thomas Munro / Holt Mackenzie", "kind": "policy", "detail": "Ryotwari (Madras-Bombay) me kisan seedha state ko de; Mahalwari (NW Provinces, 1822) me poora gaon/mahal zimmedar.", "reason": "Permanent Settlement ke revenue nuksan se bachna." },
+          { "y": "1829", "title": "Sati Pratha ka ant", "who": "Lord William Bentinck", "span": "1828–1835", "kind": "policy", "detail": "Regulation XVII se Sati gair-kanooni; Raja Rammohan Roy ka samarthan; 1835 me Macaulay Minute se English shiksha.", "reason": "Samaj sudharakon ka dabav aur humanitarian reform." },
+          { "y": "1848", "title": "Doctrine of Lapse", "who": "Lord Dalhousie", "span": "1848–1856", "kind": "policy", "detail": "Satara(1848), Jhansi(1853), Nagpur(1854); Awadh 1856 me kushasan ke naam par; railway (1853), telegraph, PWD, Wood's Despatch (1854).", "reason": "God liye putra ko uttaradhikari na maankar rajya hadapna." },
+          { "y": "1876", "title": "Royal Titles Act & Delhi Durbar", "who": "Lord Lytton", "span": "1876–1880", "kind": "policy", "detail": "Victoria 'Kaiser-i-Hind'; Vernacular Press Act (1878), Arms Act (1878), ICS umar 21→19.", "reason": "Imperial prestige aur Indian criticism dabana." },
+          { "y": "1882", "title": "Local Self Government", "who": "Lord Ripon", "span": "1880–1884", "kind": "policy", "detail": "'Father of Local Self Government'; Vernacular Press Act hataya, Ilbert Bill (1883), Hunter Commission (1882)." },
+          { "y": "1905", "title": "Bengal ka Vibhajan", "who": "Lord Curzon", "span": "1899–1905", "kind": "policy", "detail": "16 Oct 1905 se laagu; Swadeshi & Boycott andolan bhadka; 1911 me rad.", "reason": "Prashasnik suvidha ke naam par Hindu-Muslim aur Bengali ekta todna." },
+          { "y": "1919", "title": "Rowlatt Act & Jallianwala Bagh", "who": "Lord Chelmsford", "kind": "policy", "detail": "Bina mukadme jail; 13 April 1919 Amritsar me Dyer ne firing ki; Hunter Commission; Tagore ne Knighthood lautaya." },
+          { "y": "1947", "title": "Mountbatten Plan", "who": "Lord Mountbatten", "kind": "policy", "detail": "3 June 1947 plan; Indian Independence Act (18 July 1947); 15 Aug 1947 azadi + vibhajan; Radcliffe Line." }
+        ]
+      },
+      {
+        "key": "revolt_1857",
+        "title": "Revolt of 1857",
+        "blurb": "Karan, kendra, neta aur nateeja.",
+        "events": [
+          { "y": "1857", "title": "Mangal Pandey ka vidroh (29 March)", "who": "Mangal Pandey", "kind": "war", "detail": "Barrackpore me 34th NI ke sipahi; 8 April ko phansi.", "reason": "Enfield rifle ke cartridges me gaay-suar ki charbi ki afwah." },
+          { "y": "1857", "title": "Meerut se shuruaat (10 May)", "who": "Sepoys of Meerut", "kind": "war", "detail": "Sipahi Delhi pahunche aur Bahadur Shah Zafar ko netritva saunpa." },
+          { "y": "1857", "title": "Kanpur — Nana Saheb", "who": "Nana Saheb", "kind": "war", "detail": "Tatya Tope commander; British officer Hugh Wheeler/Campbell.", "reason": "Peshwa Baji Rao II ki pension band kar di gayi thi." },
+          { "y": "1857", "title": "Lucknow — Begum Hazrat Mahal", "who": "Begum Hazrat Mahal", "kind": "war", "detail": "Henry Lawrence ki maut; Colin Campbell ne 1858 me dabaya.", "reason": "Awadh ka 1856 ka annexation." },
+          { "y": "1858", "title": "Jhansi & Gwalior — Rani Lakshmibai", "who": "Rani Lakshmibai", "kind": "war", "detail": "Hugh Rose ke khilaf ladi; 17 June 1858 ko Gwalior me shahadat.", "reason": "Doctrine of Lapse se Jhansi ka annexation." },
+          { "y": "1858", "title": "Queen's Proclamation / GoI Act 1858", "who": "Queen Victoria", "kind": "policy", "detail": "Company rule khatam, Crown ka seedha shasan; Secretary of State for India + 15-member council; Canning pehla Viceroy.", "reason": "Vidroh ke baad prashasan ko badalna." }
+        ]
+      },
+      {
+        "key": "inc_moderates",
+        "title": "INC, Moderates & Extremists",
+        "blurb": "1885 se 1916 tak — Surat Split se Lucknow Pact.",
+        "events": [
+          { "y": "1885", "title": "Indian National Congress ki sthapna", "who": "A.O. Hume", "kind": "accession", "detail": "Bombay, Gokuldas Tejpal Sanskrit College; pehle adhyaksh W.C. Bonnerjee; 72 delegates." },
+          { "y": "1905", "title": "Swadeshi & Boycott Movement", "who": "Bal Gangadhar Tilak", "kind": "policy", "detail": "Bengal vibhajan ke virodh me; Rabindranath ka 'Amar Sonar Bangla'; Rakhi bandhan protest." },
+          { "y": "1906", "title": "Muslim League ki sthapna", "who": "Aga Khan & Salimullah", "kind": "accession", "detail": "Dhaka me; Calcutta session (Dadabhai Naoroji) me Congress ne 'Swaraj' ko lakshya kaha." },
+          { "y": "1907", "title": "Surat Split", "who": "Rash Behari Ghosh", "kind": "war", "detail": "Congress Garam dal (Lal-Bal-Pal) aur Naram dal me toot gayi.", "reason": "Adhyaksh chunav aur Swadeshi-Boycott ki gati par matbhed." },
+          { "y": "1909", "title": "Morley-Minto Reforms", "who": "Lord Minto", "kind": "policy", "detail": "Muslims ke liye alag nirvachan mandal (separate electorate) — communal politics ki neev.", "reason": "Muslim League ko sath rakh kar Congress ko kamzor karna." },
+          { "y": "1916", "title": "Lucknow Pact & Home Rule", "who": "Tilak & Jinnah", "kind": "policy", "detail": "Congress-League samjhauta; Tilak (April, Pune) aur Annie Besant (Sept, Madras) ke Home Rule leagues." }
+        ]
+      },
+      {
+        "key": "gandhi_era",
+        "title": "Gandhian Era (1917–1942)",
+        "blurb": "Champaran se Quit India tak movement chain.",
+        "events": [
+          { "y": "1917", "title": "Champaran Satyagraha", "who": "Mahatma Gandhi", "kind": "war", "detail": "India me Gandhi ka pehla civil disobedience; Rajkumar Shukla ne bulaya.", "reason": "Tinkathia system — neel (indigo) ki jabran kheti." },
+          { "y": "1918", "title": "Kheda & Ahmedabad", "who": "Mahatma Gandhi", "kind": "war", "detail": "Kheda me pehla non-cooperation (tax na dena), Ahmedabad mill me pehla bhookh hartal.", "reason": "Fasal kharab hone par bhi lagaan maafi na milna; mazdooron ka plague bonus." },
+          { "y": "1920", "title": "Non-Cooperation + Khilafat", "who": "Mahatma Gandhi", "kind": "policy", "detail": "Nagpur session; titles wapas, school-court-videshi maal ka boycott; 1922 Chauri Chaura ke baad wapas.", "reason": "Rowlatt Act, Jallianwala Bagh aur Khilafat ka mudda." },
+          { "y": "1928", "title": "Simon Commission & Nehru Report", "who": "Lala Lajpat Rai", "kind": "war", "detail": "'Simon Go Back'; Lahore me lathi charge se Lajpat Rai ki maut; Motilal Nehru Report me Dominion Status.", "reason": "Commission me ek bhi Indian sadasya nahi tha." },
+          { "y": "1930", "title": "Dandi March & Civil Disobedience", "who": "Mahatma Gandhi", "kind": "war", "detail": "12 March–6 April, Sabarmati se Dandi 385 km; namak kanoon toda; 1930 First Round Table.", "reason": "Namak par sarkari monopoly — har garib ko chhoone wala mudda." },
+          { "y": "1932", "title": "Communal Award & Poona Pact", "who": "Ramsay MacDonald", "kind": "policy", "detail": "Depressed classes ko separate electorate; Gandhi ke anshan ke baad Ambedkar-Gandhi Poona Pact (reserved seats within joint electorate)." },
+          { "y": "1935", "title": "Government of India Act 1935", "who": "British Parliament", "kind": "policy", "detail": "Provincial autonomy, federation ka dhancha, RBI aur Federal Court (1937); Indian Constitution ka bada source." },
+          { "y": "1942", "title": "Quit India Movement", "who": "Mahatma Gandhi", "kind": "war", "detail": "8 Aug 1942 Bombay AICC; 'Do or Die'; Aruna Asaf Ali ne tiranga fehraya; leaderless mass revolt.", "reason": "Cripps Mission ki vifalta aur Japan ke khatre ke beech turant azadi ki maang." }
+        ]
+      },
+      {
+        "key": "revolutionaries",
+        "title": "Revolutionary Movement & INA",
+        "blurb": "Crank of bombs — Alipore se Red Fort trials tak.",
+        "events": [
+          { "y": "1908", "title": "Muzaffarpur Bomb Case", "who": "Khudiram Bose & Prafulla Chaki", "kind": "war", "detail": "Kingsford ko maarne ki koshish; Khudiram ko 1908 me phansi.", "reason": "Judge Kingsford ke kathor faislon ka badla." },
+          { "y": "1913", "title": "Ghadar Party", "who": "Lala Hardayal & Sohan Singh Bhakna", "kind": "accession", "detail": "San Francisco me; 'Ghadar' akhbar; 1915 ki Ghadar sazish vifal." },
+          { "y": "1925", "title": "Kakori Train Action", "who": "Ram Prasad Bismil & Ashfaqullah", "kind": "war", "detail": "HRA dwara sarkari khazana loota; 1927 me phansi.", "reason": "Krantikari sangathan ke liye hathiyar khareedne ka paisa." },
+          { "y": "1928", "title": "HSRA aur Saunders vadh", "who": "Bhagat Singh & Rajguru", "kind": "war", "detail": "Chandrashekhar Azad ke saath HSRA; Saunders ko maara.", "reason": "Lala Lajpat Rai par lathi charge ka badla." },
+          { "y": "1929", "title": "Central Assembly Bomb", "who": "Bhagat Singh & B.K. Dutt", "kind": "war", "detail": "8 April 1929, 'Inquilab Zindabad'; 23 March 1931 ko Bhagat Singh, Sukhdev, Rajguru ko phansi.", "reason": "Public Safety Bill & Trade Disputes Bill ka virodh — 'bahron ko sunane ke liye'." },
+          { "y": "1943", "title": "Azad Hind Fauj (INA)", "who": "Subhas Chandra Bose", "kind": "war", "detail": "Singapore me Provisional Government; Rani Jhansi Regiment; 1945–46 Red Fort trials ne desh me lehar failayi.", "reason": "Sashastra sangharsh se azadi lena." },
+          { "y": "1946", "title": "RIN Mutiny", "who": "Royal Indian Navy ratings", "kind": "war", "detail": "18 Feb 1946 Bombay; British ko lagne laga ki armed forces par bharosa nahi raha.", "reason": "Nasleey bhedbhav, kharab khana aur INA trials." }
+        ]
+      },
+      {
+        "key": "towards_freedom",
+        "title": "Towards Independence (1942–1950)",
+        "blurb": "Cripps se Constitution tak final chain.",
+        "events": [
+          { "y": "1942", "title": "Cripps Mission", "who": "Stafford Cripps", "kind": "policy", "detail": "Dominion status ka vaada — Gandhi ne 'post-dated cheque' kaha.", "reason": "World War me Indian sahyog chahiye tha." },
+          { "y": "1945", "title": "Wavell Plan & Shimla Conference", "who": "Lord Wavell", "kind": "policy", "detail": "Executive Council me Indian bahumat ka prastav; Jinnah ki zid se vifal." },
+          { "y": "1946", "title": "Cabinet Mission", "who": "Pethick-Lawrence, Cripps, Alexander", "kind": "policy", "detail": "Grouping plan + Constituent Assembly ka chunav; 16 Aug 1946 Direct Action Day." },
+          { "y": "1946", "title": "Constituent Assembly ki pehli baithak", "who": "Sachchidananda Sinha", "kind": "accession", "detail": "9 Dec 1946 asthayi adhyaksh; 11 Dec ko Rajendra Prasad sthayi adhyaksh; 13 Dec Objective Resolution (Nehru)." },
+          { "y": "1947", "title": "Indian Independence Act", "who": "Clement Attlee", "kind": "policy", "detail": "18 July 1947 ko royal assent; 15 Aug 1947 ko do dominions." },
+          { "y": "1949", "title": "Samvidhan adopt", "who": "Constituent Assembly", "kind": "policy", "detail": "26 Nov 1949 ko apnaya gaya (kuch provisions usi din laagu)." },
+          { "y": "1950", "title": "Samvidhan laagu", "who": "Republic of India", "kind": "policy", "detail": "26 Jan 1950 — 1930 ke Purna Swaraj diwas ki yaad me." }
+        ]
+      }
+    ]
+  }
+}
