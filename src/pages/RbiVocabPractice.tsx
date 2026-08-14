@@ -46,8 +46,22 @@ export default function RbiVocabPractice() {
     return m;
   }, [all]);
 
+  /** meaning-text -> the vocab item whose meaning it is (so har option ka equivalent English word mile) */
+  const itemByMeaning = useMemo(() => {
+    const m = new Map<string, RbiVocabItem>();
+    for (const it of all) {
+      const k = it.meaning.trim().toLowerCase();
+      if (!m.has(k)) m.set(k, it);
+    }
+    return m;
+  }, [all]);
+
   function hinglishFor(text: string) {
     return hindiByMeaning.get(text.trim().toLowerCase()) || '—';
+  }
+
+  function itemFor(meaning: string) {
+    return itemByMeaning.get(meaning.trim().toLowerCase());
   }
 
   useEffect(() => {
@@ -248,6 +262,8 @@ export default function RbiVocabPractice() {
                 const isFlipped = show && (flipAll[i] || !!revealed[i]?.has(idx));
                 const optKey = `${q.item.id}||${opt}`;
                 const optBook = oKeys.has(optKey);
+                const optItem = isCorrect ? q.item : itemFor(opt);
+                const optHing = optItem?.hinglish_meaning || hinglishFor(opt);
                 return (
                   <div key={idx} className="flex items-stretch gap-2">
                     <button
@@ -261,10 +277,31 @@ export default function RbiVocabPractice() {
                         show && isCorrect ? 'border-blue-500 bg-blue-50 text-blue-800' :
                         show && isPicked ? 'border-rose-400 bg-rose-50 text-rose-800' :
                         'border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/60 text-slate-800'
-                      } ${isFlipped ? 'italic' : ''}`}
+                      }`}
                     >
-                      <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>
-                      {isFlipped ? hinglishFor(opt) : opt}
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold">{String.fromCharCode(65 + idx)}.</span>
+                        <div className="flex-1">
+                          <div>{opt}</div>
+                          {isFlipped && (
+                            <div className="mt-1 space-y-0.5">
+                              {optItem ? (
+                                <div className="text-[13px] font-semibold text-blue-700">
+                                  = {optItem.word}
+                                  {optItem.root_word && (
+                                    <span className="ml-1 font-normal text-[11px] uppercase tracking-wide text-slate-500">
+                                      ({optItem.root_word} — {optItem.root_meaning})
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="text-[12px] text-slate-500">equivalent word database me nahi mila</div>
+                              )}
+                              <div className="text-[13px] italic text-amber-700">{optHing}</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </button>
                     <button
                       onClick={() => bookmarkOption(opt)}
