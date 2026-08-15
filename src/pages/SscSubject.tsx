@@ -138,6 +138,28 @@ export default function SscSubjectPage() {
           </Card>
         ))}
 
+        {subject === 'gk' && [
+          { key: 'dance', emoji: '💃', label: 'Indian Dance', blurb: '274 PYQ MCQs — classical/folk, gharana, state · flippable options' },
+          { key: 'festivals', emoji: '🎉', label: 'Indian Festivals', blurb: '159 PYQ MCQs — festival, state & significance · range-wise practice' },
+        ].map((g) => (
+          <Card
+            key={g.key}
+            className="cursor-pointer hover:shadow-md transition-shadow border-border hover:border-emerald-300"
+            onClick={() => navigate(`/ssc/gk/culture/${g.key}`)}
+          >
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">{g.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block text-[10px] font-semibold tracking-wider uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1.5">New</span>
+                  <h3 className="font-semibold text-foreground">{g.label}</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">{g.blurb}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+
         {subject === 'english' && ENGLISH_CARDS.map((c) => (
           <Card
             key={c.key}
