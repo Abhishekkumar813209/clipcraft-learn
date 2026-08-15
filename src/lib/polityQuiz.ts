@@ -84,13 +84,39 @@ function pickDistractors(pool: string[], correct: string, n = 3) {
   return shuffle(uniq).slice(0, n);
 }
 
+/** prompt me se pehla number nikaal ke serial sort — Article 1, 2, 3… ka natural order */
+const numOf = (s: string) => {
+  const m = s.match(/\d+/);
+  return m ? Number(m[0]) : Number.MAX_SAFE_INTEGER;
+};
+const sortSerial = (rows: PolityFact[]) =>
+  [...rows].sort((a, b) => numOf(a.prompt) - numOf(b.prompt) || a.prompt.localeCompare(b.prompt));
+
+/** aas-paas ke facts se distractors — isse ek block ke andar hi confusion clear hota hai */
+function neighbourDistractors(rows: PolityFact[], i: number, key: 'prompt' | 'answer', correct: string, n = 3) {
+  const win = 8;
+  const near: string[] = [];
+  for (let d = 1; d <= win; d++) {
+    if (rows[i - d]) near.push(rows[i - d][key]);
+    if (rows[i + d]) near.push(rows[i + d][key]);
+  }
+  const uniq = Array.from(new Set(near.filter((v) => v && v !== correct)));
+  const out = shuffle(uniq).slice(0, n);
+  if (out.length < n) {
+    const rest = pickDistractors(rows.map((r) => r[key]), correct, n - out.length).filter((v) => !out.includes(v));
+    out.push(...rest);
+  }
+  return out;
+}
+
 /**
- * Builds MCQs for one sheet — pehle har fact ka forward variant (coverage guarantee),
- * phir reverse variants, phir cycle. Isse 500-question set me koi article chhoota nahi.
+ * Builds MCQs for one sheet — SERIAL order me: Article 1, 2, 3… aage badhte hain,
+ * har fact ka forward question phir uska reverse, aur distractors aas-paas ke articles se.
+ * `random: true` dene par purana shuffled behaviour milta hai.
  */
-export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: number): PolityQ[] {
+export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: number, random = false): PolityQ[] {
   const meta = politySheet(sheet);
-  let rows = factsOf(sheet);
+  let rows = sortSerial(factsOf(sheet));
   if (from || to) rows = rows.slice((from ? from - 1 : 0), to ?? rows.length);
   if (!rows.length) return [];
   const answers = rows.map((r) => r.answer);
@@ -112,22 +138,37 @@ export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: n
     };
   };
 
-  type Variant = { f: PolityFact; reverse: boolean };
-  const forward: Variant[] = rows.map((f) => ({ f, reverse: false }));
-  const reverse: Variant[] = prompts.length > 4 ? rows.map((f) => ({ f, reverse: true })) : [];
+  type Variant = { f: PolityFact; i: number; reverse: boolean };
+  const canReverse = rows.length > 4;
 
   const picked: Variant[] = [];
-  let round = 0;
-  while (picked.length < limit) {
-    const batch = round % 2 === 0 ? shuffle(forward) : shuffle(reverse.length ? reverse : forward);
-    picked.push(...batch.slice(0, limit - picked.length));
-    round++;
-    if (!forward.length) break;
+  if (random) {
+    const forward: Variant[] = rows.map((f, i) => ({ f, i, reverse: false }));
+    const reverse: Variant[] = canReverse ? rows.map((f, i) => ({ f, i, reverse: true })) : [];
+    let round = 0;
+    while (picked.length < limit && forward.length) {
+      const batch = round % 2 === 0 ? shuffle(forward) : shuffle(reverse.length ? reverse : forward);
+      picked.push(...batch.slice(0, limit - picked.length));
+      round++;
+    }
+  } else {
+    // serial pass: 1,1r,2,2r,3,3r… phir dobara serial se
+    let pass = 0;
+    while (picked.length < limit) {
+      for (let i = 0; i < rows.length && picked.length < limit; i++) {
+        picked.push({ f: rows[i], i, reverse: false });
+        if (canReverse && picked.length < limit) picked.push({ f: rows[i], i, reverse: true });
+      }
+      pass++;
+      if (pass > 50) break;
+    }
   }
 
-  const qs: PolityQ[] = picked.map(({ f, reverse: rev }, i) => {
+  const qs: PolityQ[] = picked.map(({ f, i: ri, reverse: rev }, i) => {
     const correct = rev ? f.prompt : f.answer;
-    const distractors = pickDistractors(rev ? prompts : answers, correct);
+    const distractors = random
+      ? pickDistractors(rev ? prompts : answers, correct)
+      : neighbourDistractors(rows, ri, rev ? 'prompt' : 'answer', correct);
     const options = shuffle([correct, ...distractors]);
     return {
       id: `${sheet}-${i}-${rev ? 'r' : 'f'}-${f.prompt.slice(0, 24)}`,
@@ -142,6 +183,7 @@ export function buildPolityQuiz(sheet: string, limit = 20, from?: number, to?: n
   });
   return qs.filter((q) => q.options.length >= 2);
 }
+
 
 /* ---------------- Match the column ---------------- */
 
@@ -160,22 +202,23 @@ const infoOf = (f: PolityFact, text: string): PolityOptionInfo => ({
   extra: f.extra || '',
 });
 
-/** 5x5 match-the-column sets. `limit` = kitne sets chahiye. */
+/** 5x5 match-the-column sets — serial-wise consecutive articles (Column B hi shuffle hota hai). */
 export function buildPolityMatch(sheet: string, limit = 20, from?: number, to?: number, rows_ = 5): PolityMatchQ[] {
-  let rows = factsOf(sheet);
+  let rows = sortSerial(factsOf(sheet));
   if (from || to) rows = rows.slice((from ? from - 1 : 0), to ?? rows.length);
   if (rows.length < rows_) return [];
   const sets: PolityMatchQ[] = [];
-  let pool: PolityFact[] = [];
   for (let s = 0; s < limit; s++) {
-    if (pool.length < rows_) pool = shuffle(rows);
-    const chunk = pool.splice(0, rows_);
+    const startAt = (s * rows_) % rows.length;
+    const chunk: PolityFact[] = [];
+    for (let k = 0; k < rows_; k++) chunk.push(rows[(startAt + k) % rows.length]);
     const left = chunk.map((f) => infoOf(f, f.prompt));
     const order = shuffle(chunk.map((_, i) => i));
     const right = order.map((i) => infoOf(chunk[i], chunk[i].answer));
     const correct = chunk.map((_, i) => order.indexOf(i));
     sets.push({ id: `${sheet}-m-${s}-${chunk[0].prompt.slice(0, 20)}`, left, right, correct });
   }
+
   return sets;
 }
 
