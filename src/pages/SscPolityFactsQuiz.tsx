@@ -261,7 +261,7 @@ export default function SscPolityFactsQuiz() {
                     <h2 className="text-lg font-semibold leading-snug">Match the column — sahi jodi banao</h2>
 
                     <div className="grid grid-cols-2 gap-2 sm:gap-4 items-start">
-                      <div className="space-y-2">
+                      <div className="space-y-2 min-w-0">
                         <div className="text-xs font-semibold text-emerald-800 uppercase">Column A</div>
                         {m.left.map((l, li) => {
                           const a = assign[idx]?.[li];
@@ -300,7 +300,7 @@ export default function SscPolityFactsQuiz() {
                         })}
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2 min-w-0">
                         <div className="text-xs font-semibold text-emerald-800 uppercase">Column B</div>
                         {m.right.map((r, ri) => {
                           const isOpen = open === `r${ri}`;
