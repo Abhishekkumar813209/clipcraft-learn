@@ -94,6 +94,24 @@ export default function SscGkSubject() {
           </Card>
         )}
 
+        {(SUBJECT === 'medieval_history' || SUBJECT === 'modern_history') && (
+          <Card
+            className="cursor-pointer bg-white/80 border-emerald-200 hover:border-emerald-400 hover:shadow-md transition-all"
+            onClick={() => nav(`/ssc/gk/${SUBJECT}/timeline`)}
+          >
+            <CardContent className="p-5 flex items-start gap-3">
+              <span className="text-3xl">🚇</span>
+              <div className="flex-1">
+                <Badge className="bg-emerald-100 text-emerald-700 border border-emerald-200 mb-1.5">New</Badge>
+                <h3 className="font-semibold">Practice — Timeline Metro Map</h3>
+                <p className="text-sm text-slate-600 mt-0.5">
+                  Chapterwise chronology map — kaun kab aaya, kaun si war kyu hui, kis ruler ki kaun si policy · 100+ timeline MCQs
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card className="bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200 shadow-sm">
           <CardContent className="p-5 space-y-3">
             <div className="flex items-center justify-between">

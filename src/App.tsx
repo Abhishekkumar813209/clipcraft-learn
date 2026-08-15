@@ -80,6 +80,9 @@ import AdminSscTheory from "./pages/admin/AdminSscTheory";
 import SscGkSubject from "./pages/SscGkSubject";
 import SscGkPractice from "./pages/SscGkPractice";
 import SscGkTheory from "./pages/SscGkTheory";
+import SscCulturePractice from "./pages/SscCulturePractice";
+import SscHistoryTimeline from "./pages/SscHistoryTimeline";
+import SscHistoryTimelineQuiz from "./pages/SscHistoryTimelineQuiz";
 import DailyQuiz from "./pages/DailyQuiz";
 import BlackBookHub from "./pages/BlackBookHub";
 import BlackBookPractice from "./pages/BlackBookPractice";
@@ -198,6 +201,9 @@ const App = () => (
               <Route path="gk/polity/facts/:sheet" element={<SscPolityFactsQuiz />} />
               <Route path="gk/polity/theory/:sheet" element={<SscPolityTheory />} />
 
+              <Route path="gk/culture/:topic" element={<SscCulturePractice />} />
+              <Route path="gk/:subject/timeline" element={<SscHistoryTimeline />} />
+              <Route path="gk/:subject/timeline/quiz" element={<SscHistoryTimelineQuiz />} />
               <Route path="gk/:subject" element={<SscGkSubject />} />
               <Route path="gk/:subject/practice" element={<SscGkPractice />} />
               <Route path="gk/:subject/theory" element={<SscGkTheory />} />
