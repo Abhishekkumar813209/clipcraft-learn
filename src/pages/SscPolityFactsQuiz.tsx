@@ -26,8 +26,8 @@ export default function SscPolityFactsQuiz() {
   const bm = useQuizBookmarks(user?.id, 'gk', `polity_${meta.key}`);
 
   const [mode, setMode] = useState<'mcq' | 'match'>('mcq');
-  const [from, setFrom] = useState(1);
-  const [to, setTo] = useState(total);
+  const [from, setFrom] = useState('1');
+  const [to, setTo] = useState(String(total));
   const [started, setStarted] = useState(false);
   const [qs, setQs] = useState<PolityQ[]>([]);
   const [matches, setMatches] = useState<PolityMatchQ[]>([]);
@@ -40,12 +40,12 @@ export default function SscPolityFactsQuiz() {
 
   useEffect(() => {
     setStarted(false); setQs([]); setMatches([]); setIdx(0); setPicked({});
-    setAssign({}); setChecked({}); setFrom(1); setTo(total);
+    setAssign({}); setChecked({}); setFrom('1'); setTo(String(total));
   }, [sheet, total]);
   useEffect(() => { setOpen(null); }, [idx]);
 
-  const lo = Math.max(1, Math.min(from, total));
-  const hi = Math.max(lo, Math.min(to, total));
+  const lo = Math.max(1, Math.min(Number(from) || 1, total));
+  const hi = Math.max(lo, Math.min(Number(to) || total, total));
   const rangeCount = hi - lo + 1;
   const mcqCount = rangeCount > 4 ? rangeCount * 2 : rangeCount;
   const matchCount = Math.min(100, Math.floor(rangeCount / 5));
@@ -160,13 +160,13 @@ export default function SscPolityFactsQuiz() {
                 <div className="flex items-end gap-3 flex-wrap">
                   <div>
                     <label className="text-xs text-slate-500">From</label>
-                    <Input type="number" min={1} max={total} value={from}
-                      onChange={(e) => setFrom(Number(e.target.value) || 1)} className="w-28 bg-white" />
+                    <Input type="text" inputMode="numeric" value={from}
+                      onChange={(e) => setFrom(e.target.value.replace(/\D/g, ''))} className="w-28 bg-white" />
                   </div>
                   <div>
                     <label className="text-xs text-slate-500">To</label>
-                    <Input type="number" min={1} max={total} value={to}
-                      onChange={(e) => setTo(Number(e.target.value) || total)} className="w-28 bg-white" />
+                    <Input type="text" inputMode="numeric" value={to}
+                      onChange={(e) => setTo(e.target.value.replace(/\D/g, ''))} className="w-28 bg-white" />
                   </div>
                   <div className="text-sm text-slate-500 pb-2">
                     {rangeCount} facts → {mode === 'mcq' ? `${mcqCount} MCQs` : `${matchCount} match sets`}
@@ -175,7 +175,7 @@ export default function SscPolityFactsQuiz() {
                 <div className="flex gap-2 flex-wrap mt-2">
                   {[[1, 50], [51, 100], [101, 150], [1, total]].filter(([a]) => a <= total).map(([a, b]) => (
                     <Button key={`${a}-${b}`} size="sm" variant="outline" className="border-emerald-200 text-emerald-700"
-                      onClick={() => { setFrom(a); setTo(Math.min(b, total)); }}>{a}–{Math.min(b, total)}</Button>
+                      onClick={() => { setFrom(String(a)); setTo(String(Math.min(b, total))); }}>{a}–{Math.min(b, total)}</Button>
                   ))}
                 </div>
               </div>
@@ -260,7 +260,7 @@ export default function SscPolityFactsQuiz() {
                   <CardContent className="p-5 space-y-4">
                     <h2 className="text-lg font-semibold leading-snug">Match the column — sahi jodi banao</h2>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4 items-start">
                       <div className="space-y-2">
                         <div className="text-xs font-semibold text-emerald-800 uppercase">Column A</div>
                         {m.left.map((l, li) => {
@@ -269,12 +269,12 @@ export default function SscPolityFactsQuiz() {
                           const isOpen = open === `l${li}`;
                           return (
                             <div key={li} className={`rounded-lg border ${checked[idx] ? (isRight ? 'border-emerald-400 bg-emerald-50' : 'border-rose-300 bg-rose-50') : 'border-slate-200'}`}>
-                              <div className="px-3 py-2.5 space-y-2">
-                                <button className="text-sm text-left w-full" onClick={() => checked[idx] && setOpen(isOpen ? null : `l${li}`)}>
+                              <div className="px-2 sm:px-3 py-2 sm:py-2.5 space-y-2">
+                                <button className="text-xs sm:text-sm text-left w-full break-words" onClick={() => checked[idx] && setOpen(isOpen ? null : `l${li}`)}>
                                   <span className="font-semibold mr-2">{li + 1}.</span>{l.text}
                                   {checked[idx] && <span className="ml-2 text-[11px] text-slate-500">{isOpen ? '▲' : '▼ detail'}</span>}
                                 </button>
-                                <div className="flex gap-1.5 flex-wrap">
+                                <div className="flex gap-1 sm:gap-1.5 flex-wrap">
                                   {m.right.map((_, ri) => (
                                     <button
                                       key={ri}
@@ -284,14 +284,14 @@ export default function SscPolityFactsQuiz() {
                                         cur[li] = ri;
                                         return { ...prev, [idx]: cur };
                                       })}
-                                      className={`w-7 h-7 rounded-md text-xs font-semibold border transition-colors ${
+                                      className={`w-6 h-6 sm:w-7 sm:h-7 rounded-md text-[11px] sm:text-xs font-semibold border transition-colors ${
                                         a === ri ? 'bg-emerald-600 text-white border-emerald-600' : 'border-slate-200 text-slate-600 hover:border-emerald-300'
                                       }`}
                                     >{LETTERS[ri]}</button>
                                   ))}
                                 </div>
                                 {checked[idx] && !isRight && (
-                                  <div className="text-xs text-emerald-700">Sahi: {LETTERS[m.correct[li]]} — {m.right[m.correct[li]].text}</div>
+                                  <div className="text-[11px] sm:text-xs text-emerald-700 break-words">Sahi: {LETTERS[m.correct[li]]} — {m.right[m.correct[li]].text}</div>
                                 )}
                               </div>
                               {checked[idx] && isOpen && <InfoBlock info={l} />}
@@ -306,7 +306,7 @@ export default function SscPolityFactsQuiz() {
                           const isOpen = open === `r${ri}`;
                           return (
                             <div key={ri} className="rounded-lg border border-slate-200">
-                              <button className="w-full text-left text-sm px-3 py-2.5"
+                              <button className="w-full text-left text-xs sm:text-sm px-2 sm:px-3 py-2 sm:py-2.5 break-words"
                                 onClick={() => checked[idx] && setOpen(isOpen ? null : `r${ri}`)}>
                                 <span className="font-semibold mr-2">{LETTERS[ri]}.</span>{r.text}
                                 {checked[idx] && <span className="ml-2 text-[11px] text-slate-500">{isOpen ? '▲ chhupao' : '▼ ye kya hai?'}</span>}
