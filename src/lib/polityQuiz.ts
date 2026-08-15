@@ -202,22 +202,23 @@ const infoOf = (f: PolityFact, text: string): PolityOptionInfo => ({
   extra: f.extra || '',
 });
 
-/** 5x5 match-the-column sets. `limit` = kitne sets chahiye. */
+/** 5x5 match-the-column sets — serial-wise consecutive articles (Column B hi shuffle hota hai). */
 export function buildPolityMatch(sheet: string, limit = 20, from?: number, to?: number, rows_ = 5): PolityMatchQ[] {
-  let rows = factsOf(sheet);
+  let rows = sortSerial(factsOf(sheet));
   if (from || to) rows = rows.slice((from ? from - 1 : 0), to ?? rows.length);
   if (rows.length < rows_) return [];
   const sets: PolityMatchQ[] = [];
-  let pool: PolityFact[] = [];
   for (let s = 0; s < limit; s++) {
-    if (pool.length < rows_) pool = shuffle(rows);
-    const chunk = pool.splice(0, rows_);
+    const startAt = (s * rows_) % rows.length;
+    const chunk: PolityFact[] = [];
+    for (let k = 0; k < rows_; k++) chunk.push(rows[(startAt + k) % rows.length]);
     const left = chunk.map((f) => infoOf(f, f.prompt));
     const order = shuffle(chunk.map((_, i) => i));
     const right = order.map((i) => infoOf(chunk[i], chunk[i].answer));
     const correct = chunk.map((_, i) => order.indexOf(i));
     sets.push({ id: `${sheet}-m-${s}-${chunk[0].prompt.slice(0, 20)}`, left, right, correct });
   }
+
   return sets;
 }
 
