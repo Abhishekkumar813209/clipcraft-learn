@@ -62,6 +62,8 @@ function pickDistractors(pool: string[], correct: string, n: number): string[] {
   return Array.from(set);
 }
 
+const NUM_DISTRACTORS = 4;
+
 export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | null {
   if (item.category === 'syn_ant') {
     // Randomly synonym or antonym question
@@ -75,8 +77,8 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
     }
     const correct = list[Math.floor(Math.random() * list.length)];
     const pool = allItems.flatMap((i) => (useAnt ? i.antonyms : i.synonyms) || []);
-    const distractors = pickDistractors(pool, correct, 3);
-    if (distractors.length < 3) return null;
+    const distractors = pickDistractors(pool, correct, NUM_DISTRACTORS);
+    if (distractors.length < NUM_DISTRACTORS) return null;
     const options = shuffle([correct, ...distractors]);
     return {
       itemId: item.id,
@@ -92,8 +94,8 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
   if (item.category === 'idiom') {
     const correct = item.answer;
     const pool = allItems.filter((i) => i.category === 'idiom').map((i) => i.answer);
-    const distractors = pickDistractors(pool, correct, 3);
-    if (distractors.length < 3) return null;
+    const distractors = pickDistractors(pool, correct, NUM_DISTRACTORS);
+    if (distractors.length < NUM_DISTRACTORS) return null;
     const options = shuffle([correct, ...distractors]);
     return {
       itemId: item.id,
@@ -109,8 +111,8 @@ export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | nu
   // ows
   const correct = item.answer;
   const pool = allItems.filter((i) => i.category === 'ows').map((i) => i.answer);
-  const distractors = pickDistractors(pool, correct, 3);
-  if (distractors.length < 3) return null;
+  const distractors = pickDistractors(pool, correct, NUM_DISTRACTORS);
+  if (distractors.length < NUM_DISTRACTORS) return null;
   const options = shuffle([correct, ...distractors]);
   return {
     itemId: item.id,

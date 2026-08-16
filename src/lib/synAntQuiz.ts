@@ -63,14 +63,16 @@ function pickDistractors(pool: string[], correct: string, n: number): string[] {
   return out;
 }
 
+const NUM_DISTRACTORS = 4;
+
 export function buildSAQuestion(item: SAItem, all: SAItem[]): SAQuestion | null {
   const kind: SAKind = item.kind;
   const list = kind === 'synonym' ? splitList(item.synonyms) : splitList(item.antonyms);
   if (!list.length) return null;
   const correct = list[Math.floor(Math.random() * list.length)];
   const pool = all.flatMap((i) => splitList(kind === 'synonym' ? i.synonyms : i.antonyms));
-  const distractors = pickDistractors(pool, correct, 3);
-  if (distractors.length < 3) return null;
+  const distractors = pickDistractors(pool, correct, NUM_DISTRACTORS);
+  if (distractors.length < NUM_DISTRACTORS) return null;
   const options = shuffle([correct, ...distractors]);
   return {
     item,
