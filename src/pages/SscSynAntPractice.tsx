@@ -312,7 +312,9 @@ export default function SscSynAntPractice() {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
-                const optHindi = show ? hindiForOption(opt) : '';
+                const optInfo = show ? infoForOption(opt) : { hi: null as string | null, src: undefined };
+                const optHindi = optInfo.hi || '';
+                const optSrc = optInfo.src;
                 const optKey = `${q.item.id}||${opt}`;
                 const optBook = oKeys.has(optKey);
                 return (
@@ -331,11 +333,26 @@ export default function SscSynAntPractice() {
                       }`}>
                       <div className="flex items-baseline gap-2">
                         <span className="font-semibold">{String.fromCharCode(65 + idx)}.</span>
-                        <span className={isFlipped ? 'italic' : ''}>{isFlipped ? optHindi : opt}</span>
+                        <span className={isFlipped ? 'italic' : ''}>{isFlipped ? (optHindi || '—') : opt}</span>
                       </div>
-                      {show && isCorrect && optHindi && optHindi !== '—' && !isFlipped && (
+                      {isFlipped && (
+                        <div className="text-xs mt-1 pl-6 space-y-0.5">
+                          <div className="text-slate-500 not-italic">{opt}</div>
+                          {optSrc ? (
+                            <div className="text-emerald-700 not-italic">
+                              {optSrc.rel === 'antonym' ? 'Antonym' : 'Synonym'} of{' '}
+                              <span className="font-semibold">{optSrc.word}</span>
+                            </div>
+                          ) : (
+                            <div className="text-slate-400 not-italic">source word not linked</div>
+                          )}
+                        </div>
+                      )}
+                      {show && isCorrect && optHindi && !isFlipped && (
                         <div className="text-xs italic text-emerald-700 mt-1 pl-6">→ {optHindi}</div>
                       )}
+                    </button>
+
                     </button>
                     <button
                       onClick={() => bookmarkOption(idx, opt)}
