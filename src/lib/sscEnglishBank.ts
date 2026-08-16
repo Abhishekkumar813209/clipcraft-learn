@@ -13,6 +13,7 @@ export const BANK_CATEGORIES: BankMeta[] = [
   { key: 'fill_blanks', label: 'Fill in the Blanks', emoji: '🧩', blurb: 'Har option ka kyu sahi/galat — click karke dekho' },
   { key: 'cloze', label: 'Cloze Test', emoji: '📖', blurb: 'Passage-wise blanks with per-option explanation' },
   { key: 'parajumble', label: 'Parajumble', emoji: '🧵', blurb: 'Sentence rearrangement — position logic hint + solver lesson' },
+  { key: 'fixed_preposition', label: 'Preposition', emoji: '🔗', blurb: 'Fixed prepositions — har option ka kyu sahi/galat + trap tip' },
 ];
 
 export const bankMeta = (key?: string): BankMeta =>
