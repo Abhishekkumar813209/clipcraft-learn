@@ -39,34 +39,40 @@ export default function SscSynAntPractice() {
   const [qRefs, setQRefs] = useState<Set<string>>(new Set());
   const [oKeys, setOKeys] = useState<Set<string>>(new Set());
 
-  // Hinglish lookup: index every item's word AND its syn/ant tokens so any option can flip to Hindi.
-  const itemHindiMap = useMemo(() => {
-    const m = new Map<string, string>();
-    const put = (k: string | null | undefined, v: string | null | undefined) => {
-      if (!k || !v) return;
-      const key = k.trim().toLowerCase();
-      if (!key || m.has(key)) return;
-      m.set(key, v);
-    };
+  // Hinglish + source lookup: har option kis word ka synonym/antonym hai, wo bhi index karo.
+  interface OptInfo { hi: string | null; src?: { word: string; rel: 'synonym' | 'antonym' } }
+  const itemInfoMap = useMemo(() => {
+    const m = new Map<string, OptInfo>();
     const split = (s: string | null) =>
       s ? s.split(/[,;/|]/).map((x) => x.trim()).filter(Boolean) : [];
+    const put = (k: string | null | undefined, info: OptInfo) => {
+      if (!k) return;
+      const key = k.trim().toLowerCase();
+      if (!key) return;
+      const prev = m.get(key);
+      if (!prev) { m.set(key, info); return; }
+      m.set(key, { hi: prev.hi || info.hi, src: prev.src || info.src });
+    };
     for (const it of items) {
       const synMean = it.hinglish_meaning || it.meaning;
       const antMean = it.antonym_hinglish_meaning || it.hinglish_meaning || it.meaning;
-      // The item's own word carries the synonym-side meaning.
-      put(it.word, synMean);
-      // Every synonym token shares the synonym-side meaning.
-      for (const t of split(it.synonyms)) put(t, synMean);
-      // Every antonym token shares the antonym-side meaning.
-      for (const t of split(it.antonyms)) put(t, antMean);
+      put(it.word, { hi: synMean });
+      for (const t of split(it.synonyms)) put(t, { hi: synMean, src: { word: it.word, rel: 'synonym' } });
+      for (const t of split(it.antonyms)) put(t, { hi: antMean, src: { word: it.word, rel: 'antonym' } });
     }
     return m;
   }, [items]);
 
-  function hindiForOption(opt: string): string {
+  function infoForOption(opt: string): OptInfo {
     const k = opt.trim().toLowerCase();
-    return itemHindiMap.get(k) || lookupHindi(wordHindi, opt) || '—';
+    const info = itemInfoMap.get(k);
+    return { hi: info?.hi || lookupHindi(wordHindi, opt) || null, src: info?.src };
   }
+
+  function hindiForOption(opt: string): string {
+    return infoForOption(opt).hi || '—';
+  }
+
 
   useEffect(() => {
     (async () => {
