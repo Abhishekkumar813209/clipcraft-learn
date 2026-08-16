@@ -1238,6 +1238,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ssc_homonym_words: {
+        Row: {
+          created_at: string
+          group_no: number
+          hinglish_meaning: string
+          id: string
+          pos: string | null
+          word: string
+        }
+        Insert: {
+          created_at?: string
+          group_no: number
+          hinglish_meaning: string
+          id?: string
+          pos?: string | null
+          word: string
+        }
+        Update: {
+          created_at?: string
+          group_no?: number
+          hinglish_meaning?: string
+          id?: string
+          pos?: string | null
+          word?: string
+        }
+        Relationships: []
+      }
       ssc_pos_spot_error: {
         Row: {
           correct_form: string | null

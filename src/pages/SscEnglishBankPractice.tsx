@@ -123,7 +123,7 @@ export default function SscEnglishBankPractice() {
     );
 
   const isPara = category === 'parajumble';
-  const perOption = category === 'cloze' || category === 'fill_blanks' || isPara;
+  const perOption = category === 'cloze' || category === 'fill_blanks' || isPara || category === 'fixed_preposition';
   const hasHinglish = !!cur.question_hinglish;
 
   return (
@@ -314,6 +314,12 @@ export default function SscEnglishBankPractice() {
                 <div className="rounded-md bg-violet-50 border border-violet-200 p-3 text-sm">
                   <span className="font-semibold text-violet-800">{isPara ? 'Key clues: ' : 'Word meanings: '}</span>
                   <span className="whitespace-pre-line">{cur.word_meanings}</span>
+                </div>
+              )}
+              {category === 'fixed_preposition' && cur.book_solution && (
+                <div className="rounded-md bg-rose-50 border border-rose-200 p-3 text-sm">
+                  <span className="font-semibold text-rose-800">Trap / Exam tip: </span>
+                  <span className="whitespace-pre-line">{cur.book_solution}</span>
                 </div>
               )}
               {cur.book_solution && !perOption && !isPara && (

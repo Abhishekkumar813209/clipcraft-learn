@@ -28,6 +28,8 @@ const ENGLISH_CARDS: EnglishCard[] = [
   { key: 'parajumble', label: 'Parajumble', icon: '🧵', blurb: 'Sentence rearrangement — position logic hint + solver lesson', to: '/ssc/english/bank/parajumble', badge: 'New · PYQ', countKey: 'parajumble' },
   { key: 'passive_voice', label: 'Active / Passive Voice', icon: '🔄', blurb: 'Rules + spot the error drills · range se practice', to: '/ssc/english/grammar/passive_voice' },
   { key: 'narration', label: 'Narration', icon: '💬', blurb: 'Direct & indirect speech — theory + range-wise MCQs', to: '/ssc/english/grammar/narration' },
+  { key: 'fixed_preposition', label: 'Preposition', icon: '🔗', blurb: 'Fixed prepositions — har option ka kyu sahi/galat + trap tip', to: '/ssc/english/bank/fixed_preposition', badge: 'New', countKey: 'fixed_preposition' },
+  { key: 'homonyms', label: 'Homonyms', icon: '🎭', blurb: 'Hinglish meaning se sahi English word chuno — flip pe poora homonym group', to: '/ssc/english/homonyms', badge: 'New' },
 ];
 
 
