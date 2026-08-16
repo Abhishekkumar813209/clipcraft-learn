@@ -93,6 +93,7 @@ import BlackBookHistory from "./pages/BlackBookHistory";
 import SscRoots from "./pages/SscRoots";
 import SscRootsPractice from "./pages/SscRootsPractice";
 import OAuthConsent from "./pages/OAuthConsent";
+import SscHomonyms from "./pages/SscHomonyms";
 import SscEnglishIdioms from "./pages/SscEnglishIdioms";
 import SscEnglishOws from "./pages/SscEnglishOws";
 import SscEnglishSynAnt from "./pages/SscEnglishSynAnt";
@@ -168,6 +169,7 @@ const App = () => (
               <Route path="roots/practice" element={<SscRootsPractice />} />
               
               <Route path="english" element={<SscSubject />} />
+              <Route path="english/homonyms" element={<SscHomonyms />} />
               <Route path="english/idioms" element={<SscEnglishIdioms />} />
               <Route path="english/bank" element={<SscEnglishBank />} />
               <Route path="english/bank/:category" element={<SscEnglishBankSetup />} />
