@@ -63,6 +63,8 @@ function pickDistractors(pool: string[], correct: string, n: number): string[] {
   return out;
 }
 
+const NUM_DISTRACTORS = 4;
+
 export function buildSAQuestion(item: SAItem, all: SAItem[]): SAQuestion | null {
   const kind: SAKind = item.kind;
   const list = kind === 'synonym' ? splitList(item.synonyms) : splitList(item.antonyms);

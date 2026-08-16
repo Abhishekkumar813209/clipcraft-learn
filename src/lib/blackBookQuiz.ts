@@ -62,6 +62,8 @@ function pickDistractors(pool: string[], correct: string, n: number): string[] {
   return Array.from(set);
 }
 
+const NUM_DISTRACTORS = 4;
+
 export function buildQuestion(item: BBItem, allItems: BBItem[]): BBQuestion | null {
   if (item.category === 'syn_ant') {
     // Randomly synonym or antonym question
