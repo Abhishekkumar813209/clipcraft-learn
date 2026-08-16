@@ -363,7 +363,21 @@ export default function BlackBookPractice() {
                       } ${isFlipped ? 'italic' : ''}`}
                     >
                       <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>
-                      {isFlipped ? hindiForOption(opt) : opt}
+                      {isFlipped ? (
+                        <>
+                          {infoForOption(opt).hi || '—'}
+                          <span className="block text-xs not-italic text-slate-500 mt-1">{opt}</span>
+                          {infoForOption(opt).src ? (
+                            <span className="block text-xs not-italic text-emerald-700">
+                              {infoForOption(opt).src!.rel}{' '}
+                              <span className="font-semibold">"{infoForOption(opt).src!.word}"</span>
+                            </span>
+                          ) : (
+                            <span className="block text-xs not-italic text-slate-400">source not linked</span>
+                          )}
+                        </>
+                      ) : opt}
+
                     </button>
                     <button
                       onClick={() => bookmarkOption(idx, opt)}
