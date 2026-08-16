@@ -352,8 +352,6 @@ export default function SscSynAntPractice() {
                         <div className="text-xs italic text-emerald-700 mt-1 pl-6">→ {optHindi}</div>
                       )}
                     </button>
-
-                    </button>
                     <button
                       onClick={() => bookmarkOption(idx, opt)}
                       title="Bookmark option"
