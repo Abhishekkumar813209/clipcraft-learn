@@ -39,34 +39,40 @@ export default function SscSynAntPractice() {
   const [qRefs, setQRefs] = useState<Set<string>>(new Set());
   const [oKeys, setOKeys] = useState<Set<string>>(new Set());
 
-  // Hinglish lookup: index every item's word AND its syn/ant tokens so any option can flip to Hindi.
-  const itemHindiMap = useMemo(() => {
-    const m = new Map<string, string>();
-    const put = (k: string | null | undefined, v: string | null | undefined) => {
-      if (!k || !v) return;
-      const key = k.trim().toLowerCase();
-      if (!key || m.has(key)) return;
-      m.set(key, v);
-    };
+  // Hinglish + source lookup: har option kis word ka synonym/antonym hai, wo bhi index karo.
+  interface OptInfo { hi: string | null; src?: { word: string; rel: 'synonym' | 'antonym' } }
+  const itemInfoMap = useMemo(() => {
+    const m = new Map<string, OptInfo>();
     const split = (s: string | null) =>
       s ? s.split(/[,;/|]/).map((x) => x.trim()).filter(Boolean) : [];
+    const put = (k: string | null | undefined, info: OptInfo) => {
+      if (!k) return;
+      const key = k.trim().toLowerCase();
+      if (!key) return;
+      const prev = m.get(key);
+      if (!prev) { m.set(key, info); return; }
+      m.set(key, { hi: prev.hi || info.hi, src: prev.src || info.src });
+    };
     for (const it of items) {
       const synMean = it.hinglish_meaning || it.meaning;
       const antMean = it.antonym_hinglish_meaning || it.hinglish_meaning || it.meaning;
-      // The item's own word carries the synonym-side meaning.
-      put(it.word, synMean);
-      // Every synonym token shares the synonym-side meaning.
-      for (const t of split(it.synonyms)) put(t, synMean);
-      // Every antonym token shares the antonym-side meaning.
-      for (const t of split(it.antonyms)) put(t, antMean);
+      put(it.word, { hi: synMean });
+      for (const t of split(it.synonyms)) put(t, { hi: synMean, src: { word: it.word, rel: 'synonym' } });
+      for (const t of split(it.antonyms)) put(t, { hi: antMean, src: { word: it.word, rel: 'antonym' } });
     }
     return m;
   }, [items]);
 
-  function hindiForOption(opt: string): string {
+  function infoForOption(opt: string): OptInfo {
     const k = opt.trim().toLowerCase();
-    return itemHindiMap.get(k) || lookupHindi(wordHindi, opt) || '—';
+    const info = itemInfoMap.get(k);
+    return { hi: info?.hi || lookupHindi(wordHindi, opt) || null, src: info?.src };
   }
+
+  function hindiForOption(opt: string): string {
+    return infoForOption(opt).hi || '—';
+  }
+
 
   useEffect(() => {
     (async () => {
@@ -306,7 +312,9 @@ export default function SscSynAntPractice() {
                 const isCorrect = q.correct === idx;
                 const isPicked = picked === idx;
                 const isFlipped = show && (flipAll[i] || revealed[i]?.has(idx));
-                const optHindi = show ? hindiForOption(opt) : '';
+                const optInfo = show ? infoForOption(opt) : { hi: null as string | null, src: undefined };
+                const optHindi = optInfo.hi || '';
+                const optSrc = optInfo.src;
                 const optKey = `${q.item.id}||${opt}`;
                 const optBook = oKeys.has(optKey);
                 return (
@@ -325,9 +333,22 @@ export default function SscSynAntPractice() {
                       }`}>
                       <div className="flex items-baseline gap-2">
                         <span className="font-semibold">{String.fromCharCode(65 + idx)}.</span>
-                        <span className={isFlipped ? 'italic' : ''}>{isFlipped ? optHindi : opt}</span>
+                        <span className={isFlipped ? 'italic' : ''}>{isFlipped ? (optHindi || '—') : opt}</span>
                       </div>
-                      {show && isCorrect && optHindi && optHindi !== '—' && !isFlipped && (
+                      {isFlipped && (
+                        <div className="text-xs mt-1 pl-6 space-y-0.5">
+                          <div className="text-slate-500 not-italic">{opt}</div>
+                          {optSrc ? (
+                            <div className="text-emerald-700 not-italic">
+                              {optSrc.rel === 'antonym' ? 'Antonym' : 'Synonym'} of{' '}
+                              <span className="font-semibold">{optSrc.word}</span>
+                            </div>
+                          ) : (
+                            <div className="text-slate-400 not-italic">source word not linked</div>
+                          )}
+                        </div>
+                      )}
+                      {show && isCorrect && optHindi && !isFlipped && (
                         <div className="text-xs italic text-emerald-700 mt-1 pl-6">→ {optHindi}</div>
                       )}
                     </button>

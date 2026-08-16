@@ -42,21 +42,42 @@ export default function BlackBookPractice() {
   const [oKeys, setOKeys] = useState<Set<string>>(new Set());
   const wordHindi = useWordHindi();
 
-  const itemHindiMap = useMemo(() => {
-    const m = new Map<string, string>();
+  interface OptInfo { hi: string | null; src?: { word: string; rel: string } }
+  const itemInfoMap = useMemo(() => {
+    const m = new Map<string, OptInfo>();
+    const put = (k: string | null | undefined, info: OptInfo) => {
+      if (!k) return;
+      const key = k.trim().toLowerCase();
+      if (!key) return;
+      const prev = m.get(key);
+      m.set(key, prev ? { hi: prev.hi || info.hi, src: prev.src || info.src } : info);
+    };
     for (const it of items) {
       const meaning = it.hinglish_meaning || it.hindi_meaning;
-      if (!meaning) continue;
-      if (it.prompt) m.set(it.prompt.trim().toLowerCase(), meaning);
-      if (it.answer) m.set(it.answer.trim().toLowerCase(), meaning);
+      put(it.prompt, { hi: meaning });
+      if (it.category === 'syn_ant') {
+        for (const t of it.synonyms || []) put(t, { hi: meaning, src: { word: it.prompt, rel: 'Synonym' } });
+        for (const t of it.antonyms || []) put(t, { hi: meaning, src: { word: it.prompt, rel: 'Antonym' } });
+        put(it.answer, { hi: meaning });
+      } else if (it.category === 'idiom') {
+        put(it.answer, { hi: meaning, src: { word: it.prompt, rel: 'Meaning of idiom' } });
+      } else {
+        put(it.answer, { hi: meaning, src: { word: it.prompt, rel: 'One word for' } });
+      }
     }
     return m;
   }, [items]);
 
-  function hindiForOption(opt: string): string {
+  function infoForOption(opt: string): OptInfo {
     const k = opt.trim().toLowerCase();
-    return itemHindiMap.get(k) || lookupHindi(wordHindi, opt) || '—';
+    const info = itemInfoMap.get(k);
+    return { hi: info?.hi || lookupHindi(wordHindi, opt) || null, src: info?.src };
   }
+
+  function hindiForOption(opt: string): string {
+    return infoForOption(opt).hi || '—';
+  }
+
 
   useEffect(() => {
     (async () => {
@@ -342,7 +363,21 @@ export default function BlackBookPractice() {
                       } ${isFlipped ? 'italic' : ''}`}
                     >
                       <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>
-                      {isFlipped ? hindiForOption(opt) : opt}
+                      {isFlipped ? (
+                        <>
+                          {infoForOption(opt).hi || '—'}
+                          <span className="block text-xs not-italic text-slate-500 mt-1">{opt}</span>
+                          {infoForOption(opt).src ? (
+                            <span className="block text-xs not-italic text-emerald-700">
+                              {infoForOption(opt).src!.rel}{' '}
+                              <span className="font-semibold">"{infoForOption(opt).src!.word}"</span>
+                            </span>
+                          ) : (
+                            <span className="block text-xs not-italic text-slate-400">source not linked</span>
+                          )}
+                        </>
+                      ) : opt}
+
                     </button>
                     <button
                       onClick={() => bookmarkOption(idx, opt)}
